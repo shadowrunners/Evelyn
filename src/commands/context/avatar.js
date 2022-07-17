@@ -1,4 +1,4 @@
-const { MessageEmbed, ContextMenuInteraction } = require("discord.js");
+const { EmbedBuilder, ContextMenuCommandInteraction } = require("discord.js");
 
 module.exports = {
     name: "User Avatar",
@@ -6,13 +6,13 @@ module.exports = {
     context: true,
     public: true,
     /**
-    * @param {ContextMenuInteraction} interaction 
+    * @param {ContextMenuCommandInteraction} interaction 
     */
     async execute(interaction) {
         const target = await interaction.guild.members.fetch(interaction.targetId)
         await target.user.fetch();
         
-        const avatarEmbed = new MessageEmbed()
+        const avatarEmbed = new EmbedBuilder()
             .setColor("BLURPLE")
             .setTitle(`${target.user.tag}'s Avatar`)
             .setImage(target.user.avatarURL({dynamic: true, size: 2048}))

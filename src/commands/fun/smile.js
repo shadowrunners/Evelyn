@@ -1,7 +1,5 @@
-const { CommandInteraction, MessageEmbed } = require("discord.js");
+const { CommandInteraction, EmbedBuilder } = require("discord.js");
 const superagent = require("superagent");
-
-// Credits to Ureshi#9090 for the original /hug command which I used as a template for all of these emotion commands.
 
 module.exports = {
     name: "smile",
@@ -12,7 +10,7 @@ module.exports = {
      */
     async execute(interaction) {
         const { body } = await superagent.get("https://api.waifu.pics/sfw/smile");
-        const smileEmbed = new MessageEmbed()
+        const smileEmbed = new EmbedBuilder()
             .setColor("BLURPLE")
             .setAuthor({name: `${interaction.user.username} smiles!`, iconURL: `${interaction.user.avatarURL({dynamic: true})}`})
             .setImage(body.url)

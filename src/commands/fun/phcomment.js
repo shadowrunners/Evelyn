@@ -1,4 +1,4 @@
-const { CommandInteraction, MessageEmbed } = require("discord.js");
+const { CommandInteraction, EmbedBuilder } = require("discord.js");
 const fetch = require("node-fetch");
 
 module.exports = {
@@ -23,7 +23,7 @@ module.exports = {
     
     .then(function(result) { return result.json(); })
     .then(function(data) {
-        const phEmbed = new MessageEmbed()
+        const phEmbed = new EmbedBuilder()
             .setColor("BLURPLE")
             .setImage(data.message)
             .setTimestamp()

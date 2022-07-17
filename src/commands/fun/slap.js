@@ -1,4 +1,4 @@
-const { CommandInteraction, MessageEmbed } = require("discord.js");
+const { CommandInteraction, EmbedBuilder } = require("discord.js");
 const superagent = require("superagent");
 
 module.exports = {
@@ -24,7 +24,7 @@ module.exports = {
     if (target.id === interaction.user.id)
     return interaction.reply({ content: "Why would you wanna slap yourself, honey?", ephemeral: true });
 
-    const slapEmbed = new MessageEmbed()
+    const slapEmbed = new EmbedBuilder()
       .setColor("BLURPLE")
       .setAuthor({
         name: `${interaction.user.username} slaps ${target.user.username}!`,

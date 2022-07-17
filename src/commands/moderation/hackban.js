@@ -1,4 +1,4 @@
-const { CommandInteraction, MessageEmbed } = require('discord.js');
+const { CommandInteraction, EmbedBuilder } = require('discord.js');
 
 module.exports = {
   name: "hackban",
@@ -26,7 +26,7 @@ module.exports = {
     const reason = interaction.options.getString("reason") || "No reason provided.";
 
     interaction.guild.members.ban(target);
-    const successEmbed = new MessageEmbed()
+    const successEmbed = new EmbedBuilder()
         .setColor('BLURPLE')
         .setDescription("This user has been banned successfully.");
 

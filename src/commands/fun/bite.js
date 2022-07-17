@@ -1,4 +1,4 @@
-const { CommandInteraction, MessageEmbed } = require("discord.js");
+const { CommandInteraction, EmbedBuilder } = require("discord.js");
 const superagent = require("superagent");
 
 module.exports = {
@@ -24,7 +24,7 @@ module.exports = {
     if (target.id === interaction.user.id)
       return interaction.reply({ content: "No. <:peepo_stare:640305010135007255>" });
 
-    const biteEmbed = new MessageEmbed()
+    const biteEmbed = new EmbedBuilder()
       .setColor("DARK_VIVID_PINK")
       .setAuthor({
         name: `${interaction.user.username} bites ${target.user.username}!`,

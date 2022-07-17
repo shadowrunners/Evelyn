@@ -1,4 +1,4 @@
-const { CommandInteraction, MessageEmbed } = require("discord.js");
+const { CommandInteraction, EmbedBuilder } = require("discord.js");
 const superagent = require("superagent");
 
 module.exports = {
@@ -21,7 +21,7 @@ module.exports = {
     await target.user.fetch();
     const { body } = await superagent.get("https://api.waifu.pics/sfw/bonk");
 
-    const bonkieEmbed = new MessageEmbed()
+    const bonkieEmbed = new EmbedBuilder()
       .setColor("DARK_VIVID_PINK")
       .setAuthor({
         name: `${interaction.user.username} bonks... themselves?`,

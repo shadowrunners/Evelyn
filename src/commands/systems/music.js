@@ -1,4 +1,4 @@
-const { CommandInteraction, MessageEmbed, Client } = require("discord.js");
+const { CommandInteraction, EmbedBuilder, Client } = require("discord.js");
 const util = require("../../utils/util.js");
 const genius = require("genius-lyrics");
 const gClient = new genius.Client();
@@ -99,7 +99,7 @@ module.exports = {
 
                             player.queue.add(res.tracks);
                             if (!player.playing && !player.paused && player.queue.totalSize === res.tracks.length) player.play();
-                            const playlistEmbed = new MessageEmbed()
+                            const playlistEmbed = new EmbedBuilder()
                                 .setDescription(`🔹 | **[${res.playlist.name}](${query})** has been added to the queue.`)
                                 .addField("Enqueued", `\`${res.tracks.length}\` tracks`)
                             return interaction.reply({ embeds: [playlistEmbed] })
@@ -110,7 +110,7 @@ module.exports = {
                             player.queue.add(TrackUtils.build(res.tracks[0], interaction.user));
                         }
 
-                        const enqueueEmbed = new MessageEmbed()
+                        const enqueueEmbed = new EmbedBuilder()
                             .setColor("BLURPLE")
                             .setDescription(`🔹 | Enqueued **[${res.tracks[0].info.title}](${res.tracks[0].info.uri})** [${member}]`)
                             .setTimestamp()
@@ -141,7 +141,7 @@ module.exports = {
 
                                 player.queue.add(TrackUtils.build(res.tracks));
                                 if (!player.playing && !player.paused && player.queue.totalSize === res.tracks.length) player.play();
-                                const playlistEmbed = new MessageEmbed()
+                                const playlistEmbed = new EmbedBuilder()
                                     .setDescription(`🔹 | **[${res.playlist.name}](${query})** has been added to the queue.`)
                                     .addField("Enqueued", `\`${res.tracks.length}\` tracks`)
                                 return interaction.reply({ embeds: [playlistEmbed] })
@@ -152,7 +152,7 @@ module.exports = {
                                 player.queue.add(res.tracks[0]);
                             }
 
-                            const enqueueEmbed = new MessageEmbed()
+                            const enqueueEmbed = new EmbedBuilder()
                                 .setColor("BLURPLE")
                                 .setDescription(`🔹 | Enqueued **[${res.tracks[0].title}](${res.tracks[0].uri})** [${member}]`)
                                 .setTimestamp()
@@ -175,7 +175,7 @@ module.exports = {
                     if (volume < 0 || volume > 100) return interaction.reply({ content: `🔹| You can only set the volume from 0 to 100.` })
                     player.setVolume(volume);
 
-                    const volumeEmbed = new MessageEmbed()
+                    const volumeEmbed = new EmbedBuilder()
                         .setColor("BLURPLE")
                         .setDescription(`🔹 | Volume has been set to **${player.volume}%**.`)
                     return interaction.reply({ embeds: [volumeEmbed] })
@@ -223,7 +223,7 @@ module.exports = {
                             if (!player.playing) return interaction.reply({ content: "🔹| There is nothing in the queue." })
                             await player.stop();
 
-                            const skipEmbed = new MessageEmbed()
+                            const skipEmbed = new EmbedBuilder()
                                 .setColor("BLURPLE")
                                 .setDescription(`🔹 | Skipped.`)
                                 .setTimestamp()
@@ -233,7 +233,7 @@ module.exports = {
                         case "nowplaying": {
                             const track = player.queue.current;
 
-                            const npEmbed = new MessageEmbed()
+                            const npEmbed = new EmbedBuilder()
                                 .setColor("BLURPLE")
                                 .setTitle("Now Playing")
                                 .setDescription(`[${track.title}](${track.uri}) [${player.queue.current.requester}]`)
@@ -245,7 +245,7 @@ module.exports = {
 
                             await player.pause(true);
 
-                            const pauseEmbed = new MessageEmbed()
+                            const pauseEmbed = new EmbedBuilder()
                                 .setColor("BLURPLE")
                                 .setDescription("🔹 | Paused.")
                             return interaction.reply({ embeds: [pauseEmbed] })
@@ -253,7 +253,7 @@ module.exports = {
                         case "resume": {
                             await player.pause(false);
 
-                            const resumeEmbed = new MessageEmbed()
+                            const resumeEmbed = new EmbedBuilder()
                                 .setColor("BLURPLE")
                                 .setDescription("🔹 | Resumed.")
                             return interaction.reply({ embeds: [resumeEmbed] })
@@ -261,7 +261,7 @@ module.exports = {
                         case "stop": {
                             player.destroy()
 
-                            const disconnectEmbed = new MessageEmbed()
+                            const disconnectEmbed = new EmbedBuilder()
                                 .setColor("BLURPLE")
                                 .setDescription("🔹 | Disconnected.")
                             return interaction.reply({ embeds: [disconnectEmbed] })
@@ -273,7 +273,7 @@ module.exports = {
                             const searches = actualTrack[0];
                             const lyrics = await searches.lyrics();
 
-                            const lyricsEmbed = new MessageEmbed()
+                            const lyricsEmbed = new EmbedBuilder()
                                 .setColor("BLURPLE")
                                 .setTitle(`🔹 | Lyrics for **${trackTitle}**`)
                                 .setDescription(lyrics)
@@ -287,7 +287,7 @@ module.exports = {
 
                             player.queue.shuffle()
 
-                            const shuffleEmbed = new MessageEmbed()
+                            const shuffleEmbed = new EmbedBuilder()
                                 .setColor("BLURPLE")
                                 .setDescription("🔹 | Shuffled the queue.")
                             return interaction.reply({ embeds: [shuffleEmbed] })
@@ -299,7 +299,7 @@ module.exports = {
                             const queue = player.queue.map((t, i) => `\`${++i}.\` **${t.title}** [${t.requester}]`);
                             const chunked = util.chunk(queue, 10).map(x => x.join("\n"));
 
-                            const queueEmbed = new MessageEmbed()
+                            const queueEmbed = new EmbedBuilder()
                                 .setColor("BLURPLE")
                                 .setTitle(`Current queue for ${guild.name}`)
                                 .setDescription(chunked[0])
@@ -312,7 +312,7 @@ module.exports = {
             }
         } catch (e) {
             console.log(e)
-            //let errEmbed = new MessageEmbed()
+            //let errEmbed = new EmbedBuilder()
             //.setColor("BLURPLE")
             //.setTitle("Uh oh...")
             //.setDescription(`🔹 | An error has occured. ${e} \nReport this issue to scrappie in the [CryoLabs Discord server.](https://discord.gg/HwkDSs7X82)`)

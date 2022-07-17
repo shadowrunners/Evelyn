@@ -1,4 +1,4 @@
-const { CommandInteraction, MessageEmbed } = require("discord.js")
+const { CommandInteraction, EmbedBuilder } = require("discord.js")
 const { cattoKey } = require("../../structures/config.json");
 const fetch = require("node-fetch")
 
@@ -18,7 +18,7 @@ module.exports = {
             })
         .then(function(result) { return result.json(); })
         .then(function([data]) {
-            const cattoEmbed = new MessageEmbed()
+            const cattoEmbed = new EmbedBuilder()
                 .setColor("BLURPLE")
                 .setAuthor({name: "Here's a random picture of a cat!"})
                 .setImage(data.url)

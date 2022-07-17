@@ -1,4 +1,4 @@
-const { CommandInteraction, MessageEmbed } = require("discord.js");
+const { CommandInteraction, EmbedBuilder } = require("discord.js");
 const imdb = require("imdb-api");
 const { imdbAPIKey } = require("../../structures/config.json");
 
@@ -23,7 +23,7 @@ module.exports = {
 
         imdbClient.get({ name: `${title}` }, { timeout: 30000 }).then(async (result) => {
             const date = result.released;
-            const movieinfoEmbed = new MessageEmbed()
+            const movieinfoEmbed = new EmbedBuilder()
                 .setAuthor({ name: `${result.title}` })
                 .setColor("BLURPLE")
                 .setThumbnail(result.poster)
@@ -95,7 +95,7 @@ module.exports = {
                 )
             interaction.reply({ embeds: [movieinfoEmbed] });
         }).catch((err) => {
-            const errEmbed = new MessageEmbed()
+            const errEmbed = new EmbedBuilder()
                 .setColor("BLURPLE")
                 .setDescription(`🔹 | No movie/show found.`)
             return interaction.reply({ embeds: [errEmbed] })

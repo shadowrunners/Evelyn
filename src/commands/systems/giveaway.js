@@ -1,4 +1,4 @@
-const { CommandInteraction, MessageEmbed, Client } = require('discord.js');
+const { CommandInteraction, EmbedBuilder, Client } = require('discord.js');
 const ms = require('ms');
 
 module.exports = {
@@ -90,16 +90,16 @@ module.exports = {
 
         const Sub = options.getSubcommand();
 
-        const ErrorEmbed = new MessageEmbed()
+        const ErrorEmbed = new EmbedBuilder()
         .setColor('RED');
 
-        const SuccessEmbed = new MessageEmbed()
+        const SuccessEmbed = new EmbedBuilder()
         .setColor('GREEN');
 
-        const successEmbed = new MessageEmbed()
+        const successEmbed = new EmbedBuilder()
         .setColor('GREEN')
 
-        const errorEmbed = new MessageEmbed()
+        const errorEmbed = new EmbedBuilder()
         .setColor('RED')
 
         switch(Sub) {

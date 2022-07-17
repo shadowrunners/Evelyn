@@ -1,4 +1,4 @@
-const { CommandInteraction, MessageEmbed } = require("discord.js");
+const { CommandInteraction, EmbedBuilder } = require("discord.js");
 const kitsu = require("node-kitsu");
 
 module.exports = {
@@ -21,11 +21,20 @@ module.exports = {
 
         kitsu.searchAnime(title, 0).then((result) => {
             const anime = result[0];
+
             const link = `https://kitsu.io/anime/${anime.id}`;
             const status = anime.attributes.status.replace("finished", "Finished")
                 .replace("ongoing", "Ongoing")
+            const startDate = anime.attributes.startDate;
+            const endDate = anime.attributes.endDate;
 
-            const aniEmbed = new MessageEmbed()
+            const sDate = new Date(startDate);
+            const eDate = new Date(endDate);
+
+            const unixStartDate = Math.floor(sDate.getTime() / 1000);
+            const unixEndDate = Math.floor(eDate.getTime() / 1000);
+
+            const aniEmbed = new EmbedBuilder()
                 .setTitle(`[${anime.attributes.titles.en_us}](${link})`)
                 .setColor("GREY")
                 .setThumbnail(anime.attributes.posterImage.original)
@@ -33,14 +42,24 @@ module.exports = {
                 .addFields(
                     {
                         name: "Premiered on",
-                        value: anime.attributes.startDate,
                         inline: true,
+                        value: [
+                            anime.attributes.startDate,
+                        ].join("\n")
+                        
+                    },
+                    {
+                        name: "Aired",
+                        inline: true,
+                        value: [
+                            `<t:${unixStartDate}:R> - <t:${unixEndDate}:R>`,
+                        ].join("\n")
                     },
                     {
                         name: "Japanese Title",
                         inline: true,
                         value: [
-                            `${anime.attributes.titles.en_jp}` || "Unknown.",
+                            `${anime.attributes.titles.en_jp}`,
                         ].join("\n")
                     },
                     //{
@@ -50,13 +69,17 @@ module.exports = {
                     //},
                     {
                         name: "Status",
-                        value: status,
                         inline: true,
+                        value: [
+                            status
+                        ].join("\n"),
                     },
                     {
                         name: "Rating",
-                        value: `${anime.attributes.averageRating}%`,
                         inline: true,
+                        value: [
+                            `${anime.attributes.averageRating}%`
+                        ].join("\n"),
                     },
                 )
             interaction.reply({embeds: [aniEmbed]});

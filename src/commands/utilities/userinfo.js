@@ -1,4 +1,4 @@
-const { CommandInteraction, MessageEmbed } = require('discord.js');
+const { CommandInteraction, EmbedBuilder } = require('discord.js');
 
 module.exports = {
 	name: 'userinfo',
@@ -19,7 +19,7 @@ module.exports = {
 		const target = interaction.options.getMember('target') || interaction.member;
 		await target.user.fetch();
 
-		const userinfoEmbed = new MessageEmbed()
+		const userinfoEmbed = new EmbedBuilder()
 			.setColor("DARK_VIVID_PINK")
 			.setAuthor({
 				name: `${target.user.tag}`,

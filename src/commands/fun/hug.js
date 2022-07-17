@@ -1,4 +1,4 @@
-const { CommandInteraction, Client, MessageEmbed } = require("discord.js");
+const { CommandInteraction, Client, EmbedBuilder } = require("discord.js");
 const superagent = require("superagent");
 
 module.exports = {
@@ -22,7 +22,7 @@ module.exports = {
     await target.user.fetch();
     const { body } = await superagent.get("https://api.waifu.pics/sfw/hug");
 
-    const lonerHug = new MessageEmbed()
+    const lonerHug = new EmbedBuilder()
       .setColor("DARK_VIVID_PINK")
       .setAuthor({
         name: `${client.user.username} hugs ${interaction.user.username}!`,
@@ -34,7 +34,7 @@ module.exports = {
     if (target.id === interaction.user.id)
       return interaction.reply({ embeds: [lonerHug] });
 
-    const hugEmbed = new MessageEmbed()
+    const hugEmbed = new EmbedBuilder()
       .setColor("BLURPLE")
       .setAuthor({
         name: `${interaction.user.username} hugs ${target.user.username}!`,

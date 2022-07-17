@@ -1,4 +1,4 @@
-const { CommandInteraction, MessageEmbed } = require("discord.js");
+const { CommandInteraction, EmbedBuilder } = require("discord.js");
 const superagent = require("superagent");
 
 module.exports = {
@@ -11,7 +11,7 @@ module.exports = {
   async execute(interaction) {
     const { body } = await superagent.get("https://api.waifu.pics/sfw/blush");
 
-    const blushEmbed = new MessageEmbed()
+    const blushEmbed = new EmbedBuilder()
       .setColor("DARK_VIVID_PINK")
       .setAuthor({
         name: `${interaction.user.username} blushes!`,

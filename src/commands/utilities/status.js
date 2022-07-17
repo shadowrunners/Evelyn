@@ -1,4 +1,4 @@
-const { CommandInteraction, Client, MessageEmbed } = require("discord.js");
+const { CommandInteraction, Client, EmbedBuilder } = require("discord.js");
 const os = require("os");
 const actualTime = require("humanize-duration");
 const { connection } = require("mongoose");
@@ -18,7 +18,7 @@ module.exports = {
 
         await client.application.fetch();
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setColor("BLURPLE")
             .setTitle(`${client.user.username} | Status`)
             .addFields(

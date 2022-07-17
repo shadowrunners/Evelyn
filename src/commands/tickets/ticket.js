@@ -1,4 +1,4 @@
-const { MessageEmbed, CommandInteraction } = require("discord.js");
+const { EmbedBuilder, CommandInteraction } = require("discord.js");
 const DB = require("../../structures/schemas/ticketDB.js");
 
 module.exports = {
@@ -33,7 +33,7 @@ module.exports = {
     const action = options.getString("action");
     const member = options.getMember("member");
 
-    const Embed = new MessageEmbed();
+    const Embed = new EmbedBuilder();
 
     switch (action) {
       case "add":

@@ -1,4 +1,4 @@
-const { CommandInteraction, MessageEmbed } = require('discord.js');
+const { CommandInteraction, EmbedBuilder } = require('discord.js');
 
 module.exports = {
 	name: 'serverinfo',
@@ -11,7 +11,7 @@ module.exports = {
 		const { guild } = interaction;
 		const { createdTimestamp, ownerId, members, memberCount, channels, emojis, stickers } = guild;
 
-		const svinfo = new MessageEmbed()
+		const svinfo = new EmbedBuilder()
 			.setColor("DARK_VIVID_PINK")
 			.setAuthor({ name: `${guild.name}` })
 			.setThumbnail(guild.iconURL({ dynamic: true }))
