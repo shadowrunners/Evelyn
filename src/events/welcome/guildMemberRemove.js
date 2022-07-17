@@ -1,4 +1,4 @@
-const { Client, GuildMember, MessageEmbed } = require("discord.js");
+const { Client, GuildMember, EmbedBuilder } = require("discord.js");
 const DB = require("../../structures/schemas/guildDB.js");
 
 module.exports = {
@@ -17,7 +17,7 @@ module.exports = {
 
         const goodbyeData = data.goodbye.json.embed;
 
-        const goodbyeEmbed = new MessageEmbed()
+        const goodbyeEmbed = new EmbedBuilder()
         const color = goodbyeData.color;
         if (color) goodbyeEmbed.setColor(color);
 

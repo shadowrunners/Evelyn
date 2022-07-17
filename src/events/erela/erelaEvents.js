@@ -1,5 +1,5 @@
 const client = require("../../structures/index.js");
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const pms = require("pretty-ms");
 const { magenta, white, red, green } = require("chalk");
 
@@ -21,7 +21,7 @@ module.exports = {
     .on("trackStart", (player, track) => {
         client.channels.cache.get(player.textChannel).send({
             embeds: [
-                new MessageEmbed()
+                new EmbedBuilder()
                     .setColor("BLURPLE")
                     .setDescription(`🔹| Now Playing: **[${track.title}](${track.uri})** [<@${track.requester.id}> - ${pms(track.duration)}]`)
                     .setTimestamp()]

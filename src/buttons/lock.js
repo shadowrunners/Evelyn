@@ -1,12 +1,12 @@
 const DB = require("../structures/schemas/ticketDB.js");
 const TS = require("../structures/schemas/ticketSetup.js");
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
     id: "lock",
     async execute(interaction) {
         const { guild, channel, member } = interaction;
-        const Embed = new MessageEmbed().setColor("BLURPLE");
+        const Embed = new EmbedBuilder().setColor("BLURPLE");
 
         const TSData = await TS.findOne({ GuildID: guild.id });
         if (!TSData) return interaction.reply({ content: "The data for this system is outdated.", ephemeral: true });

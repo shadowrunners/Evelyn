@@ -1,8 +1,8 @@
 const {
   ButtonInteraction,
-  MessageEmbed,
-  MessageActionRow,
-  MessageButton,
+  EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
 } = require("discord.js");
 const DB = require("../../structures/schemas/ticketDB.js");
 const TS = require("../../structures/schemas/ticketSetup.js");
@@ -27,7 +27,7 @@ module.exports = {
       Closed: false,
     });
 
-    const openedEmbed = new MessageEmbed()
+    const openedEmbed = new EmbedBuilder()
       .setColor("BLURPLE")
       .setDescription("🔹 | You already have an opened ticket.")
 
@@ -60,7 +60,7 @@ module.exports = {
           Claimed: false,
           OpenTime: parseInt(channel.createdTimestamp / 1000),
         });
-        const Embed = new MessageEmbed()
+        const Embed = new EmbedBuilder()
           .setAuthor({
             name: `${guild.name} | Ticket: ${ID}`,
             iconURL: guild.iconURL({ dynamic: true }),
@@ -69,24 +69,24 @@ module.exports = {
             "Please wait patiently while a staff member is coming to assist you with your issue. In the meantime, describe your issue as detailed as possible."
           )
           .setFooter({ text: "The buttons below are Staff Only buttons!" });
-        const Buttons = new MessageActionRow();
+        const Buttons = new ActionRowBuilder();
         Buttons.addComponents(
-          new MessageButton()
+          new ButtonBuilder()
             .setCustomId("close")
             .setLabel("Save & Close Ticket")
             .setStyle("PRIMARY")
             .setEmoji("⛔"),
-          new MessageButton()
+          new ButtonBuilder()
             .setCustomId("lock")
             .setLabel("Lock")
             .setStyle("SECONDARY")
             .setEmoji("🔒"),
-          new MessageButton()
+          new ButtonBuilder()
             .setCustomId("unlock")
             .setLabel("Unlock")
             .setStyle("SUCCESS")
             .setEmoji("🔓"),
-          new MessageButton()
+          new ButtonBuilder()
             .setCustomId("claim")
             .setLabel("Claim")
             .setStyle("PRIMARY")

@@ -1,4 +1,4 @@
-const { Client, Message, MessageEmbed, MessageAttachment } = require("discord.js");
+const { Client, Message, EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const { PerspectiveAPIKey } = require("../../structures/config.json");
 const GDB = require("../../structures/schemas/guildDB.js");
 const AMDB = require("../../structures/schemas/automodDB.js");
@@ -129,7 +129,7 @@ module.exports = {
         };
 
         const image = await canvas.renderToBuffer(chartConfig);
-        const attachment = new MessageAttachment(image, "chart.png");
+        const attachment = new AttachmentBuilder(image, "chart.png");
 
         if (ChannelIDs.includes(channel.id)) {
             if (score > 0.75 && score <= 0.8) {
@@ -139,7 +139,7 @@ module.exports = {
                     logChannels.forEach((channel) => {
                         const eachChannel = guild.channels.cache.get(channel);
 
-                        const embed = new MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setColor("RED")
                             .setTitle("AutoMod | A toxic message has been detected. [DELETED]")
                             .setDescription(
@@ -179,7 +179,7 @@ module.exports = {
                     logChannels.forEach((channel) => {
                         const eachChannel = guild.channels.cache.get(channel);
 
-                        const embed = new MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setColor("RED")
                             .setTitle("AutoMod | A toxic message has been detected. [TIMEOUT]")
                             .setDescription(
@@ -212,7 +212,7 @@ module.exports = {
 
                     member.send({
                         embeds: [
-                            new MessageEmbed()
+                            new EmbedBuilder()
                                 .setColor("RED")
                                 .setTitle("Aeolian | AutoMod")
                                 .setDescription(
@@ -242,7 +242,7 @@ module.exports = {
                     logChannels.forEach((channel) => {
                         const eachChannel = guild.channels.cache.get(channel);
 
-                        const embed = new MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setColor("RED")
                             .setTitle("AutoMod | A toxic message has been detected. [KICKED]")
                             .setDescription(
@@ -275,7 +275,7 @@ module.exports = {
 
                     member.send({
                         embeds: [
-                            new MessageEmbed()
+                            new EmbedBuilder()
                                 .setColor("RED")
                                 .setTitle("Aeolian | AutoMod")
                                 .setDescription(
@@ -308,7 +308,7 @@ module.exports = {
                     logChannels.forEach((channel) => {
                         const eachChannel = guild.channels.cache.get(channel);
 
-                        const embed = new MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setColor("RED")
                             .setTitle("AutoMod | A toxic message has been detected. [BANNED]")
                             .setDescription(
@@ -341,7 +341,7 @@ module.exports = {
 
                     member.send({
                         embeds: [
-                            new MessageEmbed()
+                            new EmbedBuilder()
                                 .setColor("RED")
                                 .setTitle("Aeolian | AutoMod")
                                 .setDescription(
@@ -372,7 +372,7 @@ module.exports = {
                     logChannels.forEach((channel) => {
                         const eachChannel = guild.channels.cache.get(channel);
 
-                        const embed = new MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setColor("RED")
                             .setTitle("AutoMod | A toxic message has been detected. [DELETED]")
                             .setDescription(
@@ -412,7 +412,7 @@ module.exports = {
                     logChannels.forEach((channel) => {
                         const eachChannel = guild.channels.cache.get(channel);
 
-                        const embed = new MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setColor("RED")
                             .setTitle("AutoMod | A toxic message has been detected. [TIMEOUT]")
                             .setDescription(
@@ -445,7 +445,7 @@ module.exports = {
 
                     member.send({
                         embeds: [
-                            new MessageEmbed()
+                            new EmbedBuilder()
                                 .setColor("RED")
                                 .setTitle("Aeolian | AutoMod")
                                 .setDescription(
@@ -475,7 +475,7 @@ module.exports = {
                     logChannels.forEach((channel) => {
                         const eachChannel = guild.channels.cache.get(channel);
 
-                        const embed = new MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setColor("RED")
                             .setTitle("AutoMod | A toxic message has been detected. [KICKED]")
                             .setDescription(
@@ -508,7 +508,7 @@ module.exports = {
 
                     member.send({
                         embeds: [
-                            new MessageEmbed()
+                            new EmbedBuilder()
                                 .setColor("RED")
                                 .setTitle("Aeolian | AutoMod")
                                 .setDescription(
@@ -541,7 +541,7 @@ module.exports = {
                     logChannels.forEach((channel) => {
                         const eachChannel = guild.channels.cache.get(channel);
 
-                        const embed = new MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setColor("RED")
                             .setTitle("AutoMod | A toxic message has been detected. [BANNED]")
                             .setDescription(
@@ -574,7 +574,7 @@ module.exports = {
 
                     member.send({
                         embeds: [
-                            new MessageEmbed()
+                            new EmbedBuilder()
                                 .setColor("RED")
                                 .setTitle("Aeolian | AutoMod")
                                 .setDescription(
@@ -605,7 +605,7 @@ module.exports = {
                     logChannels.forEach((channel) => {
                         const eachChannel = guild.channels.cache.get(channel);
 
-                        const embed = new MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setColor("RED")
                             .setTitle("AutoMod | A toxic message has been detected. [DELETED]")
                             .setDescription(
@@ -645,7 +645,7 @@ module.exports = {
                     logChannels.forEach((channel) => {
                         const eachChannel = guild.channels.cache.get(channel);
 
-                        const embed = new MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setColor("RED")
                             .setTitle("AutoMod | A toxic message has been detected. [TIMEOUT]")
                             .setDescription(
@@ -678,7 +678,7 @@ module.exports = {
 
                     member.send({
                         embeds: [
-                            new MessageEmbed()
+                            new EmbedBuilder()
                                 .setColor("RED")
                                 .setTitle("Aeolian | AutoMod")
                                 .setDescription(
@@ -708,7 +708,7 @@ module.exports = {
                     logChannels.forEach((channel) => {
                         const eachChannel = guild.channels.cache.get(channel);
 
-                        const embed = new MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setColor("RED")
                             .setTitle("AutoMod | A toxic message has been detected. [KICKED]")
                             .setDescription(
@@ -741,7 +741,7 @@ module.exports = {
 
                     member.send({
                         embeds: [
-                            new MessageEmbed()
+                            new EmbedBuilder()
                                 .setColor("RED")
                                 .setTitle("Aeolian | AutoMod")
                                 .setDescription(
@@ -774,7 +774,7 @@ module.exports = {
                     logChannels.forEach((channel) => {
                         const eachChannel = guild.channels.cache.get(channel);
 
-                        const embed = new MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setColor("RED")
                             .setTitle("AutoMod | A toxic message has been detected. [BANNED]")
                             .setDescription(
@@ -807,7 +807,7 @@ module.exports = {
 
                     member.send({
                         embeds: [
-                            new MessageEmbed()
+                            new EmbedBuilder()
                                 .setColor("RED")
                                 .setTitle("Aeolian | AutoMod")
                                 .setDescription(

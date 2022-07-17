@@ -55,7 +55,7 @@ module.exports = {
     ],
     /**
     * @param {CommandInteraction} interaction 
-    * @param {Client} client 
+    * @param {Client} client
     */
     async execute(interaction, client) {
         const { options, member, guild } = interaction;
@@ -64,8 +64,6 @@ module.exports = {
         if (!VoiceChannel)
             return interaction.reply({ content: "You aren't in a voice channel. Join one to be able to play music!", ephemeral: true });
 
-        if (guild.me.voice.channelId && VoiceChannel.id !== guild.me.voice.channelId)
-            return interaction.reply({ content: `I'm already playing music in <#${guild.me.voice.channelId}>.`, ephemeral: true });
 
         const player = client.manager.create({
             guild: interaction.guild.id,
@@ -73,6 +71,9 @@ module.exports = {
             textChannel: interaction.channelId,
             selfDeafen: true
         });
+
+        if (player.voiceChannel && VoiceChannel.id !== player.voiceChannel)
+            return interaction.reply({ content: `I'm already playing music in <#${player.voiceChannel}>.`, ephemeral: true });
 
         let res;
         try {

@@ -1,5 +1,23 @@
-const { Client, Collection } = require("discord.js");
-const client = new Client({ intents: 32767 });
+const { Client, GatewayIntentBits, Partials, Collection } = require("discord.js");
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildBans,
+        GatewayIntentBits.GuildEmojisAndStickers,
+        GatewayIntentBits.GuildIntegrations,
+        GatewayIntentBits.GuildWebhooks,
+        GatewayIntentBits.GuildInvites,
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildMessages,
+    ],
+    partials: [
+        Partials.Message,
+        Partials.User,
+        Partials.GuildMember,
+        Partials.Channel,
+    ]
+});
 const Deezer = require("erela.js-deezer");
 const Apple = require("erela.js-apple");
 const { Manager } = require("erela.js");

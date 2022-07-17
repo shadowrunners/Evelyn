@@ -1,4 +1,4 @@
-const { ButtonInteraction } = require("discord.js");
+const { ButtonInteraction, InteractionType } = require("discord.js");
 
 module.exports = {
     name: "interactionCreate",
@@ -6,7 +6,7 @@ module.exports = {
      * @param {ButtonInteraction} interaction
      */
     execute(interaction, client) {
-        if(!interaction.isButton()) return;
+        if(!interaction.type === InteractionType.MessageComponent) return;
         const Button = client.buttons.get(interaction.customId);
         if(!Button) return;
 

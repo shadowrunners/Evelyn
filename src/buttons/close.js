@@ -1,13 +1,13 @@
 const { createTranscript } = require("discord-html-transcripts");
 const DB = require("../structures/schemas/ticketDB.js");
 const TS = require("../structures/schemas/ticketSetup.js");
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
     id: "close",
     async execute(interaction) {
         const { guild, channel, member } = interaction;
-        const Embed = new MessageEmbed().setColor("BLURPLE");
+        const Embed = new EmbedBuilder().setColor("BLURPLE");
 
         const TSData = await TS.findOne({ GuildID: guild.id });
         if (!TSData) return interaction.reply({ content: "The data for this system is outdated.", ephemeral: true });
@@ -85,7 +85,7 @@ module.exports = {
                     ),
                 ],
             });
-            const DMTranscript = new MessageEmbed()
+            const DMTranscript = new EmbedBuilder()
                 .setColor("BLURPLE")
                 .setTitle("Ticket Closed")
                 .setDescription(`🔹 | Your ticket has been closed and a transcript of it has been saved for you.`)
