@@ -412,14 +412,55 @@ function dash(client) {
                             description: 'This section contains the configuration for the ticket system.',
                         },
                         {
+                            optionId: 'ticket_toggle',
+                            optionName: "Enable/Disable Tickets",
+                            optionDescription: "Enable or disable the ticket system.",
+                            optionType: DBD.formTypes.switch(false),
+                            getActualSet: async ({ guild }) => {
+                                const data = await GDB.findOne({ id: guild.id });
+                                const savedData = data.tickets.enabled || null;
+                                const defaultState = false;
+                                return (savedData == null || savedData == undefined) ? defaultState : savedData;
+                            },
+                            setNew: async ({ guild, newData }) => {
+                                const data = await GDB.findOne({ id: guild.id });
+                                data.tickets.enabled = newData;
+                                data.save();
+                                return;
+                            }
+                        },
+                        {
                             optionId: 'ticket_channel',
                             optionName: "Ticket Channel",
                             optionDescription: "Set the channel where tickets will be created.",
                             optionType: DBD.formTypes.channelsSelect(false, ['GUILD_TEXT']),
-                            
-                        }
+                            getActualSet: async ({ guild }) => {
+                                const data = await GDB.findOne({ id: guild.id });
+                                const savedData = data.tickets.channel || null;
+                                const defaultState = false;
+                                return (savedData == null || savedData == undefined) ? defaultState : savedData;
+                            },
+                            setNew: async ({ guild, newData }) => {
+                                const data = await GDB.findOne({ id: guild.id });
+                                data.tickets.channel = newData;
+                                data.save();
+                                return;
+                            },
+                        },
                     ]
-                }
+                },
+                //{
+                    //categoryId: 'antiscam',
+                    //categoryName: 'Anti-Scam',
+                    //categoryDescription: 'This section contains the configuration for the anti-scam system.',
+                    //categoryOptionsList: [
+                        //{
+                            //optionType: 'spacer',
+                            //title: 'Anti-Scam',
+                            //description: 'This section contains the configuration for the anti-scam system.',
+                        //},
+                    //],
+                //},
             ]
         });
         Dashboard.init();

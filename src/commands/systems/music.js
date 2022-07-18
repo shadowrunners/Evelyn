@@ -64,7 +64,6 @@ module.exports = {
         if (!VoiceChannel)
             return interaction.reply({ content: "You aren't in a voice channel. Join one to be able to play music!", ephemeral: true });
 
-
         const player = client.manager.create({
             guild: interaction.guild.id,
             voiceChannel: member.voice.channel.id,
@@ -196,7 +195,6 @@ module.exports = {
                                 return interaction.reply({ content: "🔹 | Repeat mode has been disabled. (Queue)" })
                             };
                         }
-                        break;
                         case "queue": {
                             if (!player.playing) return interaction.reply({ content: "There is nothing in the queue." });
                             if (!player.queue.length) return interaction.reply({ content: "There is nothing in the queue." });
@@ -206,7 +204,6 @@ module.exports = {
                                 return interaction.reply({ content: "🔹 | Repeat mode has been enabled. (Queue)" })
                             };
                         };
-                        break;
                         case "song": {
                             if (!player.playing) return interaction.reply({ content: "There is nothing in the queue." });
 
@@ -215,7 +212,6 @@ module.exports = {
                                 return interaction.reply({ content: "🔹 | Repeat mode has been enabled. (Song)" })
                             };
                         };
-                        break;
                     }
                 }
                 case "settings": {

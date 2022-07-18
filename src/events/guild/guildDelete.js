@@ -3,18 +3,18 @@ const GDB = require("../../structures/schemas/guildDB.js")
 const AMDB = require("../../structures/schemas/automodDB.js");
 
 module.exports = {
-    name: "guildCreate",
+    name: "guildDelete",
     once: false,
     /**
      * @param {Guild} guild
      */
 
     async execute(guild) {
-        GDB.findOneAndDelete({
+        await GDB.findOneAndDelete({
             id: guild.id,
         });
 
-        AMDB.findOneAndDelete({
+        await AMDB.findOneAndDelete({
             id: guild.id,
         });
     },

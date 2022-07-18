@@ -86,10 +86,10 @@ module.exports = {
                         ].join("\n")
                     },
                     {
-                        name: "MetaScore",
+                        name: "Score",
                         inline: true,
                         value: [
-                            `${result.metascore}` || "Unknown.",
+                            `${result.metascore}/100` || "Unknown.",
                         ].join("\n")
                     },
                 )

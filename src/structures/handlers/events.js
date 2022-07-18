@@ -10,9 +10,19 @@ module.exports = async(client, PG) => {
             return console.log(magenta('[') + magenta('Events') + magenta(']') + red(` Event name is missing in eventnames.js. (${event.name}.js)`));
         }
         
-        if(event.once) {
+        if (event.rest && event.once) {
+            client.rest.once(event.name, (...args) => event.execute(...args, client));
+        };
+
+        if(event.rest && !event.once) {
+            client.rest.on(event.name, (...args) => event.execute(...args, client));
+        };
+
+        if(!event.rest && event.once) {
             client.once(event.name, (...args) => event.execute(...args, client));
-        } else {
+        }
+
+        if (!event.rest && !event.once) {
             client.on(event.name, (...args) => event.execute(...args, client));
         };
         

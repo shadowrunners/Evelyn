@@ -7,6 +7,7 @@ const { dash } = require("../../dashboard/dash.js");
 module.exports = {
     name: "ready",
     once: true,
+    rest: false,
     /**
      * @param {Client} client 
      */
