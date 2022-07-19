@@ -22,7 +22,7 @@ module.exports = {
     const { body } = await superagent.get("https://api.waifu.pics/sfw/bonk");
 
     const bonkieEmbed = new EmbedBuilder()
-      .setColor("DARK_VIVID_PINK")
+      .setColor("Grey")
       .setAuthor({
         name: `${interaction.user.username} bonks... themselves?`,
         iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,

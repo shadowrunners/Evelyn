@@ -13,7 +13,7 @@ module.exports = {
         await target.user.fetch();
         
         const avatarEmbed = new EmbedBuilder()
-            .setColor("BLURPLE")
+            .setColor("Grey")
             .setTitle(`${target.user.tag}'s Avatar`)
             .setImage(target.user.avatarURL({dynamic: true, size: 2048}))
             .setURL(target.avatarURL())

@@ -1,4 +1,4 @@
-const { CommandInteraction, MessageEmbed } = require("discord.js");
+const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
 const DB = require("../../structures/schemas/lockdownDB.js");
 const ms = require("ms");
 
@@ -20,19 +20,19 @@ module.exports = {
 		},
 	],
 	/**
-	 * @param {CommandInteraction} interaction 
+	 * @param {ChatInputCommandInteraction} interaction 
 	 */
 	async execute(interaction) {
 		const { guild, channel, options } = interaction;
 		const reason = options.getString("reason") || "Unknown";
-		const Embed = new MessageEmbed();
+		const Embed = new EmbedBuilder();
 
 		if (!channel.permissionsFor(guild.id).has("SEND_MESSAGES"))
 			return interaction.reply({
 				embeds: [
 					Embed.setDescription(
 						"This channel is already locked."
-					).setColor("BLURPLE").setTimestamp(),
+					).setColor("Grey").setTimestamp(),
 				],
 			});
 
@@ -43,7 +43,7 @@ module.exports = {
 			embeds: [
 				Embed.setDescription(
 					`This channel is now locked for: ${reason}`
-				).setColor("BLURPLE").setTimestamp(),
+				).setColor("Grey").setTimestamp(),
 			],
 		});
 
@@ -58,8 +58,8 @@ module.exports = {
 				});
 				interaction.editReply({
 					embeds: [
-						Embed.setDescription("🔹 | The lockdown has been lifted."
-						).setColor("BLURPLE"),
+						Embed.setDescription("The lockdown has been lifted."
+						).setColor("Grey"),
 					],
 				})
 					.catch(() => { });

@@ -1,6 +1,6 @@
-const { CommandInteraction, EmbedBuilder } = require("discord.js")
+const { CommandInteraction, EmbedBuilder } = require("discord.js");
 const { cattoKey } = require("../../structures/config.json");
-const fetch = require("node-fetch")
+const superagent = require("superagent");
 
 module.exports = {
     name: "cat",
@@ -10,18 +10,16 @@ module.exports = {
      * @param {CommandInteraction} interaction
      */
     async execute(interaction) {
-        fetch("https://api.thecatapi.com/v1/images/search", {
-                method: "GET",
-                headers: {
-                    'x-api-key': cattoKey
-                }
-            })
-        .then(function(result) { return result.json(); })
-        .then(function([data]) {
+        superagent.get("https://api.thecatapi.com/v1/images/search", {
+            headers: {
+                'x-api-key': cattoKey
+            }
+        })
+        .then(function(res) {
             const cattoEmbed = new EmbedBuilder()
-                .setColor("BLURPLE")
+                .setColor("Grey")
                 .setAuthor({name: "Here's a random picture of a cat!"})
-                .setImage(data.url)
+                .setImage(res.body[0].url)
                 .setTimestamp()
                 .setFooter({text: "These images have been brought to you by TheCatAPI."})
             return interaction.reply({embeds: [cattoEmbed]})

@@ -23,6 +23,7 @@ module.exports = {
     const { body } = await superagent.get("https://api.waifu.pics/sfw/handhold");
 
     const lonerhld = new EmbedBuilder()
+    .setColor("Grey")
     .setAuthor({
       name: `${interaction.user.username} is holding hands with ${client.user.username}!`,
       iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,
@@ -34,7 +35,7 @@ module.exports = {
     return interaction.reply({ embeds: [lonerhld] });
 
     const handholdEmbed = new EmbedBuilder()
-      .setColor("BLURPLE")
+    .setColor("Grey")
       .setAuthor({
         name: `${interaction.user.username} is holding hands with ${target.user.username}!`,
         iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,

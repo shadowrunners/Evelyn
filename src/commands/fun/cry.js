@@ -12,7 +12,7 @@ module.exports = {
     const { body } = await superagent.get("https://api.waifu.pics/sfw/cry");
 
     const cryEmbed = new EmbedBuilder()
-      .setColor("BLURPLE")
+      .setColor("Grey")
       .setAuthor({
         name: `${interaction.user.username} is crying.. :c`,
         iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,

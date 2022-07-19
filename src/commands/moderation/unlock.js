@@ -1,4 +1,4 @@
-const { CommandInteraction, MessageEmbed } = require("discord.js");
+const { CommandInteraction, EmbedBuilder } = require("discord.js");
 const DB = require("../../structures/schemas/lockdownDB.js");
 
 module.exports = {
@@ -11,14 +11,14 @@ module.exports = {
 	 */
 	async execute (interaction) {
         const { guild, channel } = interaction;
-        const Embed = new MessageEmbed()
+        const Embed = new EmbedBuilder()
 
-        if(channel.permissionsFor(guild.id).has("SEND_MESSAGES")) return interaction.reply({embeds: [Embed.setColor("BLURPLE").setDescription("🔹 | This channel is not under quarantine.")]});
+        if(channel.permissionsFor(guild.id).has("SEND_MESSAGES")) return interaction.reply({embeds: [Embed.setColor("BLURPLE").setDescription("This channel is not under lockdown.")]});
         channel.permissionOverwrites.edit(guild.id, {
             SEND_MESSAGES: null,
         })
 
         await DB.deleteOne({ChannelID: channel.id});
-        interaction.reply({embeds: [Embed.setColor("BLURPLE").setDescription("🔹 | Quarantine has been lifted.")]});
+        interaction.reply({embeds: [Embed.setColor("Grey").setDescription("Lockdown has been lifted.")]});
     }
 };

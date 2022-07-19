@@ -25,7 +25,7 @@ module.exports = {
     return interaction.reply({ content: "Oh, I'm sure your friends do that to you enough already. Well, if you have any. :)" });
 
     const bullyEmbed = new EmbedBuilder()
-      .setColor("DARK_VIVID_PINK")
+      .setColor("Grey")
       .setAuthor({
         name: `${interaction.user.username} bullies ${target.user.username}!`,
         iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,

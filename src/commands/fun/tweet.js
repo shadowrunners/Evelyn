@@ -1,5 +1,5 @@
-const { CommandInteraction, EmbedBuilder } = require("discord.js");
-const fetch = require("node-fetch");
+const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
+const superagent = require("superagent");
 
 module.exports = {
   name: "tweet",
@@ -14,21 +14,18 @@ module.exports = {
     },
   ],
   /**
-   * @param {CommandInteraction} interaction
+   * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
-    await interaction.deferReply({})
     const text = interaction.options.getString("text");
 
-    fetch(`https://nekobot.xyz/api/imagegen?type=tweet&username=${interaction.user.username}&text=${text}`)
-    
-    .then(function(result) { return result.json(); })
-    .then(function(data) {
+    superagent.get(`https://nekobot.xyz/api/imagegen?type=tweet&username=${interaction.user.username}&text=${text}`)
+    .then(function(res) {
         const tweetEmbed = new EmbedBuilder()
-            .setColor("BLURPLE")
-            .setImage(data.message)
+            .setColor("Grey")
+            .setImage(res.body.message)
             .setTimestamp()
-        interaction.editReply({embeds: [tweetEmbed]})
+        return interaction.reply({embeds: [tweetEmbed]})
     });
   },
 };

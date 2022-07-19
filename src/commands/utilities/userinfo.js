@@ -20,7 +20,7 @@ module.exports = {
 		await target.user.fetch();
 
 		const userinfoEmbed = new EmbedBuilder()
-			.setColor("DARK_VIVID_PINK")
+			.setColor("Grey")
 			.setAuthor({
 				name: `${target.user.tag}`,
 				iconURL: `${target.user.avatarURL({ dynamic: true })}`,
@@ -28,24 +28,9 @@ module.exports = {
 			.setThumbnail(target.user.avatarURL({ dynamic: true }))
 			.addFields(
 				{ name: "ID", value: target.user.id },
-				{
-				  name: "Member since",
-				  value: `<t:${parseInt(target.joinedTimestamp / 1000)}:R>`,
-				  inline: true,
-				},
-				{
-				  name: "Discord member since",
-				  value: `<t:${parseInt(target.user.createdTimestamp / 1000)}:R>`,
-				  inline: true,
-				},
-				{
-				  name: "Roles",
-				  value:
-					target.roles.cache
-					  .map((r) => r)
-					  .join(" ")
-					  .replace("@everyone", "") || "None",
-				}
+				{ name: "Member since", value: `<t:${parseInt(target.joinedTimestamp / 1000)}:R>`, inline: true },
+				{ name: "Discord member since", value: `<t:${parseInt(target.user.createdTimestamp / 1000)}:R>`, inline: true },
+				{ name: "Roles", value: target.roles.cache.map((r) => r).join(" ").replace("@everyone", "") || "None"}
 			);
 		interaction.reply({ embeds: [userinfoEmbed] });
 	},

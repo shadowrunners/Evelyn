@@ -1,4 +1,5 @@
-const { CommandInteraction, EmbedBuilder } = require("discord.js");
+const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
+const superagent = require("superagent");
 const fetch = require("node-fetch");
 
 module.exports = {
@@ -14,21 +15,19 @@ module.exports = {
     },
   ],
   /**
-   * @param {CommandInteraction} interaction
+   * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
     const text = interaction.options.getString("text");
-
-    fetch(`https://nekobot.xyz/api/imagegen?type=phcomment&username=${interaction.user.username}&image=${interaction.user.avatarURL({ format: "png", size: 512 })}&text=${text}`)
     
-    .then(function(result) { return result.json(); })
-    .then(function(data) {
-        const phEmbed = new EmbedBuilder()
-            .setColor("BLURPLE")
-            .setImage(data.message)
-            .setTimestamp()
-          return interaction.reply({ embeds: [phEmbed] });
+    superagent.get(`https://nekobot.xyz/api/imagegen?type=phcomment&username=${interaction.user.username}&image=${interaction.user.avatarURL({ format: "png", size: 512 })}&text=${text}`)
+    .then(function(res) {
+      const phEmbed = new EmbedBuilder()
+        .setColor("Grey")
+        .setImage(res.body.message)
+        .setTimestamp()
+      return interaction.reply({ embeds: [phEmbed] });
     });
-  },
+  }
 };
 

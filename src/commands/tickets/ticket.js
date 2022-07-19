@@ -1,4 +1,4 @@
-const { EmbedBuilder, CommandInteraction } = require("discord.js");
+const { EmbedBuilder, ChatInputCommandInteraction } = require("discord.js");
 const DB = require("../../structures/schemas/ticketDB.js");
 
 module.exports = {
@@ -25,7 +25,7 @@ module.exports = {
     },
   ],
   /**
-   * @param {CommandInteraction} interaction
+   * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
     const { guildId, options, channel } = interaction;
@@ -44,7 +44,7 @@ module.exports = {
             if (!docs)
               return interaction.reply({
                 embeds: [
-                  Embed.setColor("BLURPLE").setDescription(
+                  Embed.setColor("Grey").setDescription(
                     "🔹 | This channel is not tied to a ticket."
                   ),
                 ],
@@ -54,7 +54,7 @@ module.exports = {
             if (docs.MembersID.includes(member.id))
               return interaction.reply({
                 embeds: [
-                  Embed.setColor("BLURPLE").setDescription(
+                  Embed.setColor("Grey").setDescription(
                     "🔹 | This member is already added to this ticket."
                   ),
                 ],
@@ -70,7 +70,7 @@ module.exports = {
 
             interaction.reply({
               embeds: [
-                Embed.setColor("BLURPLE").setDescription(
+                Embed.setColor("Grey").setDescription(
                   `🔹 | ${member} has been added to this ticket.`
                 ),
               ],
@@ -87,7 +87,7 @@ module.exports = {
             if (!docs)
               return interaction.reply({
                 embeds: [
-                  Embed.setColor("BLURPLE").setDescription(
+                  Embed.setColor("Grey").setDescription(
                     "🔹 | This channel is not tied to a ticket."
                   ),
                 ],
@@ -97,7 +97,7 @@ module.exports = {
             if (!docs.MembersID.includes(member.id))
               return interaction.reply({
                 embeds: [
-                  Embed.setColor("BLURPLE").setDescription(
+                  Embed.setColor("Grey").setDescription(
                     "🔹 | This member is not in this ticket."
                   ),
                 ],
@@ -111,7 +111,7 @@ module.exports = {
 
             interaction.reply({
               embeds: [
-                Embed.setColor("BLURPLE").setDescription(
+                Embed.setColor("Grey").setDescription(
                   `🔹 | ${member} has been removed from this ticket.`
                 ),
               ],

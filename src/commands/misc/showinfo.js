@@ -25,7 +25,7 @@ module.exports = {
             const date = result.released;
             const showinfoEmbed = new EmbedBuilder()
                 .setAuthor({ name: `${result.title}` })
-                .setColor("BLURPLE")
+                .setColor("Grey")
                 .setThumbnail(result.poster)
                 .setDescription(result.plot)
                 .addFields(

@@ -1,4 +1,4 @@
-const { MessageEmbed, CommandInteraction, MessageActionRow, MessageButton } = require("discord.js");
+const { EmbedBuilder, ChatInputCommandInteraction, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType } = require("discord.js");
 const TS = require("../../structures/schemas/ticketSetup.js");
 
 module.exports = {
@@ -17,21 +17,21 @@ module.exports = {
                     description: "Select the channel where the ticket panel will be sent.",
                     type: 7,
                     required: true,
-                    channelTypes: ["GUILD_TEXT"],
+                    channelTypes: ChannelType.GuildText,
                 },
                 {
                     name: "category",
                     description: "Select the category where the ticket selection channel is.",
                     required: true,
                     type: 7,
-                    channelTypes: ["GUILD_CATEGORY"],
+                    channelTypes: ChannelType.GuildCategory,
                 },
                 {
                     name: "transcripts",
                     description: "Select the channel where the transcripts will be sent.",
                     required: true,
                     type: 7,
-                    channelTypes: ["GUILD_TEXT"],
+                    channelTypes: ChannelType.GuildText,
                 },
                 {
                     name: "handlers",
@@ -73,13 +73,14 @@ module.exports = {
         },
     ],
     /**
-     * @param {CommandInteraction} interaction
+     * @param {ChatInputCommandInteraction} interaction
      */
     async execute(interaction) {
         const { guild, options } = interaction;
+        
         try {
             switch (options.getSubcommand()) {
-                case "ticketspanel": {
+                case "tickets": {
                     const Channel = options.getChannel("channel");
                     const Category = options.getChannel("category");
                     const Transcripts = options.getChannel("transcripts");
@@ -113,37 +114,34 @@ module.exports = {
                         },
                     );
 
-                    const buttons = new MessageActionRow();
+                    const buttons = new ActionRowBuilder();
                     buttons.addComponents(
-                        new MessageButton()
+                        new ButtonBuilder()
                             .setCustomId(Button1[0])
                             .setLabel(Button1[0])
-                            .setStyle("PRIMARY")
-                            .setEmoji(Emoji1),
-                        new MessageButton()
+                            .setStyle(ButtonStyle.Primary),
+                        new ButtonBuilder()
                             .setCustomId(Button2[0])
                             .setLabel(Button2[0])
-                            .setStyle("SECONDARY")
-                            .setEmoji(Emoji2),
-                        new MessageButton()
+                            .setStyle(ButtonStyle.Primary),
+                        new ButtonBuilder()
                             .setCustomId(Button3[0])
                             .setLabel(Button3[0])
-                            .setStyle("SUCCESS")
-                            .setEmoji(Emoji3)
+                            .setStyle(ButtonStyle.Primary)
                     );
 
-                    const ticketEmbed = new MessageEmbed()
+                    const ticketEmbed = new EmbedBuilder()
                         .setAuthor({
                             name: `${guild.name}` + " | Ticketing System",
                             iconURL: guild.iconURL({ dynamic: true })
                         })
                         .setDescription(Description)
-                        .setColor("BLURPLE");
+                        .setColor("Grey");
 
                     await guild.channels.cache
                         .get(Channel.id)
                         .send({ embeds: [ticketEmbed], components: [buttons] });
-                    interaction.reply({ content: "Done", ephemeral: true });
+                    interaction.reply({ content: "Embed sent.", ephemeral: true });
                 }
             }
         } catch (e) {

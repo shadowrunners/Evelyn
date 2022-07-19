@@ -12,7 +12,7 @@ module.exports = {
     const { body } = await superagent.get("https://api.waifu.pics/sfw/blush");
 
     const blushEmbed = new EmbedBuilder()
-      .setColor("DARK_VIVID_PINK")
+      .setColor("Grey")
       .setAuthor({
         name: `${interaction.user.username} blushes!`,
         iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,

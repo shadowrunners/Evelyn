@@ -24,7 +24,7 @@ module.exports = {
 
         if (target.id === interaction.user.id) {
             const lonerKiss = new EmbedBuilder()
-                .setColor("BLURPLE")
+                .setColor("Grey")
                 .setAuthor({ 
                     name: `${client.user.username} kisses ${target.user.username}!`, 
                     iconURL: `${client.user.avatarURL({ dynamic: true })}` 
@@ -36,7 +36,7 @@ module.exports = {
 
         if (target.id !== interaction.user.id) {
             const kissEmbed = new EmbedBuilder()
-                .setColor("BLURPLE")
+                .setColor("Grey")
                 .setAuthor({ name: `${interaction.user.username} kisses ${target.user.username}!`, iconURL: `${target.user.avatarURL({ dynamic: true })}` })
                 .setImage(body.url)
                 .setTimestamp()

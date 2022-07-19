@@ -11,7 +11,7 @@ module.exports = {
     async execute(interaction) {
         const { body } = await superagent.get("https://api.waifu.pics/sfw/smile");
         const smileEmbed = new EmbedBuilder()
-            .setColor("BLURPLE")
+            .setColor("Grey")
             .setAuthor({name: `${interaction.user.username} smiles!`, iconURL: `${interaction.user.avatarURL({dynamic: true})}`})
             .setImage(body.url)
             .setTimestamp()

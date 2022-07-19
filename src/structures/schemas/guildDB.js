@@ -22,13 +22,5 @@ module.exports = model(
         automod: {
             enabled: false,
         },
-        tickets: {
-            enabled: false,
-            channel: String,
-            category: String,
-            transcripts: String,
-            handlers: String,
-            description: String,
-        }
     })
 )

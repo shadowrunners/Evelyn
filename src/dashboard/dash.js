@@ -1,6 +1,7 @@
 function dash(client) {
     (async () => {
         const DBD = require('discord-dashboard');
+        const { ChannelType } = require("discord.js");
         const DarkDashboard = require("dbd-dark-dashboard");
         const GDB = require("../structures/schemas/guildDB.js");
         const AMDB = require("../structures/schemas/automodDB.js");
@@ -109,7 +110,7 @@ function dash(client) {
                             optionId: 'logchannel',
                             optionName: "Log Channel",
                             optionDescription: "Set the logs channel.",
-                            optionType: DBD.formTypes.channelsSelect(false, ['GUILD_TEXT']),
+                            optionType: DBD.formTypes.channelsSelect(false, [ChannelType.GuildText]),
                             getActualSet: async ({ guild }) => {
                                 const data = await GDB.findOne({ id: guild.id });
                                 const savedData = data.logs.channel || null;
@@ -157,7 +158,7 @@ function dash(client) {
                             optionId: 'wl_channel',
                             optionName: "Welcome Channel",
                             optionDescription: "Set the channel where the welcome message will be sent in.",
-                            optionType: DBD.formTypes.channelsSelect(false, ['GUILD_TEXT']),
+                            optionType: DBD.formTypes.channelsSelect(false, [ChannelType.GuildText]),
                             getActualSet: async ({ guild }) => {
                                 const data = await GDB.findOne({ id: guild.id });
                                 const savedData = data.welcome.channel || null;
@@ -225,7 +226,7 @@ function dash(client) {
                             optionId: 'gb_channel',
                             optionName: "Goodbye Channel",
                             optionDescription: "Set the channel where the goodbye message will be sent in.",
-                            optionType: DBD.formTypes.channelsSelect(false, ['GUILD_TEXT']),
+                            optionType: DBD.formTypes.channelsSelect(false, [ChannelType.GuildText]),
                             getActualSet: async ({ guild }) => {
                                 const data = await GDB.findOne({ id: guild.id });
                                 const savedData = data.goodbye.channel || null;
@@ -332,7 +333,7 @@ function dash(client) {
                             optionId: 'am_logs',
                             optionName: "AutoMod Logs",
                             optionDescription: "Set the logs channel for AutoMod.",
-                            optionType: DBD.formTypes.channelsSelect(false, ['GUILD_TEXT']),
+                            optionType: DBD.formTypes.channelsSelect(false, [ChannelType.GuildText]),
                             getActualSet: async ({ guild }) => {
                                 const data = await AMDB.findOne({ id: guild.id });
                                 const savedData = data.LogChannelID || null;
@@ -398,54 +399,6 @@ function dash(client) {
                                 data.save();
                                 return;
                             }
-                        },
-                    ]
-                },
-                {
-                    categoryId: 'tickets',
-                    categoryName: 'Tickets',
-                    categoryDescription: 'This section contains the configuration for the ticket system.',
-                    categoryOptionsList: [
-                        {
-                            optionType: 'spacer',
-                            title: 'Ticket System',
-                            description: 'This section contains the configuration for the ticket system.',
-                        },
-                        {
-                            optionId: 'ticket_toggle',
-                            optionName: "Enable/Disable Tickets",
-                            optionDescription: "Enable or disable the ticket system.",
-                            optionType: DBD.formTypes.switch(false),
-                            getActualSet: async ({ guild }) => {
-                                const data = await GDB.findOne({ id: guild.id });
-                                const savedData = data.tickets.enabled || null;
-                                const defaultState = false;
-                                return (savedData == null || savedData == undefined) ? defaultState : savedData;
-                            },
-                            setNew: async ({ guild, newData }) => {
-                                const data = await GDB.findOne({ id: guild.id });
-                                data.tickets.enabled = newData;
-                                data.save();
-                                return;
-                            }
-                        },
-                        {
-                            optionId: 'ticket_channel',
-                            optionName: "Ticket Channel",
-                            optionDescription: "Set the channel where tickets will be created.",
-                            optionType: DBD.formTypes.channelsSelect(false, ['GUILD_TEXT']),
-                            getActualSet: async ({ guild }) => {
-                                const data = await GDB.findOne({ id: guild.id });
-                                const savedData = data.tickets.channel || null;
-                                const defaultState = false;
-                                return (savedData == null || savedData == undefined) ? defaultState : savedData;
-                            },
-                            setNew: async ({ guild, newData }) => {
-                                const data = await GDB.findOne({ id: guild.id });
-                                data.tickets.channel = newData;
-                                data.save();
-                                return;
-                            },
                         },
                     ]
                 },

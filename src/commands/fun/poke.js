@@ -23,6 +23,7 @@ module.exports = {
     const { body } = await superagent.get("https://api.waifu.pics/sfw/poke");
 
     const lonerPoke = new EmbedBuilder()
+      .setColor("Grey")
       .setAuthor({
         name: `${client.user.username} pokes ${interaction.user.username}!`,
         iconURL: `${client.user.avatarURL({ dynamic: true })}`,
@@ -34,7 +35,7 @@ module.exports = {
     return interaction.reply({ embeds: [lonerPoke] });
 
     const pokeEmbed = new EmbedBuilder()
-      .setColor("BLURPLE")
+      .setColor("Grey")
       .setAuthor({
         name: `${interaction.user.username} pokes ${target.user.username}!`,
         iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,

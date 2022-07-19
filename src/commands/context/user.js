@@ -13,7 +13,7 @@ module.exports = {
 		await target.user.fetch();
 
 		const userEmbed = new EmbedBuilder()
-			.setColor("DARK_VIVID_PINK")
+			.setColor("Grey")
 			.setAuthor({ name: `${target.user.tag}`, iconURL: `${target.user.avatarURL({ dynamic: true })}` })
 			.setThumbnail(target.user.avatarURL({ dynamic: true }))
 			.setImage(target.user.bannerURL({ dynamic: true, size: 512 }))

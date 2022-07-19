@@ -19,7 +19,7 @@ module.exports = {
         await client.application.fetch();
 
         const embed = new EmbedBuilder()
-            .setColor("BLURPLE")
+            .setColor("Grey")
             .setTitle(`${client.user.username} | Status`)
             .addFields(
                 {name: "**Client**", value: "🔷 Online", inline: true},

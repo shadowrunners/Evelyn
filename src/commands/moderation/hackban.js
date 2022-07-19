@@ -27,7 +27,7 @@ module.exports = {
 
     interaction.guild.members.ban(target);
     const successEmbed = new EmbedBuilder()
-        .setColor('BLURPLE')
+      .setColor("Grey")
         .setDescription("This user has been banned successfully.");
 
     interaction.reply({

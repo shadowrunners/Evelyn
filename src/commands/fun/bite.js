@@ -25,7 +25,7 @@ module.exports = {
       return interaction.reply({ content: "No. <:peepo_stare:640305010135007255>" });
 
     const biteEmbed = new EmbedBuilder()
-      .setColor("DARK_VIVID_PINK")
+      .setColor("Grey")
       .setAuthor({
         name: `${interaction.user.username} bites ${target.user.username}!`,
         iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,

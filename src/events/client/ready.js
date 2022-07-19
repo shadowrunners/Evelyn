@@ -7,14 +7,13 @@ const { dash } = require("../../dashboard/dash.js");
 module.exports = {
     name: "ready",
     once: true,
-    rest: false,
     /**
      * @param {Client} client 
      */
     execute(client) {
         console.log(magenta("[Discord API] ") + white("Logged in as ") +  green(`${client.user.tag}`));
         client.user.setStatus("online")
-        client.user.setActivity("Game Over", { type: "LISTENING" })
+        client.user.setActivity({ name: "Game Over", type: 2 })
 
         require("../../systems/lockdownSystem.js")(client);
         

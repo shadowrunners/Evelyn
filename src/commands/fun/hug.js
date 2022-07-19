@@ -23,7 +23,7 @@ module.exports = {
     const { body } = await superagent.get("https://api.waifu.pics/sfw/hug");
 
     const lonerHug = new EmbedBuilder()
-      .setColor("DARK_VIVID_PINK")
+      .setColor("Grey")
       .setAuthor({
         name: `${client.user.username} hugs ${interaction.user.username}!`,
         iconURL: `${client.user.avatarURL({ dynamic: true })}`,
@@ -35,7 +35,7 @@ module.exports = {
       return interaction.reply({ embeds: [lonerHug] });
 
     const hugEmbed = new EmbedBuilder()
-      .setColor("BLURPLE")
+      .setColor("Grey")
       .setAuthor({
         name: `${interaction.user.username} hugs ${target.user.username}!`,
         iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,

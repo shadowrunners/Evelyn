@@ -25,7 +25,7 @@ module.exports = {
     return interaction.reply({ content: "Why would you wanna slap yourself, honey?", ephemeral: true });
 
     const slapEmbed = new EmbedBuilder()
-      .setColor("BLURPLE")
+      .setColor("Grey")
       .setAuthor({
         name: `${interaction.user.username} slaps ${target.user.username}!`,
         iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,

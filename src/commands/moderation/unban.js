@@ -1,4 +1,4 @@
-const { CommandInteraction, Client, MessageEmbed } = require("discord.js");
+const { ChatInputCommandInteraction, Client, EmbedBuilder } = require("discord.js");
 
 module.exports = {
 	name: 'unban',
@@ -14,21 +14,21 @@ module.exports = {
 		},
 	],
 	/**
-	 * @param {CommandInteraction} interaction 
+	 * @param {ChatInputCommandInteraction} interaction 
 	 * @param {Client} client
 	 */
 	async execute(interaction, client) {
 		const targetID = interaction.options.getString('userid');
 
-		const unbanEmbed = new MessageEmbed()
-			.setColor("DARK_VIVID_PINK")
-			.setAuthor({ name: "Melody | Moderation", iconURL: client.user.avatarURL({ dynamic: true }) })
+		const unbanEmbed = new EmbedBuilder()
+			.setColor("Grey")
+			.setAuthor({ name: `${client.user.username} | Moderation`, iconURL: client.user.avatarURL({ dynamic: true }) })
 			.setDescription(`${targetID} has been unbanned.`)
 			.setTimestamp()
 
-		const failEmbed = new MessageEmbed()
-			.setColor("DARK_VIVID_PINK")
-			.setAuthor({ name: "Melody | Moderation", iconURL: client.user.avatarURL({ dynamic: true }) })
+		const failEmbed = new EmbedBuilder()
+			.setColor("Grey")
+			.setAuthor({ name: `${client.user.username}`, iconURL: client.user.avatarURL({ dynamic: true }) })
 			.setDescription("Please provide a valid ID of a banned member.")
 			.setTimestamp()
 

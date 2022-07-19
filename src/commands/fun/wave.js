@@ -23,6 +23,7 @@ module.exports = {
         const { body } = await superagent.get("https://api.waifu.pics/sfw/wave");
 
         const lonerWave = new EmbedBuilder()
+            .setColor("Grey")
             .setAuthor({
                 name: `${client.user.username} waves at ${target.user.username}!`,
                 iconURL: `${client.user.avatarURL({ dynamic: true })}`,
@@ -34,7 +35,7 @@ module.exports = {
         return interaction.reply({ embeds: [lonerWave] });
 
         const waveEmbed = new EmbedBuilder()
-            .setColor("BLURPLE")
+            .setColor("Grey")
             .setAuthor({name: `${interaction.user.username} waves at ${target.user.username}!`, iconURL: `${interaction.user.avatarURL({dynamic: true})}`})
             .setImage(body.url)
             .setTimestamp()

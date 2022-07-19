@@ -12,7 +12,7 @@ module.exports = {
 		const { createdTimestamp, ownerId, members, memberCount, channels, emojis, stickers } = guild;
 
 		const svinfo = new EmbedBuilder()
-			.setColor("DARK_VIVID_PINK")
+			.setColor("Grey")
 			.setAuthor({ name: `${guild.name}` })
 			.setThumbnail(guild.iconURL({ dynamic: true }))
 			.addFields(

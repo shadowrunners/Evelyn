@@ -23,6 +23,7 @@ module.exports = {
         const { body } = await superagent.get("https://api.waifu.pics/sfw/highfive");
 
         const lonerFive = new EmbedBuilder()
+            .setColor("Grey")
             .setAuthor({
             name: `${interaction.user.username} highfives ${client.user.username}!`,
             iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,
@@ -35,7 +36,7 @@ module.exports = {
         return interaction.reply({ embeds: [lonerFive] });
 
         const highfiveEmbed = new EmbedBuilder()
-            .setColor("BLURPLE")
+            .setColor("Grey")
             .setAuthor({name: `${interaction.user.username} highfives ${target.user.username}!`, iconURL: `${interaction.user.avatarURL({dynamic: true})}`})
             .setImage(body.url)
             .setTimestamp()
