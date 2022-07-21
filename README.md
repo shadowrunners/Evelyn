@@ -41,7 +41,7 @@ Aeolian is an open-source Discord Bot and a safe alternative to bots that are he
 * 📷 **Fun**: `activity`.
 
 ## Installation
-You can find the installation guide [here](https://github.com/cryolabs/Melody/blob/master/docs/install.md) or alternatively, you can invite our hosted version of Melody [here](https://invite.jinxbot.ml).
+You can find the installation guide [here](https://docs.aeolianbot.ml) or alternatively, you can invite our hosted version of Aeolian [here](https://invite.aeolianbot.ml).
 
 ## Credits
 - [Lyxcode](https://youtube.com/c/Lyxcode) - command handler, giveaway system + ticket system
@@ -52,3 +52,5 @@ You can find the installation guide [here](https://github.com/cryolabs/Melody/bl
 - [Adivise](https://github.com/Adivise/NanoSpacePlus) - repo helped with music system
 
 If we used your code and forgot to add you to the credits, shoot me a message over on Discord at scrappie#5451 or in the CryoLabs discord server.
+
+If you decide to use this source code, we kindly ask you to not use the same name to avoid confusion with the official version of Aeolian.
