@@ -53,4 +53,4 @@ You can find the installation guide [here](https://docs.aeolianbot.ml) or altern
 
 If we used your code and forgot to add you to the credits, shoot me a message over on Discord at scrappie#5451 or in the CryoLabs discord server.
 
-If you decide to use this source code, we kindly ask you to not use the same name to avoid confusion with the official version of Aeolian.
+If you decide to use this source code, we kindly ask you to give credit to us and to the people/repos that helped me bring this project to life.
