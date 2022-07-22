@@ -23,12 +23,10 @@
     <img src="https://img.shields.io/discord/838499177243738172?color=5865F2&logo=discord&logoColor=white"/>
    </a>
 </div>
-
-## Notice
-Things such as the configuration docs are currently being written as well as the version for discord.js v14. The v14 version will be released once it's ready.
     
 ## About
 Aeolian is an open-source Discord Bot and a safe alternative to bots that are heavily paywalled.
+This branch is running on Discord.js v13 and a v14 version is currently in development.
 
 ## Features
 * 🎉 **Giveaway**: `giveaway start`, `giveaway actions (end, pause, unpause, reroll, delete)`.
@@ -41,7 +39,7 @@ Aeolian is an open-source Discord Bot and a safe alternative to bots that are he
 * 📷 **Fun**: `activity`.
 
 ## Installation
-You can find the installation guide [here](https://docs.aeolianbot.ml) or alternatively, you can invite our hosted version of Aeolian [here](https://invite.aeolianbot.ml).
+You can find the installation guide [here](https://docs.aeolianbot.ml) or alternatively, you can invite our hosted version of Aeolian [here](https://discord.com/oauth2/authorize?client_id=832289090128969787&permissions=8&scope=bot%20applications.commands).
 
 ## Credits
 - [Lyxcode](https://youtube.com/c/Lyxcode) - command handler, giveaway system + ticket system
