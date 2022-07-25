@@ -1,12 +1,16 @@
-const { CommandInteraction, EmbedBuilder } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+} = require("discord.js");
 const superagent = require("superagent");
 
 module.exports = {
-  name: "blush",
-  description: ":flushed: but in glorious GIF form.",
-  public: true,
+  data: new SlashCommandBuilder()
+    .setName("blush")
+    .setDescription(":flushed: but in glorious GIF form."),
   /**
-   * @param {CommandInteraction} interaction
+   * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
     const { body } = await superagent.get("https://api.waifu.pics/sfw/blush");
@@ -17,9 +21,11 @@ module.exports = {
         name: `${interaction.user.username} blushes!`,
         iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,
       })
+      .setFooter({
+        text: "This image was brought to you by the waifu.pics API.",
+      })
       .setImage(body.url)
       .setTimestamp();
-      
     interaction.reply({ embeds: [blushEmbed] });
   },
 };
