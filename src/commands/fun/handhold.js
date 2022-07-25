@@ -1,4 +1,5 @@
 const {
+  Client,
   SlashCommandBuilder,
   ChatInputCommandInteraction,
   EmbedBuilder,
@@ -7,8 +8,8 @@ const superagent = require("superagent");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("bonk")
-    .setDescription("Bonk someone.")
+    .setName("handhold")
+    .setDescription("Hold hands with someone.")
     .addUserOption((option) =>
       option
         .setName("target")
@@ -17,17 +18,20 @@ module.exports = {
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
+   * @param {Client} client
    */
-  async execute(interaction) {
+  async execute(interaction, client) {
     const target = interaction.options.getMember("target");
     await target.user.fetch();
 
-    const { body } = await superagent.get("https://api.waifu.pics/sfw/bonk");
+    const { body } = await superagent.get(
+      "https://api.waifu.pics/sfw/handhold"
+    );
 
-    const bonkieEmbed = new EmbedBuilder()
+    const lonerhld = new EmbedBuilder()
       .setColor("Grey")
       .setAuthor({
-        name: `${interaction.user.username} bonks... themselves?`,
+        name: `${interaction.user.username} is holding hands with ${client.user.username}!`,
         iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,
       })
       .setFooter({
@@ -37,12 +41,12 @@ module.exports = {
       .setTimestamp();
 
     if (target.id === interaction.user.id)
-      return interaction.reply({ embeds: [bonkieEmbed] });
+      return interaction.reply({ embeds: [lonerhld] });
 
-    const bonkietwo = new EmbedBuilder()
+    const handholdEmbed = new EmbedBuilder()
       .setColor("Grey")
       .setAuthor({
-        name: `${interaction.user.username} bonks ${target.user.username}!`,
+        name: `${interaction.user.username} is holding hands with ${target.user.username}!`,
         iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,
       })
       .setFooter({
@@ -50,6 +54,6 @@ module.exports = {
       })
       .setImage(body.url)
       .setTimestamp();
-    interaction.reply({ embeds: [bonkietwo] });
+    interaction.reply({ embeds: [handholdEmbed] });
   },
 };

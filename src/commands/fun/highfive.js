@@ -1,4 +1,5 @@
 const {
+  Client,
   SlashCommandBuilder,
   ChatInputCommandInteraction,
   EmbedBuilder,
@@ -7,8 +8,8 @@ const superagent = require("superagent");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("bonk")
-    .setDescription("Bonk someone.")
+    .setName("highfive")
+    .setDescription("Highfive someone.")
     .addUserOption((option) =>
       option
         .setName("target")
@@ -17,32 +18,33 @@ module.exports = {
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
+   * @param {Client} client
    */
-  async execute(interaction) {
+  async execute(interaction, client) {
     const target = interaction.options.getMember("target");
     await target.user.fetch();
 
-    const { body } = await superagent.get("https://api.waifu.pics/sfw/bonk");
+    const { body } = await superagent.get(
+      "https://api.waifu.pics/sfw/highfive"
+    );
 
-    const bonkieEmbed = new EmbedBuilder()
+    const lonerFive = new EmbedBuilder()
       .setColor("Grey")
       .setAuthor({
-        name: `${interaction.user.username} bonks... themselves?`,
+        name: `${interaction.user.username} highfives ${client.user.username}!`,
         iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,
       })
-      .setFooter({
-        text: "This image was brought to you by the waifu.pics API.",
-      })
+      .setFooter({ text: "You're doing great, honey. <3" })
       .setImage(body.url)
       .setTimestamp();
 
     if (target.id === interaction.user.id)
-      return interaction.reply({ embeds: [bonkieEmbed] });
+      return interaction.reply({ embeds: [lonerFive] });
 
-    const bonkietwo = new EmbedBuilder()
+    const highfiveEmbed = new EmbedBuilder()
       .setColor("Grey")
       .setAuthor({
-        name: `${interaction.user.username} bonks ${target.user.username}!`,
+        name: `${interaction.user.username} highfives ${target.user.username}!`,
         iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,
       })
       .setFooter({
@@ -50,6 +52,6 @@ module.exports = {
       })
       .setImage(body.url)
       .setTimestamp();
-    interaction.reply({ embeds: [bonkietwo] });
+    interaction.reply({ embeds: [highfiveEmbed] });
   },
 };

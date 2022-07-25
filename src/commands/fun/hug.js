@@ -1,4 +1,5 @@
 const {
+  Client,
   SlashCommandBuilder,
   ChatInputCommandInteraction,
   EmbedBuilder,
@@ -7,8 +8,8 @@ const superagent = require("superagent");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("bonk")
-    .setDescription("Bonk someone.")
+    .setName("hug")
+    .setDescription("Hug someone.")
     .addUserOption((option) =>
       option
         .setName("target")
@@ -17,18 +18,19 @@ module.exports = {
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
+   * @param {Client} client
    */
-  async execute(interaction) {
+  async execute(interaction, client) {
     const target = interaction.options.getMember("target");
     await target.user.fetch();
 
-    const { body } = await superagent.get("https://api.waifu.pics/sfw/bonk");
+    const { body } = await superagent.get("https://api.waifu.pics/sfw/hug");
 
-    const bonkieEmbed = new EmbedBuilder()
+    const lonerHug = new EmbedBuilder()
       .setColor("Grey")
       .setAuthor({
-        name: `${interaction.user.username} bonks... themselves?`,
-        iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,
+        name: `${client.user.username} hugs ${interaction.user.username}!`,
+        iconURL: `${client.user.avatarURL({ dynamic: true })}`,
       })
       .setFooter({
         text: "This image was brought to you by the waifu.pics API.",
@@ -37,12 +39,12 @@ module.exports = {
       .setTimestamp();
 
     if (target.id === interaction.user.id)
-      return interaction.reply({ embeds: [bonkieEmbed] });
+      return interaction.reply({ embeds: [lonerHug] });
 
-    const bonkietwo = new EmbedBuilder()
+    const hugEmbed = new EmbedBuilder()
       .setColor("Grey")
       .setAuthor({
-        name: `${interaction.user.username} bonks ${target.user.username}!`,
+        name: `${interaction.user.username} hugs ${target.user.username}!`,
         iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,
       })
       .setFooter({
@@ -50,6 +52,6 @@ module.exports = {
       })
       .setImage(body.url)
       .setTimestamp();
-    interaction.reply({ embeds: [bonkietwo] });
+    interaction.reply({ embeds: [hugEmbed] });
   },
 };

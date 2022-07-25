@@ -1,24 +1,27 @@
-const { CommandInteraction, EmbedBuilder } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+} = require("discord.js");
 const superagent = require("superagent");
 
 module.exports = {
-  name: "bully",
-  description: "Bully someone.",
-  public: true,
-  options: [
-    {
-      name: "target",
-      description: "Provide a target.",
-      type: 6,
-      required: true,
-    },
-  ],
+  data: new SlashCommandBuilder()
+    .setName("bully")
+    .setDescription("Bully someone.")
+    .addUserOption((option) =>
+      option
+        .setName("target")
+        .setDescription("Provide a target.")
+        .setRequired(true)
+    ),
   /**
-   * @param {CommandInteraction} interaction
+   * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
     const target = interaction.options.getMember("target");
     await target.user.fetch();
+
     const { body } = await superagent.get("https://api.waifu.pics/sfw/bully");
 
     if (target.id === interaction.user.id)

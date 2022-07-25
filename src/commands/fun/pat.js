@@ -1,4 +1,5 @@
 const {
+  Client,
   SlashCommandBuilder,
   ChatInputCommandInteraction,
   EmbedBuilder,
@@ -7,8 +8,8 @@ const superagent = require("superagent");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("bonk")
-    .setDescription("Bonk someone.")
+    .setName("pat")
+    .setDescription("Pat someone.")
     .addUserOption((option) =>
       option
         .setName("target")
@@ -17,18 +18,18 @@ module.exports = {
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
+   * @param {Client} client
    */
-  async execute(interaction) {
+  async execute(interaction, client) {
     const target = interaction.options.getMember("target");
     await target.user.fetch();
+    const { body } = await superagent.get("https://api.waifu.pics/sfw/pat");
 
-    const { body } = await superagent.get("https://api.waifu.pics/sfw/bonk");
-
-    const bonkieEmbed = new EmbedBuilder()
+    const lonerPat = new EmbedBuilder()
       .setColor("Grey")
       .setAuthor({
-        name: `${interaction.user.username} bonks... themselves?`,
-        iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,
+        name: `${client.user.username} pats ${interaction.user.username}!`,
+        iconURL: `${client.user.avatarURL({ dynamic: true })}`,
       })
       .setFooter({
         text: "This image was brought to you by the waifu.pics API.",
@@ -37,12 +38,12 @@ module.exports = {
       .setTimestamp();
 
     if (target.id === interaction.user.id)
-      return interaction.reply({ embeds: [bonkieEmbed] });
+      return interaction.reply({ embeds: [lonerPat] });
 
-    const bonkietwo = new EmbedBuilder()
+    const patEmbed = new EmbedBuilder()
       .setColor("Grey")
       .setAuthor({
-        name: `${interaction.user.username} bonks ${target.user.username}!`,
+        name: `${interaction.user.username} pats ${target.user.username}!`,
         iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,
       })
       .setFooter({
@@ -50,6 +51,6 @@ module.exports = {
       })
       .setImage(body.url)
       .setTimestamp();
-    interaction.reply({ embeds: [bonkietwo] });
+    interaction.reply({ embeds: [patEmbed] });
   },
 };
