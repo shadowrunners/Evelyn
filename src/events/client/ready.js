@@ -1,5 +1,6 @@
 const { Client, ActivityType } = require("discord.js");
 const { magenta, white, green, red } = require("chalk");
+const mongoose = require("mongoose");
 
 module.exports = {
   name: "ready",
@@ -19,5 +20,32 @@ module.exports = {
       ],
       status: "online",
     });
+
+    if (!client.config.database)
+      return console.log(
+        magenta("[Aeolian Notification] ") +
+          red(
+            "Couldn't connect to database, please check your config.json file."
+          )
+      );
+
+    client.manager.init(client.user.id);
+    client.lavasfy.requestToken();
+
+    mongoose
+      .connect(client.config.database, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      })
+      .then(() => {
+        console.log(
+          magenta("[DB] ") +
+            green(`${client.user.username} `) +
+            white("has successfully connected to the database.")
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   },
 };

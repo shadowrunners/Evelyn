@@ -4,6 +4,10 @@ const {
   GatewayIntentBits,
   Partials,
 } = require("discord.js");
+const Deezer = require("erela.js-deezer");
+const Apple = require("erela.js-apple");
+const { Manager } = require("erela.js");
+const { LavasfyClient } = require("lavasfy");
 
 const { Guilds, GuildBans, GuildInvites, GuildVoiceStates, GuildMessages } =
   GatewayIntentBits;
@@ -19,6 +23,27 @@ const client = new Client({
 
 client.config = require("./config.json");
 client.commands = new Collection();
+
+client.lavasfy = new LavasfyClient(
+  {
+    clientID: client.config.spotifyClientID,
+    clientSecret: client.config.spotifySecret,
+    filterAudioOnlyResult: true,
+    autoResolve: true,
+    useSpotifyMetadata: true,
+    playlistPageLoadLimit: 1,
+  },
+  client.config.nodes
+);
+
+client.manager = new Manager({
+  nodes: client.config.nodes,
+  plugins: [new Apple(), new Deezer()],
+  send: (id, payload) => {
+    let guild = client.guilds.cache.get(id);
+    if (guild) guild.shard.send(payload);
+  },
+});
 
 module.exports = client;
 
