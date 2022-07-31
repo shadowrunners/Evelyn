@@ -7,9 +7,12 @@
     "start": "node ./src/structures/index.js"
   },
   "dependencies": {
+    "@livecord/notify": "^1.2.3",
     "chalk": "^4.1.2",
-    "discord.js": "^14.1.0",
-    "discordjs-button-pagination": "github:notscrappie/discordjs-button-pagination",
+    "dbd-dark-dashboard": "^1.6.591",
+    "discord-dashboard": "^2.3.40",
+    "discord-together": "github:notscrappie/discord-together",
+    "discord.js": "^14.1.2",
     "erela.js": "^2.3.3",
     "erela.js-apple": "^1.2.6",
     "erela.js-deezer": "^1.0.7",
@@ -23,5 +26,10 @@
     "superagent": "^8.0.0"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.20.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0"
+  }
 }

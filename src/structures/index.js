@@ -8,6 +8,7 @@ const Deezer = require("erela.js-deezer");
 const Apple = require("erela.js-apple");
 const { Manager } = require("erela.js");
 const { LavasfyClient } = require("lavasfy");
+const { DiscordTogether } = require("discord-together");
 
 const { Guilds, GuildBans, GuildInvites, GuildVoiceStates, GuildMessages } =
   GatewayIntentBits;
@@ -23,6 +24,7 @@ const client = new Client({
 
 client.config = require("./config.json");
 client.commands = new Collection();
+client.DiscordTogether = new DiscordTogether(client);
 
 client.lavasfy = new LavasfyClient(
   {

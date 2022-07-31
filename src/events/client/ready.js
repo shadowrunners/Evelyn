@@ -1,6 +1,7 @@
 const { Client, ActivityType } = require("discord.js");
 const { magenta, white, green, red } = require("chalk");
 const mongoose = require("mongoose");
+const { dash } = require("../../dashboard/dash.js");
 
 module.exports = {
   name: "ready",
@@ -31,6 +32,7 @@ module.exports = {
 
     client.manager.init(client.user.id);
     client.lavasfy.requestToken();
+    dash(client);
 
     mongoose
       .connect(client.config.database, {

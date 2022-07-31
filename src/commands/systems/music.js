@@ -1,9 +1,13 @@
-const { ChatInputCommandInteraction, SlashCommandBuilder, EmbedBuilder, Client} = require("discord.js");
+const {
+  ChatInputCommandInteraction,
+  SlashCommandBuilder,
+  EmbedBuilder,
+  Client,
+} = require("discord.js");
 const util = require("../../utils/util.js");
 const genius = require("genius-lyrics");
 const gClient = new genius.Client();
 const { TrackUtils } = require("erela.js");
-const pagination = require("discordjs-button-pagination");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -26,7 +30,7 @@ module.exports = {
         .setDescription("Alter the volume.")
         .addNumberOption((option) =>
           option
-            .setName("volume")
+            .setName("percent")
             .setDescription("Provide the volume.")
             .setRequired(true)
         )
@@ -41,9 +45,9 @@ module.exports = {
             .setDescription("Select the loop type.")
             .setRequired(true)
             .addChoices(
-              { name: "🔹| None", value: "none" },
-              { name: "🔹| Queue", value: "queue" },
-              { name: "🔹| Song", value: "song" }
+              { name: "🔹 | None", value: "none" },
+              { name: "🔹 | Queue", value: "queue" },
+              { name: "🔹 | Song", value: "song" }
             )
         )
     )
@@ -53,18 +57,18 @@ module.exports = {
         .setDescription("Select an option.")
         .addStringOption((option) =>
           option
-            .setName("option")
+            .setName("options")
             .setDescription("Select an option.")
             .setRequired(true)
             .addChoices(
-              { name: "🔹| View Queue", value: "queue" },
-              { name: "🔹| Skip", value: "skip" },
-              { name: "🔹| Pause", value: "pause" },
-              { name: "🔹| Resume", value: "resume" },
-              { name: "🔹| Stop", value: "stop" },
-              { name: "🔹| Lyrics", value: "lyrics" },
-              { name: "🔹| Shuffle", value: "shuffle" },
-              { name: "🔹| Now Playing", value: "nowplaying" }
+              { name: "🔹 | View Queue", value: "queue" },
+              { name: "🔹 | Skip", value: "skip" },
+              { name: "🔹 | Pause", value: "pause" },
+              { name: "🔹 | Resume", value: "resume" },
+              { name: "🔹 | Stop", value: "stop" },
+              { name: "🔹 | Lyrics", value: "lyrics" },
+              { name: "🔹 | Shuffle", value: "shuffle" },
+              { name: "🔹 | Now Playing", value: "nowplaying" }
             )
         )
     ),
@@ -112,173 +116,170 @@ module.exports = {
     let res;
     try {
       switch (options.getSubcommand()) {
-        case "play": {
-          const query = interaction.options.getString("query");
-          if (player.state !== "CONNECTED") player.connect();
+        case "play":
+          {
+            const query = interaction.options.getString("query");
 
-          if (query.match(client.lavasfy.spotifyPattern)) {
-            const node = client.lavasfy.nodes.get("main");
-            res = await node.load(query);
+            if (player.state !== "CONNECTED") player.connect();
+            await interaction.deferReply();
 
-            if (res.loadType === "LOAD_FAILED") {
-              if (!player.queue.current) player.destroy();
-              return interaction.reply({
-                content:
-                  "🔹 | An error has occured while trying to add this song.",
-              });
-            }
-
-            if (res.loadType === "NO_MATCHES") {
-              if (!player.queue.current) player.destroy();
-              return interaction.reply({ content: "🔹 | No results found." });
-            }
-
-            if (res.loadType === "PLAYLIST_LOADED") {
-              await interaction.deferReply({});
-
-              const tracks = [];
-
-              for (const track of res.tracks) {
-                const trackData = TrackUtils.build(track, interaction.user);
-                tracks.push(trackData);
-              }
-              player.queue.add(tracks);
-
-              if (
-                !player.playing &&
-                !player.paused &&
-                player.queue.totalSize === res.tracks.length
-              )
-                player.play();
-
-              const playlistEmbed = new EmbedBuilder()
-                .setDescription(
-                  `🔹 | **[A playlist](${query})** has been added to the queue.`
-                )
-                .addFields([
-                  {
-                    name: "Enqueued",
-                    value: `\`${res.tracks.length}\` tracks`,
-                  },
-                ]);
-              await interaction.followUp({ embeds: [playlistEmbed] });
-            }
-
-            if (
-              res.loadType === "TRACK_LOADED" ||
-              res.loadType === "SEARCH_RESULT"
-            ) {
-              
-              player.queue.add(
-                TrackUtils.build(res.tracks[0], interaction.user)
-              );
-
-              if (!player.playing && !player.paused && !player.queue.size)
-                player.play();
-
-              const enqueueEmbed = new EmbedBuilder()
-                .setColor("BLURPLE")
-                .setDescription(
-                  `🔹 | Enqueued **[${res.tracks[0].info.title}](${res.tracks[0].info.uri})** [${member}]`
-                )
-                .setTimestamp();
-              interaction.reply({ embeds: [enqueueEmbed] });
-
-              if (player.queue.totalSize > 1)
-              enqueueEmbed.addFields([
-                {
-                  name: "Position in queue",
-                  value: `${player.queue.size - 0}`,
-                },
-              ]);
-            return interaction.editReply({ embeds: [enqueueEmbed] });
-            }
-          }
-
-          if (!query.match(client.lavasfy.spotifyPattern)) {
             try {
-              res = await player.search(query, interaction.user);
+              if (query.match(client.lavasfy.spotifyPattern)) {
+                const node = client.lavasfy.nodes.get("main");
+                res = await node.load(query);
 
-              if (res.loadType === "LOAD_FAILED") {
-                if (!player.queue.current) player.destroy();
-                return interaction.reply({
-                  content:
-                    "🔹 | An error has occured while trying to add this song.",
-                });
-              }
+                if (res.loadType === "LOAD_FAILED") {
+                  if (!player.queue.current) player.destroy();
 
-              if (res.loadType === "NO_MATCHES") {
-                if (!player.queue.current) player.destroy();
-                return interaction.reply({
-                  content: "🔹 | No results found.",
-                });
-              }
+                  return interaction.editReply({
+                    content:
+                      "🔹 | An error has occured while trying to add this song.",
+                  });
+                }
 
-              if (res.loadType === "PLAYLIST_LOADED") {
-                interaction.deferReply({});
+                if (res.loadType === "NO_MATCHES") {
+                  if (!player.queue.current) player.destroy();
 
-                player.queue.add(TrackUtils.build(res.tracks));
+                  return interaction.editReply({
+                    content: "🔹 | No results found.",
+                  });
+                }
+
+                if (res.loadType === "PLAYLIST_LOADED") {
+                  const tracks = [];
+
+                  for (const track of res.tracks.slice(0, 200)) {
+                    const trackData = TrackUtils.build(track, interaction.user);
+                    tracks.push(trackData);
+                  }
+                  player.queue.add(tracks);
+
+                  await player.play();
+
+                  const playlistEmbed = new EmbedBuilder()
+                    .setDescription(
+                      `🔹 | **[A playlist](${query})** has been added to the queue.`
+                    )
+                    .addFields([
+                      {
+                        name: "Enqueued",
+                        value: `\`${res.tracks.length}\` tracks`,
+                      },
+                    ]);
+                  return interaction.editReply({ embeds: [playlistEmbed] });
+                }
+
                 if (
-                  !player.playing &&
-                  !player.paused &&
-                  player.queue.totalSize === res.tracks.length
-                )
-                  player.play();
-                const playlistEmbed = new EmbedBuilder()
-                  .setDescription(
-                    `🔹 | **[${res.playlist.name}](${query})** has been added to the queue.`
-                  )
-                  .addField("Enqueued", `\`${res.tracks.length}\` tracks`);
-                return interaction.followUp({ embeds: [playlistEmbed] });
+                  res.loadType === "TRACK_LOADED" ||
+                  res.loadType === "SEARCH_RESULT"
+                ) {
+                  player.queue.add(
+                    TrackUtils.build(res.tracks[0], interaction.user)
+                  );
+
+                  await player.play();
+
+                  const enqueueEmbed = new EmbedBuilder()
+                    .setColor("Grey")
+                    .setDescription(
+                      `🔹 | Enqueued **[${res.tracks[0].info.title}](${res.tracks[0].info.uri})** [${member}]`
+                    )
+                    .setTimestamp();
+                  interaction.editReply({ embeds: [enqueueEmbed] });
+
+                  if (player.queue.totalSize > 1)
+                    enqueueEmbed.addFields([
+                      {
+                        name: "Position in queue",
+                        value: `${player.queue.size - 0}`,
+                      },
+                    ]);
+                  return interaction.editReply({ embeds: [enqueueEmbed] });
+                }
+              } else {
+                res = await player.search(query, interaction.user);
+
+                if (res.loadType === "LOAD_FAILED") {
+                  if (!player.queue.current) player.destroy();
+
+                  return interaction.editReply({
+                    content:
+                      "🔹 | An error has occured while trying to add this song.",
+                  });
+                }
+
+                if (res.loadType === "NO_MATCHES") {
+                  if (!player.queue.current) player.destroy();
+
+                  return interaction.editReply({
+                    content: "🔹 | No results found.",
+                  });
+                }
+
+                if (res.loadType === "PLAYLIST_LOADED") {
+                  player.queue.add(res.tracks);
+                  await player.play();
+
+                  const playlistEmbed = new EmbedBuilder()
+                    .setDescription(
+                      `🔹 | **[${res.playlist.name}](${query})** has been added to the queue.`
+                    )
+                    .addFields([
+                      {
+                        name: "Enqueued",
+                        value: `\`${res.tracks.length}\` tracks`,
+                      },
+                    ]);
+                  return interaction.editReply({ embeds: [playlistEmbed] });
+                }
+
+                if (
+                  res.loadType === "TRACK_LOADED" ||
+                  res.loadType === "SEARCH_RESULT"
+                ) {
+                  player.queue.add(res.tracks[0]);
+                  await player.play();
+
+                  const enqueueEmbed = new EmbedBuilder()
+                    .setColor("Grey")
+                    .setDescription(
+                      `🔹 | Enqueued **[${res.tracks[0].title}](${res.tracks[0].uri})** [${member}]`
+                    )
+                    .setTimestamp();
+                  interaction.editReply({ embeds: [enqueueEmbed] });
+
+                  if (player.queue.totalSize > 1)
+                    enqueueEmbed.addFields([
+                      {
+                        name: "Position in queue",
+                        value: `${player.queue.size - 0}`,
+                      },
+                    ]);
+                  return interaction.editReply({ embeds: [enqueueEmbed] });
+                }
               }
-
-              if (
-                res.loadType === "TRACK_LOADED" ||
-                res.loadType === "SEARCH_RESULT"
-              ) {
-                if (player.state !== "CONNECTED") player.connect();
-                player.queue.add(res.tracks[0]);
-              }
-
-              if (!player.playing && !player.paused && !player.queue.size)
-                player.play();
-
-              const enqueueEmbed = new EmbedBuilder()
-                .setColor("BLURPLE")
-                .setDescription(
-                  `🔹 | Enqueued **[${res.tracks[0].title}](${res.tracks[0].uri})** [${member}]`
-                )
-                .setTimestamp();
-              interaction.reply({ embeds: [enqueueEmbed] });
-
-              if (player.queue.totalSize > 1)
-                enqueueEmbed.addFields([
-                  {
-                    name: "Position in queue",
-                    value: `${player.queue.size - 0}`,
-                  },
-                ]);
-              return interaction.editReply({ embeds: [enqueueEmbed] });
-            } catch (e) {
-              console.log(e);
+            } catch (err) {
+              console.log(err);
             }
           }
-        }
-        break;
+          break;
         case "volume": {
           const volume = options.getNumber("percent");
+
           if (!player.playing)
             return interaction.reply({
               content: "🔹| There is nothing in the queue.",
             });
+
           if (volume < 0 || volume > 100)
             return interaction.reply({
               content: `🔹| You can only set the volume from 0 to 100.`,
             });
+
           player.setVolume(volume);
 
           const volumeEmbed = new EmbedBuilder()
-            .setColor("BLURPLE")
+            .setColor("Grey")
             .setDescription(
               `🔹 | Volume has been set to **${player.volume}%**.`
             );
@@ -286,62 +287,56 @@ module.exports = {
         }
         case "repeat": {
           switch (options.getString("type")) {
-            case "none":
-              {
-                if (!player.trackRepeat && !player.queueRepeat)
-                  return interaction.reply({
-                    content: "🔹 | Repeat mode is not enabled at all.",
-                  });
+            case "none": {
+              if (!player.trackRepeat && !player.queueRepeat)
+                return interaction.reply({
+                  content: "🔹 | Repeat mode is not enabled at all.",
+                });
 
-                if (player.trackRepeat) {
-                  player.setTrackRepeat(false);
-                  return interaction.reply({
-                    content: "🔹 | Repeat mode has been disabled. (Song)",
-                  });
-                }
-
-                if (player.queueRepeat) {
-                  player.setQueueRepeat(false);
-                  return interaction.reply({
-                    content: "🔹 | Repeat mode has been disabled. (Queue)",
-                  });
-                }
+              if (player.trackRepeat) {
+                player.setTrackRepeat(false);
+                return interaction.reply({
+                  content: "🔹 | Repeat mode has been disabled. (Song)",
+                });
               }
-              break;
-            case "queue":
-              {
-                if (!player.playing)
-                  return interaction.reply({
-                    content: "There is nothing in the queue.",
-                  });
-                if (!player.queue.length)
-                  return interaction.reply({
-                    content: "There is nothing in the queue.",
-                  });
 
-                if (!player.queueRepeat) {
-                  player.setQueueRepeat(true);
-                  return interaction.reply({
-                    content: "🔹 | Repeat mode has been enabled. (Queue)",
-                  });
-                }
+              if (player.queueRepeat) {
+                player.setQueueRepeat(false);
+                return interaction.reply({
+                  content: "🔹 | Repeat mode has been disabled. (Queue)",
+                });
               }
-              break;
-            case "song":
-              {
-                if (!player.playing)
-                  return interaction.reply({
-                    content: "There is nothing in the queue.",
-                  });
+            }
+            case "queue": {
+              if (!player.playing)
+                return interaction.reply({
+                  content: "🔹 | There is nothing playing right now.",
+                });
+              if (!player.queue.length)
+                return interaction.reply({
+                  content: "There is nothing in the queue.",
+                });
 
-                if (!player.trackRepeat) {
-                  player.setTrackRepeat(true);
-                  return interaction.reply({
-                    content: "🔹 | Repeat mode has been enabled. (Song)",
-                  });
-                }
+              if (!player.queueRepeat) {
+                player.setQueueRepeat(true);
+                return interaction.reply({
+                  content: "🔹 | Repeat mode has been enabled. (Queue)",
+                });
               }
-              break;
+            }
+            case "song": {
+              if (!player.playing)
+                return interaction.reply({
+                  content: "There is nothing in the queue.",
+                });
+
+              if (!player.trackRepeat) {
+                player.setTrackRepeat(true);
+                return interaction.reply({
+                  content: "🔹 | Repeat mode has been enabled. (Song)",
+                });
+              }
+            }
           }
         }
         case "settings": {
@@ -349,25 +344,31 @@ module.exports = {
             case "skip": {
               if (!player.playing)
                 return interaction.reply({
-                  content: "🔹| There is nothing in the queue.",
+                  content: "🔹 | There is nothing playing right now.",
                 });
+
               await player.stop();
 
               const skipEmbed = new EmbedBuilder()
-                .setColor("BLURPLE")
+                .setColor("Grey")
                 .setDescription(`🔹 | Skipped.`)
                 .setTimestamp();
 
               return interaction.reply({ embeds: [skipEmbed] });
             }
             case "nowplaying": {
+              if (!player.playing)
+                return interaction.reply({
+                  content: "🔹 | There is nothing playing right now.",
+                });
+
               const track = player.queue.current;
 
               const npEmbed = new EmbedBuilder()
-                .setColor("BLURPLE")
+                .setColor("Grey")
                 .setTitle("Now Playing")
                 .setDescription(
-                  `[${track.title}](${track.uri}) [${player.queue.current.requester}]`
+                  `**[${track.title}](${track.uri})** [${player.queue.current.requester}]`
                 )
                 .setTimestamp();
               return interaction.reply({ embeds: [npEmbed] });
@@ -375,13 +376,13 @@ module.exports = {
             case "pause": {
               if (!player.playing)
                 return interaction.reply({
-                  content: "🔹 | There is nothing in the queue.",
+                  content: "🔹 | There is nothing playing right now.",
                 });
 
               await player.pause(true);
 
               const pauseEmbed = new EmbedBuilder()
-                .setColor("BLURPLE")
+                .setColor("Grey")
                 .setDescription("🔹 | Paused.");
               return interaction.reply({ embeds: [pauseEmbed] });
             }
@@ -389,7 +390,7 @@ module.exports = {
               await player.pause(false);
 
               const resumeEmbed = new EmbedBuilder()
-                .setColor("BLURPLE")
+                .setColor("Grey")
                 .setDescription("🔹 | Resumed.");
               return interaction.reply({ embeds: [resumeEmbed] });
             }
@@ -397,11 +398,18 @@ module.exports = {
               player.destroy();
 
               const disconnectEmbed = new EmbedBuilder()
-                .setColor("BLURPLE")
+                .setColor("Grey")
                 .setDescription("🔹 | Disconnected.");
               return interaction.reply({ embeds: [disconnectEmbed] });
             }
             case "lyrics": {
+              if (!player.playing)
+                return interaction.reply({
+                  content: "🔹 | There is nothing playing right now.",
+                });
+
+              await interaction.deferReply();
+
               const track = player.queue.current;
               const trackTitle = track.title
                 .replace("(Official Video)", "")
@@ -410,68 +418,72 @@ module.exports = {
               const searches = actualTrack[0];
               const lyrics = await searches.lyrics();
 
+              if (!searches) {
+                const noLyrics = new EmbedBuilder()
+                  .setColor("Grey")
+                  .setDescription(
+                    `🔹 | No lyrics found for **[${track.title}](${track.uri})**`
+                  );
+                return interaction.reply({ embeds: [noLyrics] });
+              }
+
               const lyricsEmbed = new EmbedBuilder()
-                .setColor("BLURPLE")
+                .setColor("Grey")
                 .setTitle(`🔹 | Lyrics for **${trackTitle}**`)
                 .setDescription(lyrics)
                 .setFooter({ text: "Provided by Genius" })
                 .setTimestamp();
-              return interaction.reply({ embeds: [lyricsEmbed] });
+              return interaction.editReply({ embeds: [lyricsEmbed] });
             }
             case "shuffle": {
               if (!player.playing)
                 return interaction.reply({
-                  content: "There is nothing in the queue.",
+                  content: "🔹 | There is nothing playing right now.",
                 });
+
               if (!player.queue.length)
                 return interaction.reply({
                   content: "There is nothing in the queue.",
                 });
 
-              player.queue.shuffle();
+              await player.queue.shuffle();
 
               const shuffleEmbed = new EmbedBuilder()
-                .setColor("BLURPLE")
+                .setColor("Grey")
                 .setDescription("🔹 | Shuffled the queue.");
               return interaction.reply({ embeds: [shuffleEmbed] });
             }
             case "queue": {
               if (!player.playing)
                 return interaction.reply({
-                  content: "There is nothing in the queue.",
+                  content: "🔹 | There is nothing playing right now.",
                 });
+
               if (!player.queue.length)
                 return interaction.reply({
-                  content: "There is nothing in the queue.",
+                  content: "🔹 | There is nothing in the queue.",
                 });
 
-                const queue = player.queue.map(
-                  (t, i) => `\`${++i}.\` **${t.title}** [${t.requester}]`
-                );
-                const chunked = util.chunk(queue, 10).map((x) => x.join("\n"));
+              const queue = player.queue.map(
+                (t, i) => `\`${++i}.\` **${t.title}** [${t.requester}]`
+              );
+              const chunked = util.chunk(queue, 10).map((x) => x.join("\n"));
 
-                const queueEmbed = new EmbedBuilder()
-                  .setColor("BLURPLE")
-                  .setAuthor({ name: `Current queue for ${guild.name}` })
-                  .setTitle(
-                    `▶️ | Currently playing: ${player.queue.current.title}`
-                  )
-                  .setDescription(chunked[0])
-                  .setTimestamp();
-
-                return interaction.reply({ embeds: [queueEmbed] });
+              const queueEmbed = new EmbedBuilder()
+                .setColor("Grey")
+                .setAuthor({ name: `Current queue for ${guild.name}` })
+                .setTitle(
+                  `▶️ | Currently playing: ${player.queue.current.title}`
+                )
+                .setDescription(chunked[0])
+                .setTimestamp();
+              return interaction.reply({ embeds: [queueEmbed] });
             }
           }
         }
       }
     } catch (e) {
       console.log(e);
-      //let errEmbed = new EmbedBuilder()
-      //.setColor("BLURPLE")
-      //.setTitle("Uh oh...")
-      //.setDescription(`🔹 | An error has occured. ${e} \nReport this issue to scrappie in the [CryoLabs Discord server.](https://discord.gg/HwkDSs7X82)`)
-      //.setFooter({ text: "Don't worry as long as you're not scrappie." })
-      //return interaction.reply({ embeds: [errEmbed] })
     }
   },
 };
