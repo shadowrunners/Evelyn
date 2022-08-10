@@ -10,15 +10,32 @@ const { Manager } = require("erela.js");
 const { LavasfyClient } = require("lavasfy");
 const { DiscordTogether } = require("discord-together");
 
-const { Guilds, GuildBans, GuildInvites, GuildVoiceStates, GuildMessages } =
-  GatewayIntentBits;
+const {
+  Guilds,
+  GuildBans,
+  GuildMembers,
+  GuildEmojisAndStickers,
+  GuildInvites,
+  GuildVoiceStates,
+  GuildMessages,
+  MessageContent,
+} = GatewayIntentBits;
 const { User, Message, Channel, GuildMember, ThreadMember } = Partials;
 
 const { loadEvents } = require("./handlers/events.js");
 const { loadCommands } = require("./handlers/commands.js");
 
 const client = new Client({
-  intents: [Guilds, GuildBans, GuildInvites, GuildVoiceStates, GuildMessages],
+  intents: [
+    Guilds,
+    GuildBans,
+    GuildMembers,
+    GuildEmojisAndStickers,
+    GuildInvites,
+    GuildVoiceStates,
+    GuildMessages,
+    MessageContent,
+  ],
   partials: [User, Message, Channel, GuildMember, ThreadMember],
 });
 

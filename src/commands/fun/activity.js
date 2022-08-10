@@ -15,7 +15,6 @@ module.exports = {
         .setDescription("Provide an activity.")
         .setRequired(true)
         .addChoices(
-          { name: "🔹 | Watch Together", value: "watchtogether" },
           { name: "🔹 | Sketch Heads", value: "sketchheads" },
           { name: "🔹 | Word Snacks", value: "wordsnacks" },
           { name: "🔹 | Doodle Crew", value: "doodlecrew" },
@@ -46,15 +45,7 @@ module.exports = {
 
     const VC = member.voice.channel;
 
-    const noVC = new EmbedBuilder()
-      .setColor("Grey")
-      .setDescription(
-        "🔹 | You need to be in a voice channel to use this command."
-      );
-
-    if (!VC) return interaction.reply({ embeds: [noVC] });
-
-    function getInvite(activity) {
+    function startActivity(activity) {
       client.DiscordTogether.createTogetherCode(VC.id, activity).then(
         async (invite) => {
           const embed = new EmbedBuilder()
@@ -69,100 +60,109 @@ module.exports = {
         }
       );
     }
+
+    const noVC = new EmbedBuilder()
+      .setColor("Grey")
+      .setDescription(
+        "🔹 | You need to be in a voice channel to use this command."
+      );
+
+    if (!VC) return interaction.reply({ embeds: [noVC] });
+
     switch (choices) {
       case "watchtogether":
         {
-          getInvite("watchtogether");
+          startActivity("watchtogether");
         }
         break;
       case "sketchheads":
         {
-          getInvite("sketchheads");
+          startActivity("sketchheads");
         }
         break;
       case "wordsnacks":
         {
-          getInvite("wordsnacks");
+          startActivity("wordsnacks");
         }
         break;
       case "doodlecrew":
         {
-          getInvite("doodlecrew");
+          startActivity("doodlecrew");
         }
         break;
       case "pokernight":
         {
-          getInvite("pokernight");
+          startActivity("pokernight");
         }
         break;
       case "chess":
         {
-          getInvite("chess");
+          startActivity("chess");
         }
         break;
       case "letterleague":
         {
-          getInvite("letterleague");
+          startActivity("letterleague");
         }
         break;
       case "spellcast":
         {
-          getInvite("spellcast");
+          startActivity("spellcast");
         }
         break;
       case "checkers":
         {
-          getInvite("checkers");
+          startActivity("checkers");
         }
         break;
       case "blazing8s":
         {
-          getInvite("blazing8s");
+          startActivity("blazing8s");
         }
         break;
       case "puttparty":
         {
-          getInvite("puttparty");
+          startActivity("puttparty");
         }
         break;
       case "landio":
         {
-          getInvite("landio");
+          startActivity("landio");
         }
         break;
       case "bobbleleague":
         {
-          getInvite("bobbleleague");
+          startActivity("bobbleleague");
         }
         break;
       case "askaway":
         {
-          getInvite("askaway");
+          startActivity("askaway");
         }
         break;
       case "meme":
         {
-          getInvite("meme");
+          startActivity("meme");
         }
         break;
       case "betrayal":
         {
-          getInvite("betrayal");
+          startActivity("betrayal");
         }
         break;
       case "fishington":
         {
-          getInvite("fishington");
+          startActivity("fishington");
         }
         break;
       case "sketchyartist":
         {
-          getInvite("sketchyartist");
+          startActivity("sketchyartist");
         }
         break;
       case "awkword":
         {
-          getInvite("awkword");
+          startActivity("awkword");
         }
         break;
     }

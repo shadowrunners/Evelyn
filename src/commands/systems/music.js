@@ -111,6 +111,7 @@ module.exports = {
       voiceChannel: member.voice.channel.id,
       textChannel: interaction.channelId,
       selfDeafen: true,
+      volume: 100,
     });
 
     let res;
@@ -148,7 +149,7 @@ module.exports = {
                 if (res.loadType === "PLAYLIST_LOADED") {
                   const tracks = [];
 
-                  for (const track of res.tracks.slice(0, 200)) {
+                  for (const track of res.tracks) {
                     const trackData = TrackUtils.build(track, interaction.user);
                     tracks.push(trackData);
                   }
@@ -177,7 +178,8 @@ module.exports = {
                     TrackUtils.build(res.tracks[0], interaction.user)
                   );
 
-                  await player.play();
+                  if (!player.playing && !player.paused && !player.queue.size)
+                    player.play();
 
                   const enqueueEmbed = new EmbedBuilder()
                     .setColor("Grey")
@@ -218,7 +220,8 @@ module.exports = {
 
                 if (res.loadType === "PLAYLIST_LOADED") {
                   player.queue.add(res.tracks);
-                  await player.play();
+                  if (!player.playing && !player.paused && !player.queue.size)
+                    player.play();
 
                   const playlistEmbed = new EmbedBuilder()
                     .setDescription(
@@ -238,7 +241,8 @@ module.exports = {
                   res.loadType === "SEARCH_RESULT"
                 ) {
                   player.queue.add(res.tracks[0]);
-                  await player.play();
+                  if (!player.playing && !player.paused && !player.queue.size)
+                    player.play();
 
                   const enqueueEmbed = new EmbedBuilder()
                     .setColor("Grey")
