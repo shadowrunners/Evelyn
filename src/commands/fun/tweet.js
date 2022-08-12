@@ -3,7 +3,7 @@ const {
   ChatInputCommandInteraction,
   EmbedBuilder,
 } = require("discord.js");
-const superagent = require("superagent");
+const { nekoFetch } = require("../../structures/functions/nekoFetch.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -19,18 +19,15 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
+    const action = "tweet";
+    const member = interaction.user.username;
     const text = interaction.options.getString("text");
 
-    superagent
-      .get(
-        `https://nekobot.xyz/api/imagegen?type=tweet&username=${interaction.user.username}&text=${text}`
-      )
-      .then(function (res) {
-        const tweetEmbed = new EmbedBuilder()
-          .setColor("Grey")
-          .setImage(res.body.message)
-          .setTimestamp();
-        return interaction.reply({ embeds: [tweetEmbed] });
-      });
+    const data = await nekoFetch(action, member, text);
+    const tweetEmbed = new EmbedBuilder()
+      .setColor("Grey")
+      .setImage(data)
+      .setTimestamp();
+    return interaction.reply({ embeds: [tweetEmbed] });
   },
 };
