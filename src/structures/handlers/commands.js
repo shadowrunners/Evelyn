@@ -1,27 +1,43 @@
-const glob = require('glob');
-const { Client } = require("discord.js")
-const { magenta, green } = require("chalk");
+const { readdirSync } = require("fs");
+const { magenta, green, white } = require("chalk");
 
-module.exports = (client) => {
-    /**
-    * @param {Client} client
-     */
+function loadCommands(client) {
+  let commandsArray = [];
+  let developerArray = [];
 
-    glob(`${(process.cwd().replace(/\\/g, "/"))}/src/commands/**/*.js`, function(err, files) {
-        files.map(async (file) => {
-            const command = require(file);
+  const commandsFolder = readdirSync("./src/commands");
+  for (const folder of commandsFolder) {
+    const commandFiles = readdirSync(`./src/commands/${folder}`).filter(
+      (file) => file.endsWith(".js")
+    );
 
-            if(!command.name) {
-                delete require.cache[require.resolve(file)];
-                return console.log(`${file.split("/").pop()} does not have a command name! Removing the command.`)
-            }
+    for (const file of commandFiles) {
+      const commandFile = require(`../../commands/${folder}/${file}`);
 
-            if(command.public) {
-                console.log(magenta('[') + magenta('Commands') + magenta(']') + ' Loaded' + green(` ${command.name}.js`))
-            }
+      client.commands.set(commandFile.data.name, commandFile);
 
-            client.commands.set(command.name, command);
-            delete require.cache[require.resolve(file)];
-        });
-    });
+      if (commandFile.developer) developerArray.push(commandFile.data.toJSON());
+      else commandsArray.push(commandFile.data.toJSON());
+
+      console.log(
+        magenta("[") +
+          magenta("Commands") +
+          magenta("]") +
+          " Loaded" +
+          green(` ${commandFile.data.name}.js`)
+      );
+      continue;
+    }
+  }
+  client.application.commands.set(commandsArray);
+
+  const developerGuild = client.guilds.cache.get(client.config.devGuild);
+  developerGuild.commands.set(developerArray);
+
+  return console.log(
+    magenta("[Discord API] ") +
+      white("Refreshed application commands for public and developer guilds.")
+  );
 }
+
+module.exports = { loadCommands };

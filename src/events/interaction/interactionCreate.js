@@ -1,28 +1,22 @@
-const { Client, MessageEmbed, CommandInteraction } = require("discord.js");
+const { CommandInteraction, InteractionType } = require("discord.js");
 
 module.exports = {
-    name: "interactionCreate",
-    /**
-     * @param {CommandInteraction} interaction 
-     * @param {Client} client 
-     */
-    async execute(interaction, client) {
-        if (interaction.isCommand() || interaction.isContextMenu()) {
-            const command = client.commands.get(interaction.commandName);
-            if (!command) return interaction.reply({
-                embeds: [
-                    new MessageEmbed()
-                        .setColor("RED")
-                        .setDescription("An error occured while running this command.")
-                ]
-            }) && client.commands.delete(interaction.commandName);
+  name: "interactionCreate",
+  /**
+   * @param {CommandInteraction} interaction
+   */
+  execute(interaction, client) {
+    if (
+      !interaction.type === InteractionType.ApplicationCommand ||
+      !interaction.type === InteractionType.MessageComponent
+    )
+      return;
 
-            if (command.permission) {
-                if (!interaction.member.permissions.has(command.permission)) {
-                    return interaction.reply({ content: `You do not have the required permission for this command: \`${interaction.commandName}\`.`, ephemeral: true })
-                }
-            }
-            command.execute(interaction, client)
-        }
+    const command = client.commands.get(interaction.commandName);
+    if (!command) {
+      return interaction.reply({ content: "This command is outdated." });
     }
-}
+
+    command.execute(interaction, client);
+  },
+};

@@ -1,0 +1,43 @@
+const { Client, GuildMember, EmbedBuilder } = require("discord.js");
+const DB = require("../../structures/schemas/guildDB.js");
+
+module.exports = {
+  name: "guildMemberAdd",
+  /**
+   * @param {GuildMember} member
+   * @param {Client} client
+   */
+  async execute(member, client) {
+    const data = await DB.findOne({
+      id: member.guild.id,
+    });
+
+    if (!data) return;
+    if (data.logs.enabled == "false" || data.logs.channel == null) return;
+    if (member.user.bot) return;
+
+    const embed = new EmbedBuilder()
+      .setAuthor({
+        name: member.user.tag,
+        iconURL: member.user.displayAvatarURL({ dynamic: true }),
+      })
+      .setTitle("Member Joined")
+      .addFields([
+        {
+          name: "🔹 | Member Name",
+          value: `> ${member.user.tag} (${member.user.id})`,
+        },
+        {
+          name: "🔹 | Member ID",
+          value: `> ${member.id}`,
+        },
+        {
+          name: "🔹 | Account Age",
+          value: `> <t:${parseInt(member.user.createdTimestamp / 1000)}:R>`,
+        },
+      ])
+      .setFooter({ text: `${member.guild.name}` })
+      .setTimestamp();
+    client.channels.cache.get(data.logs.channel).send({ embeds: [embed] });
+  },
+};

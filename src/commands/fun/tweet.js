@@ -1,35 +1,33 @@
-const { CommandInteraction, MessageEmbed } = require("discord.js");
-const fetch = require("node-fetch");
+const {
+  SlashCommandBuilder,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+} = require("discord.js");
+const { nekoFetch } = require("../../structures/functions/nekoFetch.js");
 
 module.exports = {
-  name: "tweet",
-  description: "Tweet something about someone.",
-  public: true,
-  options: [
-    {
-      name: "text",
-      description: "Provide the text for the comment.",
-      type: 3,
-      required: true,
-    },
-  ],
+  data: new SlashCommandBuilder()
+    .setName("tweet")
+    .setDescription("Tweet something about someone.")
+    .addStringOption((option) =>
+      option
+        .setName("text")
+        .setDescription("Provide the text for the comment.")
+        .setRequired(true)
+    ),
   /**
-   * @param {CommandInteraction} interaction
+   * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
-    await interaction.deferReply({})
+    const action = "tweet";
+    const member = interaction.user.username;
     const text = interaction.options.getString("text");
 
-    fetch(`https://nekobot.xyz/api/imagegen?type=tweet&username=${interaction.user.username}&text=${text}`)
-    
-    .then(function(result) { return result.json(); })
-    .then(function(data) {
-        const tweetEmbed = new MessageEmbed()
-            .setColor("BLURPLE")
-            .setImage(data.message)
-            .setTimestamp()
-        interaction.editReply({embeds: [tweetEmbed]})
-    });
+    const data = await nekoFetch(action, member, text);
+    const tweetEmbed = new EmbedBuilder()
+      .setColor("Grey")
+      .setImage(data)
+      .setTimestamp();
+    return interaction.reply({ embeds: [tweetEmbed] });
   },
 };
-

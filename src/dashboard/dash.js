@@ -1,5 +1,7 @@
-function dash(client) {
+async function dash(client) {
   (async () => {
+    const { ChannelType } = require("discord.js");
+    const { GuildText } = ChannelType;
     const DBD = require("discord-dashboard");
     const DarkDashboard = require("dbd-dark-dashboard");
     const GDB = require("../structures/schemas/guildDB.js");
@@ -119,7 +121,7 @@ function dash(client) {
               optionId: "logchannel",
               optionName: "Log Channel",
               optionDescription: "Set the logs channel.",
-              optionType: DBD.formTypes.channelsSelect(false, ["GUILD_TEXT"]),
+              optionType: DBD.formTypes.channelsSelect(false, [GuildText]),
               getActualSet: async ({ guild }) => {
                 const data = await GDB.findOne({ id: guild.id });
                 const savedData = data.logs.channel || null;
@@ -173,7 +175,7 @@ function dash(client) {
               optionName: "Welcome Channel",
               optionDescription:
                 "Set the channel where the welcome message will be sent in.",
-              optionType: DBD.formTypes.channelsSelect(false, ["GUILD_TEXT"]),
+              optionType: DBD.formTypes.channelsSelect(false, [GuildText]),
               getActualSet: async ({ guild }) => {
                 const data = await GDB.findOne({ id: guild.id });
                 const savedData = data.welcome.channel || null;
@@ -248,7 +250,7 @@ function dash(client) {
               optionName: "Goodbye Channel",
               optionDescription:
                 "Set the channel where the goodbye message will be sent in.",
-              optionType: DBD.formTypes.channelsSelect(false, ["GUILD_TEXT"]),
+              optionType: DBD.formTypes.channelsSelect(false, [GuildText]),
               getActualSet: async ({ guild }) => {
                 const data = await GDB.findOne({ id: guild.id });
                 const savedData = data.goodbye.channel || null;
@@ -365,7 +367,7 @@ function dash(client) {
               optionId: "am_logs",
               optionName: "AutoMod Logs",
               optionDescription: "Set the logs channel for AutoMod.",
-              optionType: DBD.formTypes.channelsSelect(false, ["GUILD_TEXT"]),
+              optionType: DBD.formTypes.channelsSelect(false, [GuildText]),
               getActualSet: async ({ guild }) => {
                 const data = await AMDB.findOne({ id: guild.id });
                 const savedData = data.LogChannelID || null;
@@ -495,7 +497,80 @@ function dash(client) {
               optionName: "Logs Channel",
               optionDescription:
                 "Set the channel where Anti-Scam will send its logs in.",
-              optionType: DBD.formTypes.channelsSelect(false, ["GUILD_TEXT"]),
+              optionType: DBD.formTypes.channelsSelect(false, [GuildText]),
+              getActualSet: async ({ guild }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                return data.antiscam.channel || null;
+              },
+              setNew: async ({ guild, newData }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                data.antiscam.channel = newData;
+                data.save();
+                return;
+              },
+            },
+          ],
+        },
+        {
+          categoryId: "notifs",
+          categoryName: "Notifiers",
+          categoryDescription:
+            "This section contains the configuration for the notification system.",
+          categoryOptionsList: [
+            {
+              optionType: "spacer",
+              title: "YouTube Notifications Configuration",
+              description:
+                "This section contains the configuration for the YouTube notification system.",
+            },
+            {
+              optionId: "notifswitch",
+              optionName: "Enable/Disable YouTube Notifications",
+              optionDescription:
+                "Enable or disable the YouTube Notification system.",
+              optionType: DBD.formTypes.switch(false),
+              getActualSet: async ({ guild }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                const savedData = data.notifications.youtube_enabled;
+                const defaultState = false;
+                return savedData == null || savedData == undefined
+                  ? defaultState
+                  : savedData;
+              },
+              setNew: async ({ guild, newData }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                data.notifications.youtube_enabled = newData;
+                data.save();
+                return;
+              },
+            },
+            {
+              optionId: "ytchannel",
+              optionName: "Enable/Disable YouTube Notifications",
+              optionDescription:
+                "Enable or disable the YouTube Notification system.",
+              optionType: DBD.formTypes.switch(false),
+              getActualSet: async ({ guild }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                const savedData = data.notifications.youtube_enabled;
+                const defaultState = false;
+                return savedData == null || savedData == undefined
+                  ? defaultState
+                  : savedData;
+              },
+              setNew: async ({ guild, newData }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                data.notifications.youtube_enabled = newData;
+                data.save();
+                return;
+              },
+            },
+            {
+              optionId: "as_logs",
+              optionName: "Logs Channel",
+              optionDescription:
+                "Set the channel where Anti-Scam will send its logs in.",
+              optionType: DBD.formTypes.channelsSelect(false, [GuildText]),
               getActualSet: async ({ guild }) => {
                 const data = await GDB.findOne({ id: guild.id });
                 return data.antiscam.channel || null;
@@ -515,4 +590,4 @@ function dash(client) {
   })();
 }
 
-module.exports.dash = dash;
+module.exports = { dash };

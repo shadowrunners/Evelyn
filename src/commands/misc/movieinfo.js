@@ -1,104 +1,77 @@
-const { CommandInteraction, MessageEmbed } = require("discord.js");
+const {
+  Client,
+  SlashCommandBuilder,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+} = require("discord.js");
 const imdb = require("imdb-api");
-const { imdbAPIKey } = require("../../structures/config.json");
 
 module.exports = {
-    name: "movieinfo",
-    description: "See information about a show.",
-    public: true,
-    options: [
-        {
-            name: "title",
-            description: "Provide the name of the movie or show.",
-            type: 3,
-            required: true,
-        },
-    ],
-    /**
-     * @param {CommandInteraction} interaction
-     */
-    async execute(interaction) {
-        const imdbClient = new imdb.Client({ apiKey: imdbAPIKey });
-        const title = interaction.options.getString("title");
+  data: new SlashCommandBuilder()
+    .setName("movie")
+    .setDescription("Search for a movie using IMDB.")
+    .addStringOption((option) =>
+      option
+        .setName("title")
+        .setDescription("Provide the name of the movie.")
+        .setRequired(true)
+    ),
+  /**
+   * @param {ChatInputCommandInteraction} interaction
+   * @param {Client} client
+   */
+  async execute(interaction, client) {
+    const imdbClient = new imdb.Client({ apiKey: client.config.imdbAPIKey });
+    const title = interaction.options.getString("title");
 
-        imdbClient.get({ name: `${title}` }, { timeout: 30000 }).then(async (result) => {
-            const date = result.released;
-            const movieinfoEmbed = new MessageEmbed()
-                .setAuthor({ name: `${result.title}` })
-                .setColor("BLURPLE")
-                .setThumbnail(result.poster)
-                .setDescription(result.plot)
-                .addFields(
-                    {
-                        name: "Released",
-                        inline: true,
-                        value: [
-                            `${date.toLocaleDateString("en-GB")}` || "Unknown."
-                        ].join("\n")
-                    },
-                    {
-                        name: "Genres",
-                        inline: true,
-                        value: [
-                            `${result.genres}`.split(',').join(', ')
-                        ].join("\n")
-                    },
-                    {
-                        name: "Rating",
-                        inline: true,
-                        value: [
-                            `${result.rating}` || "Unknown.",
-                        ].join("\n")
-                    },
-                    {
-                        name: "Actors",
-                        inline: true,
-                        value: [
-                            `${result.actors}` || "Unknown.",
-                        ].join("\n")
-                    },
-                    {
-                        name: "Director",
-                        inline: true,
-                        value: [
-                            `${result.director}` || "Unknown.",
-                        ].join("\n")
-                    },
-                    {
-                        name: "Awards",
-                        inline: true,
-                        value: [
-                            `${result.awards}` || "Unknown.",
-                        ].join("\n")
-                    },
-                    {
-                        name: "Box Office",
-                        inline: true,
-                        value: [
-                            `${result.boxoffice}` || "Unknown.",
-                        ].join("\n")
-                    },
-                    {
-                        name: "Duration",
-                        inline: true,
-                        value: [
-                            `${result.runtime}` || "Unknown.",
-                        ].join("\n")
-                    },
-                    {
-                        name: "MetaScore",
-                        inline: true,
-                        value: [
-                            `${result.metascore}` || "Unknown.",
-                        ].join("\n")
-                    },
-                )
-            interaction.reply({ embeds: [movieinfoEmbed] });
-        }).catch((err) => {
-            const errEmbed = new MessageEmbed()
-                .setColor("BLURPLE")
-                .setDescription(`🔹 | No movie/show found.`)
-            return interaction.reply({ embeds: [errEmbed] })
-        })
-    },
+    imdbClient
+      .get({ name: `${title}` }, { timeout: 30000 })
+      .then(async (result) => {
+        const date = result.released;
+        const movieinfoEmbed = new EmbedBuilder()
+          .setAuthor({ name: `${result.title}` })
+          .setColor("Grey")
+          .setThumbnail(result.poster)
+          .setDescription(result.plot)
+          .addFields([
+            {
+              name: "Released",
+              inline: true,
+              value: `${date.toLocaleDateString("en-GB")}` || "Unknown.",
+            },
+            {
+              name: "Genres",
+              inline: true,
+              value: `${result.genres}`.split(",").join(", "),
+            },
+            {
+              name: "Rating",
+              inline: true,
+              value: `${result.rating}/10` || "Unknown.",
+            },
+            {
+              name: "Box Office",
+              inline: true,
+              value: `${result.boxoffice}` || "Unknown.",
+            },
+            {
+              name: "Duration",
+              inline: true,
+              value: `${result.runtime}` || "Unknown.",
+            },
+            {
+              name: "Score",
+              inline: true,
+              value: `${result.metascore}/100` || "Unknown.",
+            },
+          ]);
+        interaction.reply({ embeds: [movieinfoEmbed] });
+      })
+      .catch((err) => {
+        const errEmbed = new EmbedBuilder()
+          .setColor("Grey")
+          .setDescription(`No movie/show found.`);
+        return interaction.reply({ embeds: [errEmbed] });
+      });
+  },
 };

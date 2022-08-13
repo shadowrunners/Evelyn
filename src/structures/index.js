@@ -1,50 +1,72 @@
-const { Client, Collection } = require("discord.js");
-const client = new Client({ intents: 32767 });
+const {
+  Client,
+  Collection,
+  GatewayIntentBits,
+  Partials,
+} = require("discord.js");
 const Deezer = require("erela.js-deezer");
 const Apple = require("erela.js-apple");
 const { Manager } = require("erela.js");
-const { token, nodes, SpotifyClientID, SpotifySecret } = require("./config.json");
-const { promisify } = require("util");
-const { glob } = require("glob");
-const PG = promisify(glob);
-const { DiscordTogether } = require("discord-together");
 const { LavasfyClient } = require("lavasfy");
+const { DiscordTogether } = require("discord-together");
 
+const {
+  Guilds,
+  GuildBans,
+  GuildMembers,
+  GuildEmojisAndStickers,
+  GuildInvites,
+  GuildVoiceStates,
+  GuildMessages,
+  MessageContent,
+} = GatewayIntentBits;
+const { User, Message, Channel, GuildMember, ThreadMember } = Partials;
+
+const { loadEvents } = require("./handlers/events.js");
+const { loadCommands } = require("./handlers/commands.js");
+
+const client = new Client({
+  intents: [
+    Guilds,
+    GuildBans,
+    GuildMembers,
+    GuildEmojisAndStickers,
+    GuildInvites,
+    GuildVoiceStates,
+    GuildMessages,
+    MessageContent,
+  ],
+  partials: [User, Message, Channel, GuildMember, ThreadMember],
+});
+
+client.config = require("./config.json");
 client.commands = new Collection();
-client.buttons = new Collection();
-client.selectMenus = new Collection();
 client.DiscordTogether = new DiscordTogether(client);
 
-client.lavasfy = new LavasfyClient({
-    clientID: SpotifyClientID,
-    clientSecret: SpotifySecret,
+client.lavasfy = new LavasfyClient(
+  {
+    clientID: client.config.spotifyClientID,
+    clientSecret: client.config.spotifySecret,
     filterAudioOnlyResult: true,
     autoResolve: true,
     useSpotifyMetadata: true,
     playlistPageLoadLimit: 1,
-},
-    nodes
+  },
+  client.config.nodes
 );
 
 client.manager = new Manager({
-    nodes,
-    plugins: [
-        new Apple(),
-        new Deezer(),
-    ],
-    send: (id, payload) => {
-        let guild = client.guilds.cache.get(id);
-        if (guild) guild.shard.send(payload);
-    },
+  nodes: client.config.nodes,
+  plugins: [new Apple(), new Deezer()],
+  send: (id, payload) => {
+    let guild = client.guilds.cache.get(id);
+    if (guild) guild.shard.send(payload);
+  },
 });
 
 module.exports = client;
 
-require("../systems/giveawaySystem.js")(client);
-require("../dashboard/dash.js");
-
-["events", "commands", "buttons"].forEach(handler => {
-    require(`./handlers/${handler}`)(client, PG);
+client.login(client.config.token).then(() => {
+  loadEvents(client);
+  loadCommands(client);
 });
-
-client.login(token);
