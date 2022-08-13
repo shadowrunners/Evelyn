@@ -27,7 +27,6 @@
 ## About
 
 Aeolian is an open-source Discord Bot and a safe alternative to bots that are heavily paywalled.
-This branch is running on Discord.js v13 and a v14 version is currently in development.
 
 ## Features
 
