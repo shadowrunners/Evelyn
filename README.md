@@ -8,7 +8,7 @@
 
   <div align=center>
     <a href="https://github.com/discordjs">
-      <img src="https://img.shields.io/badge/discord.js-v13.9.0-blue.svg?logo=npm">
+      <img src="https://img.shields.io/badge/discord.js-v14.2.0-blue.svg?logo=npm">
     </a>
 
   <a href="#">
