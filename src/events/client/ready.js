@@ -31,7 +31,6 @@ module.exports = {
       );
 
     client.manager.init(client.user.id);
-    client.lavasfy.requestToken();
     dash(client);
 
     mongoose

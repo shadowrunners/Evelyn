@@ -5,9 +5,9 @@ const {
   Partials,
 } = require("discord.js");
 const Deezer = require("erela.js-deezer");
-const Apple = require("erela.js-apple");
+const Apple = require("better-erela.js-apple").default;
+const Spotify = require("better-erela.js-spotify").default;
 const { Manager } = require("erela.js");
-const { LavasfyClient } = require("lavasfy");
 const { DiscordTogether } = require("discord-together");
 
 const {
@@ -43,21 +43,16 @@ client.config = require("./config.json");
 client.commands = new Collection();
 client.DiscordTogether = new DiscordTogether(client);
 
-client.lavasfy = new LavasfyClient(
-  {
-    clientID: client.config.spotifyClientID,
-    clientSecret: client.config.spotifySecret,
-    filterAudioOnlyResult: true,
-    autoResolve: true,
-    useSpotifyMetadata: true,
-    playlistPageLoadLimit: 1,
-  },
-  client.config.nodes
-);
-
 client.manager = new Manager({
   nodes: client.config.nodes,
-  plugins: [new Apple(), new Deezer()],
+  plugins: [
+    new Spotify({
+      clientID: client.config.spotifyClientID,
+      clientSecret: client.config.spotifySecret,
+    }),
+    new Apple(),
+    new Deezer(),
+  ],
   send: (id, payload) => {
     let guild = client.guilds.cache.get(id);
     if (guild) guild.shard.send(payload);
