@@ -8,7 +8,7 @@
 
   <div align=center>
     <a href="https://github.com/discordjs">
-      <img src="https://img.shields.io/badge/discord.js-v13.9.0-blue.svg?logo=npm">
+      <img src="https://img.shields.io/badge/discord.js-v14.2.0-blue.svg?logo=npm">
     </a>
 
   <a href="#">
@@ -27,7 +27,6 @@
 ## About
 
 Aeolian is an open-source Discord Bot and a safe alternative to bots that are heavily paywalled.
-This branch is running on Discord.js v13 and a v14 version is currently in development.
 
 ## Features
 
@@ -52,7 +51,7 @@ You can find the installation guide [here](https://docs.aeolianbot.ml) or altern
 - [Alvaa](https://github.com/Allvaa/lavalink-musicbot) - repo helped with music system
 - [SudhanPlayz](https://github.com/SudhanPlayz/Discord-MusicBot) - repo helped with music system
 - [Adivise](https://github.com/Adivise/NanoSpacePlus) - repo helped with music system
-- [bilekcat] - anti-scam system
+- bilekcat - anti-scam system
 - [Treotty](https://github.com/AmitKumarHQ/Discord.js-AI-Moderation) - AI moderation system
 
 If we used your code and forgot to add you to the credits, shoot me a message over on Discord at scrappie#5451 or in the CryoLabs discord server.
