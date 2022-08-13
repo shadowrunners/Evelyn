@@ -67,10 +67,10 @@ module.exports = {
           ]);
         interaction.reply({ embeds: [movieinfoEmbed] });
       })
-      .catch((err) => {
+      .catch(() => {
         const errEmbed = new EmbedBuilder()
           .setColor("Grey")
-          .setDescription(`No movie/show found.`);
+          .setDescription(`No results found.`);
         return interaction.reply({ embeds: [errEmbed] });
       });
   },
