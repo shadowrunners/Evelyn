@@ -3,7 +3,7 @@ const {
   ChatInputCommandInteraction,
   EmbedBuilder,
 } = require("discord.js");
-const { nekoFetch } = require("../../structures/functions/nekoFetch.js");
+const { nekoFetch } = require("../../utils/nekoFetch.js");
 
 module.exports = {
   data: new SlashCommandBuilder()

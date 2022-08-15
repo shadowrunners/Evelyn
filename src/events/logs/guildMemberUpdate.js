@@ -21,21 +21,21 @@ module.exports = {
     if (!data) return;
     if (data.logs.enabled == "false" || data.logs.channel == null) return;
 
+    const allLogs = await newMember.guild.fetchAuditLogs({
+      type: AuditLogEvent.MemberUpdate,
+    });
+    const fetchLogs = allLogs.entries.first();
+
     if (
       !oldMember.isCommunicationDisabled() &&
       newMember.isCommunicationDisabled()
     ) {
-      const allLogs = await newMember.guild.fetchAuditLogs({
-        type: AuditLogEvent.MemberUpdate,
-      });
-      const fetchLogs = allLogs.entries.first();
-
       const embed = new EmbedBuilder()
         .setAuthor({
           name: newMember.user.tag,
           iconURL: newMember.user.displayAvatarURL({ dynamic: true }),
         })
-        .setDescription(`${newMember} has been timed out.`)
+        .setTitle({ name: "Member Timeout Applied" })
         .addFields(
           {
             name: "🔹 | Timeout expires",
@@ -53,7 +53,9 @@ module.exports = {
           }
         )
         .setTimestamp();
-      client.channels.cache.get(data.logs.channel).send({ embeds: [embed] });
+      return client.channels.cache
+        .get(data.logs.channel)
+        .send({ embeds: [embed] });
     }
     if (
       oldMember.isCommunicationDisabled() &&
@@ -64,13 +66,15 @@ module.exports = {
           name: newMember.user.tag,
           iconURL: newMember.user.displayAvatarURL({ dynamic: true }),
         })
-        .setDescription(`${newMember}'s timeout has been lifted.`)
+        .setTitle({ name: "Member Timeout Removed" })
         .addFields({
           name: "🔹 | Reason",
           value: `> Timeout expired!`,
         })
         .setTimestamp();
-      client.channels.cache.get(data.logs.channel).send({ embeds: [embed] });
+      return client.channels.cache
+        .get(data.logs.channel)
+        .send({ embeds: [embed] });
     }
 
     if (oldMember.user.username !== newMember.user.username) {
@@ -79,7 +83,7 @@ module.exports = {
           name: newMember.user.tag,
           iconURL: newMember.user.displayAvatarURL({ dynamic: true }),
         })
-        .setDescription(`${newMember}'s username has been changed.`)
+        .setTitle({ name: "Member Username Changed" })
         .addFields(
           {
             name: "🔹 | Old Username",
@@ -91,7 +95,9 @@ module.exports = {
           }
         )
         .setTimestamp();
-      client.channels.cache.get(data.logs.channel).send({ embeds: [embed] });
+      return client.channels.cache
+        .get(data.logs.channel)
+        .send({ embeds: [embed] });
     }
 
     if (
@@ -103,13 +109,15 @@ module.exports = {
           name: newMember.user.tag,
           iconURL: newMember.user.displayAvatarURL({ dynamic: true }),
         })
-        .setDescription(`${newMember}'s nickname has been changed.`)
+        .setTitle({ name: "Member Nickname Changed" })
         .addFields({
           name: "🔹 | New Nickname",
           value: `> ${newMember.nickname}`,
         })
         .setTimestamp();
-      client.channels.cache.get(data.logs.channel).send({ embeds: [embed] });
+      return client.channels.cache
+        .get(data.logs.channel)
+        .send({ embeds: [embed] });
     }
 
     if (!newMember.nickname && oldMember.nickname) {
@@ -118,13 +126,15 @@ module.exports = {
           name: newMember.user.tag,
           iconURL: newMember.user.displayAvatarURL({ dynamic: true }),
         })
-        .setDescription(`${newMember}'s nickname has been reset.`)
+        .setTitle({ name: "Member Nickname Reset" })
         .addFields({
           name: "🔹 | Old Nickname",
           value: `> ${oldMember.nickname}`,
         })
         .setTimestamp();
-      client.channels.cache.get(data.logs.channel).send({ embeds: [embed] });
+      return client.channels.cache
+        .get(data.logs.channel)
+        .send({ embeds: [embed] });
     }
 
     if (oldMember.roles.cache.size !== newMember.roles.cache.size) {
@@ -133,6 +143,7 @@ module.exports = {
           name: newMember.user.tag,
           iconURL: newMember.user.displayAvatarURL({ dynamic: true }),
         })
+        .setTitle({ name: "Member Roles Updated" })
         .setDescription(`${newMember}'s roles have been updated.`)
         .addFields(
           {
@@ -145,7 +156,9 @@ module.exports = {
           }
         )
         .setTimestamp();
-      client.channels.cache.get(data.logs.channel).send({ embeds: [embed] });
+      return client.channels.cache
+        .get(data.logs.channel)
+        .send({ embeds: [embed] });
     }
   },
 };

@@ -25,7 +25,7 @@ module.exports = {
       .addFields([
         {
           name: "🔹 | Member Name",
-          value: `> ${member.user.tag} (${member.user.id})`,
+          value: `> ${member.user.tag}`,
         },
         {
           name: "🔹 | Member ID",
@@ -38,6 +38,8 @@ module.exports = {
       ])
       .setFooter({ text: `${member.guild.name}` })
       .setTimestamp();
-    client.channels.cache.get(data.logs.channel).send({ embeds: [embed] });
+    return client.channels.cache
+      .get(data.logs.channel)
+      .send({ embeds: [embed] });
   },
 };

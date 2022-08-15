@@ -3,7 +3,7 @@ const {
   ChatInputCommandInteraction,
   EmbedBuilder,
 } = require("discord.js");
-const superagent = require("superagent");
+const { nekoFetch } = require("../../utils/nekoFetch.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -19,23 +19,15 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
+    const action = "phcomment";
+    const member = interaction.user.username;
     const text = interaction.options.getString("text");
 
-    superagent
-      .get(
-        `https://nekobot.xyz/api/imagegen?type=phcomment&username=${
-          interaction.user.username
-        }&image=${interaction.user.avatarURL({
-          format: "png",
-          size: 512,
-        })}&text=${text}`
-      )
-      .then(function (res) {
-        const phEmbed = new EmbedBuilder()
-          .setColor("Grey")
-          .setImage(res.body.message)
-          .setTimestamp();
-        return interaction.reply({ embeds: [phEmbed] });
-      });
+    const data = await nekoFetch(action, member, text);
+    const phEmbed = new EmbedBuilder()
+      .setColor("Grey")
+      .setImage(data)
+      .setTimestamp();
+    return interaction.reply({ embeds: [phEmbed] });
   },
 };

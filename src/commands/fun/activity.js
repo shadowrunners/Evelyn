@@ -55,8 +55,7 @@ module.exports = {
               `Your activity has been launched, you can access it using [this](${invite.code}).`
             )
             .setTimestamp();
-
-          interaction.reply({ embeds: [embed] });
+          return interaction.reply({ embeds: [embed] });
         }
       );
     }
@@ -70,101 +69,63 @@ module.exports = {
     if (!VC) return interaction.reply({ embeds: [noVC] });
 
     switch (choices) {
-      case "watchtogether":
-        {
-          startActivity("watchtogether");
-        }
-        break;
-      case "sketchheads":
-        {
-          startActivity("sketchheads");
-        }
-        break;
-      case "wordsnacks":
-        {
-          startActivity("wordsnacks");
-        }
-        break;
-      case "doodlecrew":
-        {
-          startActivity("doodlecrew");
-        }
-        break;
-      case "pokernight":
-        {
-          startActivity("pokernight");
-        }
-        break;
-      case "chess":
-        {
-          startActivity("chess");
-        }
-        break;
-      case "letterleague":
-        {
-          startActivity("letterleague");
-        }
-        break;
-      case "spellcast":
-        {
-          startActivity("spellcast");
-        }
-        break;
-      case "checkers":
-        {
-          startActivity("checkers");
-        }
-        break;
-      case "blazing8s":
-        {
-          startActivity("blazing8s");
-        }
-        break;
-      case "puttparty":
-        {
-          startActivity("puttparty");
-        }
-        break;
-      case "landio":
-        {
-          startActivity("landio");
-        }
-        break;
-      case "bobbleleague":
-        {
-          startActivity("bobbleleague");
-        }
-        break;
-      case "askaway":
-        {
-          startActivity("askaway");
-        }
-        break;
-      case "meme":
-        {
-          startActivity("meme");
-        }
-        break;
-      case "betrayal":
-        {
-          startActivity("betrayal");
-        }
-        break;
-      case "fishington":
-        {
-          startActivity("fishington");
-        }
-        break;
-      case "sketchyartist":
-        {
-          startActivity("sketchyartist");
-        }
-        break;
-      case "awkword":
-        {
-          startActivity("awkword");
-        }
-        break;
+      case "watchtogether": {
+        startActivity("watchtogether");
+      }
+      case "sketchheads": {
+        startActivity("sketchheads");
+      }
+      case "wordsnacks": {
+        startActivity("wordsnacks");
+      }
+      case "doodlecrew": {
+        startActivity("doodlecrew");
+      }
+      case "pokernight": {
+        startActivity("pokernight");
+      }
+      case "chess": {
+        startActivity("chess");
+      }
+      case "letterleague": {
+        startActivity("letterleague");
+      }
+      case "spellcast": {
+        startActivity("spellcast");
+      }
+      case "checkers": {
+        startActivity("checkers");
+      }
+      case "blazing8s": {
+        startActivity("blazing8s");
+      }
+      case "puttparty": {
+        startActivity("puttparty");
+      }
+      case "landio": {
+        startActivity("landio");
+      }
+      case "bobbleleague": {
+        startActivity("bobbleleague");
+      }
+      case "askaway": {
+        startActivity("askaway");
+      }
+      case "meme": {
+        startActivity("meme");
+      }
+      case "betrayal": {
+        startActivity("betrayal");
+      }
+      case "fishington": {
+        startActivity("fishington");
+      }
+      case "sketchyartist": {
+        startActivity("sketchyartist");
+      }
+      case "awkword": {
+        startActivity("awkword");
+      }
     }
   },
 };

@@ -50,6 +50,8 @@ module.exports = {
         iconURL: fetchLogs.executor.displayAvatarURL({ dynamic: true }),
       })
       .setTimestamp();
-    client.channels.cache.get(data.logs.channel).send({ embeds: [embed] });
+    return client.channels.cache
+      .get(data.logs.channel)
+      .send({ embeds: [embed] });
   },
 };

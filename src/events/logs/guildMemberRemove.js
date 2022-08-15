@@ -40,6 +40,8 @@ module.exports = {
       ])
       .setFooter({ text: `${member.guild.name}` })
       .setTimestamp();
-    client.channels.cache.get(data.logs.channel).send({ embeds: [embed] });
+    return client.channels.cache
+      .get(data.logs.channel)
+      .send({ embeds: [embed] });
   },
 };

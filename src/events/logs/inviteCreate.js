@@ -1,4 +1,4 @@
-const { Client, Invite, EmbedBuilder, AuditLogEvent } = require("discord.js");
+const { Client, Invite, EmbedBuilder } = require("discord.js");
 const DB = require("../../structures/schemas/guildDB.js");
 
 module.exports = {
@@ -14,11 +14,6 @@ module.exports = {
 
     if (!data) return;
     if (data.logs.enabled == "false" || data.logs.channel == null) return;
-
-    const allLogs = await invite.guild.fetchAuditLogs({
-      type: AuditLogEvent.InviteCreate,
-      limit: 1,
-    });
 
     const embed = new EmbedBuilder()
       .setAuthor({
@@ -53,6 +48,8 @@ module.exports = {
         iconURL: invite.inviter.displayAvatarURL({ dynamic: true }),
       })
       .setTimestamp();
-    client.channels.cache.get(data.logs.channel).send({ embeds: [embed] });
+    return client.channels.cache
+      .get(data.logs.channel)
+      .send({ embeds: [embed] });
   },
 };

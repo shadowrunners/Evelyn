@@ -4,7 +4,7 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
 } = require("discord.js");
-const { waifuFetch } = require("../../structures/functions/waifuFetch");
+const { waifuFetch } = require("../../utils/waifuFetch.js");
 
 module.exports = {
   data: new SlashCommandBuilder()

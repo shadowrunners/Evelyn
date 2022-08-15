@@ -38,6 +38,8 @@ module.exports = {
         }
       )
       .setTimestamp();
-    client.channels.cache.get(data.logs.channel).send({ embeds: [embed] });
+    return client.channels.cache
+      .get(data.logs.channel)
+      .send({ embeds: [embed] });
   },
 };
