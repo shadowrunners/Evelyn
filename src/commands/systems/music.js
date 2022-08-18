@@ -4,9 +4,9 @@ const {
   EmbedBuilder,
   Client,
 } = require("discord.js");
-const util = require("../../utils/util.js");
 const genius = require("genius-lyrics");
 const gClient = new genius.Client();
+const { embedPages } = require("../../utils/pages.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -160,8 +160,8 @@ module.exports = {
 
           if (res.loadType === "PLAYLIST_LOADED") {
             player.queue.add(res.tracks);
-            if (!player.playing && !player.paused && !player.queue.size)
-              player.play();
+
+            if (!player.playing) player.play();
 
             const playlistEmbed = new EmbedBuilder()
               .setDescription(
@@ -428,21 +428,39 @@ module.exports = {
                   ephemeral: true,
                 });
 
-              const queue = player.queue.map(
-                (t, i) =>
-                  `\`${++i}.\` **[${t.title}](${t.uri})** [${t.requester}]`
-              );
-              const chunked = util.chunk(queue, 10).map((x) => x.join("\n"));
+              const songs = [];
+              const embeds = [];
 
-              const queueEmbed = new EmbedBuilder()
-                .setColor("Grey")
-                .setAuthor({ name: `Current queue for ${guild.name}` })
-                .setTitle(
-                  `▶️ | Currently playing: ${player.queue.current.title}`
-                )
-                .setDescription(chunked[0])
-                .setTimestamp();
-              return interaction.reply({ embeds: [queueEmbed] });
+              for (let i = 0; i < player.queue.length; i++) {
+                songs.push(
+                  `${i + 1}. [${player.queue[i].title}](${player.queue[i].uri})`
+                );
+              }
+
+              if (songs.length < 10) {
+                const queueEmbed = new EmbedBuilder()
+                  .setColor("Grey")
+                  .setAuthor({ name: `Current queue for ${guild.name}` })
+                  .setTitle(
+                    `▶️ | Currently playing: ${player.queue.current.title}`
+                  )
+                  .setDescription(songs.slice(0, 10).join("\n"))
+                  .setTimestamp();
+                return interaction.reply({ embeds: [queueEmbed] });
+              } else {
+                for (let i = 0; i < songs.length; i += 10) {
+                  const queueEmbed = new EmbedBuilder()
+                    .setColor("Grey")
+                    .setAuthor({ name: `Current queue for ${guild.name}` })
+                    .setTitle(
+                      `▶️ | Currently playing: ${player.queue.current.title}`
+                    )
+                    .setDescription(songs.slice(i, i + 10).join("\n"))
+                    .setTimestamp();
+                  embeds.push(queueEmbed);
+                }
+              }
+              await embedPages(client, interaction, embeds);
             }
           }
         }
