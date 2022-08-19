@@ -1,10 +1,10 @@
 <div align=center>
   <a href="logo">
-    <img src="https://cdn.discordapp.com/avatars/832289090128969787/6ef9db89424c395395882f875fed1ac0.webp?size=2048" alt="Aeolian" height="150px" width="150px"
+    <img src="https://cdn.discordapp.com/attachments/925125325107658832/1009974907377033216/dalle_girl_v2.png" alt="Evelyn" height="150px" width="150px"
   ></a>
   
 </div>
-  <h1 align=center>Aeolian</h1>
+  <h1 align=center>Evelyn</h1>
 
   <div align=center>
     <a href="https://github.com/discordjs">
@@ -12,11 +12,11 @@
     </a>
 
   <a href="#">
-  <img src="https://img.shields.io/github/issues/cryolabs/Aeolian"
+  <img src="https://img.shields.io/github/issues/cryolabs/Evelyn"
   </a>
 
-  <a href="https://github.com/cryolabs/Aeolian">
-  <img src="https://img.shields.io/github/stars/cryolabs/Aeolian"
+  <a href="https://github.com/cryolabs/Evelyn">
+  <img src="https://img.shields.io/github/stars/cryolabs/Evelyn"
   </a>
 
   <a href="https://discord.gg/HwkDSs7X82">
@@ -26,33 +26,30 @@
 
 ## About
 
-Aeolian is an open-source Discord Bot and a safe alternative to bots that are heavily paywalled.
+Evelyn is an open-source Discord Bot and a safe alternative to bots that are heavily paywalled.
 
 ## Features
 
 - 🎉 **Giveaway**: `giveaway start`, `giveaway actions (end, pause, unpause, reroll, delete)`.
 - 🎧 **Music**: `music play`, `music volume`, `music settings (view queue, skip, pause, resume, stop, shuffle, lyrics)`.
-- ⚒️ **Moderation**: `punish`, `hackban`, `unban`.
-- 🎟️ **Tickets**: `ticket`.
-- 🛠️ **Utilities**: `avatar`, `userinfo`, `serverinfo`, `lock`, `unlock`.
+- 🛠️ **Utilities**: `avatar`, `userinfo`, `serverinfo`.
 - 📦 **Miscellaneous**: `aniinfo`, `movieinfo`, `status`, `showinfo`.
-- 😀 **Emotions**: `bite`, `blush`, `bonk`, `bully`, `cringe`, `cry`, `cuddle`, `handhold`, `highfive`, `hug`, `kill`, `kiss`, `pat`, `poke`, `slap`, `smile`, `wave`, `yeet`.
-- 📷 **Fun**: `activity`.
+- 😀 **Actions**: `actions (bite, blush, bonk, bully, cringe, cry, cuddle, handhold, highfive, hug, kill, kiss, pat, poke, slap, smile, wave, yeet)`
+- 📷 **Fun**: `tweet`, `phcomment`.
 
 ## Installation
 
-You can find the installation guide [here](https://docs.aeolianbot.ml) or alternatively, you can invite our hosted version of Aeolian [here](https://discord.com/oauth2/authorize?client_id=832289090128969787&permissions=8&scope=bot%20applications.commands).
+You can find the installation guide [here](https://docs.aeolianbot.ml) or alternatively, you can invite our hosted version of Evelyn [here](https://discord.com/oauth2/authorize?client_id=832289090128969787&permissions=8&scope=bot%20applications.commands).
 
 ## Credits
 
-- [Lyxcode](https://youtube.com/c/Lyxcode) - command handler, giveaway system + ticket system
-- [WLOP](https://www.artstation.com/wlop) - creator of profile picture artwork
+- [Lyxcode](https://youtube.com/c/Lyxcode) - command handler
+- [OpenAI's DALL-E 2](https://www.openai.com/dall-e-2) - creator of profile picture artwork
 - [itstylerrr](https://github.com/itstylerrr/Valiant) - took inspiration from the README
 - [Alvaa](https://github.com/Allvaa/lavalink-musicbot) - repo helped with music system
 - [SudhanPlayz](https://github.com/SudhanPlayz/Discord-MusicBot) - repo helped with music system
 - [Adivise](https://github.com/Adivise/NanoSpacePlus) - repo helped with music system
-- bilekcat - anti-scam system
-- [Treotty](https://github.com/AmitKumarHQ/Discord.js-AI-Moderation) - AI moderation system
+- [Treotty](https://github.com/AmitKumarHQ/AI-Moderation) - AI moderation system
 
 If we used your code and forgot to add you to the credits, shoot me a message over on Discord at scrappie#5451 or in the CryoLabs discord server.
 
