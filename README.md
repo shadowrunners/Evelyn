@@ -49,7 +49,7 @@ You can find the installation guide [here](https://docs.aeolianbot.ml) or altern
 - [Alvaa](https://github.com/Allvaa/lavalink-musicbot) - repo helped with music system
 - [SudhanPlayz](https://github.com/SudhanPlayz/Discord-MusicBot) - repo helped with music system
 - [Adivise](https://github.com/Adivise/NanoSpacePlus) - repo helped with music system
-- [Treotty](https://github.com/AmitKumarHQ/AI-Moderation) - AI moderation system
+- [Cit999](https://github.com/cit999/djs-projects/tree/master/Giveaway%20System) - giveaway system
 
 If we used your code and forgot to add you to the credits, shoot me a message over on Discord at scrappie#5451 or in the CryoLabs discord server.
 
