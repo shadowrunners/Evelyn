@@ -39,7 +39,7 @@ Evelyn is an open-source Discord Bot and a safe alternative to bots that are hea
 
 ## Installation
 
-You can find the installation guide [here](https://docs.aeolianbot.ml) or alternatively, you can invite our hosted version of Evelyn [here](https://discord.com/oauth2/authorize?client_id=832289090128969787&permissions=8&scope=bot%20applications.commands).
+You can find the installation guide [here](https://docs.evelynbot.ml) or alternatively, you can invite our hosted version of Evelyn [here](https://discord.com/oauth2/authorize?client_id=832289090128969787&permissions=8&scope=bot%20applications.commands).
 
 ## Credits
 
