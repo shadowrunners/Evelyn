@@ -12,11 +12,11 @@
     </a>
 
   <a href="#">
-  <img src="https://img.shields.io/github/issues/cryolabs/Evelyn"
+  <img src="https://img.shields.io/github/issues/notscrappie/Evelyn"
   </a>
 
   <a href="https://github.com/cryolabs/Evelyn">
-  <img src="https://img.shields.io/github/stars/cryolabs/Evelyn"
+  <img src="https://img.shields.io/github/stars/notscrappie/Evelyn"
   </a>
 
   <a href="https://discord.gg/HwkDSs7X82">
@@ -51,6 +51,6 @@ You can find the installation guide [here](https://docs.evelynbot.ml) or alterna
 - [Adivise](https://github.com/Adivise/NanoSpacePlus) - repo helped with music system
 - [Cit999](https://github.com/cit999/djs-projects/tree/master/Giveaway%20System) - giveaway system
 
-If we used your code and forgot to add you to the credits, shoot me a message over on Discord at scrappie#5451 or in the CryoLabs discord server.
+If we used your code and forgot to add you to the credits, shoot me a message over on Discord at scrappie#5451.
 
-If you decide to use this source code, we kindly ask you to give credit to us and to the people/repos that helped me bring this project to life.
+If you decide to use this source code, I kindly ask you to give credit to me and to the people/repos that helped me bring this project to life.
