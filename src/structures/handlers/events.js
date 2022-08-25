@@ -1,40 +1,32 @@
-const { magenta, green } = require("chalk");
-const { readdirSync } = require("fs");
+async function loadEvents(client) {
+  const { magenta, green } = require("chalk");
+  const { fileLoad } = require("../../utils/fileLoader.js");
 
-function loadEvents(client) {
-  const folders = readdirSync("./src/events");
+  await client.events.clear();
 
-  for (const folder of folders) {
-    const files = readdirSync(`./src/events/${folder}`).filter((file) =>
-      file.endsWith("js")
-    );
+  const files = await fileLoad("events");
+  files.forEach((file) => {
+    const event = require(file);
+    const execute = (...args) => event.execute(...args, client);
 
-    for (const file of files) {
-      const event = require(`../../events/${folder}/${file}`);
+    client.events.set(event.name, execute);
 
-      if (event.rest) {
-        if (event.once)
-          client.rest.once(event.name, (...args) =>
-            event.execute(...args, client)
-          );
-        else
-          client.rest.on(event.name, (...args) =>
-            event.execute(...args, client)
-          );
-      } else {
-        if (event.once)
-          client.once(event.name, (...args) => event.execute(...args, client));
-        else client.on(event.name, (...args) => event.execute(...args, client));
-      }
-      console.log(
-        magenta("[") +
-          magenta("Events") +
-          magenta("]") +
-          " Loaded " +
-          green(`${file}`)
-      );
+    if (event.rest) {
+      if (event.once) client.rest.once(event.name, execute);
+      else client.rest.on(event.name, execute);
+    } else {
+      if (event.once) client.once(event.name, execute);
+      else client.on(event.name, execute);
     }
-  }
+
+    return console.log(
+      magenta("[") +
+        magenta("Events") +
+        magenta("]") +
+        " Loaded " +
+        green(`${event.name}.js`)
+    );
+  });
 }
 
 module.exports = { loadEvents };

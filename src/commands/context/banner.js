@@ -6,6 +6,7 @@ const {
 } = require("discord.js");
 
 module.exports = {
+  botPermissions: ["SendMessages", "EmbedLinks"],
   data: new ContextMenuCommandBuilder()
     .setName("User Banner")
     .setType(ApplicationCommandType.User),

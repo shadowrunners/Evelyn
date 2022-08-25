@@ -1,5 +1,5 @@
 const { Client, GuildMember, EmbedBuilder } = require("discord.js");
-const DB = require("../../structures/schemas/guildDB.js");
+const DB = require("../../structures/schemas/guild.js");
 
 module.exports = {
   name: "guildMemberRemove",
@@ -16,8 +16,6 @@ module.exports = {
     if (data.logs.enabled == "false" || data.logs.channel == null) return;
     if (member.user.bot) return;
 
-    console.log(member);
-
     const embed = new EmbedBuilder()
       .setAuthor({
         name: member.user.tag,
@@ -27,7 +25,7 @@ module.exports = {
       .addFields([
         {
           name: "🔹 | Member Name",
-          value: `> ${member.user.tag} (${member.user.id})`,
+          value: `> ${member.user.tag}`,
         },
         {
           name: "🔹 | Member ID",

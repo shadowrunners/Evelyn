@@ -6,6 +6,7 @@ const {
 } = require("discord.js");
 
 module.exports = {
+  botPermissions: ["SendMessages"],
   data: new ContextMenuCommandBuilder()
     .setName("User Avatar")
     .setType(ApplicationCommandType.User),

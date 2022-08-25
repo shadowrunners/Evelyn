@@ -1,34 +1,29 @@
-const { readdirSync } = require("fs");
-const { magenta, green, white } = require("chalk");
+async function loadCommands(client) {
+  const { magenta, green, white } = require("chalk");
+  const { fileLoad } = require("../../utils/fileLoader.js");
 
-function loadCommands(client) {
+  await client.commands.clear();
+
   let commandsArray = [];
   let developerArray = [];
 
-  const commandsFolder = readdirSync("./src/commands");
-  for (const folder of commandsFolder) {
-    const commandFiles = readdirSync(`./src/commands/${folder}`).filter(
-      (file) => file.endsWith(".js")
+  const files = await fileLoad("commands");
+  files.forEach((file) => {
+    const command = require(file);
+    client.commands.set(command.data.name, command);
+
+    if (command.developer) developerArray.push(command.data.toJSON());
+    else commandsArray.push(command.data.toJSON());
+
+    console.log(
+      magenta("[") +
+        magenta("Commands") +
+        magenta("]") +
+        " Loaded" +
+        green(` ${command.data.name}.js`)
     );
+  });
 
-    for (const file of commandFiles) {
-      const commandFile = require(`../../commands/${folder}/${file}`);
-
-      client.commands.set(commandFile.data.name, commandFile);
-
-      if (commandFile.developer) developerArray.push(commandFile.data.toJSON());
-      else commandsArray.push(commandFile.data.toJSON());
-
-      console.log(
-        magenta("[") +
-          magenta("Commands") +
-          magenta("]") +
-          " Loaded" +
-          green(` ${commandFile.data.name}.js`)
-      );
-      continue;
-    }
-  }
   client.application.commands.set(commandsArray);
 
   const developerGuild = client.guilds.cache.get(client.config.devGuild);

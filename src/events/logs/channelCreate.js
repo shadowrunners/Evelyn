@@ -4,7 +4,7 @@ const {
   EmbedBuilder,
   AuditLogEvent,
 } = require("discord.js");
-const DB = require("../../structures/schemas/guildDB.js");
+const DB = require("../../structures/schemas/guild.js");
 
 module.exports = {
   name: "channelCreate",

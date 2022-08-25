@@ -42,7 +42,6 @@ module.exports = {
     const replyEmbed = await interaction.reply({
       embeds: [embed],
       components: [getRow(id)],
-      ephemeral: true,
       fetchReply: true,
     });
 

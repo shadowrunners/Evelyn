@@ -7,6 +7,7 @@ const {
 const { waifuFetch } = require("../../utils/waifuFetch.js");
 
 module.exports = {
+  botPermissions: ["SendMessages", "EmbedLinks"],
   data: new SlashCommandBuilder()
     .setName("actions")
     .setDescription("Express your emotions to someone with actions!")
@@ -331,7 +332,7 @@ module.exports = {
           const cuddleEmbed = new EmbedBuilder()
             .setColor("Grey")
             .setAuthor({
-              name: `${interaction.user.username} cuddles ${target.user.username}!`,
+              name: `${interaction.user.username} cuddles ${target.username}!`,
               iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,
             })
             .setFooter({
@@ -425,7 +426,7 @@ module.exports = {
           const hugEmbed = new EmbedBuilder()
             .setColor("Grey")
             .setAuthor({
-              name: `${interaction.user.username} hugs ${target.user.username}!`,
+              name: `${interaction.user.username} hugs ${target.username}!`,
               iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,
             })
             .setFooter({
@@ -489,7 +490,7 @@ module.exports = {
           const patEmbed = new EmbedBuilder()
             .setColor("Grey")
             .setAuthor({
-              name: `${interaction.user.username} pats ${target.user.username}!`,
+              name: `${interaction.user.username} pats ${target.username}!`,
               iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,
             })
             .setFooter({
@@ -521,7 +522,7 @@ module.exports = {
           const pokeEmbed = new EmbedBuilder()
             .setColor("Grey")
             .setAuthor({
-              name: `${interaction.user.username} pokes ${target.user.username}!`,
+              name: `${interaction.user.username} pokes ${target.username}!`,
               iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,
             })
             .setFooter({
@@ -544,7 +545,7 @@ module.exports = {
           const slapEmbed = new EmbedBuilder()
             .setColor("Grey")
             .setAuthor({
-              name: `${interaction.user.username} slaps ${target.user.username}!`,
+              name: `${interaction.user.username} slaps ${target.username}!`,
               iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,
             })
             .setFooter({
@@ -561,7 +562,7 @@ module.exports = {
           const lonerWave = new EmbedBuilder()
             .setColor("Grey")
             .setAuthor({
-              name: `${client.user.username} waves at ${target.user.username}!`,
+              name: `${client.user.username} waves at ${target.username}!`,
               iconURL: `${client.user.avatarURL({ dynamic: true })}`,
             })
             .setFooter({
@@ -576,7 +577,7 @@ module.exports = {
           const waveEmbed = new EmbedBuilder()
             .setColor("Grey")
             .setAuthor({
-              name: `${interaction.user.username} waves at ${target.user.username}!`,
+              name: `${interaction.user.username} waves at ${target.username}!`,
               iconURL: `${interaction.user.avatarURL({ dynamic: true })}`,
             })
             .setFooter({
@@ -591,7 +592,7 @@ module.exports = {
       const errorEmbed = new EmbedBuilder()
         .setColor("Grey")
         .setDescription(
-          "Aeolian has ran into an error contacting the API. Please report this issue to the support server."
+          "Evelyn has ran into an error contacting the API. Please report this issue to the support server."
         )
         .setTimestamp();
       return interaction.reply({ embeds: [errorEmbed] });

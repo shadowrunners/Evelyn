@@ -1,3 +1,3 @@
 const client = require("../../structures/index.js");
 
-client.on("raw", (d) => client.manager.updateVoiceState(d));
+client.on("raw", (data) => client.manager.updateVoiceState(data));

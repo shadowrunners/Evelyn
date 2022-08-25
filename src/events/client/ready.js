@@ -1,7 +1,7 @@
 const { Client, ActivityType } = require("discord.js");
 const { magenta, white, green, red } = require("chalk");
-const mongoose = require("mongoose");
 const { dash } = require("../../dashboard/dash.js");
+const mongoose = require("mongoose");
 
 module.exports = {
   name: "ready",
@@ -24,7 +24,7 @@ module.exports = {
 
     if (!client.config.database)
       return console.log(
-        magenta("[Aeolian Notification] ") +
+        magenta("[Evelyn Notification] ") +
           red(
             "Couldn't connect to database, please check your config.json file."
           )

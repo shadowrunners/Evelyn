@@ -1,6 +1,6 @@
 {
-  "name": "aeolian",
-  "version": "2.0.0",
+  "name": "evelyn",
+  "version": "2.1.0",
   "description": "A Discord Bot that puts you as its first priority with no paywalls to interrupt your supercharged experience.",
   "main": "src/structures/index.js",
   "scripts": {
@@ -9,31 +9,32 @@
   "dependencies": {
     "better-erela.js-apple": "^1.0.4",
     "better-erela.js-spotify": "^1.3.9",
-    "canvacord": "^5.4.4",
+    "canvacord": "^5.4.6",
     "chalk": "^4.1.2",
     "dbd-dark-dashboard": "^1.6.591",
-    "discord-dashboard": "^2.3.40",
-    "discord-together": "github:notscrappie/discord-together",
-    "discord.js": "^14.1.2",
+    "discord-dashboard": "^2.3.41",
+    "discord.js": "^14.3.0",
     "erela.js": "^2.3.3",
     "erela.js-deezer": "^1.0.7",
-    "genius-lyrics": "^4.3.8",
+    "genius-lyrics": "^4.4.0",
+    "glob": "^8.0.3",
     "humanize-duration": "^3.27.2",
     "imdb-api": "^4.4.1",
-    "mongoose": "^6.5.1",
+    "mongoose": "^6.5.2",
     "ms": "^2.1.3",
     "node-kitsu": "^1.1.1",
     "pretty-ms": "^7.0.1",
+    "string-progressbar": "^1.0.4",
     "superagent": "^8.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cryolabs/aeolian.git"
+    "url": "git+https://github.com/notscrappie/evelyn.git"
   },
-  "author": "CryoLabs/notscrappie",
+  "author": "notscrappie",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/cryolabs/aeolian/issues"
+    "url": "https://github.com//notscrappie/evelyn/issues"
   },
-  "homepage": "https://github.com/cryolabs/aeolian#readme"
+  "homepage": "https://github.com/notscrappie/evelyn#readme"
 }

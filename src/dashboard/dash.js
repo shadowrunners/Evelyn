@@ -4,8 +4,7 @@ async function dash(client) {
     const { GuildText } = ChannelType;
     const DBD = require("discord-dashboard");
     const DarkDashboard = require("dbd-dark-dashboard");
-    const GDB = require("../structures/schemas/guildDB.js");
-    const AMDB = require("../structures/schemas/automodDB.js");
+    const GDB = require("../structures/schemas/guild.js");
     const {
       clientID,
       clientSecret,
@@ -104,7 +103,7 @@ async function dash(client) {
               optionType: DBD.formTypes.switch(false),
               getActualSet: async ({ guild }) => {
                 const data = await GDB.findOne({ id: guild.id });
-                const savedData = data.logs.enabled;
+                const savedData = data.logs?.enabled;
                 const defaultState = false;
                 return savedData == null || savedData == undefined
                   ? defaultState
@@ -121,7 +120,10 @@ async function dash(client) {
               optionId: "logchannel",
               optionName: "Log Channel",
               optionDescription: "Set the logs channel.",
-              optionType: DBD.formTypes.channelsSelect(false, [GuildText]),
+              optionType: DBD.formTypes.channelsSelect(
+                false,
+                (channelTypes = [GuildText])
+              ),
               getActualSet: async ({ guild }) => {
                 const data = await GDB.findOne({ id: guild.id });
                 const savedData = data.logs.channel || null;
@@ -175,7 +177,10 @@ async function dash(client) {
               optionName: "Welcome Channel",
               optionDescription:
                 "Set the channel where the welcome message will be sent in.",
-              optionType: DBD.formTypes.channelsSelect(false, [GuildText]),
+              optionType: DBD.formTypes.channelsSelect(
+                false,
+                (channelTypes = [GuildText])
+              ),
               getActualSet: async ({ guild }) => {
                 const data = await GDB.findOne({ id: guild.id });
                 const savedData = data.welcome.channel || null;
@@ -187,6 +192,30 @@ async function dash(client) {
               setNew: async ({ guild, newData }) => {
                 const data = await GDB.findOne({ id: guild.id });
                 data.welcome.channel = newData;
+                data.save();
+                return;
+              },
+            },
+            {
+              optionId: "welcome_message",
+              optionName: "Welcome Message",
+              optionDescription:
+                "Sends a message alongside the welcome embed! This is not suitable for full welcome messages as it does not replace anything with user mentions, tags, etc. This is only for a small message to be sent alongside the embed.",
+              optionType: DBD.formTypes.textarea(
+                "Set the welcome message here.",
+                null,
+                100,
+                false,
+                false
+              ),
+              getActualSet: async ({ guild }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                const savedData = data.welcome.message || null;
+                return savedData;
+              },
+              setNew: async ({ guild, newData }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                data.welcome.message = newData;
                 data.save();
                 return;
               },
@@ -267,6 +296,30 @@ async function dash(client) {
               },
             },
             {
+              optionId: "goodbye_message",
+              optionName: "Goodbye Message",
+              optionDescription:
+                "Sends a message alongside the goodbye embed! This is not suitable for full welcome messages as it does not replace anything with user mentions, tags, etc. This is only for a small message to be sent alongside the embed.",
+              optionType: DBD.formTypes.textarea(
+                "Set the goodbye message here.",
+                null,
+                100,
+                false,
+                false
+              ),
+              getActualSet: async ({ guild }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                const savedData = data.goodbye.message || null;
+                return savedData;
+              },
+              setNew: async ({ guild, newData }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                data.goodbye.message = newData;
+                data.save();
+                return;
+              },
+            },
+            {
               optionId: "goodbyeemb",
               optionName: "Goodbye Embed",
               optionDescription:
@@ -290,294 +343,6 @@ async function dash(client) {
               setNew: async ({ guild, newData }) => {
                 const data = await GDB.findOne({ id: guild.id });
                 data.goodbye.json = newData;
-                data.save();
-                return;
-              },
-            },
-          ],
-        },
-        {
-          categoryId: "aimoderation",
-          categoryName: "AutoMod",
-          categoryDescription:
-            "This section contains the configuration for the AI-powered automod system.",
-          categoryOptionsList: [
-            {
-              optionType: "spacer",
-              title: "AutoMod Configuration",
-              description:
-                "This section contains the configuration for the AI-powered automod system.",
-            },
-            {
-              optionId: "amswitch",
-              optionName: "Enable/Disable AutoMod",
-              optionDescription: "Enable or disable the AutoMod system.",
-              optionType: DBD.formTypes.switch(false),
-              getActualSet: async ({ guild }) => {
-                const data = await GDB.findOne({ id: guild.id });
-                const savedData = data.automod.enabled;
-                const defaultState = false;
-                return savedData == null || savedData == undefined
-                  ? defaultState
-                  : savedData;
-              },
-              setNew: async ({ guild, newData }) => {
-                const data = await GDB.findOne({ id: guild.id });
-                data.automod.enabled = newData;
-                data.save();
-                return;
-              },
-            },
-            {
-              optionId: "am_channels",
-              optionName: "AutoMod Channels",
-              optionDescription:
-                "Set the channels where AutoMod will be active in.",
-              optionType: DBD.formTypes.channelsMultiSelect(false, [
-                "GUILD_TEXT",
-              ]),
-              getActualSet: async ({ guild }) => {
-                const data = await AMDB.findOne({ id: guild.id });
-                return data.ChannelIDs || [];
-              },
-              setNew: async ({ guild, newData }) => {
-                const data = await AMDB.findOne({ id: guild.id });
-                data.ChannelIDs = newData;
-                data.save();
-                return;
-              },
-            },
-            {
-              optionId: "am_bypass",
-              optionName: "AutoMod Bypass",
-              optionDescription: "Set the roles that will bypass AutoMod.",
-              optionType: DBD.formTypes.rolesMultiSelect(false, true),
-              getActualSet: async ({ guild }) => {
-                const data = await AMDB.findOne({ id: guild.id });
-                return data.BypassRoles || [];
-              },
-              setNew: async ({ guild, newData }) => {
-                const data = await AMDB.findOne({ id: guild.id });
-                data.BypassRoles = newData;
-                data.save();
-                return;
-              },
-            },
-            {
-              optionId: "am_logs",
-              optionName: "AutoMod Logs",
-              optionDescription: "Set the logs channel for AutoMod.",
-              optionType: DBD.formTypes.channelsSelect(false, [GuildText]),
-              getActualSet: async ({ guild }) => {
-                const data = await AMDB.findOne({ id: guild.id });
-                const savedData = data.LogChannelID || null;
-                const defaultState = false;
-                return savedData == null || savedData == undefined
-                  ? defaultState
-                  : savedData;
-              },
-              setNew: async ({ guild, newData }) => {
-                const data = await AMDB.findOne({ id: guild.id });
-                data.LogChannelID = newData;
-                data.save();
-                return;
-              },
-            },
-            {
-              optionType: "spacer",
-              title: "Punishment Configuration",
-              description:
-                "This section contains the configuration for what actions will be taken when a violation has been detected.",
-            },
-            {
-              optionId: "pnlv_1",
-              optionName: "Level 1",
-              optionDescription:
-                "Set what action will be taken when AutoMod detects a low toxicity level.",
-              optionType: DBD.formTypes.select({
-                "Do Nothing": null,
-                "Delete Message": "delete",
-                "Kick User": "kick",
-                "Ban User": "ban",
-                "Timeout User": "timeout",
-              }),
-              getActualSet: async ({ guild }) => {
-                const data = await AMDB.findOne({ id: guild.id });
-                return data.Punishments[0];
-              },
-              setNew: async ({ guild, newData }) => {
-                const data = await AMDB.findOne({ id: guild.id });
-                data.Punishments[0] = newData || null;
-                await data.save();
-                return;
-              },
-            },
-            {
-              optionId: "pnlv_2",
-              optionName: "Level 2",
-              optionDescription:
-                "Set what action will be taken when AutoMod detects a medium toxicity level.",
-              optionType: DBD.formTypes.select({
-                "Do Nothing": null,
-                "Delete Message": "delete",
-                "Kick User": "kick",
-                "Ban User": "ban",
-                "Timeout User": "timeout",
-              }),
-              getActualSet: async ({ guild }) => {
-                const data = await AMDB.findOne({ id: guild.id });
-                return data.Punishments[1];
-              },
-              setNew: async ({ guild, newData }) => {
-                const data = await AMDB.findOne({ id: guild.id });
-                data.Punishments[1] = newData || null;
-                data.save();
-                return;
-              },
-            },
-            {
-              optionId: "pnlv_3",
-              optionName: "Level 3",
-              optionDescription:
-                "Set what action will be taken when AutoMod detects a high toxicity level.",
-              optionType: DBD.formTypes.select({
-                "Do Nothing": null,
-                "Delete Message": "delete",
-                "Kick User": "kick",
-                "Ban User": "ban",
-                "Timeout User": "timeout",
-              }),
-              getActualSet: async ({ guild }) => {
-                const data = await AMDB.findOne({ id: guild.id });
-                return data.Punishments[2];
-              },
-              setNew: async ({ guild, newData }) => {
-                const data = await AMDB.findOne({ id: guild.id });
-                data.Punishments[2] = newData || null;
-                data.save();
-                return;
-              },
-            },
-          ],
-        },
-        {
-          categoryId: "antiscam",
-          categoryName: "Anti-Scam",
-          categoryDescription:
-            "This section contains the configuration for the Anti-Scam system.",
-          categoryOptionsList: [
-            {
-              optionType: "spacer",
-              title: "Anti-Scam Configuration",
-              description:
-                "This section contains the configuration for the Anti-Scam system.",
-            },
-            {
-              optionId: "asswitch",
-              optionName: "Enable/Disable Anti-Scam",
-              optionDescription: "Enable or disable the Anti-Scam system.",
-              optionType: DBD.formTypes.switch(false),
-              getActualSet: async ({ guild }) => {
-                const data = await GDB.findOne({ id: guild.id });
-                const savedData = data.antiscam.enabled;
-                const defaultState = false;
-                return savedData == null || savedData == undefined
-                  ? defaultState
-                  : savedData;
-              },
-              setNew: async ({ guild, newData }) => {
-                const data = await GDB.findOne({ id: guild.id });
-                data.antiscam.enabled = newData;
-                data.save();
-                return;
-              },
-            },
-            {
-              optionId: "as_logs",
-              optionName: "Logs Channel",
-              optionDescription:
-                "Set the channel where Anti-Scam will send its logs in.",
-              optionType: DBD.formTypes.channelsSelect(false, [GuildText]),
-              getActualSet: async ({ guild }) => {
-                const data = await GDB.findOne({ id: guild.id });
-                return data.antiscam.channel || null;
-              },
-              setNew: async ({ guild, newData }) => {
-                const data = await GDB.findOne({ id: guild.id });
-                data.antiscam.channel = newData;
-                data.save();
-                return;
-              },
-            },
-          ],
-        },
-        {
-          categoryId: "notifs",
-          categoryName: "Notifiers",
-          categoryDescription:
-            "This section contains the configuration for the notification system.",
-          categoryOptionsList: [
-            {
-              optionType: "spacer",
-              title: "YouTube Notifications Configuration",
-              description:
-                "This section contains the configuration for the YouTube notification system.",
-            },
-            {
-              optionId: "notifswitch",
-              optionName: "Enable/Disable YouTube Notifications",
-              optionDescription:
-                "Enable or disable the YouTube Notification system.",
-              optionType: DBD.formTypes.switch(false),
-              getActualSet: async ({ guild }) => {
-                const data = await GDB.findOne({ id: guild.id });
-                const savedData = data.notifications.youtube_enabled;
-                const defaultState = false;
-                return savedData == null || savedData == undefined
-                  ? defaultState
-                  : savedData;
-              },
-              setNew: async ({ guild, newData }) => {
-                const data = await GDB.findOne({ id: guild.id });
-                data.notifications.youtube_enabled = newData;
-                data.save();
-                return;
-              },
-            },
-            {
-              optionId: "ytchannel",
-              optionName: "Enable/Disable YouTube Notifications",
-              optionDescription:
-                "Enable or disable the YouTube Notification system.",
-              optionType: DBD.formTypes.switch(false),
-              getActualSet: async ({ guild }) => {
-                const data = await GDB.findOne({ id: guild.id });
-                const savedData = data.notifications.youtube_enabled;
-                const defaultState = false;
-                return savedData == null || savedData == undefined
-                  ? defaultState
-                  : savedData;
-              },
-              setNew: async ({ guild, newData }) => {
-                const data = await GDB.findOne({ id: guild.id });
-                data.notifications.youtube_enabled = newData;
-                data.save();
-                return;
-              },
-            },
-            {
-              optionId: "as_logs",
-              optionName: "Logs Channel",
-              optionDescription:
-                "Set the channel where Anti-Scam will send its logs in.",
-              optionType: DBD.formTypes.channelsSelect(false, [GuildText]),
-              getActualSet: async ({ guild }) => {
-                const data = await GDB.findOne({ id: guild.id });
-                return data.antiscam.channel || null;
-              },
-              setNew: async ({ guild, newData }) => {
-                const data = await GDB.findOne({ id: guild.id });
-                data.antiscam.channel = newData;
                 data.save();
                 return;
               },
