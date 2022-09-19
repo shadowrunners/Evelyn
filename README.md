@@ -1,6 +1,6 @@
 <div align=center>
   <a href="logo">
-    <img src="https://cdn.discordapp.com/attachments/925125325107658832/1009974907377033216/dalle_girl_v2.png" alt="Evelyn" height="150px" width="150px"
+    <img src="https://cdn.discordapp.com/attachments/925125325107658832/1021494622482071642/ezgif.com-gif-maker.png" alt="Evelyn" height="150px" width="150px"
   ></a>
   
 </div>
@@ -8,7 +8,7 @@
 
   <div align=center>
     <a href="https://github.com/discordjs">
-      <img src="https://img.shields.io/badge/discord.js-v14.2.0-blue.svg?logo=npm">
+      <img src="https://img.shields.io/badge/discord.js-v14.3.0-blue.svg?logo=npm">
     </a>
 
   <a href="#">
@@ -44,7 +44,6 @@ You can find the installation guide [here](https://docs.evelynbot.ml) or alterna
 ## Credits
 
 - [Lyxcode](https://youtube.com/c/Lyxcode) - command handler
-- [OpenAI's DALL-E 2](https://www.openai.com/dall-e-2) - creator of profile picture artwork
 - [itstylerrr](https://github.com/itstylerrr/Valiant) - took inspiration from the README
 - [Alvaa](https://github.com/Allvaa/lavalink-musicbot) - repo helped with music system
 - [SudhanPlayz](https://github.com/SudhanPlayz/Discord-MusicBot) - repo helped with music system
