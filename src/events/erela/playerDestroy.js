@@ -1,14 +1,13 @@
-const client = require("../../structures/index.js");
-const { magenta, white, red } = require("chalk");
+const { magenta, white } = require("chalk");
 
 module.exports = {
   name: "playerDestroy",
-  run: client.manager.on("playerDestroy", () => {
+  execute() {
     console.log(
       magenta("[") +
         magenta("Erela") +
         magenta("] ") +
         white(`Player destroyed.`)
     );
-  }),
+  },
 };

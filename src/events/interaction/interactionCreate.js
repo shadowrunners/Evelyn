@@ -66,6 +66,12 @@ module.exports = {
 
       if (command.botPermissions) {
         if (
+          interaction.guild.members.me.permissions.has(
+            PermissionsBitField.resolve("Administrator")
+          )
+        ) {
+          return command.execute(interaction, client);
+        } else if (
           !interaction.guild.members.me.permissions.has(
             PermissionsBitField.resolve(command.botPermissions || [])
           )
@@ -85,8 +91,6 @@ module.exports = {
             ephemeral: true,
           });
       }
-
-      command.execute(interaction, client);
     }
   },
 };

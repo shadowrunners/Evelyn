@@ -1,9 +1,8 @@
-const client = require("../../structures/index.js");
-const { magenta, white, green } = require("chalk");
+const { magenta, white, red } = require("chalk");
 
 module.exports = {
   name: "nodeError",
-  run: client.manager.on("nodeError", (node, error) => {
+  execute(node, error) {
     console.log(
       magenta("[") +
         magenta("Erela") +
@@ -12,5 +11,5 @@ module.exports = {
         white(node.options.identifier) +
         red(`: ${error.message}.`)
     );
-  }),
+  },
 };

@@ -28,14 +28,14 @@ async function dash(client) {
       theme: DarkDashboard({
         information: {
           createdBy: "CryoLabs",
-          websiteTitle: "Aeolian",
-          websiteName: "Aeolian",
-          websiteUrl: "https://aeolianbot.ml/",
+          websiteTitle: "Evelyn",
+          websiteName: "Evelyn",
+          websiteUrl: "https://evelynbot.ml/",
           dashboardUrl: "http://localhost:3000/",
           supporteMail: "hi@cryolabs.ml",
           supportServer: "https://discord.gg/HwkDSs7X82",
-          imageFavicon: "https://i.imgur.com/yaAqXVz.png",
-          iconURL: "https://i.imgur.com/yaAqXVz.png",
+          imageFavicon: "https://i.imgur.com/0eXmmD9.png",
+          iconURL: "https://i.imgur.com/0eXmmD9.png",
           loggedIn: "Successfully signed in.",
           mainColor: "#808080",
           subColor: "#FFFFFF",
@@ -44,22 +44,13 @@ async function dash(client) {
 
         index: {
           card: {
-            category: "Aeolian | Control Center",
-            title: `Welcome to Aeolian's control center, the one stop shop for customization and settings regarding our bot.`,
-            image: "https://i.imgur.com/0cIP8q1.png",
+            category: "Evelyn | Control Center",
+            title: `Welcome to Evelyn's control center, the one stop shop for customization and settings regarding our bot.`,
+            image: "https://i.imgur.com/YPkwGBI.png",
           },
 
-          information: {
-            category: "Updates",
-            title: "Information",
-            description: `This project is a work in progress. If you have any questions, feel free to join our support server.`,
-          },
-
-          feeds: {
-            category: "Updates",
-            title: "Information",
-            description: `This bot and panel is currently a work in progress so contact me if you find any issues on discord.`,
-          },
+          information: {},
+          feeds: {},
         },
 
         commands: [

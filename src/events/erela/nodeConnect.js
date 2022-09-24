@@ -1,9 +1,8 @@
-const client = require("../../structures/index.js");
 const { magenta, white, green } = require("chalk");
 
 module.exports = {
   name: "nodeConnect",
-  run: client.manager.on("nodeConnect", (node) => {
+  execute(node) {
     console.log(
       magenta("[") +
         magenta("Erela") +
@@ -12,5 +11,5 @@ module.exports = {
         white(node.options.id) +
         green(" connected!")
     );
-  }),
+  },
 };

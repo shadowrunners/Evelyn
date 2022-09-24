@@ -39,7 +39,7 @@ module.exports = {
       text: `Page ${pages[id] + 1} from ${Pagemax}`,
     });
 
-    const replyEmbed = await interaction.reply({
+    const replyEmbed = await interaction.editReply({
       embeds: [embed],
       components: [getRow(id)],
       fetchReply: true,

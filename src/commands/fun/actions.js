@@ -4,7 +4,7 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
 } = require("discord.js");
-const { waifuFetch } = require("../../utils/waifuFetch.js");
+const { waifuFetch } = require("../../utils/imageAPIs.js");
 
 module.exports = {
   botPermissions: ["SendMessages", "EmbedLinks"],
