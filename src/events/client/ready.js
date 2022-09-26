@@ -1,7 +1,7 @@
 const { Client, ActivityType } = require("discord.js");
 const { magenta, white, green, red } = require("chalk");
 const { dash } = require("../../dashboard/dash.js");
-const mongoose = require("mongoose");
+const { connect } = require("mongoose");
 
 module.exports = {
   name: "ready",
@@ -33,11 +33,7 @@ module.exports = {
     client.manager.init(client.user.id);
     dash(client);
 
-    mongoose
-      .connect(client.config.database, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      })
+    connect(client.config.database)
       .then(() => {
         console.log(
           magenta("[DB] ") +

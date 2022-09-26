@@ -22,6 +22,6 @@ module.exports = {
       .setTitle(`${target.user.tag}'s Avatar`)
       .setImage(target.user.avatarURL({ dynamic: true, size: 2048 }))
       .setURL(target.avatarURL());
-    return interaction.reply({ embeds: [avatarEmbed] });
+    return interaction.reply({ embeds: [avatarEmbed], ephemeral: true });
   },
 };

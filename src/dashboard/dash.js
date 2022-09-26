@@ -1,7 +1,15 @@
 async function dash(client) {
   (async () => {
-    const { ChannelType } = require("discord.js");
-    const { GuildText } = ChannelType;
+    const {
+      ChannelType,
+      ActionRowBuilder,
+      ButtonBuilder,
+      ButtonStyle,
+      InteractionCollector,
+    } = require("discord.js");
+    const { GuildText, GuildCategory } = ChannelType;
+    const session = require("express-session");
+    const MongoDBStore = require("connect-mongodb-session")(session);
     const DBD = require("discord-dashboard");
     const DarkDashboard = require("dbd-dark-dashboard");
     const GDB = require("../structures/schemas/guild.js");
@@ -9,6 +17,7 @@ async function dash(client) {
       clientID,
       clientSecret,
       DBDLicense,
+      database,
       redirectUri,
       domain,
     } = require("../structures/config.json");
@@ -25,6 +34,10 @@ async function dash(client) {
       redirectUri: redirectUri,
       domain: domain,
       bot: client,
+      sessionStore: new MongoDBStore({
+        uri: database,
+        collection: "dashSessions",
+      }),
       theme: DarkDashboard({
         information: {
           createdBy: "CryoLabs",
@@ -39,7 +52,7 @@ async function dash(client) {
           loggedIn: "Successfully signed in.",
           mainColor: "#808080",
           subColor: "#FFFFFF",
-          preloader: "Loading..",
+          preloader: "Loading.",
         },
 
         index: {
@@ -335,6 +348,186 @@ async function dash(client) {
                 const data = await GDB.findOne({ id: guild.id });
                 data.goodbye.json = newData;
                 data.save();
+                return;
+              },
+            },
+          ],
+        },
+        {
+          categoryId: "tickets",
+          categoryName: "Tickets",
+          categoryDescription:
+            "Make assisting other users easier with our ticket support system.",
+          categoryOptionsList: [
+            {
+              optionType: "spacer",
+              title: "Ticket System Configuration",
+              description:
+                "This section contains the configuration for the welcome embed. Scroll down for the goodbye embed configuration.",
+            },
+            {
+              optionId: "ticketswitch",
+              optionName: "Enable/Disable Tickets",
+              optionDescription: "Enable or disable tickets.",
+              optionType: DBD.formTypes.switch(false),
+              getActualSet: async ({ guild }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                const savedData = data.tickets.enabled;
+                const defaultState = false;
+                return savedData == null || savedData == undefined
+                  ? defaultState
+                  : savedData;
+              },
+              setNew: async ({ guild, newData }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                data.tickets.enabled = newData;
+                data.save();
+                return;
+              },
+            },
+            {
+              optionId: "ticketchannel",
+              optionName: "Ticket Channel",
+              optionDescription:
+                "Set the channel where the ticket panel embed will be sent.",
+              optionType: DBD.formTypes.channelsSelect(
+                false,
+                (channelTypes = [GuildText])
+              ),
+              getActualSet: async ({ guild }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                return data.tickets?.channel || null;
+              },
+              setNew: async ({ guild, newData }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                data.tickets.channel = newData;
+                data.save();
+                return;
+              },
+            },
+            {
+              optionId: "ticketcategory",
+              optionName: "Ticket Category",
+              optionDescription:
+                "Select the category where the ticket channels will be created.",
+              optionType: DBD.formTypes.channelsSelect(
+                false,
+                (channelTypes = [GuildCategory])
+              ),
+              getActualSet: async ({ guild }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                return data.tickets.category || null;
+              },
+              setNew: async ({ guild, newData }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                data.tickets.category = newData || null;
+                data.save();
+                return;
+              },
+            },
+            {
+              optionId: "tickettranscripts",
+              optionName: "Ticket Transcripts",
+              optionDescription:
+                "Select the channel where the transcripts will be sent.",
+              optionType: DBD.formTypes.channelsSelect(
+                false,
+                (channelTypes = [GuildText])
+              ),
+              getActualSet: async ({ guild }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                return data.tickets.transcriptChannel || null;
+              },
+              setNew: async ({ guild, newData }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                data.tickets.transcriptChannel = newData;
+                data.save();
+                return;
+              },
+            },
+            {
+              optionId: "tickethandlers",
+              optionName: "Ticket Handlers",
+              optionDescription:
+                "Select the role which will be pinged to handle tickets.",
+              optionType: DBD.formTypes.rolesSelect(false),
+              getActualSet: async ({ guild }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                return data.tickets.ticketHandlers || null;
+              },
+              setNew: async ({ guild, newData }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                data.tickets.ticketHandlers = newData || null;
+                data.save();
+                return;
+              },
+            },
+            {
+              optionType: "spacer",
+              title: "Ticket Embed Configuration",
+              description:
+                "This section contains the configuration for the ticket panel embed. Scroll down for the per-ticket embed configuration.",
+            },
+            {
+              optionId: "tpembed",
+              optionName: "Ticket Panel Embed",
+              optionDescription:
+                "Configure the embed that will be included in the panel.",
+              optionType: DBD.formTypes.embedBuilder({
+                username: client.user.username,
+                avatarURL: client.user.avatarURL({ dynamic: true }),
+                defaultJson: {
+                  embed: {
+                    timestamp: new Date().toISOString(),
+                    description: "Need help? Open a ticket!",
+                    author: {
+                      name: "Evelyn | Ticketing System",
+                      url: "https://evelynbot.ml",
+                    },
+                    footer: {
+                      text: "This is a footer, change it to your liking.",
+                    },
+                    fields: [
+                      {
+                        name: "Hello",
+                        value: "This is a field.",
+                      },
+                      {
+                        name: "Hello 2",
+                        value: "This is a field.",
+                        inline: false,
+                      },
+                    ],
+                  },
+                },
+              }),
+              getActualSet: async ({ guild }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                return data.tickets.panelJSON;
+              },
+              setNew: async ({ guild, newData }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                data.tickets.panelJSON = newData || null;
+                await data.save();
+
+                const channel = data.tickets?.channel;
+                if (channel) {
+                  const tpChannel = client.channels.cache.get(channel);
+
+                  const buttons = new ActionRowBuilder();
+                  buttons.addComponents(
+                    new ButtonBuilder()
+                      .setCustomId("createTicket")
+                      .setLabel("Open a Ticket")
+                      .setEmoji("📩")
+                      .setStyle(ButtonStyle.Primary)
+                  );
+
+                  tpChannel.send({
+                    embeds: [data.tickets.panelJSON.embed],
+                    components: [buttons],
+                  });
+                }
                 return;
               },
             },
