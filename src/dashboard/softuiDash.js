@@ -1,17 +1,16 @@
-async function dash(client) {
+async function softuiDash(client) {
   (async () => {
     const {
       ChannelType,
       ActionRowBuilder,
       ButtonBuilder,
       ButtonStyle,
-      InteractionCollector,
     } = require("discord.js");
     const { GuildText, GuildCategory } = ChannelType;
     const session = require("express-session");
     const MongoDBStore = require("connect-mongodb-session")(session);
     const DBD = require("discord-dashboard");
-    const DarkDashboard = require("dbd-dark-dashboard");
+    const SoftUI = require("dbd-soft-ui");
     const GDB = require("../structures/schemas/guild.js");
     const {
       clientID,
@@ -20,6 +19,7 @@ async function dash(client) {
       database,
       redirectUri,
       domain,
+      ownerIDs,
     } = require("../structures/config.json");
 
     await DBD.useLicense(DBDLicense);
@@ -33,65 +33,73 @@ async function dash(client) {
       },
       redirectUri: redirectUri,
       domain: domain,
+      ownerIDs: ownerIDs,
       bot: client,
       sessionStore: new MongoDBStore({
         uri: database,
         collection: "dashSessions",
       }),
-      theme: DarkDashboard({
-        information: {
-          createdBy: "CryoLabs",
-          websiteTitle: "Evelyn",
-          websiteName: "Evelyn",
-          websiteUrl: "https://evelynbot.ml/",
-          dashboardUrl: "http://localhost:3000/",
-          supporteMail: "hi@cryolabs.ml",
-          supportServer: "https://discord.gg/HwkDSs7X82",
-          imageFavicon: "https://i.imgur.com/0eXmmD9.png",
-          iconURL: "https://i.imgur.com/0eXmmD9.png",
-          loggedIn: "Successfully signed in.",
-          mainColor: "#808080",
-          subColor: "#FFFFFF",
-          preloader: "Loading.",
+      theme: SoftUI({
+        customThemeOptions: {
+          index: async ({ req, res, config }) => {
+            return {
+              values: [],
+              graph: {},
+              cards: [],
+            };
+          },
         },
-
+        websiteName: "Evelyn",
+        colorScheme: "pink",
+        supporteMail: "hi@cryolabs.ml",
+        icons: {
+          favicon: "https://i.imgur.com/0eXmmD9.png",
+          noGuildIcon: "https://i.imgur.com/mtrlifm.jpg",
+          sidebar: {
+            darkUrl: "https://i.imgur.com/unSOlT9.png",
+            lightUrl: "https://i.imgur.com/unSOlT9.png",
+            hideName: true,
+            borderRadius: false,
+            alignCenter: true,
+          },
+        },
+        preloader: {
+          image: "/img/soft-ui.webp",
+          spinner: false,
+          text: "Page is loading",
+        },
         index: {
           card: {
-            category: "Evelyn | Control Center",
-            title: `Welcome to Evelyn's control center, the one stop shop for customization and settings regarding our bot.`,
-            image: "https://i.imgur.com/YPkwGBI.png",
+            category: "tester1",
+            title: "ass",
+            description:
+              "Assistants Discord Bot management panel. <b><i>Feel free to use HTML</i></b>",
+            image: "/img/soft-ui.webp",
+            link: {
+              enabled: true,
+              url: "https://google.com",
+            },
           },
-
-          information: {},
-          feeds: {},
+          graph: {
+            enabled: false,
+            lineGraph: false,
+            title: "Memory Usage",
+            tag: "Memory (MB)",
+            max: 100,
+          },
         },
-
-        commands: [
-          {
-            category: `Starting Up`,
-            subTitle: `All helpful commands`,
-            list: [
-              {
-                commandName: "bug",
-                commandUsage: `;bug <bug>`,
-                commandDescription: `test`,
-                commandAlias: "No aliases",
-              },
-              {
-                commandName: "2nd command",
-                commandUsage: "oto.nd <arg> <arg2> [op]",
-                commandDescription: "Lorem ipsum dolor sth, arg sth arg2 stuff",
-                commandAlias: "Alias",
-              },
-              {
-                commandName: "Test command",
-                commandUsage: "prefix.test <arg> [op]",
-                commandDescription: "Lorem ipsum dolor sth",
-                commandAlias: "Alias",
-              },
-            ],
+        sweetalert: {
+          errors: {},
+          success: {
+            login: "Successfully logged in.",
           },
-        ],
+        },
+        preloader: {
+          image: "/img/soft-ui.webp",
+          spinner: false,
+          text: "Page is loading",
+        },
+        commands: [],
       }),
       settings: [
         {
@@ -150,12 +158,6 @@ async function dash(client) {
           categoryName: "Welcome / Goodbye",
           categoryDescription: "A fully fledged welcoming system.",
           categoryOptionsList: [
-            {
-              optionType: "spacer",
-              title: "Welcome Embed Configuration",
-              description:
-                "This section contains the configuration for the welcome embed. Scroll down for the goodbye embed configuration.",
-            },
             {
               optionId: "wlswitch",
               optionName: "Enable/Disable welcoming",
@@ -223,40 +225,6 @@ async function dash(client) {
                 data.save();
                 return;
               },
-            },
-            {
-              optionId: "welcomeemb",
-              optionName: "Welcome Embed",
-              optionDescription:
-                "Configure the embed that will be sent once someone joins.",
-              optionType: DBD.formTypes.embedBuilder({
-                username: client.user.username,
-                avatarURL: client.user.avatarURL({ dynamic: true }),
-                defaultJson: {
-                  embed: {
-                    description: `Welcome, {user.username}!\n\nPlease read the rules and have fun!`,
-                    footer: {
-                      text: "This is a sample message. Change it to your liking.",
-                    },
-                  },
-                },
-              }),
-              getActualSet: async ({ guild }) => {
-                const data = await GDB.findOne({ id: guild.id });
-                return data.welcome.json;
-              },
-              setNew: async ({ guild, newData }) => {
-                const data = await GDB.findOne({ id: guild.id });
-                data.welcome.json = newData;
-                data.save();
-                return;
-              },
-            },
-            {
-              optionType: "spacer",
-              title: "Goodbye Embed Configuration",
-              description:
-                "This section contains the configuration for the goodbye embed.",
             },
             {
               optionId: "gbswitch",
@@ -360,12 +328,6 @@ async function dash(client) {
             "Make assisting other users easier with our ticket support system.",
           categoryOptionsList: [
             {
-              optionType: "spacer",
-              title: "Ticket System Configuration",
-              description:
-                "This section contains the configuration for the welcome embed. Scroll down for the goodbye embed configuration.",
-            },
-            {
               optionId: "ticketswitch",
               optionName: "Enable/Disable Tickets",
               optionDescription: "Enable or disable tickets.",
@@ -463,12 +425,6 @@ async function dash(client) {
               },
             },
             {
-              optionType: "spacer",
-              title: "Ticket Embed Configuration",
-              description:
-                "This section contains the configuration for the ticket panel embed. Scroll down for the per-ticket embed configuration.",
-            },
-            {
               optionId: "tpembed",
               optionName: "Ticket Panel Embed",
               optionDescription:
@@ -533,10 +489,85 @@ async function dash(client) {
             },
           ],
         },
+        {
+          categoryId: "levels",
+          categoryName: "Leveling",
+          categoryDescription:
+            "Make chatting more rewarding by enabling the leveling system.",
+          categoryOptionsList: [
+            {
+              optionId: "levelToggle",
+              optionName: "Enable/Disable Leveling",
+              optionDescription: "Enable or disable the leveling system.",
+              optionType: DBD.formTypes.switch(false),
+              getActualSet: async ({ guild }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                const savedData = data.levels?.enabled;
+                const defaultState = false;
+                return savedData == null || savedData == undefined
+                  ? defaultState
+                  : savedData;
+              },
+              setNew: async ({ guild, newData }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                data.levels.enabled = newData;
+                data.save();
+                return;
+              },
+            },
+            {
+              optionId: "levelChannel",
+              optionName: "Level Channel",
+              optionDescription:
+                "Set the channel where level up messages will be sent.",
+              optionType: DBD.formTypes.channelsSelect(
+                false,
+                (channelTypes = [GuildText])
+              ),
+              getActualSet: async ({ guild }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                const savedData = data.levels.channel || null;
+                const defaultState = false;
+                return savedData == null || savedData == undefined
+                  ? defaultState
+                  : savedData;
+              },
+              setNew: async ({ guild, newData }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                data.levels.channel = newData;
+                data.save();
+                return;
+              },
+            },
+            {
+              optionId: "xp_message",
+              optionName: "Level Up Message",
+              optionDescription: "Sets the Level Up message.",
+              optionType: DBD.formTypes.textarea(
+                "🎉 Congrats, {userMention}! You have levelled up to {userLevel}! 🎉",
+                null,
+                100,
+                false,
+                false
+              ),
+              getActualSet: async ({ guild }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                const savedData = data.levels.message || null;
+                return savedData;
+              },
+              setNew: async ({ guild, newData }) => {
+                const data = await GDB.findOne({ id: guild.id });
+                data.levels.message = newData;
+                data.save();
+                return;
+              },
+            },
+          ],
+        },
       ],
     });
     Dashboard.init();
   })();
 }
 
-module.exports = { dash };
+module.exports = { softuiDash };

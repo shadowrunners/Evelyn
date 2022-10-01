@@ -36,5 +36,10 @@ module.exports = model(
       transcriptChannel: String,
       ticketHandlers: String,
     },
+    levels: {
+      enabled: false,
+      channel: String,
+      message: String,
+    },
   })
 );

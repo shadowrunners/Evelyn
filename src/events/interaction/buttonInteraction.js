@@ -22,7 +22,7 @@ module.exports = {
           embeds: [
             Embed.setColor("Blurple")
               .setDescription(
-                "🔹 | You don't have the required permissions to use this button. "
+                "🔹 | You don't have the required permissions to use this button."
               )
               .setTimestamp(),
           ],

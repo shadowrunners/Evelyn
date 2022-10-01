@@ -67,12 +67,12 @@ module.exports = {
 
     const embed = new EmbedBuilder().setTimestamp();
 
-    interaction.deferReply();
+    await interaction.deferReply();
 
     switch (choices) {
       case "awooify": {
         if (!avatar)
-          return interaction.reply({
+          return interaction.editReply({
             embeds: [
               embed.setDescription("🔹 | You forgot to mention a user."),
             ],
@@ -85,7 +85,7 @@ module.exports = {
       }
       case "baguette": {
         if (!avatar)
-          return interaction.reply({
+          return interaction.editReply({
             embeds: [
               embed.setDescription("🔹 | You forgot to mention a user."),
             ],
@@ -98,7 +98,7 @@ module.exports = {
       }
       case "blurpify": {
         if (!avatar)
-          return interaction.reply({
+          return interaction.editReply({
             embeds: [
               embed.setDescription("🔹 | You forgot to mention a user."),
             ],
@@ -113,7 +113,7 @@ module.exports = {
       }
       case "captcha": {
         if (!avatar || !username)
-          return interaction.reply({
+          return interaction.editReply({
             embeds: [
               embed.setDescription("🔹 | You forgot to mention a user."),
             ],
@@ -129,7 +129,7 @@ module.exports = {
       }
       case "changemymind": {
         if (!text)
-          return interaction.reply({
+          return interaction.editReply({
             embeds: [
               embed.setDescription("🔹 | You forgot to provide some text."),
             ],
@@ -142,7 +142,7 @@ module.exports = {
       }
       case "deepfry": {
         if (!avatar)
-          return interaction.reply({
+          return interaction.editReply({
             embeds: [
               embed.setDescription("🔹 | You forgot to mention a user."),
             ],
@@ -155,7 +155,7 @@ module.exports = {
       }
       case "fact": {
         if (!text)
-          return interaction.reply({
+          return interaction.editReply({
             embeds: [
               embed.setDescription("🔹 | You forgot to provide some text."),
             ],
@@ -168,7 +168,7 @@ module.exports = {
       }
       case "kannagen": {
         if (!text)
-          return interaction.reply({
+          return interaction.editReply({
             embeds: [
               embed.setDescription("🔹 | You forgot to provide some text."),
             ],
@@ -181,7 +181,7 @@ module.exports = {
       }
       case "phcomment": {
         if (!avatar || !text || !username)
-          return interaction.reply({
+          return interaction.editReply({
             embeds: [
               embed.setDescription(
                 "🔹 | You either forgot to provide a user or some text."
@@ -200,7 +200,7 @@ module.exports = {
       }
       case "ship": {
         if (!user1?.avatarURL() || user2?.avatarURL())
-          return interaction.reply({
+          return interaction.editReply({
             embeds: [
               embed.setDescription("🔹 | You forgot to mention two users."),
             ],
@@ -215,7 +215,7 @@ module.exports = {
       }
       case "threats": {
         if (!avatar)
-          return interaction.reply({
+          return interaction.editReply({
             embeds: [
               embed.setDescription("🔹 | You forgot to mention a user."),
             ],
@@ -229,7 +229,7 @@ module.exports = {
       }
       case "trash": {
         if (!avatar)
-          return interaction.reply({
+          return interaction.editReply({
             embeds: [
               embed.setDescription("🔹 | You forgot to mention a user."),
             ],
@@ -243,7 +243,7 @@ module.exports = {
       }
       case "trumptweet": {
         if (!text)
-          return interaction.reply({
+          return interaction.editReply({
             embeds: [
               embed.setDescription("🔹 | You forgot to provide some text."),
             ],
@@ -257,7 +257,7 @@ module.exports = {
       }
       case "tweet": {
         if (!user1?.username || !user2.username || !text)
-          return interaction.reply({
+          return interaction.editReply({
             embeds: [
               embed.setDescription(
                 "🔹 | You either forgot to provide two users, some text or maybe even both."
@@ -274,7 +274,7 @@ module.exports = {
       }
       case "whowouldwin": {
         if (!user1?.avatarURL() || !user2?.avatarURL())
-          return interaction.reply({
+          return interaction.editReply({
             embeds: [
               embed.setDescription("🔹 | You forgot to provide two users."),
             ],

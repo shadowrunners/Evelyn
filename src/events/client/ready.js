@@ -1,6 +1,9 @@
 const { Client, ActivityType } = require("discord.js");
 const { magenta, white, green, red } = require("chalk");
+const DXP = require("discord-xp");
+const { loadCommands } = require("../../structures/handlers/commands.js");
 const { dash } = require("../../dashboard/dash.js");
+const { softuiDash } = require("../../dashboard/softuiDash.js");
 const { connect } = require("mongoose");
 
 module.exports = {
@@ -15,6 +18,9 @@ module.exports = {
         white("Logged in as ") +
         green(`${client.user.tag}`)
     );
+
+    loadCommands(client);
+
     client.user.setPresence({
       activities: [
         { name: "Fly Me to The Moon", type: ActivityType.Listening },
@@ -31,7 +37,9 @@ module.exports = {
       );
 
     client.manager.init(client.user.id);
-    dash(client);
+    //dash(client);
+    softuiDash(client);
+    DXP.setURL(client.config.database);
 
     connect(client.config.database)
       .then(() => {
