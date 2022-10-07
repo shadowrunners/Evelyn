@@ -1,6 +1,6 @@
 <div align=center>
   <a href="logo">
-    <img src="https://cdn.discordapp.com/attachments/925125325107658832/1021494622482071642/ezgif.com-gif-maker.png" alt="Evelyn" height="150px" width="150px"
+    <img src="https://cdn.discordapp.com/avatars/832289090128969787/3e8394e754ee4d7f9e2d9edd43aec3f3.webp?size=2048" alt="Evelyn" height="150px" width="150px"
   ></a>
   
 </div>
