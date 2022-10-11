@@ -7,6 +7,7 @@ const {
 const imdb = require("imdb-api");
 
 module.exports = {
+  botPermissions: ["SendMessages"],
   data: new SlashCommandBuilder()
     .setName("show")
     .setDescription("Search for a TV show using IMDB.")

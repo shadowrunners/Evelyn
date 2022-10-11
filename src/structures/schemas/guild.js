@@ -28,5 +28,18 @@ module.exports = model(
       enabled: false,
       channel: String,
     },
+    tickets: {
+      enabled: false,
+      channel: String,
+      panelJSON: Object,
+      category: String,
+      transcriptChannel: String,
+      ticketHandlers: String,
+    },
+    levels: {
+      enabled: false,
+      channel: String,
+      message: String,
+    },
   })
 );

@@ -1,6 +1,6 @@
 const {
-  CommandInteraction,
   Client,
+  CommandInteraction,
   EmbedBuilder,
   PermissionsBitField,
 } = require("discord.js");
@@ -14,9 +14,12 @@ module.exports = {
    * @param {Client} client
    */
   async execute(interaction, client) {
-    const Embed = new EmbedBuilder();
+    if (
+      interaction.isChatInputCommand() ||
+      interaction.isUserContextMenuCommand()
+    ) {
+      const Embed = new EmbedBuilder();
 
-    if (interaction.isCommand()) {
       const command = client.commands.get(interaction.commandName);
       Embed.setColor("Grey").setDescription("This command is outdated.");
 
@@ -64,6 +67,13 @@ module.exports = {
         return interaction.reply({ embeds: [Embed] });
       }
 
+      if (
+        interaction.guild.members.me.permissions.has(
+          PermissionsBitField.resolve("Administrator")
+        )
+      )
+        command.execute(interaction, client);
+
       if (command.botPermissions) {
         if (
           !interaction.guild.members.me.permissions.has(
@@ -85,8 +95,6 @@ module.exports = {
             ephemeral: true,
           });
       }
-
-      command.execute(interaction, client);
     }
   },
 };

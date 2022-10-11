@@ -6,6 +6,7 @@ const {
 const kitsu = require("node-kitsu");
 
 module.exports = {
+  botPermissions: ["SendMessages"],
   data: new SlashCommandBuilder()
     .setName("anime")
     .setDescription("Get info about an anime using Kitsu.io.")
@@ -20,6 +21,7 @@ module.exports = {
    */
   async execute(interaction) {
     const title = interaction.options.getString("title");
+    const aniEmbed = new EmbedBuilder();
 
     kitsu
       .searchAnime(title, 0)
@@ -27,9 +29,26 @@ module.exports = {
         const anime = result[0];
         const status = anime.attributes.status
           .replace("finished", "Finished")
-          .replace("ongoing", "Ongoing");
-        const aniEmbed = new EmbedBuilder()
-          .setTitle(`${anime.attributes.titles.en_us}`)
+          .replace("ongoing", "Ongoing")
+          .replace("current", "Currently Airing");
+
+        if (!anime.attributes.averageRating) {
+          aniEmbed.addFields({ name: "Rating", value: `No ratings yet.` });
+        } else {
+          aniEmbed.addFields({
+            name: "Rating",
+            value: `${anime.attributes.averageRating}`,
+            inline: true,
+          });
+        }
+
+        if (!anime.attributes.titles.en_us)
+          aniEmbed.setTitle(`${anime.attributes.titles.en_jp}`);
+        else {
+          aniEmbed.setTitle(`${anime.attributes.titles.en_us}`);
+        }
+
+        aniEmbed
           .setColor("Grey")
           .setThumbnail(anime.attributes.posterImage.original)
           .setDescription(anime.attributes.synopsis)
@@ -49,15 +68,10 @@ module.exports = {
               value: status,
               inline: true,
             },
-            {
-              name: "Rating",
-              value: `${anime.attributes.averageRating}%`,
-              inline: true,
-            },
           ]);
         return interaction.reply({ embeds: [aniEmbed] });
       })
-      .catch(() => {
+      .catch((err) => {
         const errorEmbed = new EmbedBuilder()
           .setColor("Grey")
           .setDescription("No results found.");

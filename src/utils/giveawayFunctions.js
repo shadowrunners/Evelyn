@@ -7,23 +7,37 @@ function getMultipleRandom(arr, num) {
 }
 
 async function endGiveaway(message, reroll = false) {
-  const data = await DB.findOne({
-    ID: message.guild.id,
-    MessageID: message.id,
-  });
-  if (!data) return;
+  if (!message.guild) return;
+  await message.client.guilds.fetch();
+  if (!message.client.guilds.cache.get(message.guild.id)) return;
 
-  if (data.Ended === true && !reroll) return;
-  if (data.Paused === true) return;
+  const data = await DB.findOne({
+    id: message.guild.id,
+    messageID: message.id,
+  });
+
+  if (!data) return;
+  if (
+    !message.guild.channels.cache
+      .get(data.channel)
+      ?.messages.fetch(data.messageID)
+  )
+    return;
+
+  if (data.hasEnded === true && !reroll) return;
+  if (data.isPaused === true) return;
 
   let winnerIdArray = [];
-  if (data.Entered.length > data.Winners) {
-    winnerIdArray.push(...getMultipleRandom(data.Entered, data.Winners));
-    while (winnerIdArray.length < data.Winners)
+  if (data.enteredUsers.length > data.winners) {
+    winnerIdArray.push(...getMultipleRandom(data.enteredUsers, data.winners));
+    while (winnerIdArray.length < data.winners)
       winnerIdArray.push(
-        getMultipleRandom(data.Entered, data.Winners - winnerIdArray.length)
+        getMultipleRandom(
+          data.enteredUsers,
+          data.winners - winnerIdArray.length
+        )
       );
-  } else winnerIdArray.push(...data.Entered);
+  } else winnerIdArray.push(...data.enteredUsers);
 
   const disableButton = ActionRowBuilder.from(
     message.components[0]
@@ -34,32 +48,31 @@ async function endGiveaway(message, reroll = false) {
   const endGiveawayEmbed = EmbedBuilder.from(message.embeds[0])
     .setColor("Blurple")
     .setDescription(
-      `**Hosted By**: <@${data.HostedBy}>\n**Winners**: ${
+      `**Hosted by**: <@${data.hoster}>\n**Winners**: ${
         winnerIdArray.map((user) => `<@${user}>`).join(", ") || "None"
-      } \n**Ended**: <t:${data.EndTime}:R> (<t:${data.EndTime}>)`
+      }\n**Ends in**: <t:${data.endTime}:R> (<t:${data.endTime}>)`
     );
 
   await DB.findOneAndUpdate(
     {
-      GuildID: data.GuildID,
-      ChannelID: data.ChannelID,
-      MessageID: message.id,
+      id: data.id,
+      channel: data.channel,
+      messageID: message.id,
     },
     { Ended: true }
   );
 
   await message.edit({
-    content: "🎊 **This giveaway has ended, thank you for participating!** 🎊",
+    content: "🎊 **Giveaway Ended** 🎊",
     embeds: [endGiveawayEmbed],
     components: [disableButton],
   });
   message.reply({
-    content:
-      winnerIdArray.length > 0
-        ? `🥳 Congratulations, ${winnerIdArray
-            .map((user) => `<@${user}>`)
-            .join(", ")}! You have won **${data.Prize}**! 🥳`
-        : "No winner was decided because no one entered the giveaway. 😞",
+    content: winnerIdArray.length
+      ? `🥳 Congratulations ${winnerIdArray
+          .map((user) => `<@${user}>`)
+          .join(", ")}! You won **${data.prize}**! 🥳`
+      : "No winner was decided because no one entered the giveaway. ☹️",
   });
 }
 

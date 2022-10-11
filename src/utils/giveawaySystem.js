@@ -10,18 +10,23 @@ module.exports = (client) => {
   DB.find().then((schemaArray) => {
     schemaArray.forEach(async (data) => {
       if (!data) return;
-      if (data.Ended === true) return;
-      if (data.Paused === true) return;
-      const message = await client.guilds.cache
-        .get(data.GuildID)
-        .channels.cache.get(data.ChannelID)
-        .messages.fetch(data.MessageID);
+      if (data.hasEnded === true) return;
+      if (data.isPaused === true) return;
+
+      const guild = client.guilds.cache.get(data.GuildID);
+      if (!guild) return;
+
+      const message = guild.channels.cache
+        .get(data.channel)
+        ?.messages.fetch(data.messageID);
       if (!message) return;
 
-      const expireDate = data.EndTime * 1000 - Date.now();
-
-      if (data.EndTime * 1000 < Date.now()) endGiveaway(message);
-      else setTimeout(() => endGiveaway(message), expireDate);
+      if (data.endTime * 1000 < Date.now()) endGiveaway(message);
+      else
+        setTimeout(
+          () => endGiveaway(message),
+          data.endTime * 1000 - Date.now()
+        );
     });
   });
 };

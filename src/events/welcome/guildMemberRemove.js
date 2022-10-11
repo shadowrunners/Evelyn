@@ -56,7 +56,6 @@ module.exports = {
         .replace(/{userName}/g, `${member.user.username}`)
         .replace(/{userID}/g, `${member.id}`)
         .replace(/{guildName}/g, `${member.guild.name}`)
-        .replace(/{guildID}/g, `${member.guild.id}`)
         .replace(/{memberCount}/g, `${member.guild.memberCount}`);
       goodbyeEmbed.setFooter({ text: footerData });
     }
