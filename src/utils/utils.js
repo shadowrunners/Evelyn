@@ -6,7 +6,7 @@ const {
 } = require("discord.js");
 
 module.exports = {
-  embedPages: async (client, interaction, embeds) => {
+  embedPages: async (interaction, embeds) => {
     const pages = {};
     const getRow = (id) => {
       const row = new ActionRowBuilder();
@@ -93,3 +93,39 @@ module.exports = {
     // -------------- Not needed --------------
   },
 };
+
+async function progressbar(player) {
+  let size = 15;
+  let line = "▬";
+  let slider = "🔘";
+
+  if (!player.queue.current) return `${slider}${line.repeat(size - 1)}]`;
+  let current =
+    player.queue.current.length !== 0
+      ? player.shoukaku.position
+      : player.queue.current.length;
+  let total = player.queue.current.length;
+  let bar =
+    current > total
+      ? [line.repeat((size / 2) * 2), (current / total) * 100]
+      : [
+          line
+            .repeat(Math.round((size / 2) * (current / total)))
+            .replace(/.$/, slider) +
+            line.repeat(size - Math.round(size * (current / total)) + 1),
+          current / total,
+        ];
+
+  if (!String(bar).includes(slider)) return `${slider}${line.repeat(size - 1)}`;
+  return `${bar[0]}`;
+}
+
+function unique(arr1, arr2) {
+  const unique1 = arr1.filter((z) => arr2.indexOf(z) === -1);
+  const unique2 = arr2.filter((z) => arr1.indexOf(z) === -1);
+
+  const unique = unique1.concat(unique2);
+  return unique;
+}
+
+module.exports = { progressbar, unique };

@@ -1,17 +1,17 @@
-async function loadErela(client) {
+async function loadShoukakuNodes(client) {
   const { magenta, green } = require("chalk");
   const { fileLoad } = require("../../utils/fileLoader.js");
 
-  const files = await fileLoad("events/erela");
+  const files = await fileLoad("events/shoukaku/nodes");
   files.forEach((file) => {
     const event = require(file);
     const execute = (...args) => event.execute(...args, client);
 
-    client.manager.on(event.name, execute);
+    client.manager.shoukaku.on(event.name, execute);
 
     return console.log(
       magenta("[") +
-        magenta("Erela") +
+        magenta("Shoukaku") +
         magenta("]") +
         " Loaded " +
         green(`${event.name}.js`)
@@ -19,4 +19,4 @@ async function loadErela(client) {
   });
 }
 
-module.exports = { loadErela };
+module.exports = { loadShoukakuNodes };

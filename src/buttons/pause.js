@@ -6,7 +6,7 @@ module.exports = {
   /**
    * @param {ButtonInteraction} interaction
    */
-  execute(interaction) {
+  async execute(interaction) {
     const player = client.manager.players.get(interaction.guild.id);
 
     if (!player) return;

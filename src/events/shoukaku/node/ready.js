@@ -1,14 +1,18 @@
 const { magenta, white, green } = require("chalk");
+const { Node } = require("shoukaku");
 
 module.exports = {
-  name: "nodeConnect",
+  name: "ready",
+  /**
+   * @param {Node} node
+   */
   execute(node) {
     console.log(
       magenta("[") +
-        magenta("Erela") +
+        magenta("Shoukaku") +
         magenta("]") +
         green(" Node ") +
-        white(node.options.id) +
+        white(node.name) +
         green(" connected!")
     );
   },

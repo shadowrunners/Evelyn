@@ -22,13 +22,13 @@ module.exports = {
       .setTimestamp();
 
     if (!player.playing)
-      return interaction.editReply({
+      return interaction.reply({
         embeds: [notPlaying],
         ephemeral: true,
       });
 
     if (!player.queue.length)
-      return interaction.editReply({
+      return interaction.reply({
         embeds: [noQueue],
         ephemeral: true,
       });
@@ -42,7 +42,7 @@ module.exports = {
       })
       .setTimestamp();
 
-    await player.queue.shuffle();
+    player.queue.shuffle();
 
     return interaction.reply({ embeds: [shuffleEmbed] });
   },

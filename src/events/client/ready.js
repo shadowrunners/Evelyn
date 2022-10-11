@@ -36,7 +36,6 @@ module.exports = {
           )
       );
 
-    client.manager.init(client.user.id);
     //dash(client);
     softuiDash(client);
     DXP.setURL(client.config.database);

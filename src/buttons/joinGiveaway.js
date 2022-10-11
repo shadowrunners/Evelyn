@@ -54,7 +54,7 @@ module.exports = {
         messageID: interaction.message.id,
       },
       {
-        $push: { Entered: interaction.user.id },
+        $push: { enteredUsers: interaction.user.id },
       }
     ).then(() => {
       embed

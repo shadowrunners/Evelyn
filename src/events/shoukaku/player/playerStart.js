@@ -1,4 +1,4 @@
-const client = require("../../structures/index.js");
+const client = require("../../../structures/index.js");
 const {
   EmbedBuilder,
   ActionRowBuilder,
@@ -6,14 +6,14 @@ const {
   ButtonStyle,
 } = require("discord.js");
 const { Primary } = ButtonStyle;
-const { Player, Track } = require("erela.js");
+const { KazagumoTrack, KazagumoPlayer } = require("kazagumo");
 const pms = require("pretty-ms");
 
 module.exports = {
-  name: "trackStart",
+  name: "playerStart",
   /**
-   * @param {Player} player
-   * @param {Track} track
+   * @param {KazagumoPlayer} player
+   * @param {KazagumoTrack} track
    */
   async execute(player, track) {
     const buttonRow = new ActionRowBuilder().addComponents(
@@ -40,15 +40,15 @@ module.exports = {
           value: `<@${track.requester.id}>`,
           inline: true,
         },
-        { name: "Duration", value: pms(track.duration), inline: true }
+        { name: "Duration", value: pms(track.length), inline: true }
       )
       .setThumbnail(track.thumbnail)
       .setTimestamp();
 
-    let message = await client.channels.cache
-      .get(player.textChannel)
+    const message = await client.channels.cache
+      .get(player.textId)
       .send({ embeds: [nowPlaying], components: [buttonRow] });
 
-    setTimeout(() => message.delete(), track.duration);
+    setTimeout(() => message.delete(), track.length);
   },
 };

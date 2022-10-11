@@ -1,15 +1,15 @@
 const { magenta, white, red } = require("chalk");
 
 module.exports = {
-  name: "nodeError",
-  execute(node, error) {
+  name: "error",
+  execute(name, error) {
     console.log(
       magenta("[") +
-        magenta("Erela") +
+        magenta("Shoukaku") +
         magenta("] ") +
         red("An error has occured regarding node ") +
-        white(node.options.identifier) +
-        red(`: ${error.message}.`)
+        white(name) +
+        red(`: ${error}.`)
     );
   },
 };

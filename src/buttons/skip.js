@@ -19,7 +19,7 @@ module.exports = {
       })
       .setTimestamp();
 
-    await player.stop();
+    player.skip();
 
     return interaction.reply({ embeds: [skipEmbed] });
   },

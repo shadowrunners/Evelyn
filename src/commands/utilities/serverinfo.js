@@ -3,6 +3,9 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
   ChannelType,
+  GuildVerificationLevel,
+  GuildExplicitContentFilter,
+  GuildNSFWLevel,
 } = require("discord.js");
 
 module.exports = {
@@ -19,91 +22,123 @@ module.exports = {
       createdTimestamp,
       ownerId,
       members,
-      memberCount,
       channels,
       emojis,
       stickers,
+      roles,
     } = guild;
-    const {
-      GuildText,
-      GuildVoice,
-      GuildPublicThread,
-      GuildNewsThread,
-      GuildPrivateThread,
-      GuildCategory,
-      GuildStageVoice,
-      GuildNews,
-    } = ChannelType;
+
+    const sortedRoles = roles.cache
+      .map((role) => role)
+      .slice(1, roles.cache.size)
+      .sort((a, b) => b.position - a.position);
+    const userRoles = sortedRoles.filter((role) => !role.managed);
+    const managedRoles = sortedRoles.filter((role) => role.managed);
+    const botCount = members.cache.filter((member) => member.user.bot).size;
+
+    const maxDisplayRoles = (roles, maxFieldLength = 1024) => {
+      let totalLength = 0;
+      const result = [];
+
+      for (const role of roles) {
+        const roleString = `<@&${role.id}>`;
+
+        if (roleString.length + totalLength > maxFieldLength) break;
+
+        totalLength += roleString.length + 1;
+        result.push(roleString);
+      }
+
+      return result.length;
+    };
+
+    const getChannelTypeSize = (type) =>
+      channels.cache.filter((channel) => type.includes(channel.type)).size;
+
+    const totalChannels = getChannelTypeSize([
+      ChannelType.GuildText,
+      ChannelType.GuildVoice,
+      ChannelType.GuildStageVoice,
+      ChannelType.GuildForum,
+      ChannelType.GuildCategory,
+    ]);
 
     const svinfo = new EmbedBuilder()
-      .setColor("Grey")
-      .setAuthor({ name: `${guild.name}`, iconURL: guild.iconURL() })
+      .setColor("Blurple")
+      .setTitle(`Information about ${guild.name}`)
       .addFields(
         {
-          name: "🔹| General",
+          name: "Description",
+          value: `> ${guild.description || "None."}`,
+        },
+        {
+          name: "General",
           value: [
-            `> Name: ${guild.name}`,
-            `> Created: <t:${parseInt(createdTimestamp / 1000)}:R>`,
-            `> Guild Owner: <@${ownerId}>`,
+            `> **Name** ${guild.name}`,
+            `> **ID** ${guild.id}`,
+            `> **Created** <t:${parseInt(createdTimestamp / 1000)}:R>`,
+            `> **Owner** <@${ownerId}>`,
+            `> **Vanity URL** ${guild.vanityURLCode || "None"}`,
           ].join("\n"),
         },
         {
-          name: "🔹| Users",
+          name: "Users",
           value: [
-            `> Members: ${members.cache.filter((m) => !m.user.bot).size}`,
-            `> Bots: ${members.cache.filter((m) => m.user.bot).size}`,
-            ``,
-            `> Total: ${memberCount}`,
+            `> **Members** ${guild.memberCount - botCount}`,
+            `> **Bots** ${botCount}`,
           ].join("\n"),
         },
         {
-          name: "🔹| Channels",
+          name: `User Roles`,
+          value: `> ${
+            userRoles.slice(0, maxDisplayRoles(userRoles)).join(" ") || "None"
+          }`,
+        },
+        {
+          name: `Managed Roles`,
+          value: `> ${
+            managedRoles.slice(0, maxDisplayRoles(managedRoles)).join(" ") ||
+            "None"
+          }`,
+        },
+        {
+          name: "Channels",
           value: [
-            `> Text: ${
-              channels.cache.filter((c) => c.type === GuildText).size
-            }`,
-            `> Voice: ${
-              channels.cache.filter((c) => c.type === GuildVoice).size
-            }`,
-            `> Threads: ${
-              channels.cache.filter(
-                (c) =>
-                  c.type === GuildPublicThread &&
-                  GuildPrivateThread &&
-                  GuildNewsThread
+            `> **Text** ${getChannelTypeSize([
+              ChannelType.GuildText,
+              ChannelType.GuildForum,
+            ])}`,
+            `> **Voice** ${getChannelTypeSize([
+              ChannelType.GuildVoice,
+              ChannelType.GuildStageVoice,
+            ])}`,
+          ].join("\n"),
+        },
+        {
+          name: "Emojis and Stickers",
+          value: [
+            `> **Animated** ${emojis.cache.filter((e) => e.animated).size}`,
+            `> **Static** ${emojis.cache.filter((e) => !e.animated).size}`,
+            `> **Stickers** ${stickers.cache.size}`,
+          ].join("\n"),
+        },
+        {
+          name: "Nitro Stats",
+          value: [
+            `> **Tier** ${guild.premiumTier || "None"}`,
+            `> **Boosts** ${guild.premiumSubscriptionCount}`,
+            `> **Boosters** ${
+              guild.members.cache.filter(
+                (member) => member.roles.premiumSubscriberRole
               ).size
             }`,
-            `> Categories: ${
-              channels.cache.filter((c) => c.type === GuildCategory).size
+            `> **Total Boosters** ${
+              guild.members.cache.filter((member) => member.premiumSince).size
             }`,
-            `> Stages: ${
-              channels.cache.filter((c) => c.type === GuildStageVoice).size
-            }`,
-            `> News: ${
-              channels.cache.filter((c) => c.type === GuildNews).size
-            }`,
-            ``,
-            `> Total: ${channels.cache.size}`,
-          ].join("\n"),
-        },
-        {
-          name: "🔹| Emojis and Stickers",
-          value: [
-            `> Animated: ${emojis.cache.filter((e) => e.animated).size}`,
-            `> Static: ${emojis.cache.filter((e) => !e.animated).size}`,
-            `> Stickers: ${stickers.cache.size}`,
-            ``,
-            `> Total: ${stickers.cache.size + emojis.cache.size}`,
-          ].join("\n"),
-        },
-        {
-          name: "🔹| Nitro Stats",
-          value: [
-            `> Boosts: ${guild.premiumSubscriptionCount}`,
-            `> Boosters: ${members.cache.filter((m) => m.premiumSince).size}`,
           ].join("\n"),
         }
       )
+      .setThumbnail(guild.iconURL({ size: 1024 }))
       .setTimestamp();
     return interaction.reply({ embeds: [svinfo] });
   },
