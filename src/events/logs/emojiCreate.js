@@ -18,7 +18,7 @@ module.exports = {
     });
 
     if (!data) return;
-    if (data.logs.enabled == "false" || data.logs.channel == null) return;
+    if (data.logs.enabled == "false" || data.logs.channel === null) return;
 
     const logs = await emoji.guild.fetchAuditLogs({
       type: AuditLogEvent.EmojiCreate,
