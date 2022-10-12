@@ -45,7 +45,7 @@ module.exports = {
       });
 
     if (!ticketsData.closer == member.id)
-      return await interaction.reply({
+      return interaction.reply({
         embeds: [
           Embed.setColor("Blurple")
             .setDescription(

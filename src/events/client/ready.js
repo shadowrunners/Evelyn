@@ -3,7 +3,6 @@ const { magenta, white, green, red } = require("chalk");
 const DXP = require("discord-xp");
 const { loadCommands } = require("../../structures/handlers/commands.js");
 const { dash } = require("../../dashboard/dash.js");
-const { softuiDash } = require("../../dashboard/softuiDash.js");
 const { connect } = require("mongoose");
 
 module.exports = {
@@ -36,8 +35,7 @@ module.exports = {
           )
       );
 
-    //dash(client);
-    softuiDash(client);
+    dash(client);
     DXP.setURL(client.config.database);
 
     connect(client.config.database)

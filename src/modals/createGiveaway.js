@@ -6,6 +6,7 @@ const {
   PermissionsBitField,
   ButtonStyle,
 } = require("discord.js");
+const { endGiveaway } = require("../utils/giveawayFunctions.js");
 const DB = require("../structures/schemas/giveaway.js");
 const { ManageGuild } = PermissionsBitField.Flags;
 const ms = require("ms");

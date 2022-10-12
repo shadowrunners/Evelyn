@@ -143,9 +143,6 @@ module.exports = {
       deaf: true,
     });
 
-    let res;
-    let query;
-
     try {
       const notPlaying = new EmbedBuilder()
         .setColor("Blurple")
@@ -162,8 +159,8 @@ module.exports = {
 
       switch (options.getSubcommand()) {
         case "play": {
-          query = options.getString("query");
-          res = await player.search(query, { requester: interaction.user });
+          let query = options.getString("query");
+          let res = await player.search(query, { requester: interaction.user });
 
           if (!res.tracks.length) {
             if (player) player.destroy();

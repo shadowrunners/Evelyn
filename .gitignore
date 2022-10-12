@@ -1,3 +1,5 @@
 node_modules
 .env
 src/structures/config.json
+src/dashboard/oldDash.js
+package-lock.json
