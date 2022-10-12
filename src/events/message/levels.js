@@ -16,7 +16,7 @@ module.exports = {
       if (!guild || author.bot) return;
       if (data.levels.enabled === false) return;
 
-      const rndXP = Math.floor(Math.random() * 25) * 1;
+      const rndXP = Number(Math.floor(Math.random() * 25));
       const levelledUp = await DXP.appendXp(
         message.author.id,
         message.guild.id,

@@ -63,11 +63,10 @@ module.exports = {
       case "server": {
         const gldID = options.getString("serverid");
         const reason = options.getString("reason");
-        const guild = client.guilds.cache.get(gldID);
-        const gName = guild.name || "A mysterious guild";
-        const gID = guild.id;
 
-        const data = await guildBLK.findOne({ serverID: gID });
+        const guild = client.guilds.cache.get(gldID);
+        const data = await guildBLK.findOne({ serverID: guild.id });
+
         if (!data) {
           const newBlacklist = new guildBLK({
             serverID: gID,
@@ -77,10 +76,14 @@ module.exports = {
 
           await newBlacklist.save();
 
-          embed
+          const embed = new EmbedBuilder()
             .setColor("Blurple")
             .setTitle(`${client.user.username} | Blacklist`)
-            .setDescription(`🔹 | ${gName} has been successfully blacklisted.`)
+            .setDescription(
+              `🔹 | ${
+                guild.name || "A mysterious guild"
+              } has been successfully blacklisted.`
+            )
             .addFields({ name: "🔹 | Reason", value: reason });
           return interaction.reply({ embeds: [embed] });
         }
@@ -90,23 +93,25 @@ module.exports = {
         const reason = options.getString("reason");
 
         const user = await client.users.fetch(userID);
-        const uName = user.tag || "A mysterious user";
-        const uID = user.id;
+        const data = await userBLK.findOne({ userid: user.id });
 
-        const data = await userBLK.findOne({ userid: uID });
         if (!data) {
           const newBlacklist = new userBLK({
-            userid: uID,
+            userid: user.id,
             reason: reason,
             time: Date.now(),
           });
 
           await newBlacklist.save();
 
-          embed
+          const embed = new EmbedBuilder()
             .setColor("Blurple")
             .setTitle(`${client.user.username} | Blacklist`)
-            .setDescription(`🔹 | ${uName} has been successfully blacklisted.`)
+            .setDescription(
+              `🔹 | ${
+                user.tag || "A mysterious user"
+              } has been successfully blacklisted.`
+            )
             .addFields({ name: "🔹 | Reason", value: reason });
           return interaction.reply({ embeds: [embed] });
         }

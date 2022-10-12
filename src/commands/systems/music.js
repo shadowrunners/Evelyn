@@ -83,21 +83,6 @@ module.exports = {
               { name: "🔹 | Now Playing", value: "nowplaying" }
             )
         )
-    )
-    .addSubcommand((options) =>
-      options
-        .setName("playlist")
-        .setDescription("Repeat the current song or queue.")
-        .addStringOption((option) =>
-          option
-            .setName("type")
-            .setDescription("Select the loop type.")
-            .setRequired(true)
-            .addChoices(
-              { name: "🔹 | Queue", value: "queue" },
-              { name: "🔹 | Song", value: "song" }
-            )
-        )
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
@@ -276,14 +261,14 @@ module.exports = {
           });
         }
         case "repeat": {
+          if (!player.playing)
+            return interaction.editReply({
+              embeds: [notPlaying],
+              ephemeral: true,
+            });
+
           switch (options.getString("type")) {
             case "queue": {
-              if (!player.playing)
-                return interaction.editReply({
-                  embeds: [notPlaying],
-                  ephemeral: true,
-                });
-
               if (!player.queue.length)
                 return interaction.editReply({
                   embeds: [noQueue],
@@ -300,10 +285,9 @@ module.exports = {
                       .setTimestamp(),
                   ],
                 });
-              }
-
-              if (player.queueRepeat) {
+              } else {
                 await player.setLoop("off");
+
                 return interaction.editReply({
                   embeds: [
                     new EmbedBuilder()
@@ -315,11 +299,6 @@ module.exports = {
               }
             }
             case "song": {
-              if (!player.playing)
-                return interaction.editReply({
-                  embeds: [notPlaying],
-                });
-
               if (!player.trackRepeat) {
                 await player.setLoop("track");
                 return interaction.editReply({
@@ -330,9 +309,7 @@ module.exports = {
                       .setTimestamp(),
                   ],
                 });
-              }
-
-              if (player.trackRepeat) {
+              } else {
                 await player.setLoop("off");
                 return interaction.editReply({
                   embeds: [

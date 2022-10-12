@@ -20,8 +20,6 @@ module.exports = {
     if (!data) return;
     if (data.logs.enabled == "false" || data.logs.channel == null) return;
 
-    console.log(emoji);
-
     const allLogs = await emoji.guild.fetchAuditLogs({
       type: AuditLogEvent.EmojiDelete,
       limit: 1,
