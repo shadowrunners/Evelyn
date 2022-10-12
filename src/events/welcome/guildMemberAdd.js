@@ -13,7 +13,7 @@ module.exports = {
     });
 
     if (!data) return;
-    if (data.welcome.enabled == "false" || data.welcome.channel == null) return;
+    if (data.welcome.enabled == "false" || data.welcome.channel === null) return;
 
     const welcomeData = data.welcome.json.embed;
 

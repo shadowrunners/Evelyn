@@ -135,7 +135,7 @@ async function dash(client) {
                 const data = await GDB.findOne({ id: guild.id });
                 const savedData = data.logs?.enabled;
                 const defaultState = false;
-                return savedData == null || savedData == undefined
+                return savedData === null || savedData == undefined
                   ? defaultState
                   : savedData;
               },
@@ -158,7 +158,7 @@ async function dash(client) {
                 const data = await GDB.findOne({ id: guild.id });
                 const savedData = data.logs.channel || null;
                 const defaultState = false;
-                return savedData == null || savedData == undefined
+                return savedData === null || savedData == undefined
                   ? defaultState
                   : savedData;
               },
@@ -185,7 +185,7 @@ async function dash(client) {
                 const data = await GDB.findOne({ id: guild.id });
                 const savedData = data.welcome.enabled;
                 const defaultState = false;
-                return savedData == null || savedData == undefined
+                return savedData === null || savedData == undefined
                   ? defaultState
                   : savedData;
               },
@@ -209,7 +209,7 @@ async function dash(client) {
                 const data = await GDB.findOne({ id: guild.id });
                 const savedData = data.welcome.channel || null;
                 const defaultState = false;
-                return savedData == null || savedData == undefined
+                return savedData === null || savedData == undefined
                   ? defaultState
                   : savedData;
               },
@@ -253,7 +253,7 @@ async function dash(client) {
                 const data = await GDB.findOne({ id: guild.id });
                 const savedData = data.goodbye.enabled;
                 const defaultState = false;
-                return savedData == null || savedData == undefined
+                return savedData === null || savedData == undefined
                   ? defaultState
                   : savedData;
               },
@@ -274,7 +274,7 @@ async function dash(client) {
                 const data = await GDB.findOne({ id: guild.id });
                 const savedData = data.goodbye.channel || null;
                 const defaultState = false;
-                return savedData == null || savedData == undefined
+                return savedData === null || savedData == undefined
                   ? defaultState
                   : savedData;
               },
@@ -354,7 +354,7 @@ async function dash(client) {
                 const data = await GDB.findOne({ id: guild.id });
                 const savedData = data.tickets.enabled;
                 const defaultState = false;
-                return savedData == null || savedData == undefined
+                return savedData === null || savedData == undefined
                   ? defaultState
                   : savedData;
               },
@@ -522,7 +522,7 @@ async function dash(client) {
                 const data = await GDB.findOne({ id: guild.id });
                 const savedData = data.levels?.enabled;
                 const defaultState = false;
-                return savedData == null || savedData == undefined
+                return savedData === null || savedData == undefined
                   ? defaultState
                   : savedData;
               },
@@ -546,7 +546,7 @@ async function dash(client) {
                 const data = await GDB.findOne({ id: guild.id });
                 const savedData = data.levels.channel || null;
                 const defaultState = false;
-                return savedData == null || savedData == undefined
+                return savedData === null || savedData == undefined
                   ? defaultState
                   : savedData;
               },
