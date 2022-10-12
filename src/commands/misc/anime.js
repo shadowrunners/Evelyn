@@ -19,7 +19,7 @@ module.exports = {
   /**
    * @param {ChatInputCommandInteraction} interaction
    */
-  async execute(interaction) {
+  execute(interaction) {
     const title = interaction.options.getString("title");
     const aniEmbed = new EmbedBuilder();
 

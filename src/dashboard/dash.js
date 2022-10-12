@@ -1,4 +1,4 @@
-async function dash(client) {
+function dash(client) {
   (async () => {
     const {
       ChannelType,
@@ -41,7 +41,7 @@ async function dash(client) {
       }),
       theme: SoftUI({
         customThemeOptions: {
-          index: async ({ req, res, config }) => {
+          index: ({ req, res, config }) => {
             return {
               values: [],
               graph: {},

@@ -6,7 +6,7 @@ module.exports = {
    * @param {ButtonInteraction} interaction
    * @param {Client} client
    */
-  async execute(interaction, client) {
+  execute(interaction, client) {
     if (interaction.isButton()) {
       const Embed = new EmbedBuilder();
       const button = client.buttons.get(interaction.customId);

@@ -9,7 +9,7 @@ module.exports = {
    * @param {Client} client
    */
 
-  async execute(guild, client) {
+  execute(guild, client) {
     const webhook = new WebhookClient({ url: client.config.watcherHook });
 
     GDB.findOneAndDelete({

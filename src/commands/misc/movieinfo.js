@@ -21,13 +21,13 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    * @param {Client} client
    */
-  async execute(interaction, client) {
+  execute(interaction, client) {
     const imdbClient = new imdb.Client({ apiKey: client.config.imdbAPIKey });
     const title = interaction.options.getString("title");
 
     imdbClient
       .get({ name: `${title}` }, { timeout: 30000 })
-      .then(async (result) => {
+      .then( (result) => {
         const date = result.released;
         const movieinfoEmbed = new EmbedBuilder()
           .setAuthor({ name: `${result.title}` })

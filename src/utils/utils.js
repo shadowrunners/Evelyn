@@ -94,7 +94,7 @@ module.exports = {
   },
 };
 
-async function progressbar(player) {
+function progressbar(player) {
   let size = 15;
   let line = "▬";
   let slider = "🔘";

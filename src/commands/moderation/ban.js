@@ -24,7 +24,7 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    * @param {Client} client
    */
-  async execute(interaction, client) {
+  execute(interaction, client) {
     const { options } = interaction;
     const target = options.getMember("target");
     const reason = options.getString("reason") || "No reason specified.";
