@@ -27,7 +27,7 @@ async function endGiveaway(message, reroll = false) {
   if (data.hasEnded === true && !reroll) return;
   if (data.isPaused === true) return;
 
-  let winnerIdArray = [];
+  const winnerIdArray = [];
   if (data.enteredUsers.length > data.winners) {
     winnerIdArray.push(...getMultipleRandom(data.enteredUsers, data.winners));
     while (winnerIdArray.length < data.winners)

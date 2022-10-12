@@ -4,8 +4,8 @@ async function loadCommands(client) {
 
   await client.commands.clear();
 
-  let commandsArray = [];
-  let developerArray = [];
+  const commandsArray = [];
+  const developerArray = [];
 
   const files = await fileLoad("commands");
   files.forEach((file) => {

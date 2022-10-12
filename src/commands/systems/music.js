@@ -144,8 +144,10 @@ module.exports = {
 
       switch (options.getSubcommand()) {
         case "play": {
-          let query = options.getString("query");
-          let res = await player.search(query, { requester: interaction.user });
+          const query = options.getString("query");
+          const res = await player.search(query, {
+            requester: interaction.user,
+          });
 
           if (!res.tracks.length) {
             if (player) player.destroy();
@@ -161,7 +163,7 @@ module.exports = {
 
           if (res.type === "PLAYLIST") {
             const tracks = res.tracks;
-            for (let track of tracks) {
+            for (const track of tracks) {
               player.queue.add(track);
             }
 

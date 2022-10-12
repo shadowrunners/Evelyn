@@ -95,17 +95,17 @@ module.exports = {
 };
 
 function progressbar(player) {
-  let size = 15;
-  let line = "▬";
-  let slider = "🔘";
+  const size = 15;
+  const line = "▬";
+  const slider = "🔘";
 
   if (!player.queue.current) return `${slider}${line.repeat(size - 1)}]`;
-  let current =
+  const current =
     player.queue.current.length !== 0
       ? player.shoukaku.position
       : player.queue.current.length;
-  let total = player.queue.current.length;
-  let bar =
+  const total = player.queue.current.length;
+  const bar =
     current > total
       ? [line.repeat((size / 2) * 2), (current / total) * 100]
       : [
@@ -129,7 +129,7 @@ function unique(arr1, arr2) {
 }
 
 function switchTo(val) {
-  var status = " ";
+  let status = " ";
   switch (val) {
     case 0:
       status = "🟥 Disconnected";

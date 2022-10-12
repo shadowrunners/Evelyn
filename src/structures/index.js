@@ -62,7 +62,7 @@ const kazagumoClient = new Kazagumo(
     ],
     defaultSearchEngine: "youtube",
     send: (id, payload) => {
-      let guild = client.guilds.cache.get(id);
+      const guild = client.guilds.cache.get(id);
       if (guild) guild.shard.send(payload);
     },
   },
