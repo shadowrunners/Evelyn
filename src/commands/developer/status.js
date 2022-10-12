@@ -6,6 +6,7 @@ const {
 } = require("discord.js");
 const os = require("os");
 const actualTime = require("humanize-duration");
+const { switchTo } = require("../../utils/utils.js");
 const { connection } = require("mongoose");
 
 module.exports = {
@@ -81,22 +82,3 @@ module.exports = {
     return interaction.reply({ embeds: [embed] });
   },
 };
-
-function switchTo(val) {
-  var status = " ";
-  switch (val) {
-    case 0:
-      status = "🟥 Disconnected";
-      break;
-    case 1:
-      status = `🔷 Connected`;
-      break;
-    case 2:
-      status = `🟨 Connecting`;
-      break;
-    case 3:
-      status = `🟨 Disconnecting`;
-      break;
-  }
-  return status;
-}

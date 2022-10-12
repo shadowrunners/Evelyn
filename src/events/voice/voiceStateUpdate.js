@@ -38,7 +38,6 @@ module.exports = {
       ) {
         const members = oldState.guild.members.me.voice.channel?.members.size;
         if (!members || members === 1) {
-          const player = client.kazagumo?.players.get(newState.guild.id);
           const guild = client.guilds.cache.get(newState.guild.id);
           const textChannel = guild.channels.cache.get(player?.textId);
 

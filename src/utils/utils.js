@@ -128,4 +128,23 @@ function unique(arr1, arr2) {
   return unique;
 }
 
-module.exports = { progressbar, unique };
+function switchTo(val) {
+  var status = " ";
+  switch (val) {
+    case 0:
+      status = "🟥 Disconnected";
+      break;
+    case 1:
+      status = `🔷 Connected`;
+      break;
+    case 2:
+      status = `🟨 Connecting`;
+      break;
+    case 3:
+      status = `🟨 Disconnecting`;
+      break;
+  }
+  return status;
+}
+
+module.exports = { progressbar, unique, switchTo };

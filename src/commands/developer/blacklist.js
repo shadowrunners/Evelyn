@@ -76,7 +76,7 @@ module.exports = {
 
           await newBlacklist.save();
 
-          const embed = new EmbedBuilder()
+          const blacklistedServer = new EmbedBuilder()
             .setColor("Blurple")
             .setTitle(`${client.user.username} | Blacklist`)
             .setDescription(
@@ -85,7 +85,7 @@ module.exports = {
               } has been successfully blacklisted.`
             )
             .addFields({ name: "🔹 | Reason", value: reason });
-          return interaction.reply({ embeds: [embed] });
+          return interaction.reply({ embeds: [blacklistedServer] });
         }
       }
       case "user": {
@@ -104,7 +104,7 @@ module.exports = {
 
           await newBlacklist.save();
 
-          const embed = new EmbedBuilder()
+          const blacklistedUser = new EmbedBuilder()
             .setColor("Blurple")
             .setTitle(`${client.user.username} | Blacklist`)
             .setDescription(
@@ -113,7 +113,7 @@ module.exports = {
               } has been successfully blacklisted.`
             )
             .addFields({ name: "🔹 | Reason", value: reason });
-          return interaction.reply({ embeds: [embed] });
+          return interaction.reply({ embeds: [blacklistedUser] });
         }
       }
     }

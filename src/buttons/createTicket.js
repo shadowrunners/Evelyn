@@ -103,7 +103,9 @@ module.exports = {
           })
           .then((m) => {
             setTimeout(() => {
-              m.delete().catch(() => {});
+              m.delete().catch(function () {
+                /* Should always be empty. */
+              });
             }, 5 * 1000);
           });
         await interaction.reply({

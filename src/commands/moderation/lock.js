@@ -68,7 +68,9 @@ module.exports = {
               ).setColor("Blurple"),
             ],
           })
-          .catch(() => {});
+          .catch(function () {
+            /* Should always be empty. */
+          });
         await DB.deleteOne({ ChannelID: channel.id });
       }, ms(time));
     }
