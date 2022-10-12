@@ -6,7 +6,7 @@ module.exports = {
   /**
    * @param {ModalSubmitInteraction} interaction
    */
-  async execute(interaction) {
+  execute(interaction) {
     const whyRemind = interaction.fields.getTextInputValue("whyRemind");
     const remindMeIn = interaction.fields.getTextInputValue("remindMeIn");
 

@@ -17,7 +17,7 @@ module.exports = {
   /**
    * @param {ModalSubmitInteraction} interaction
    */
-  async execute(interaction) {
+  execute(interaction) {
     const prize = interaction.fields
       .getTextInputValue("giveaway-prize")
       .slice(0, 256);
@@ -84,7 +84,7 @@ module.exports = {
           messageID: message.id,
           enteredUsers: [],
         }).then((data) => {
-          setTimeout(async () => {
+          setTimeout( () => {
             if (!data.hasEnded) endGiveaway(message);
           }, duration);
         });

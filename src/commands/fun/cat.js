@@ -14,7 +14,7 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    * @param {Client} client
    */
-  async execute(interaction, client) {
+  execute(interaction, client) {
     superagent
       .get("https://api.thecatapi.com/v1/images/search", {
         headers: {

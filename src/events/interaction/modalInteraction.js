@@ -3,7 +3,7 @@ const { ModalSubmit } = InteractionType;
 
 module.exports = {
   name: "interactionCreate",
-  async execute(interaction, client) {
+  execute(interaction, client) {
     if (interaction.type !== ModalSubmit) return;
 
     const embed = new EmbedBuilder();

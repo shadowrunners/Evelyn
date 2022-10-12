@@ -16,7 +16,7 @@ module.exports = {
   /**
    * @param {ChatInputCommandInteraction} interaction
    */
-  async execute(interaction) {
+  execute(interaction) {
     const { guild } = interaction;
     const {
       createdTimestamp,

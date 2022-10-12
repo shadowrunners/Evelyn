@@ -1,6 +1,6 @@
 module.exports = {
   name: "playerDisconnect",
-  async execute(player) {
+  execute(player) {
     player.destroy();
   },
 };

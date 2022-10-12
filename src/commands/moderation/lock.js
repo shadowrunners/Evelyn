@@ -26,7 +26,7 @@ module.exports = {
   /**
    * @param {ChatInputCommandInteraction} interaction
    */
-  async execute(interaction) {
+  execute(interaction) {
     const { guild, channel, options } = interaction;
     const reason = options.getString("reason") || "Unknown";
     const time = options.getString("time");

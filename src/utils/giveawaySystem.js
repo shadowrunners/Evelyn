@@ -8,7 +8,7 @@ const { endGiveaway } = require("./giveawayFunctions.js");
 
 module.exports = (client) => {
   DB.find().then((schemaArray) => {
-    schemaArray.forEach(async (data) => {
+    schemaArray.forEach( (data) => {
       if (!data) return;
       if (data.hasEnded === true) return;
       if (data.isPaused === true) return;
