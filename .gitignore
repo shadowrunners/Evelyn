@@ -3,4 +3,4 @@ node_modules
 src/structures/config.json
 src/dashboard/oldDash.js
 package-lock.json
-src/json.sqlite
+json.sqlite

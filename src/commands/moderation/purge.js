@@ -24,38 +24,25 @@ module.exports = {
     const { options } = interaction;
     const messages = options.getString("number");
 
-    if (number > 100)
+    if (number > 100 || number < 1)
       return interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setColor("Blurple")
             .setDescription(
-              "🔹 | You can't delete more than 100 messages at once."
+              "🔹 | You can't delete more than 100 messages or less than 1 message at once."
             )
             .setTimestamp(),
         ],
         ephemeral: true,
       });
 
-    if (number < 1)
+    await interaction.channel.bulkDelete(messages, true).then(() => {
       return interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setColor("Blurple")
-            .setDescription(
-              "🔹 | You can't delete less than 1 message at once."
-            )
-            .setTimestamp(),
-        ],
-        ephemeral: true,
-      });
-
-    await interaction.channel.bulkDelete(number, true).then(() => {
-      return interaction.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor("Blurple")
-            .setDescription(`🔹 | Cleared ${number} messages.`)
+            .setDescription(`🔹 | Cleared ${messages} messages.`)
             .setTimestamp(),
         ],
       });

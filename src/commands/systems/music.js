@@ -90,6 +90,7 @@ module.exports = {
    */
   async execute(interaction, client) {
     const { options, member, guild } = interaction;
+    const embed = new EmbedBuilder();
     const VC = member.voice.channel;
 
     await interaction.deferReply();
@@ -97,7 +98,7 @@ module.exports = {
     if (!VC)
       return interaction.editReply({
         embeds: [
-          new EmbedBuilder()
+          embed
             .setColor("Blurple")
             .setDescription(
               "🔹 | You need to be in a voice channel to use this command."
@@ -113,11 +114,12 @@ module.exports = {
     )
       return interaction.editReply({
         embeds: [
-          new EmbedBuilder()
+          embed
             .setColor("Blurple")
             .setDescription(
               `🔹 | Sorry but I'm already playing music in <#${guild.members.me.voice.channelId}>.`
-            ),
+            )
+            .setTimestamp(),
         ],
       });
 
@@ -139,11 +141,8 @@ module.exports = {
         .setDescription("🔹 | There is nothing in the queue.")
         .setTimestamp();
 
-      const enqueueEmbed = new EmbedBuilder();
-      const playlistEmbed = new EmbedBuilder();
-
       switch (options.getSubcommand()) {
-        case "play": {
+        case "play":
           const query = options.getString("query");
           const res = await player.search(query, {
             requester: interaction.user,
@@ -151,9 +150,10 @@ module.exports = {
 
           if (!res.tracks.length) {
             if (player) player.destroy();
+
             return interaction.editReply({
               embeds: [
-                new EmbedBuilder()
+                embed
                   .setColor("Blurple")
                   .setDescription("🔹 | No results found.")
                   .setTimestamp(),
@@ -163,9 +163,7 @@ module.exports = {
 
           if (res.type === "PLAYLIST") {
             const tracks = res.tracks;
-            for (const track of tracks) {
-              player.queue.add(track);
-            }
+            for (const track of tracks) player.queue.add(track);
 
             if (
               !player.playing &&
@@ -174,7 +172,7 @@ module.exports = {
             )
               player.play();
 
-            playlistEmbed
+            embed
               .setColor("Blurple")
               .setAuthor({
                 name: "Playlist added to the queue",
@@ -195,7 +193,7 @@ module.exports = {
               )
               .setThumbnail(res.tracks[0].thumbnail)
               .setTimestamp();
-            return interaction.editReply({ embeds: [playlistEmbed] });
+            return interaction.editReply({ embeds: [embed] });
           }
 
           if (res.type === "TRACK" || res.type === "SEARCH") {
@@ -204,7 +202,7 @@ module.exports = {
             if (!player.playing && !player.paused && !player.queue.size)
               player.play();
 
-            enqueueEmbed
+            embed
               .setColor("Blurple")
               .setAuthor({
                 name: "Added to the queue",
@@ -220,17 +218,17 @@ module.exports = {
               })
               .setThumbnail(res.tracks[0].thumbnail)
               .setTimestamp();
-            await interaction.editReply({ embeds: [enqueueEmbed] });
+            await interaction.editReply({ embeds: [embed] });
 
             if (player.queue.totalSize > 1)
-              enqueueEmbed.addFields({
+              embed.addFields({
                 name: "Position in queue",
                 value: `${player.queue.size - 0}`,
                 inline: true,
               });
-            return interaction.editReply({ embeds: [enqueueEmbed] });
+            return interaction.editReply({ embeds: [embed] });
           }
-        }
+
         case "volume": {
           const volume = options.getNumber("percent");
 
@@ -240,7 +238,7 @@ module.exports = {
           if (volume < 0 || volume > 100)
             return interaction.editReply({
               embeds: [
-                new EmbedBuilder()
+                embed
                   .setColor("Blurple")
                   .setDescription(
                     "🔹| You can only set the volume from 0 to 100."
@@ -254,7 +252,7 @@ module.exports = {
 
           return interaction.editReply({
             embeds: [
-              new EmbedBuilder()
+              embed
                 .setColor("Blurple")
                 .setDescription(
                   `🔹 | Volume has been set to **${player.volume}%**.`
@@ -279,6 +277,7 @@ module.exports = {
 
               if (!player.queueRepeat) {
                 await player.setLoop("queue");
+
                 return interaction.editReply({
                   embeds: [
                     new EmbedBuilder()
@@ -303,6 +302,7 @@ module.exports = {
             case "song": {
               if (!player.trackRepeat) {
                 await player.setLoop("track");
+
                 return interaction.editReply({
                   embeds: [
                     new EmbedBuilder()
