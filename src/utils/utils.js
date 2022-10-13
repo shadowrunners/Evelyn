@@ -5,94 +5,76 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 
-module.exports = {
-  embedPages: async (interaction, embeds) => {
-    const pages = {};
-    const getRow = (id) => {
-      const row = new ActionRowBuilder();
+async function embedPages(interaction, embeds) {
+  const pages = {};
+  const getRow = (id) => {
+    const row = new ActionRowBuilder();
 
-      row.addComponents(
-        new ButtonBuilder()
-          .setLabel("◀")
-          .setCustomId("prev_embed")
-          .setStyle(ButtonStyle.Primary)
-          .setDisabled(pages[id] === 0)
-      );
+    row.addComponents(
+      new ButtonBuilder()
+        .setLabel("◀")
+        .setCustomId("prev_embed")
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(pages[id] === 0)
+    );
 
-      row.addComponents(
-        new ButtonBuilder()
-          .setLabel("▶")
-          .setCustomId("next_embed")
-          .setStyle(ButtonStyle.Primary)
-          .setDisabled(pages[id] === embeds.length - 1)
-      );
-      return row;
-    };
+    row.addComponents(
+      new ButtonBuilder()
+        .setLabel("▶")
+        .setCustomId("next_embed")
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(pages[id] === embeds.length - 1)
+    );
+    return row;
+  };
 
-    const id = interaction.user.id;
-    pages[id] = pages[id] || 0;
-    const Pagemax = embeds.length;
+  const id = interaction.user.id;
+  pages[id] = pages[id] || 0;
+  const Pagemax = embeds.length;
 
-    const embed = embeds[pages[id]];
+  const embed = embeds[pages[id]];
+
+  await embeds[pages[id]].setFooter({
+    text: `Page ${pages[id] + 1} from ${Pagemax}`,
+  });
+
+  const replyEmbed = await interaction.editReply({
+    embeds: [embed],
+    components: [getRow(id)],
+    fetchReply: true,
+  });
+
+  const filter = (i) => i.user.id === interaction.user.id;
+  const time = 1000 * 60 * 5;
+
+  const collector = await replyEmbed.createMessageComponentCollector({
+    filter,
+    time,
+  });
+
+  collector.on("collect", async (b) => {
+    if (!b) return;
+    if (b.customId !== "prev_embed" && b.customId !== "next_embed") return;
+
+    b.deferUpdate();
+
+    if (b.customId === "prev_embed" && pages[id] > 0) {
+      --pages[id];
+    } else if (b.customId === "next_embed" && pages[id] < embeds.length - 1) {
+      ++pages[id];
+    }
 
     await embeds[pages[id]].setFooter({
-      text: `Page ${pages[id] + 1} from ${Pagemax}`,
+      text: `Page ${pages[id] + 1} of ${Pagemax}`,
     });
 
-    const replyEmbed = await interaction.editReply({
-      embeds: [embed],
+    await interaction.editReply({
+      embeds: [embeds[pages[id]]],
       components: [getRow(id)],
       fetchReply: true,
     });
-
-    const filter = (i) => i.user.id === interaction.user.id;
-    const time = 1000 * 60 * 5;
-
-    const collector = await replyEmbed.createMessageComponentCollector({
-      filter,
-      time,
-    });
-
-    collector.on("collect", async (b) => {
-      if (!b) return;
-      if (b.customId !== "prev_embed" && b.customId !== "next_embed") return;
-
-      b.deferUpdate();
-
-      if (b.customId === "prev_embed" && pages[id] > 0) {
-        --pages[id];
-      } else if (b.customId === "next_embed" && pages[id] < embeds.length - 1) {
-        ++pages[id];
-      }
-
-      await embeds[pages[id]].setFooter({
-        text: `Page ${pages[id] + 1} of ${Pagemax}`,
-      });
-
-      await interaction.editReply({
-        embeds: [embeds[pages[id]]],
-        components: [getRow(id)],
-        fetchReply: true,
-      });
-    });
-
-    // -------------- Not needed --------------
-    collector.on("end", async (reason) => {
-      if (reason === "time") {
-        const warningEmbed = new EmbedBuilder()
-          .setColor("Yellow")
-          .setDescription(`⚠️ |  Unfortunately, the embed has expired!`);
-
-        await interaction.editReply({
-          embeds: [warningEmbed],
-          components: [],
-          ephemeral: true,
-        });
-      }
-    });
-    // -------------- Not needed --------------
-  },
-};
+  });
+}
 
 function progressbar(player) {
   const size = 15;
@@ -128,6 +110,72 @@ function unique(arr1, arr2) {
   return unique;
 }
 
+function isSongPlaying(player) {
+  if (player.playing) return;
+  if (!player.playing)
+    return interaction.editReply({
+      embeds: [
+        new EmbedBuilder()
+          .setColor("Blurple")
+          .setDescription("🔹 | I'm not playing anything right now.")
+          .setTimestamp(),
+      ],
+    });
+}
+
+function checkForQueue(player) {
+  if (player.queue.length > 1) return;
+  if (!player.queue.length < 1)
+    return interaction.editReply({
+      embeds: [
+        new EmbedBuilder()
+          .setColor("Blurple")
+          .setDescription("🔹 | There is nothing in the queue.")
+          .setTimestamp(),
+      ],
+    });
+}
+
+async function repeatMode(mode, player) {
+  switch (mode) {
+    case "queue":
+      checkForQueue(player);
+      await player.setLoop("queue");
+
+      interaction.editReply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor("Blurple")
+            .setDescription("🔹 | Repeat mode is now on. (Queue)")
+            .setTimestamp(),
+        ],
+      });
+    case "song":
+      isSongPlaying(player);
+      await player.setLoop("song");
+
+      interaction.editReply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor("Blurple")
+            .setDescription("🔹 | Repeat mode is now on. (Song)")
+            .setTimestamp(),
+        ],
+      });
+    case "none":
+      await player.setLoop("off");
+
+      return interaction.editReply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor("Blurple")
+            .setDescription("🔹 | Repeat mode is now off.")
+            .setTimestamp(),
+        ],
+      });
+  }
+}
+
 function switchTo(val) {
   let status = " ";
   switch (val) {
@@ -147,4 +195,12 @@ function switchTo(val) {
   return status;
 }
 
-module.exports = { progressbar, unique, switchTo };
+module.exports = {
+  embedPages,
+  progressbar,
+  unique,
+  switchTo,
+  isSongPlaying,
+  checkForQueue,
+  repeatMode,
+};

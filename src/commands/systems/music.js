@@ -6,7 +6,13 @@ const {
 } = require("discord.js");
 const genius = require("genius-lyrics");
 const gClient = new genius.Client();
-const { embedPages, progressbar } = require("../../utils/utils.js");
+const {
+  embedPages,
+  progressbar,
+  isSongPlaying,
+  checkForQueue,
+  repeatMode,
+} = require("../../utils/utils.js");
 const pms = require("pretty-ms");
 
 module.exports = {
@@ -91,26 +97,12 @@ module.exports = {
   async execute(interaction, client) {
     const { options, member, guild } = interaction;
     const embed = new EmbedBuilder();
-    const VC = member.voice.channel;
 
     await interaction.deferReply();
 
-    if (!VC)
-      return interaction.editReply({
-        embeds: [
-          embed
-            .setColor("Blurple")
-            .setDescription(
-              "🔹 | You need to be in a voice channel to use this command."
-            )
-            .setTimestamp(),
-        ],
-        ephemeral: true,
-      });
-
     if (
       guild.members.me.voice.channelId &&
-      VC.id !== guild.members.me.voice.channelId
+      member.voice.channel.id !== guild.members.me.voice.channelId
     )
       return interaction.editReply({
         embeds: [
@@ -137,15 +129,18 @@ module.exports = {
     let query;
 
     try {
-      const notPlaying = new EmbedBuilder()
-        .setColor("Blurple")
-        .setDescription("🔹 | I'm not playing anything right now.")
-        .setTimestamp();
-
-      const noQueue = new EmbedBuilder()
-        .setColor("Blurple")
-        .setDescription("🔹 | There is nothing in the queue.")
-        .setTimestamp();
+      if (!member.voice.channel.id)
+        return interaction.editReply({
+          embeds: [
+            embed
+              .setColor("Blurple")
+              .setDescription(
+                "🔹 | You need to be in a voice channel to use this command."
+              )
+              .setTimestamp(),
+          ],
+          ephemeral: true,
+        });
 
       switch (options.getSubcommand()) {
         case "play":
@@ -236,10 +231,9 @@ module.exports = {
           }
 
         case "volume": {
-          const volume = options.getNumber("percent");
+          isSongPlaying(player);
 
-          if (!player.playing)
-            return interaction.editReply({ embeds: [notPlaying] });
+          const volume = options.getNumber("percent");
 
           if (volume < 0 || volume > 100)
             return interaction.editReply({
@@ -267,66 +261,21 @@ module.exports = {
           });
         }
         case "repeat": {
-          if (!player.playing)
-            return interaction.editReply({
-              embeds: [notPlaying],
-              ephemeral: true,
-            });
+          isSongPlaying(player);
 
           switch (options.getString("type")) {
             case "queue": {
-              if (!player.queue.length)
-                return interaction.editReply({
-                  embeds: [noQueue],
-                  ephemeral: true,
-                });
-
               if (!player.queueRepeat) {
-                await player.setLoop("queue");
-
-                return interaction.editReply({
-                  embeds: [
-                    new EmbedBuilder()
-                      .setColor("Blurple")
-                      .setDescription("🔹 | Repeat mode is now on. (Queue)")
-                      .setTimestamp(),
-                  ],
-                });
+                return repeatMode(queue, player);
               } else {
-                await player.setLoop("off");
-
-                return interaction.editReply({
-                  embeds: [
-                    new EmbedBuilder()
-                      .setColor("Blurple")
-                      .setDescription("🔹 | Repeat mode is now off.")
-                      .setTimestamp(),
-                  ],
-                });
+                return repeatMode(none, player);
               }
             }
             case "song": {
               if (!player.trackRepeat) {
-                await player.setLoop("track");
-
-                return interaction.editReply({
-                  embeds: [
-                    new EmbedBuilder()
-                      .setColor("Blurple")
-                      .setDescription("🔹 | Repeat mode is now on. (Song)")
-                      .setTimestamp(),
-                  ],
-                });
+                return repeatMode(song, player);
               } else {
-                await player.setLoop("off");
-                return interaction.editReply({
-                  embeds: [
-                    new EmbedBuilder()
-                      .setColor("Blurple")
-                      .setDescription("🔹 | Repeat mode is now off.")
-                      .setTimestamp(),
-                  ],
-                });
+                return repeatMode(none, player);
               }
             }
           }
@@ -352,9 +301,7 @@ module.exports = {
               embeds: [
                 new EmbedBuilder()
                   .setColor("Blurple")
-                  .setDescription(
-                    `🔹 | Couldn't seek song, the provided seek duration might've gone over the song's duration.`
-                  )
+                  .setDescription(`🔹 | Seek duration invalid.`)
                   .setTimestamp(),
               ],
             });
@@ -363,20 +310,11 @@ module.exports = {
         case "settings": {
           const track = player.queue.current;
 
-          if (!player.playing)
-            return interaction.editReply({
-              embeds: [notPlaying],
-              ephemeral: true,
-            });
-
-          if (!player.queue.length)
-            return interaction.editReply({
-              embeds: [noQueue],
-              ephemeral: true,
-            });
-
           switch (options.getString("options")) {
             case "skip":
+              isSongPlaying(player);
+              checkForQueue(player);
+
               player.skip();
 
               return interaction.editReply({
@@ -389,6 +327,8 @@ module.exports = {
               });
 
             case "nowplaying":
+              isSongPlaying(player);
+
               return interaction.editReply({
                 embeds: [
                   embed
@@ -410,6 +350,8 @@ module.exports = {
               });
 
             case "pause":
+              isSongPlaying(player);
+
               player.pause(true);
 
               return interaction.editReply({
@@ -433,9 +375,7 @@ module.exports = {
                 ],
               });
 
-            case "stop": {
-              if (!VC) return interaction.editReply({ embeds: [noVC] });
-
+            case "stop":
               player.destroy();
 
               return interaction.editReply({
@@ -446,61 +386,35 @@ module.exports = {
                     .setTimestamp(),
                 ],
               });
-            }
-            case "lyrics": {
-              try {
-                if (!player.playing)
-                  return interaction.editReply({
-                    embeds: [notPlaying],
-                    ephemeral: true,
-                  });
 
-                const trackTitle = track.title
-                  .replace("(Official Video)", "")
-                  .replace("(Official Audio)", "")
-                  .replace("(Official Lyric Video)", "");
-                const actualTrack = await gClient.songs.search(trackTitle);
-                const searches = actualTrack[0];
-                const lyrics = await searches.lyrics();
+            case "lyrics":
+              isSongPlaying(player);
 
-                return interaction.editReply({
-                  embeds: [
-                    new EmbedBuilder()
-                      .setColor("Blurple")
-                      .setAuthor({
-                        name: `🔹 | Lyrics for ${trackTitle}`,
-                        url: searches.url,
-                      })
-                      .setDescription(lyrics)
-                      .setFooter({ text: "Lyrics are powered by Genius." })
-                      .setTimestamp(),
-                  ],
-                });
-              } catch (_err) {
-                return interaction.editReply({
-                  embeds: [
-                    new EmbedBuilder()
-                      .setColor("Blurple")
-                      .setDescription(
-                        `🔹 | No lyrics found for **[${track.title}](${track.uri})**.`
-                      )
-                      .setTimestamp(),
-                  ],
-                });
-              }
-            }
-            case "shuffle": {
-              if (!player.playing)
-                return interaction.editReply({
-                  embeds: [notPlaying],
-                  ephemeral: true,
-                });
+              const trackTitle = track.title.replace(
+                /lyrics|lyric|lyrical|official music video|\(official music video\)|audio|official|official video|official video hd|official hd video|offical video music|\(offical video music\)|extended|hd|(\[.+\])/gi,
+                ""
+              );
+              const actualTrack = await gClient.songs.search(trackTitle);
+              const searches = actualTrack[0];
+              const lyrics = await searches.lyrics();
 
-              if (!player.queue.length)
-                return interaction.editReply({
-                  embeds: [noQueue],
-                  ephemeral: true,
-                });
+              return interaction.editReply({
+                embeds: [
+                  new EmbedBuilder()
+                    .setColor("Blurple")
+                    .setAuthor({
+                      name: `🔹 | Lyrics for ${trackTitle}`,
+                      url: searches.url,
+                    })
+                    .setDescription(lyrics)
+                    .setFooter({ text: "Lyrics are powered by Genius." })
+                    .setTimestamp(),
+                ],
+              });
+
+            case "shuffle":
+              isSongPlaying(player);
+              checkForQueue(player);
 
               player.queue.shuffle();
 
@@ -512,8 +426,10 @@ module.exports = {
                     .setTimestamp(),
                 ],
               });
-            }
+
             case "queue":
+              checkForQueue(player);
+
               for (let i = 0; i < player.queue.length; i++) {
                 songs.push(
                   `${i + 1}. [${player.queue[i].title}](${
@@ -536,17 +452,7 @@ module.exports = {
               return await embedPages(client, interaction, embeds);
 
             case "queueclear":
-              if (!player.playing)
-                return interaction.editReply({
-                  embeds: [notPlaying],
-                  ephemeral: true,
-                });
-
-              if (!player.queue.length)
-                return interaction.editReply({
-                  embeds: [noQueue],
-                  ephemeral: true,
-                });
+              checkForQueue(player);
 
               player.queue.clear();
 
