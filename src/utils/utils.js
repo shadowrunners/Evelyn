@@ -31,7 +31,7 @@ module.exports = {
 
     const id = interaction.user.id;
     pages[id] = pages[id] || 0;
-    let Pagemax = embeds.length;
+    const Pagemax = embeds.length;
 
     const embed = embeds[pages[id]];
 

@@ -24,7 +24,7 @@ module.exports = {
     const { options } = interaction;
     const messages = options.getString("number");
 
-    if (number > 100 || number < 1)
+    if (messages > 100 || messages < 1)
       return interaction.reply({
         embeds: [
           new EmbedBuilder()

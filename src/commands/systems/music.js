@@ -130,6 +130,12 @@ module.exports = {
       deaf: true,
     });
 
+    const songs = [];
+    const embeds = [];
+
+    let res;
+    let query;
+
     try {
       const notPlaying = new EmbedBuilder()
         .setColor("Blurple")
@@ -143,8 +149,8 @@ module.exports = {
 
       switch (options.getSubcommand()) {
         case "play":
-          const query = options.getString("query");
-          const res = await player.search(query, {
+          query = options.getString("query");
+          res = await player.search(query, {
             requester: interaction.user,
           });
 
@@ -357,35 +363,35 @@ module.exports = {
         case "settings": {
           const track = player.queue.current;
 
-          switch (options.getString("options")) {
-            case "skip": {
-              if (!player.playing)
-                return interaction.editReply({
-                  embeds: [notPlaying],
-                  ephemeral: true,
-                });
+          if (!player.playing)
+            return interaction.editReply({
+              embeds: [notPlaying],
+              ephemeral: true,
+            });
 
+          if (!player.queue.length)
+            return interaction.editReply({
+              embeds: [noQueue],
+              ephemeral: true,
+            });
+
+          switch (options.getString("options")) {
+            case "skip":
               player.skip();
 
               return interaction.editReply({
                 embeds: [
-                  new EmbedBuilder()
+                  embed
                     .setColor("Blurple")
                     .setDescription("🔹 | Skipped.")
                     .setTimestamp(),
                 ],
               });
-            }
-            case "nowplaying": {
-              if (!player.playing)
-                return interaction.editReply({
-                  embeds: [notPlaying],
-                  ephemeral: true,
-                });
 
+            case "nowplaying":
               return interaction.editReply({
                 embeds: [
-                  new EmbedBuilder()
+                  embed
                     .setColor("Blurple")
                     .setAuthor({
                       name: "Now Playing",
@@ -402,39 +408,34 @@ module.exports = {
                     .setTimestamp(),
                 ],
               });
-            }
-            case "pause": {
-              if (!player.playing)
-                return interaction.editReply({
-                  embeds: [notPlaying],
-                  ephemeral: true,
-                });
 
+            case "pause":
               player.pause(true);
 
               return interaction.editReply({
                 embeds: [
-                  new EmbedBuilder()
+                  embed
                     .setColor("Blurple")
                     .setDescription("🔹 | Paused.")
                     .setTimestamp(),
                 ],
               });
-            }
-            case "resume": {
+
+            case "resume":
               player.pause(false);
 
               return interaction.editReply({
                 embeds: [
-                  new EmbedBuilder()
+                  embed
                     .setColor("Blurple")
                     .setDescription("🔹 | Resumed.")
                     .setTimestamp(),
                 ],
               });
-            }
+
             case "stop": {
               if (!VC) return interaction.editReply({ embeds: [noVC] });
+
               player.destroy();
 
               return interaction.editReply({
@@ -512,22 +513,7 @@ module.exports = {
                 ],
               });
             }
-            case "queue": {
-              if (!player.playing)
-                return interaction.editReply({
-                  embeds: [notPlaying],
-                  ephemeral: true,
-                });
-
-              if (!player.queue.length)
-                return interaction.editReply({
-                  embeds: [noQueue],
-                  ephemeral: true,
-                });
-
-              const songs = [];
-              const embeds = [];
-
+            case "queue":
               for (let i = 0; i < player.queue.length; i++) {
                 songs.push(
                   `${i + 1}. [${player.queue[i].title}](${
@@ -536,35 +522,20 @@ module.exports = {
                 );
               }
 
-              if (songs.length < 10) {
-                return interaction.editReply({
-                  embeds: [
-                    new EmbedBuilder()
-                      .setColor("Blurple")
-                      .setAuthor({ name: `Current queue for ${guild.name}` })
-                      .setTitle(
-                        `▶️ | Currently playing: ${player.queue.current.title}`
-                      )
-                      .setDescription(songs.slice(0, 10).join("\n"))
-                      .setTimestamp(),
-                  ],
-                });
-              } else {
-                for (let i = 0; i < songs.length; i += 10) {
-                  const queueEmbed = new EmbedBuilder()
-                    .setColor("Blurple")
-                    .setAuthor({ name: `Current queue for ${guild.name}` })
-                    .setTitle(
-                      `▶️ | Currently playing: ${player.queue.current.title}`
-                    )
-                    .setDescription(songs.slice(i, i + 10).join("\n"))
-                    .setTimestamp();
-                  embeds.push(queueEmbed);
-                }
+              for (let i = 0; i < songs.length; i += 10) {
+                embed
+                  .setColor("Blurple")
+                  .setAuthor({ name: `Current queue for ${guild.name}` })
+                  .setTitle(
+                    `▶️ | Currently playing: ${player.queue.current.title}`
+                  )
+                  .setDescription(songs.slice(i, i + 10).join("\n"))
+                  .setTimestamp();
+                embeds.push(embed);
               }
               return await embedPages(client, interaction, embeds);
-            }
-            case "queueclear": {
+
+            case "queueclear":
               if (!player.playing)
                 return interaction.editReply({
                   embeds: [notPlaying],
@@ -587,7 +558,6 @@ module.exports = {
                     .setTimestamp(),
                 ],
               });
-            }
           }
         }
       }
