@@ -231,7 +231,7 @@ module.exports = {
           }
 
         case "volume": {
-          isSongPlaying(player);
+          isSongPlaying(interaction, player);
 
           const volume = options.getNumber("percent");
 
@@ -266,17 +266,17 @@ module.exports = {
           switch (options.getString("type")) {
             case "queue": {
               if (!player.queueRepeat) {
-                return repeatMode(queue, player);
-              } else {
-                return repeatMode(none, player);
+                repeatMode(queue, player, interaction);
               }
+
+              return repeatMode(none, player, interaction);
             }
             case "song": {
               if (!player.trackRepeat) {
-                return repeatMode(song, player);
-              } else {
-                return repeatMode(none, player);
+                return repeatMode(song, player, interaction);
               }
+
+              return repeatMode(none, player, interaction);
             }
           }
         }
@@ -312,8 +312,8 @@ module.exports = {
 
           switch (options.getString("options")) {
             case "skip":
-              isSongPlaying(player);
-              checkForQueue(player);
+              isSongPlaying(interaction, player);
+              checkForQueue(interaction, player);
 
               player.skip();
 
@@ -327,7 +327,7 @@ module.exports = {
               });
 
             case "nowplaying":
-              isSongPlaying(player);
+              isSongPlaying(interaction, player);
 
               return interaction.editReply({
                 embeds: [
@@ -350,7 +350,7 @@ module.exports = {
               });
 
             case "pause":
-              isSongPlaying(player);
+              isSongPlaying(interaction, player);
 
               player.pause(true);
 
@@ -388,7 +388,7 @@ module.exports = {
               });
 
             case "lyrics":
-              isSongPlaying(player);
+              isSongPlaying(interaction, player);
 
               const trackTitle = track.title.replace(
                 /lyrics|lyric|lyrical|official music video|\(official music video\)|audio|official|official video|official video hd|official hd video|offical video music|\(offical video music\)|extended|hd|(\[.+\])/gi,
@@ -413,8 +413,8 @@ module.exports = {
               });
 
             case "shuffle":
-              isSongPlaying(player);
-              checkForQueue(player);
+              isSongPlaying(interaction, player);
+              checkForQueue(interaction, player);
 
               player.queue.shuffle();
 
@@ -428,7 +428,7 @@ module.exports = {
               });
 
             case "queue":
-              checkForQueue(player);
+              checkForQueue(interaction, player);
 
               for (let i = 0; i < player.queue.length; i++) {
                 songs.push(
@@ -452,7 +452,7 @@ module.exports = {
               return await embedPages(client, interaction, embeds);
 
             case "queueclear":
-              checkForQueue(player);
+              checkForQueue(interaction, player);
 
               player.queue.clear();
 

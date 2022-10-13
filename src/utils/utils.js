@@ -110,7 +110,7 @@ function unique(arr1, arr2) {
   return unique;
 }
 
-function isSongPlaying(player) {
+function isSongPlaying(interaction, player) {
   if (player.playing) return;
   if (!player.playing)
     return interaction.editReply({
@@ -123,7 +123,7 @@ function isSongPlaying(player) {
     });
 }
 
-function checkForQueue(player) {
+function checkForQueue(interaction, player) {
   if (player.queue.length > 1) return;
   if (!player.queue.length < 1)
     return interaction.editReply({
@@ -136,7 +136,7 @@ function checkForQueue(player) {
     });
 }
 
-async function repeatMode(mode, player) {
+async function repeatMode(mode, player, interaction) {
   switch (mode) {
     case "queue":
       checkForQueue(player);
