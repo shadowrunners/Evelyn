@@ -1,4 +1,5 @@
 const { ButtonInteraction, EmbedBuilder } = require("discord.js");
+const { checkForQueue, isSongPlaying } = require("../modules/musicModule.js");
 const client = require("../structures/index.js");
 
 module.exports = {
@@ -8,42 +9,22 @@ module.exports = {
    */
   execute(interaction) {
     const player = client.manager.players.get(interaction.guild.id);
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
     if (!player) return;
+    if (
+      isSongPlaying(interaction, player) ||
+      checkForQueue(interaction, player)
+    )
+      return;
 
-    const noQueue = new EmbedBuilder()
-      .setColor("Blurple")
-      .setDescription("🔹 | There is nothing in the queue.")
-      .setTimestamp();
-
-    const notPlaying = new EmbedBuilder()
-      .setColor("Blurple")
-      .setDescription("🔹 | I'm not playing anything right now.")
-      .setTimestamp();
-
-    if (!player.playing)
-      return interaction.reply({
-        embeds: [notPlaying],
-        ephemeral: true,
-      });
-
-    if (!player.queue.length)
-      return interaction.reply({
-        embeds: [noQueue],
-        ephemeral: true,
-      });
-
-    const shuffleEmbed = new EmbedBuilder()
-      .setColor("Blurple")
-      .setDescription("🔹 | Shuffled the queue.")
-      .setFooter({
-        text: `Action executed by ${interaction.user.username}.`,
-        iconURL: interaction.user.avatarURL({ dynamic: true }),
-      })
-      .setTimestamp();
+    embed.setDescription("🔹 | Shuffled the queue.").setFooter({
+      text: `Action executed by ${interaction.user.username}.`,
+      iconURL: interaction.user.avatarURL({ dynamic: true }),
+    });
 
     player.queue.shuffle();
 
-    return interaction.reply({ embeds: [shuffleEmbed] });
+    return interaction.reply({ embeds: [embed] });
   },
 };

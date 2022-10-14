@@ -8,19 +8,16 @@ module.exports = {
    */
   execute(interaction) {
     const player = client.manager.players.get(interaction.guild.id);
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
     if (!player) return;
 
-    const skipEmbed = new EmbedBuilder()
-      .setColor("Blurple")
-      .setDescription(`🔹 | Skipped.`)
-      .setFooter({
-        text: `Action executed by ${interaction.user.username}.`,
-        iconURL: interaction.user.avatarURL({ dynamic: true }),
-      })
-      .setTimestamp();
+    embed.setDescription(`🔹 | Skipped.`).setFooter({
+      text: `Action executed by ${interaction.user.username}.`,
+      iconURL: interaction.user.avatarURL({ dynamic: true }),
+    });
 
     player.skip();
 
-    return interaction.reply({ embeds: [skipEmbed] });
+    return interaction.reply({ embeds: [embed] });
   },
 };
