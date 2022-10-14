@@ -18,6 +18,18 @@ module.exports = {
     const fetchLB = await DXP.fetchLeaderboard(interaction.guild.id, 10);
     const leaderboard = await DXP.computeLeaderboard(client, fetchLB);
 
+    if (!fetchLB || !leaderboard)
+      return interaction.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor("Blurple")
+            .setDescription(
+              "🔹 | Couldn't create a leaderboard as there is no data yet."
+            )
+            .setTimestamp(),
+        ],
+      });
+
     const mappedLB = leaderboard.map(
       (lb) =>
         `**#${lb.position}** • **<@${lb.userID}>** • Level: \`${

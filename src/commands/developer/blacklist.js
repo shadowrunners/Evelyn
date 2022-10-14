@@ -56,7 +56,6 @@ module.exports = {
    * @param {Client} client
    */
   async execute(interaction, client) {
-    const embed = new EmbedBuilder();
     const { options } = interaction;
 
     switch (options.getSubcommand()) {

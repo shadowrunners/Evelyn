@@ -96,13 +96,14 @@ module.exports = {
    */
   async execute(interaction, client) {
     const { options, member, guild } = interaction;
+    const VC = member.voice.channel;
     const embed = new EmbedBuilder();
 
     await interaction.deferReply();
 
     if (
       guild.members.me.voice.channelId &&
-      member.voice.channel.id !== guild.members.me.voice.channelId
+      VC.id !== guild.members.me.voice.channelId
     )
       return interaction.editReply({
         embeds: [
@@ -122,11 +123,10 @@ module.exports = {
       deaf: true,
     });
 
-    const songs = [];
-    const embeds = [];
-
     let res;
     let query;
+    let songs;
+    let embeds;
 
     try {
       if (!member.voice.channel.id)
@@ -230,7 +230,7 @@ module.exports = {
             return interaction.editReply({ embeds: [embed] });
           }
 
-        case "volume": {
+        case "volume":
           isSongPlaying(interaction, player);
 
           const volume = options.getNumber("percent");
@@ -259,28 +259,28 @@ module.exports = {
                 ),
             ],
           });
-        }
-        case "repeat": {
-          isSongPlaying(player);
+
+        case "repeat":
+          isSongPlaying(interaction, player);
 
           switch (options.getString("type")) {
             case "queue": {
               if (!player.queueRepeat) {
-                repeatMode(queue, player, interaction);
+                repeatMode("queue", player, interaction);
               }
 
-              return repeatMode(none, player, interaction);
+              return repeatMode("none", player, interaction);
             }
             case "song": {
               if (!player.trackRepeat) {
-                return repeatMode(song, player, interaction);
+                return repeatMode("song", player, interaction);
               }
 
-              return repeatMode(none, player, interaction);
+              return repeatMode("none", player, interaction);
             }
           }
-        }
-        case "seek": {
+
+        case "seek":
           const time = options.getNumber("time");
           const seekDuration = Number(time) * 1000;
           const duration = player.queue.current.length;
@@ -306,9 +306,10 @@ module.exports = {
               ],
             });
           }
-        }
-        case "settings": {
+
+        case "settings":
           const track = player.queue.current;
+          let queueEmbed;
 
           switch (options.getString("options")) {
             case "skip":
@@ -427,8 +428,11 @@ module.exports = {
                 ],
               });
 
-            case "queue":
+            case "queue": {
               checkForQueue(interaction, player);
+
+              const embeds = [];
+              const songs = [];
 
               for (let i = 0; i < player.queue.length; i++) {
                 songs.push(
@@ -438,18 +442,31 @@ module.exports = {
                 );
               }
 
-              for (let i = 0; i < songs.length; i += 10) {
-                embed
+              if (songs.length < 10) {
+                const queueEmbed = new EmbedBuilder()
                   .setColor("Blurple")
                   .setAuthor({ name: `Current queue for ${guild.name}` })
                   .setTitle(
                     `▶️ | Currently playing: ${player.queue.current.title}`
                   )
-                  .setDescription(songs.slice(i, i + 10).join("\n"))
+                  .setDescription(songs.slice(0, 10).join("\n"))
                   .setTimestamp();
-                embeds.push(embed);
+                return interaction.editReply({ embeds: [queueEmbed] });
+              } else {
+                for (let i = 0; i < songs.length; i += 10) {
+                  const queueEmbed = new EmbedBuilder()
+                    .setColor("Blurple")
+                    .setAuthor({ name: `Current queue for ${guild.name}` })
+                    .setTitle(
+                      `▶️ | Currently playing: ${player.queue.current.title}`
+                    )
+                    .setDescription(songs.slice(i, i + 10).join("\n"))
+                    .setTimestamp();
+                  embeds.push(queueEmbed);
+                }
               }
-              return await embedPages(client, interaction, embeds);
+              return await embedPages(interaction, embeds);
+            }
 
             case "queueclear":
               checkForQueue(interaction, player);
@@ -465,7 +482,6 @@ module.exports = {
                 ],
               });
           }
-        }
       }
     } catch (e) {
       console.log(e);

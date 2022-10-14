@@ -10,21 +10,7 @@ module.exports = {
   async execute(oldState, newState) {
     const player = client.manager.players.get(oldState.guild.id);
 
-    if (!newState.guild.members.me.voice.channel) {
-      player?.destroy();
-    }
-
-    if (
-      newState.channelId &&
-      newState.channel?.type === "GUILD_STAGE_VOICE" &&
-      newState.guild.members.me?.voice.suppress
-    ) {
-      if (
-        newState.guild.members.me.permissions.has(PermissionFlagsBits.Speak)
-      ) {
-        await newState.guild.members.me.voice.setSuppressed(false).catch(_err);
-      }
-    }
+    if (!newState.guild.members.me.voice.channel) player?.destroy();
 
     if (
       oldState.guild.members.cache.get(client.user.id).voice.channelId ===

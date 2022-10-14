@@ -3,9 +3,6 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
   ChannelType,
-  GuildVerificationLevel,
-  GuildExplicitContentFilter,
-  GuildNSFWLevel,
 } = require("discord.js");
 
 module.exports = {
@@ -54,14 +51,6 @@ module.exports = {
 
     const getChannelTypeSize = (type) =>
       channels.cache.filter((channel) => type.includes(channel.type)).size;
-
-    const totalChannels = getChannelTypeSize([
-      ChannelType.GuildText,
-      ChannelType.GuildVoice,
-      ChannelType.GuildStageVoice,
-      ChannelType.GuildForum,
-      ChannelType.GuildCategory,
-    ]);
 
     const svinfo = new EmbedBuilder()
       .setColor("Blurple")

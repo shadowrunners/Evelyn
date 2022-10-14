@@ -3,8 +3,6 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
 } = require("discord.js");
-const { NekoBot } = require("nekobot-api");
-const imageGen = new NekoBot();
 
 module.exports = {
   data: new SlashCommandBuilder()
