@@ -25,10 +25,6 @@ async function embedPages(client, interaction, embeds) {
 
   const embed = embeds[pages[id]];
 
-  console.log(embed);
-  console.log(embeds);
-  console.log(embeds[pages[id]]);
-
   await embeds[pages[id]].setFooter({
     text: `Page ${pages[id] + 1} from ${Pagemax}`,
   });

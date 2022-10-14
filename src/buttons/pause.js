@@ -6,11 +6,13 @@ module.exports = {
   /**
    * @param {ButtonInteraction} interaction
    */
-  execute(interaction) {
+  async execute(interaction) {
     const player = client.manager.players.get(interaction.guild.id);
     const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
     if (!player) return;
+
+    await interaction.deferReply();
 
     if (!player.paused) {
       player.pause(true);
@@ -19,7 +21,7 @@ module.exports = {
         text: `Action executed by ${interaction.user.username}.`,
         iconURL: interaction.user.avatarURL({ dynamic: true }),
       });
-      return interaction.reply({ embeds: [embed] });
+      return interaction.editReply({ embeds: [embed] });
     }
 
     if (player.paused) {
@@ -29,7 +31,7 @@ module.exports = {
         text: `Action executed by ${interaction.user.username}.`,
         iconURL: interaction.user.avatarURL({ dynamic: true }),
       });
-      return interaction.reply({ embeds: [embed] });
+      return interaction.editReply({ embeds: [embed] });
     }
   },
 };

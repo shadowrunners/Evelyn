@@ -102,8 +102,8 @@ module.exports = {
     const { options, member, guild } = interaction;
     const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
-    if (await checkVoice(interaction)) return;
     await interaction.deferReply();
+    if (await checkVoice(interaction)) return;
 
     const player = await client.manager.createPlayer({
       guildId: interaction.guild.id,
@@ -286,8 +286,7 @@ module.exports = {
               if (isSongPlaying(interaction, player)) return;
 
               const trackTitle = track.title.replace(
-                /lyrics|lyric|lyrical|official music video|\(official music video\)|audio|official|official video|official video hd|official hd video|offical video music|\(offical video music\)|extended|hd|(\[.+\])/gi,
-                ""
+                /lyrics|lyric|lyrical|official music video|\(official music video\)|audio|official|official video|official video hd|official hd video|offical video music|\(offical video music\)|extended|hd|(\[.+\])/gi
               );
               const actualTrack = await gClient.songs.search(trackTitle);
               const searches = actualTrack[0];
@@ -332,7 +331,7 @@ module.exports = {
                 );
               }
 
-              for (let i = 1; i < songs.length; i += 10) {
+              for (let i = 0; i < songs.length; i += 10) {
                 embed
                   .setAuthor({ name: `Current queue for ${guild.name}` })
                   .setTitle(

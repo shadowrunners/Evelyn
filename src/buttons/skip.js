@@ -6,10 +6,12 @@ module.exports = {
   /**
    * @param {ButtonInteraction} interaction
    */
-  execute(interaction) {
+  async execute(interaction) {
     const player = client.manager.players.get(interaction.guild.id);
     const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
     if (!player) return;
+
+    await interaction.deferReply();
 
     embed.setDescription(`🔹 | Skipped.`).setFooter({
       text: `Action executed by ${interaction.user.username}.`,
@@ -18,6 +20,6 @@ module.exports = {
 
     player.skip();
 
-    return interaction.reply({ embeds: [embed] });
+    return interaction.editReply({ embeds: [embed] });
   },
 };

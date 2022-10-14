@@ -11,6 +11,8 @@ module.exports = {
     const player = client.manager.players.get(interaction.guild.id);
     const volume = Number(player.volume * 100) + 10;
 
+    await interaction.deferReply();
+
     if (!player) return;
     if (isSongPlaying(interaction, player)) return;
 

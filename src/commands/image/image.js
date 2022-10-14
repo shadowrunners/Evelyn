@@ -3,6 +3,12 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
 } = require("discord.js");
+const {
+  checkAvatar,
+  checkUsername,
+  checkText,
+} = require("../../modules/nekoModule.js");
+const API = require("../../modules/nekoHelper.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -20,7 +26,6 @@ module.exports = {
           { name: "🔹 | Captcha", value: "captcha" },
           { name: "🔹 | Change My Mind", value: "changemymind" },
           { name: "🔹 | Deepfry", value: "deepfry" },
-          { name: "🔹 | Fact", value: "fact" },
           { name: "🔹 | Kanna", value: "kannagen" },
           { name: "🔹 | PH Comment", value: "phcomment" },
           { name: "🔹 | Ship", value: "ship" },
@@ -60,231 +65,102 @@ module.exports = {
     const user2 = options.getUser("user2");
     const text = options.getString("text");
 
-    const username = user1?.username || user2?.username;
-    const avatar = user1?.avatarURL() || user2?.avatarURL();
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
-    const embed = new EmbedBuilder().setTimestamp();
+    let image;
 
     await interaction.deferReply();
 
     switch (choices) {
-      case "awooify": {
-        if (!avatar)
-          return interaction.editReply({
-            embeds: [
-              embed.setDescription("🔹 | You forgot to mention a user."),
-            ],
-          });
+      case "awooify":
+        if (checkAvatar(user1, user2, interaction)) return;
+        image = await API.awooify(user1, user2);
+        return interaction.editReply({ embeds: [embed.setImage(image)] });
 
-        const image = await imageGen.generate("awooify", { url: avatar });
+      case "baguette":
+        if (checkAvatar(user1, user2, interaction)) return;
+        image = await API.baguette(user1, user2);
+        return interaction.editReply({ embeds: [embed.setImage(image)] });
 
-        embed.setImage(image);
-        return interaction.editReply({ embeds: [embed] });
-      }
-      case "baguette": {
-        if (!avatar)
-          return interaction.editReply({
-            embeds: [
-              embed.setDescription("🔹 | You forgot to mention a user."),
-            ],
-          });
+      case "blurpify":
+        if (checkAvatar(user1, user2, interaction)) return;
+        image = await API.blurpify(user1, user2);
+        return interaction.editReply({ embeds: [embed.setImage(image)] });
 
-        const image = await imageGen.generate("baguette", { url: avatar });
+      case "captcha":
+        if (
+          checkAvatar(user1, user2, interaction) ||
+          checkUsername(user1, user2, interaction)
+        )
+          return;
+        image = await API.captcha(user1, user2);
+        return interaction.editReply({ embeds: [embed.setImage(image)] });
 
-        embed.setImage(image);
-        return interaction.editReply({ embeds: [embed] });
-      }
-      case "blurpify": {
-        if (!avatar)
-          return interaction.editReply({
-            embeds: [
-              embed.setDescription("🔹 | You forgot to mention a user."),
-            ],
-          });
-
-        const image = await imageGen.generate("blurpify", { image: avatar });
-
-        embed.setImage(image);
-        return interaction.editReply({
-          embeds: [embed],
-        });
-      }
-      case "captcha": {
-        if (!avatar || !username)
-          return interaction.editReply({
-            embeds: [
-              embed.setDescription("🔹 | You forgot to mention a user."),
-            ],
-          });
-
-        const image = await imageGen.generate("captcha", {
-          url: avatar,
-          username: username,
-        });
-
-        embed.setImage(image);
-        return interaction.editReply({ embeds: [embed] });
-      }
-      case "changemymind": {
-        if (!text)
-          return interaction.editReply({
-            embeds: [
-              embed.setDescription("🔹 | You forgot to provide some text."),
-            ],
-          });
-
-        const image = await imageGen.generate("changemymind", { text: text });
-
-        embed.setImage(image);
-        return interaction.editReply({ embeds: [embed] });
-      }
-      case "deepfry": {
-        if (!avatar)
-          return interaction.editReply({
-            embeds: [
-              embed.setDescription("🔹 | You forgot to mention a user."),
-            ],
-          });
-
-        const image = await imageGen.generate("deepfry", { image: avatar });
-
-        embed.setImage(image);
-        return interaction.editReply({ embeds: [embed] });
-      }
-      case "fact": {
-        if (!text)
-          return interaction.editReply({
-            embeds: [
-              embed.setDescription("🔹 | You forgot to provide some text."),
-            ],
-          });
-
-        const image = await imageGen.generate("fact", { text: text });
-
-        embed.setImage(image);
-        return interaction.editReply({ embeds: [embed] });
-      }
-      case "kannagen": {
-        if (!text)
-          return interaction.editReply({
-            embeds: [
-              embed.setDescription("🔹 | You forgot to provide some text."),
-            ],
-          });
-
-        const image = await imageGen.generate("kannagen", { text: text });
-
-        embed.setImage(image);
-        return interaction.editReply({ embeds: [embed] });
-      }
-      case "phcomment": {
-        if (!avatar || !text || !username)
-          return interaction.editReply({
-            embeds: [
-              embed.setDescription(
-                "🔹 | You either forgot to provide a user or some text."
-              ),
-            ],
-          });
-
-        const image = await imageGen.generate("phcomment", {
-          image: avatar,
-          text: text,
-          username: username,
-        });
-
-        embed.setImage(image);
-        return interaction.editReply({ embeds: [embed] });
-      }
-      case "ship": {
-        if (!user1?.avatarURL() || user2?.avatarURL())
-          return interaction.editReply({
-            embeds: [
-              embed.setDescription("🔹 | You forgot to mention two users."),
-            ],
-          });
-
-        const image = await imageGen.generate("ship", {
-          user1: user1?.avatarURL(),
-          user2: user2?.avatarURL(),
-        });
+      case "changemymind":
+        if (checkText(text, interaction)) return;
+        image = await API.changemymind(text);
 
         return interaction.editReply({ embeds: [embed.setImage(image)] });
-      }
-      case "threats": {
-        if (!avatar)
-          return interaction.editReply({
-            embeds: [
-              embed.setDescription("🔹 | You forgot to mention a user."),
-            ],
-          });
 
-        const image = await imageGen.generate("threats", {
-          url: avatar,
-        });
+      case "deepfry":
+        if (checkAvatar(user1, user2, interaction)) return;
+        image = await API.deepfry(user1, user2);
 
         return interaction.editReply({ embeds: [embed.setImage(image)] });
-      }
-      case "trash": {
-        if (!avatar)
-          return interaction.editReply({
-            embeds: [
-              embed.setDescription("🔹 | You forgot to mention a user."),
-            ],
-          });
 
-        const image = await imageGen.generate("trash", {
-          url: avatar,
-        });
+      case "kannagen":
+        if (checkText(text, interaction)) return;
+        image = await API.kannagen(text);
 
         return interaction.editReply({ embeds: [embed.setImage(image)] });
-      }
-      case "trumptweet": {
-        if (!text)
-          return interaction.editReply({
-            embeds: [
-              embed.setDescription("🔹 | You forgot to provide some text."),
-            ],
-          });
 
-        const image = await imageGen.generate("trumptweet", {
-          text: text,
-        });
+      case "phcomment":
+        if (
+          checkAvatar(user1, user2, interaction) ||
+          checkUsername(user1, user2, interaction) ||
+          checkText(text, interaction)
+        )
+          return;
+        image = await API.phcomment(user1, user2, text);
 
         return interaction.editReply({ embeds: [embed.setImage(image)] });
-      }
-      case "tweet": {
-        if (!user1?.username || !user2.username || !text)
-          return interaction.editReply({
-            embeds: [
-              embed.setDescription(
-                "🔹 | You either forgot to provide two users, some text or maybe even both."
-              ),
-            ],
-          });
 
-        const image = await imageGen.generate("tweet", {
-          username: user1?.username || user2?.username,
-          text: text,
-        });
+      case "ship":
+        if (checkAvatar(user1, user2, interaction)) return;
+        image = await API.ship(user1, user2);
 
         return interaction.editReply({ embeds: [embed.setImage(image)] });
-      }
-      case "whowouldwin": {
-        if (!user1?.avatarURL() || !user2?.avatarURL())
-          return interaction.editReply({
-            embeds: [
-              embed.setDescription("🔹 | You forgot to provide two users."),
-            ],
-          });
 
-        const image = await imageGen.generate("whowouldwin", {
-          user1: user1?.avatarURL(),
-          user2: user2?.avatarURL(),
-        });
+      case "threats":
+        if (checkAvatar(user1, user2, interaction)) return;
+        image = await API.threats(user1, user2);
 
         return interaction.editReply({ embeds: [embed.setImage(image)] });
-      }
+
+      case "trash":
+        if (checkAvatar(user1, user2, interaction)) return;
+        image = await API.trash(user1, user2);
+
+        return interaction.editReply({ embeds: [embed.setImage(image)] });
+
+      case "trumptweet":
+        if (checkText(text, interaction)) return;
+        image = await API.trumptweet(text);
+        return interaction.editReply({ embeds: [embed.setImage(image)] });
+
+      case "tweet":
+        if (
+          checkUsername(user1, user2, interaction) ||
+          checkText(text, interaction)
+        )
+          return;
+        image = await API.tweet(user1, user2, text);
+        return interaction.editReply({ embeds: [embed.setImage(image)] });
+
+      case "whowouldwin":
+        if (checkAvatar(user1, user2, interaction)) return;
+        image = await API.whowouldwin(user1, user2);
+        return interaction.editReply({ embeds: [embed.setImage(image)] });
     }
   },
 };

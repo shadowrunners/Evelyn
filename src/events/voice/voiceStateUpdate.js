@@ -1,4 +1,4 @@
-const { VoiceState, PermissionFlagsBits, EmbedBuilder } = require("discord.js");
+const { VoiceState, EmbedBuilder } = require("discord.js");
 const client = require("../../structures/index.js");
 
 module.exports = {

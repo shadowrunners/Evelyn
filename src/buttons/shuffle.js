@@ -7,7 +7,7 @@ module.exports = {
   /**
    * @param {ButtonInteraction} interaction
    */
-  execute(interaction) {
+  async execute(interaction) {
     const player = client.manager.players.get(interaction.guild.id);
     const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
@@ -18,6 +18,8 @@ module.exports = {
     )
       return;
 
+    await interaction.deferReply();
+
     embed.setDescription("🔹 | Shuffled the queue.").setFooter({
       text: `Action executed by ${interaction.user.username}.`,
       iconURL: interaction.user.avatarURL({ dynamic: true }),
@@ -25,6 +27,6 @@ module.exports = {
 
     player.queue.shuffle();
 
-    return interaction.reply({ embeds: [embed] });
+    return interaction.editReply({ embeds: [embed] });
   },
 };

@@ -67,7 +67,7 @@ function isSongPlaying(interaction, player) {
 }
 
 function checkForQueue(interaction, player) {
-  if (!player.queue.length < 1 || player.queue.length === 0)
+  if (player.queue.length === 0)
     return interaction.editReply({
       embeds: [embed.setDescription("🔹 | There is nothing in the queue.")],
     });
