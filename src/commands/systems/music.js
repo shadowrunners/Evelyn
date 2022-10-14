@@ -6,13 +6,14 @@ const {
 } = require("discord.js");
 const genius = require("genius-lyrics");
 const gClient = new genius.Client();
+const { embedPages } = require("../../utils/utils.js");
 const {
-  embedPages,
-  progressbar,
   isSongPlaying,
   checkForQueue,
+  progressbar,
   repeatMode,
-} = require("../../utils/utils.js");
+  checkVoice,
+} = require("../../modules/musicModule.js");
 const pms = require("pretty-ms");
 
 module.exports = {
@@ -96,25 +97,10 @@ module.exports = {
    */
   async execute(interaction, client) {
     const { options, member, guild } = interaction;
-    const VC = member.voice.channel;
     const embed = new EmbedBuilder();
 
     await interaction.deferReply();
-
-    if (
-      guild.members.me.voice.channelId &&
-      VC.id !== guild.members.me.voice.channelId
-    )
-      return interaction.editReply({
-        embeds: [
-          embed
-            .setColor("Blurple")
-            .setDescription(
-              `🔹 | Sorry but I'm already playing music in <#${guild.members.me.voice.channelId}>.`
-            )
-            .setTimestamp(),
-        ],
-      });
+    checkVoice(interaction);
 
     const player = await client.manager.createPlayer({
       guildId: interaction.guild.id,
@@ -129,19 +115,6 @@ module.exports = {
     let embeds;
 
     try {
-      if (!member.voice.channel.id)
-        return interaction.editReply({
-          embeds: [
-            embed
-              .setColor("Blurple")
-              .setDescription(
-                "🔹 | You need to be in a voice channel to use this command."
-              )
-              .setTimestamp(),
-          ],
-          ephemeral: true,
-        });
-
       switch (options.getSubcommand()) {
         case "play":
           query = options.getString("query");
@@ -428,11 +401,11 @@ module.exports = {
                 ],
               });
 
-            case "queue": {
-              checkForQueue(interaction, player);
+            case "queue":
+              if (checkForQueue(interaction, player)) return;
 
-              const embeds = [];
-              const songs = [];
+              songs = [];
+              embeds = [];
 
               for (let i = 0; i < player.queue.length; i++) {
                 songs.push(
@@ -442,31 +415,19 @@ module.exports = {
                 );
               }
 
-              if (songs.length < 10) {
-                const queueEmbed = new EmbedBuilder()
+              for (let i = 1; i < songs.length; i += 10) {
+                queueEmbed = new EmbedBuilder()
                   .setColor("Blurple")
                   .setAuthor({ name: `Current queue for ${guild.name}` })
                   .setTitle(
                     `▶️ | Currently playing: ${player.queue.current.title}`
                   )
-                  .setDescription(songs.slice(0, 10).join("\n"))
+                  .setDescription(songs.slice(i, i + 10).join("\n"))
                   .setTimestamp();
-                return interaction.editReply({ embeds: [queueEmbed] });
-              } else {
-                for (let i = 0; i < songs.length; i += 10) {
-                  const queueEmbed = new EmbedBuilder()
-                    .setColor("Blurple")
-                    .setAuthor({ name: `Current queue for ${guild.name}` })
-                    .setTitle(
-                      `▶️ | Currently playing: ${player.queue.current.title}`
-                    )
-                    .setDescription(songs.slice(i, i + 10).join("\n"))
-                    .setTimestamp();
-                  embeds.push(queueEmbed);
-                }
+                embeds.push(queueEmbed);
               }
-              return await embedPages(interaction, embeds);
-            }
+
+              return await embedPages(client, interaction, embeds);
 
             case "queueclear":
               checkForQueue(interaction, player);

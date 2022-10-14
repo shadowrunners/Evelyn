@@ -7,12 +7,6 @@ async function nekoFetch(action, member, text) {
   return body.message;
 }
 
-async function waifuFetch(action) {
-  const { body } = await get(`https://api.waifu.pics/sfw/${action}`);
-  return body.url;
-}
-
 module.exports = {
   nekoFetch,
-  waifuFetch,
 };
