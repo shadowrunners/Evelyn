@@ -7,7 +7,7 @@ module.exports = {
    * @param {VoiceState} oldState
    * @param {VoiceState} newState
    */
-  async execute(oldState, newState) {
+  execute(oldState, newState) {
     const player = client.manager.players.get(oldState.guild.id);
 
     if (!newState.guild.members.me.voice.channel) player?.destroy();
