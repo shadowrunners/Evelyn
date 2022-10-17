@@ -4,8 +4,8 @@ const {
   EmbedBuilder,
   PermissionsBitField,
 } = require("discord.js");
-const guildBLK = require("../../structures/schemas/serverBlacklist.js");
-const userBLK = require("../../structures/schemas/userBlacklist.js");
+const serverBlacklist = require("../../structures/schemas/serverBlacklist.js");
+const userBlacklist = require("../../structures/schemas/userBlacklist.js");
 
 module.exports = {
   name: "interactionCreate",
@@ -18,53 +18,69 @@ module.exports = {
       interaction.isChatInputCommand() ||
       interaction.isUserContextMenuCommand()
     ) {
-      const Embed = new EmbedBuilder();
-
+      const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
       const command = client.commands.get(interaction.commandName);
-      Embed.setColor("Grey").setDescription("This command is outdated.");
 
-      const isUserBlacklisted = await userBLK.findOne({
-        userid: interaction.user.id,
+      const isUserBlacklisted = await userBlacklist.findOne({
+        userID: interaction.user.id,
       });
 
-      const isGuildBlacklisted = await guildBLK.findOne({
-        guildid: interaction.guild.id,
+      const isGuildBlacklisted = await serverBlacklist.findOne({
+        serverID: interaction.guild.id,
       });
 
       if (isUserBlacklisted) {
-        Embed.setColor("Blurple")
-          .setTitle("Blacklisted")
-          .setDescription(
-            `🔹 | You have been blacklisted from using ${client.user.username}, the reason behind this decision and the time this has occured is attached below.`
-          )
-          .addFields(
-            { name: "Reason", value: `${isUserBlacklisted.reason}` },
-            {
-              name: "Time",
-              value: `<t:${parseInt(isUserBlacklisted.time / 1000)}:R>`,
-            }
-          );
-        return interaction.reply({ embeds: [Embed] });
+        return interaction.reply({
+          embeds: [
+            embed
+              .setTitle("Blacklisted")
+              .setDescription(
+                `🔹 | You have been blacklisted from using Evelyn, the reason behind this decision and the time this has occured is attached below. `
+              )
+              .addFields(
+                {
+                  name: "Reason",
+                  value: `${isUserBlacklisted.reason}`,
+                  inline: true,
+                },
+                {
+                  name: "Time",
+                  value: `<t:${parseInt(isUserBlacklisted.time / 1000)}:R>`,
+                  inline: true,
+                }
+              ),
+          ],
+        });
       }
 
       if (isGuildBlacklisted) {
-        Embed.setColor("Blurple")
-          .setTitle("Server Blacklisted")
-          .setDescription(
-            `🔹 | This server has been blacklisted from using ${client.user.username}, the reason behind this decision and the time this has occured is attached below.`
-          )
-          .addFields(
-            { name: "Reason", value: `${isGuildBlacklisted.reason}` },
-            {
-              name: "Time",
-              value: `<t:${parseInt(isGuildBlacklisted.time / 1000)}:R>`,
-            }
-          );
-        return interaction.reply({ embeds: [Embed] });
+        return interaction.reply({
+          embeds: [
+            embed
+              .setTitle("Server Blacklisted")
+              .setDescription(
+                `🔹 | This server has been blacklisted from using Evelyn, the reason behind this decision and the time this has occured is attached below. `
+              )
+              .addFields(
+                {
+                  name: "Reason",
+                  value: `${isGuildBlacklisted.reason}`,
+                  inline: true,
+                },
+                {
+                  name: "Time",
+                  value: `<t:${parseInt(isGuildBlacklisted.time / 1000)}:R>`,
+                  inline: true,
+                }
+              ),
+          ],
+        });
       }
 
       if (!command) {
-        return interaction.reply({ embeds: [Embed] });
+        return interaction.reply({
+          embeds: [embed.setDescription("This command is outdated.")],
+        });
       }
 
       if (
@@ -82,7 +98,7 @@ module.exports = {
         )
           return interaction.reply({
             embeds: [
-              Embed.setColor("Blurple")
+              embed
                 .setTitle("Missing Permissions")
                 .setDescription(
                   `🔹 | I'm missing several permissions, might wanna have a look at that.`

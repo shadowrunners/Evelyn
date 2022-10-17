@@ -1,0 +1,32 @@
+{
+  "token": "",
+  "database": "",
+  "devGuild": "",
+  "ownerIDs": [""],
+
+  "clientID": "",
+  "clientSecret": "",
+
+  "cattoKey": "",
+  "imdbAPIKey": "",
+
+  "watcherHook": "",
+
+  "DBDLicense": "",
+  "redirectUri": "http://localhost/discord/callback",
+  "domain": "http://localhost",
+
+  "PerspectiveAPIKey": "",
+
+  "spotifyClientID": "",
+  "spotifySecret": "",
+
+  "nodes": [
+    {
+      "name": "",
+      "url": "",
+      "auth": "",
+      "secure": true
+    }
+  ]
+}

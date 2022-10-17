@@ -1,11 +1,11 @@
 const {
   SlashCommandBuilder,
   ChatInputCommandInteraction,
-  Client,
-  EmbedBuilder,
 } = require("discord.js");
-const guildBLK = require("../../structures/schemas/serverBlacklist.js");
-const userBLK = require("../../structures/schemas/userBlacklist.js");
+const {
+  addServerBlacklist,
+  addUserBlacklist,
+} = require("../../modules/blacklistModule.js");
 
 module.exports = {
   botPermissions: ["SendMessages"],
@@ -53,68 +53,26 @@ module.exports = {
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
-   * @param {Client} client
    */
-  async execute(interaction, client) {
+  async execute(interaction) {
     const { options } = interaction;
 
+    let serverID;
+    let userID;
+    let reason;
+
     switch (options.getSubcommand()) {
-      case "server": {
-        const gldID = options.getString("serverid");
-        const reason = options.getString("reason");
+      case "server":
+        serverID = options.getString("serverid");
+        reason = options.getString("reason");
 
-        const guild = client.guilds.cache.get(gldID);
-        const data = await guildBLK.findOne({ serverID: guild.id });
+        return await addServerBlacklist(interaction, serverID, reason);
 
-        if (!data) {
-          const newBlacklist = new guildBLK({
-            serverID: gID,
-            reason: reason,
-            time: Date.now(),
-          });
+      case "user":
+        userID = options.getString("userid");
+        reason = options.getString("reason");
 
-          await newBlacklist.save();
-
-          const blacklistedServer = new EmbedBuilder()
-            .setColor("Blurple")
-            .setTitle(`${client.user.username} | Blacklist`)
-            .setDescription(
-              `🔹 | ${
-                guild.name || "A mysterious guild"
-              } has been successfully blacklisted.`
-            )
-            .addFields({ name: "🔹 | Reason", value: reason });
-          return interaction.reply({ embeds: [blacklistedServer] });
-        }
-      }
-      case "user": {
-        const userID = options.getString("userid");
-        const reason = options.getString("reason");
-
-        const user = await client.users.fetch(userID);
-        const data = await userBLK.findOne({ userid: user.id });
-
-        if (!data) {
-          const newBlacklist = new userBLK({
-            userid: user.id,
-            reason: reason,
-            time: Date.now(),
-          });
-
-          await newBlacklist.save();
-
-          const blacklistedUser = new EmbedBuilder()
-            .setColor("Blurple")
-            .setTitle(`${client.user.username} | Blacklist`)
-            .setDescription(
-              `🔹 | ${
-                user.tag || "A mysterious user"
-              } has been successfully blacklisted.`
-            )
-            .addFields({ name: "🔹 | Reason", value: reason });
-          return interaction.reply({ embeds: [blacklistedUser] });
-        }
-      }
+        return await addUserBlacklist(interaction, userID, reason);
     }
   },
 };

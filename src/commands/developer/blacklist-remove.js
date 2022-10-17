@@ -1,11 +1,11 @@
 const {
   SlashCommandBuilder,
   ChatInputCommandInteraction,
-  Client,
-  EmbedBuilder,
 } = require("discord.js");
-const guildBLK = require("../../structures/schemas/serverBlacklist.js");
-const userBLK = require("../../structures/schemas/userBlacklist.js");
+const {
+  removeServerBlacklist,
+  removeUserBlacklist,
+} = require("../../modules/blacklistModule.js");
 
 module.exports = {
   botPermissions: ["SendMessages"],
@@ -41,63 +41,21 @@ module.exports = {
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
-   * @param {Client} client
    */
-  async execute(interaction, client) {
-    const embed = new EmbedBuilder();
+  async execute(interaction) {
     const { options } = interaction;
 
+    let guildID;
+    let userID;
+
     switch (options.getSubcommand()) {
-      case "server": {
-        const gID = options.getString("serverid");
-        const data = await guildBLK.findOne({ serverID: gID });
+      case "server":
+        guildID = options.getString("serverid");
+        return await removeServerBlacklist(interaction, guildID);
 
-        if (data) {
-          await guildBLK.deleteOne({ serverID: gID });
-          embed
-            .setColor("Blurple")
-            .setTitle(`${client.user.username} | Blacklist`)
-            .setDescription(
-              `🔹 | This guild has been removed from the blacklist.`
-            )
-            .setTimestamp();
-          return interaction.reply({ embeds: [embed] });
-        }
-
-        if (!data) {
-          embed
-            .setColor("Blurple")
-            .setTitle(`${client.user.username} | Blacklist`)
-            .setDescription(`🔹 | This guild is not blacklisted.`)
-            .setTimestamp();
-          return interaction.reply({ embeds: [embed] });
-        }
-      }
-      case "user": {
-        const uID = options.getString("userid");
-        const data = await userBLK.findOne({ serverID: uID });
-
-        if (data) {
-          await userBLK.deleteOne({ userid: uID });
-          embed
-            .setColor("Blurple")
-            .setTitle(`${client.user.username} | Blacklist`)
-            .setDescription(
-              `🔹 | This user has been removed from the blacklist.`
-            )
-            .setTimestamp();
-          return interaction.reply({ embeds: [embed] });
-        }
-
-        if (!data) {
-          embed
-            .setColor("Blurple")
-            .setTitle(`${client.user.username} | Blacklist`)
-            .setDescription(`🔹 | This user is not blacklisted.`)
-            .setTimestamp();
-          return interaction.reply({ embeds: [embed] });
-        }
-      }
+      case "user":
+        userID = options.getString("userid");
+        return await removeUserBlacklist(interaction, userID);
     }
   },
 };

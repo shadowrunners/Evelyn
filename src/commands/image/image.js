@@ -7,8 +7,8 @@ const {
   checkAvatar,
   checkUsername,
   checkText,
-} = require("../../modules/nekoModule.js");
-const API = require("../../modules/nekoHelper.js");
+} = require("../../modules/nekoHelper.js");
+const API = require("../../modules/nekoModule.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
