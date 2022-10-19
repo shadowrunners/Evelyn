@@ -59,8 +59,6 @@ module.exports = {
     const user2 = options.getUser("user2");
     const text = options.getString("text");
 
-    let image;
-
     await interaction.deferReply();
 
     switch (choices) {

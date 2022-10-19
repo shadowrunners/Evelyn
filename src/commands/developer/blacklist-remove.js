@@ -51,11 +51,11 @@ module.exports = {
     switch (options.getSubcommand()) {
       case "server":
         guildID = options.getString("serverid");
-        return await removeServerBlacklist(interaction, guildID);
+        return removeServerBlacklist(interaction, guildID);
 
       case "user":
         userID = options.getString("userid");
-        return await removeUserBlacklist(interaction, userID);
+        return removeUserBlacklist(interaction, userID);
     }
   },
 };

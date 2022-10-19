@@ -16,6 +16,6 @@ module.exports = {
     if (!player) return;
     if (isSongPlaying(interaction, player)) return;
 
-    return await setVolume(interaction, player, volume);
+    return setVolume(interaction, player, volume);
   },
 };
