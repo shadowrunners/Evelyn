@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
-const embed = new EmbedBuilder();
+const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
 function checkAvatar(user1, user2, interaction) {
   const avatar = user1?.avatarURL() || user2?.avatarURL();

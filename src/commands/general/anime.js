@@ -3,7 +3,7 @@ const {
   ChatInputCommandInteraction,
   EmbedBuilder,
 } = require("discord.js");
-const kitsu = require("node-kitsu");
+const { searchAnime } = require("node-kitsu");
 
 module.exports = {
   botPermissions: ["SendMessages"],
@@ -20,11 +20,11 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   execute(interaction) {
-    const title = interaction.options.getString("title");
-    const aniEmbed = new EmbedBuilder();
+    const { options } = interaction;
+    const title = options.getString("title");
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
-    kitsu
-      .searchAnime(title, 0)
+    searchAnime(title, 0)
       .then((result) => {
         const anime = result[0];
         const status = anime.attributes.status
@@ -33,9 +33,9 @@ module.exports = {
           .replace("current", "Currently Airing");
 
         if (!anime.attributes.averageRating) {
-          aniEmbed.addFields({ name: "Rating", value: `No ratings yet.` });
+          embed.addFields({ name: "Rating", value: `No ratings yet.` });
         } else {
-          aniEmbed.addFields({
+          embed.addFields({
             name: "Rating",
             value: `${anime.attributes.averageRating}`,
             inline: true,
@@ -43,39 +43,40 @@ module.exports = {
         }
 
         if (!anime.attributes.titles.en_us)
-          aniEmbed.setTitle(`${anime.attributes.titles.en_jp}`);
+          embed.setTitle(`${anime.attributes.titles.en_jp}`);
         else {
-          aniEmbed.setTitle(`${anime.attributes.titles.en_us}`);
+          embed.setTitle(`${anime.attributes.titles.en_us}`);
         }
 
-        aniEmbed
-          .setColor("Grey")
-          .setThumbnail(anime.attributes.posterImage.original)
-          .setDescription(anime.attributes.synopsis)
-          .addFields([
-            {
-              name: "Premiered on",
-              value: anime.attributes.startDate,
-              inline: true,
-            },
-            {
-              name: "Japanese Title",
-              value: `${anime.attributes.titles.en_jp}` || "Unknown.",
-              inline: true,
-            },
-            {
-              name: "Status",
-              value: status,
-              inline: true,
-            },
-          ]);
-        return interaction.reply({ embeds: [aniEmbed] });
+        return interaction.reply({
+          embeds: [
+            embed
+              .setThumbnail(anime.attributes.posterImage.original)
+              .setDescription(anime.attributes.synopsis)
+              .addFields([
+                {
+                  name: "Premiered on",
+                  value: anime.attributes.startDate,
+                  inline: true,
+                },
+                {
+                  name: "Japanese Title",
+                  value: `${anime.attributes.titles.en_jp}` || "Unknown.",
+                  inline: true,
+                },
+                {
+                  name: "Status",
+                  value: status,
+                  inline: true,
+                },
+              ]),
+          ],
+        });
       })
-      .catch((err) => {
-        const errorEmbed = new EmbedBuilder()
-          .setColor("Grey")
-          .setDescription("No results found.");
-        return interaction.reply({ embeds: [errorEmbed] });
+      .catch(() => {
+        return interaction.reply({
+          embeds: [embed.setDescription("No results found.")],
+        });
       });
   },
 };

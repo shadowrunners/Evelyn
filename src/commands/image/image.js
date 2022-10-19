@@ -1,13 +1,7 @@
 const {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
-  EmbedBuilder,
 } = require("discord.js");
-const {
-  checkAvatar,
-  checkUsername,
-  checkText,
-} = require("../../modules/nekoHelper.js");
 const API = require("../../modules/nekoModule.js");
 
 module.exports = {
@@ -65,102 +59,52 @@ module.exports = {
     const user2 = options.getUser("user2");
     const text = options.getString("text");
 
-    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
-
     let image;
 
     await interaction.deferReply();
 
     switch (choices) {
       case "awooify":
-        if (checkAvatar(user1, user2, interaction)) return;
-        image = await API.awooify(user1, user2);
-        return interaction.editReply({ embeds: [embed.setImage(image)] });
+        return API.awooify(user1, user2, interaction);
 
       case "baguette":
-        if (checkAvatar(user1, user2, interaction)) return;
-        image = await API.baguette(user1, user2);
-        return interaction.editReply({ embeds: [embed.setImage(image)] });
+        return API.baguette(user1, user2, interaction);
 
       case "blurpify":
-        if (checkAvatar(user1, user2, interaction)) return;
-        image = await API.blurpify(user1, user2);
-        return interaction.editReply({ embeds: [embed.setImage(image)] });
+        return API.blurpify(user1, user2, interaction);
 
       case "captcha":
-        if (
-          checkAvatar(user1, user2, interaction) ||
-          checkUsername(user1, user2, interaction)
-        )
-          return;
-        image = await API.captcha(user1, user2);
-        return interaction.editReply({ embeds: [embed.setImage(image)] });
+        return API.captcha(user1, user2, interaction);
 
       case "changemymind":
-        if (checkText(text, interaction)) return;
-        image = await API.changemymind(text);
-
-        return interaction.editReply({ embeds: [embed.setImage(image)] });
+        return API.changemymind(text, interaction);
 
       case "deepfry":
-        if (checkAvatar(user1, user2, interaction)) return;
-        image = await API.deepfry(user1, user2);
-
-        return interaction.editReply({ embeds: [embed.setImage(image)] });
+        return API.deepfry(user1, user2, interaction);
 
       case "kannagen":
-        if (checkText(text, interaction)) return;
-        image = await API.kannagen(text);
-
-        return interaction.editReply({ embeds: [embed.setImage(image)] });
+        return API.kannagen(text, interaction);
 
       case "phcomment":
-        if (
-          checkAvatar(user1, user2, interaction) ||
-          checkUsername(user1, user2, interaction) ||
-          checkText(text, interaction)
-        )
-          return;
-        image = await API.phcomment(user1, user2, text);
-
-        return interaction.editReply({ embeds: [embed.setImage(image)] });
+        return API.phcomment(user1, user2, text);
 
       case "ship":
-        if (checkAvatar(user1, user2, interaction)) return;
-        image = await API.ship(user1, user2);
-
-        return interaction.editReply({ embeds: [embed.setImage(image)] });
+        return API.ship(user1, user2);
 
       case "threats":
-        if (checkAvatar(user1, user2, interaction)) return;
-        image = await API.threats(user1, user2);
-
-        return interaction.editReply({ embeds: [embed.setImage(image)] });
+        return API.threats(user1, user2);
 
       case "trash":
-        if (checkAvatar(user1, user2, interaction)) return;
-        image = await API.trash(user1, user2);
-
-        return interaction.editReply({ embeds: [embed.setImage(image)] });
+        return API.trash(user1, user2);
 
       case "trumptweet":
-        if (checkText(text, interaction)) return;
-        image = await API.trumptweet(text);
-        return interaction.editReply({ embeds: [embed.setImage(image)] });
+        return API.trumptweet(text);
 
       case "tweet":
-        if (
-          checkUsername(user1, user2, interaction) ||
-          checkText(text, interaction)
-        )
-          return;
-        image = await API.tweet(user1, user2, text);
-        return interaction.editReply({ embeds: [embed.setImage(image)] });
+        return API.tweet(user1, user2, text, interaction);
 
       case "whowouldwin":
-        if (checkAvatar(user1, user2, interaction)) return;
-        image = await API.whowouldwin(user1, user2);
-        return interaction.editReply({ embeds: [embed.setImage(image)] });
+        return API.whowouldwin(user1, user2, interaction);
     }
   },
 };
