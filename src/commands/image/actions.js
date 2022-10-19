@@ -1,8 +1,9 @@
 const {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
+  EmbedBuilder,
 } = require("discord.js");
-const { waifuImages } = require("../../modules/waifuImages");
+const WAPI = require("../../modules/waifuImages");
 
 module.exports = {
   botPermissions: ["SendMessages", "EmbedLinks"],
@@ -183,68 +184,75 @@ module.exports = {
     const { options } = interaction;
     let target;
 
-    try {
-      switch (options.getSubcommand()) {
-        case "bite":
-          target = options.getUser("target");
-          return waifuImages("bite", target, interaction);
+    if (target.id === interaction.user.id)
+      return interaction.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor("Blurple")
+            .setDescription("🔹 | You can't use this command on yourself.")
+            .setTimestamp(),
+        ],
+        ephemeral: true,
+      });
 
-        case "blush":
-          target = options.getUser("target");
-          return waifuImages("blush", target, interaction);
+    switch (options.getSubcommand()) {
+      case "bite":
+        target = options.getUser("target");
+        return WAPI.bite(interaction, target);
 
-        case "bonk":
-          target = options.getUser("target");
-          return waifuImages("bonk", target, interaction);
+      case "blush":
+        target = options.getUser("target");
+        return WAPI.blush(interaction, target);
 
-        case "bully":
-          target = options.getUser("target");
-          return waifuImages("bully", target, interaction);
+      case "bonk":
+        target = options.getUser("target");
+        return WAPI.bonk(interaction, target);
 
-        case "cringe":
-          return waifuImages("cringe", target, interaction);
+      case "bully":
+        target = options.getUser("target");
+        return WAPI.bully(interaction, target);
 
-        case "cry":
-          return waifuImages("cry", target, interaction);
+      case "cringe":
+        return WAPI.cringe(interaction);
 
-        case "cuddle":
-          target = options.getUser("target");
-          return waifuImages("cuddle", target, interaction);
+      case "cry":
+        return WAPI.cry(interaction);
 
-        case "handhold":
-          target = options.getUser("target");
-          return waifuImages("handhold", target, interaction);
+      case "cuddle":
+        target = options.getUser("target");
+        return WAPI.cuddle(interaction, target);
 
-        case "highfive":
-          target = options.getUser("target");
-          return waifuImages("highfive", target, interaction);
+      case "handhold":
+        target = options.getUser("target");
+        return WAPI.bite(interaction, target);
 
-        case "hug":
-          target = options.getUser("target");
-          return waifuImages("hug", target, interaction);
+      case "highfive":
+        target = options.getUser("target");
+        return WAPI.highfive(interaction, target);
 
-        case "kiss":
-          target = options.getUser("target");
-          return waifuImages("kiss", target, interaction);
+      case "hug":
+        target = options.getUser("target");
+        return WAPI.hug(interaction, target);
 
-        case "pat":
-          target = options.getUser("target");
-          return waifuImages("pat", target, interaction);
+      case "kiss":
+        target = options.getUser("target");
+        return WAPI.kiss(interaction, target);
 
-        case "poke":
-          target = options.getUser("target");
-          return waifuImages("poke", target, interaction);
+      case "pat":
+        target = options.getUser("target");
+        return WAPI.pat(interaction, target);
 
-        case "slap":
-          target = options.getUser("target");
-          return waifuImages("slap", target, interaction);
+      case "poke":
+        target = options.getUser("target");
+        return WAPI.poke(interaction, target);
 
-        case "wave":
-          target = options.getUser("target");
-          return waifuImages("wave", target, interaction);
-      }
-    } catch (e) {
-      console.log(e);
+      case "slap":
+        target = options.getUser("target");
+        return WAPI.slap(interaction, target);
+
+      case "wave":
+        target = options.getUser("target");
+        return WAPI.wave(interaction, target);
     }
   },
 };

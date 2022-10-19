@@ -69,7 +69,7 @@ const kazagumoClient = new Kazagumo(
   new Connectors.DiscordJS(client),
   client.config.nodes,
   {
-    moveOnDisconnect: false,
+    moveOnDisconnect: true,
     resume: true,
     reconnectTries: 5,
     restTimeout: 10000,

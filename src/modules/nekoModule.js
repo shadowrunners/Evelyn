@@ -77,7 +77,7 @@ module.exports = {
 
     return interaction.editReply({ embeds: [embed.setImage(body.message)] });
   },
-  phcomment: async (user1, user2, text) => {
+  phcomment: async (user1, user2, text, interaction) => {
     if (
       checkAvatar(user1, user2, interaction) ||
       checkUsername(user1, user2, interaction) ||
