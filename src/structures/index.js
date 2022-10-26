@@ -52,7 +52,7 @@ client.modals = new Collection();
 client.cluster = new Cluster.Client(client);
 client.discordTogether = new DiscordTogether(client);
 
-const kazagumoClient = new Kazagumo(
+client.manager = new Kazagumo(
   {
     plugins: [
       new Spotify({
@@ -76,7 +76,6 @@ const kazagumoClient = new Kazagumo(
   }
 );
 
-client.manager = kazagumoClient;
 module.exports = client;
 
 loadEvents(client);
@@ -84,7 +83,5 @@ loadButtons(client);
 loadShoukakuNodes(client);
 loadShoukakuPlayer(client);
 loadModals(client);
-
-require("../utils/giveawaySystem.js")(client);
 
 client.login(client.config.token);

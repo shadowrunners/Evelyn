@@ -2,6 +2,7 @@ const { Client, ActivityType } = require("discord.js");
 const { magenta, white, green, red } = require("chalk");
 const DXP = require("discord-xp");
 const { loadCommands } = require("../../structures/handlers/commands.js");
+const giveawayEnd = require("../../utils/giveawaySystem.js");
 const { dash } = require("../../dashboard/dash.js");
 const { connect } = require("mongoose");
 
@@ -35,7 +36,8 @@ module.exports = {
           )
       );
 
-    dash(client);
+    giveawayEnd(client);
+    //   dash(client);
     DXP.setURL(client.config.database);
 
     connect(client.config.database)

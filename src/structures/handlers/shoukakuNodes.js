@@ -2,7 +2,7 @@ async function loadShoukakuNodes(client) {
   const { magenta, green } = require("chalk");
   const { fileLoad } = require("../../utils/fileLoader.js");
 
-  const files = await fileLoad("events/shoukaku/nodes");
+  const files = await fileLoad("events/shoukaku/node");
   files.forEach((file) => {
     const event = require(file);
     const execute = (...args) => event.execute(...args, client);

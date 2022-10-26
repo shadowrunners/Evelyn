@@ -29,4 +29,12 @@ function checkText(text, interaction) {
     });
 }
 
-module.exports = { checkAvatar, checkUsername, checkText };
+function checkTarget(target, interaction) {
+  if (!target)
+    return interaction.editReply({
+      embeds: [embed.setDescription("🔹 | You forgot to provide a user.")],
+      ephemeral: true,
+    });
+}
+
+module.exports = { checkAvatar, checkUsername, checkText, checkTarget };

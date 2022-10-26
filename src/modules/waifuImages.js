@@ -1,5 +1,6 @@
 const { get } = require("superagent");
 const { EmbedBuilder } = require("discord.js");
+const { checkTarget } = require("./imageHelper.js");
 
 const embed = new EmbedBuilder()
   .setColor("Blurple")
@@ -11,6 +12,8 @@ const embed = new EmbedBuilder()
 module.exports = {
   bite: async (interaction, target) => {
     const { body } = await get("https://api.waifu.pics/sfw/bite");
+    if (checkTarget(target, interaction)) return;
+
     return interaction.reply({
       embeds: [
         embed
@@ -24,6 +27,8 @@ module.exports = {
   },
   blush: async (interaction) => {
     const { body } = await get("https://api.waifu.pics/sfw/blush");
+    if (checkTarget(target, interaction)) return;
+
     return interaction.reply({
       embeds: [
         embed
@@ -37,6 +42,8 @@ module.exports = {
   },
   bonk: async (interaction, target) => {
     const { body } = await get("https://api.waifu.pics/sfw/bonk");
+    if (checkTarget(target, interaction)) return;
+
     return interaction.reply({
       embeds: [
         embed
@@ -50,6 +57,8 @@ module.exports = {
   },
   bully: async (interaction, target) => {
     const { body } = await get("https://api.waifu.pics/sfw/bully");
+    if (checkTarget(target, interaction)) return;
+
     return interaction.reply({
       embeds: [
         embed
@@ -89,6 +98,8 @@ module.exports = {
   },
   cuddle: async (interaction, target) => {
     const { body } = await get("https://api.waifu.pics/sfw/cuddle");
+    if (checkTarget(target, interaction)) return;
+
     return interaction.reply({
       embeds: [
         embed
@@ -102,6 +113,8 @@ module.exports = {
   },
   handhold: async (interaction, target) => {
     const { body } = await get("https://api.waifu.pics/sfw/handhold");
+    if (checkTarget(target, interaction)) return;
+
     return interaction.reply({
       embeds: [
         embed
@@ -115,6 +128,8 @@ module.exports = {
   },
   highfive: async (interaction, target) => {
     const { body } = await get("https://api.waifu.pics/sfw/highfive");
+    if (checkTarget(target, interaction)) return;
+
     return interaction.reply({
       embeds: [
         embed
@@ -128,6 +143,8 @@ module.exports = {
   },
   hug: async (interaction, target) => {
     const { body } = await get("https://api.waifu.pics/sfw/hug");
+    if (checkTarget(target, interaction)) return;
+
     return interaction.reply({
       embeds: [
         embed
@@ -141,6 +158,8 @@ module.exports = {
   },
   kiss: async (interaction, target) => {
     const { body } = await get("https://api.waifu.pics/sfw/kiss");
+    if (checkTarget(target, interaction)) return;
+
     return interaction.reply({
       embeds: [
         embed
@@ -154,6 +173,8 @@ module.exports = {
   },
   pat: async (interaction, target) => {
     const { body } = await get("https://api.waifu.pics/sfw/pat");
+    if (checkTarget(target, interaction)) return;
+
     return interaction.reply({
       embeds: [
         embed
@@ -167,6 +188,8 @@ module.exports = {
   },
   poke: async (interaction, target) => {
     const { body } = await get("https://api.waifu.pics/sfw/poke");
+    if (checkTarget(target, interaction)) return;
+
     return interaction.reply({
       embeds: [
         embed
@@ -180,6 +203,8 @@ module.exports = {
   },
   slap: async (interaction, target) => {
     const { body } = await get("https://api.waifu.pics/sfw/slap");
+    if (checkTarget(target, interaction)) return;
+
     return interaction.reply({
       embeds: [
         embed
@@ -192,7 +217,9 @@ module.exports = {
     });
   },
   wave: async (interaction, target) => {
-    const { body } = await get("https://api.waifu.pics/sfw/cringe");
+    const { body } = await get("https://api.waifu.pics/sfw/wave");
+    if (checkTarget(target, interaction)) return;
+
     return interaction.reply({
       embeds: [
         embed
