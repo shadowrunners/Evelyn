@@ -3,7 +3,7 @@ const { magenta, white, green, red } = require("chalk");
 const DXP = require("discord-xp");
 const { loadCommands } = require("../../structures/handlers/commands.js");
 const giveawayEnd = require("../../utils/giveawaySystem.js");
-const { dash } = require("../../dashboard/dash.js");
+const { dash } = require("../../modules/CCEngine.js");
 const { connect } = require("mongoose");
 
 module.exports = {
@@ -37,7 +37,7 @@ module.exports = {
       );
 
     giveawayEnd(client);
-    //   dash(client);
+    dash(client);
     DXP.setURL(client.config.database);
 
     connect(client.config.database)

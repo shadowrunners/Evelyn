@@ -15,7 +15,7 @@ const {
   checkVoice,
   setVolume,
   seek,
-} = require("../../modules/musicModule.js");
+} = require("../../modules/AMEngine.js");
 const pms = require("pretty-ms");
 
 module.exports = {
@@ -99,25 +99,28 @@ module.exports = {
    * @param {Client} client
    */
   async execute(interaction, client) {
-    const { options, member, guild } = interaction;
-    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
-
-    await interaction.deferReply();
-    if (await checkVoice(interaction)) return;
-
-    const player = await client.manager.createPlayer({
-      guildId: interaction.guild.id,
-      voiceId: member.voice.channel.id,
-      textId: interaction.channelId,
-      deaf: true,
-    });
-
-    let res;
-    let query;
-    let songs;
-    let embeds;
-
     try {
+      const { options, member, guild } = interaction;
+      const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+
+      await interaction.deferReply();
+      if (await checkVoice(interaction)) return;
+
+      const player = await client.manager.createPlayer({
+        guildId: interaction.guild.id,
+        voiceId: member.voice.channel.id,
+        textId: interaction.channelId,
+        deaf: true,
+      });
+
+      let res;
+      let query;
+      let songs;
+      let embeds;
+      let actualTrack;
+      let searches;
+      let lyrics;
+
       switch (options.getSubcommand()) {
         case "play":
           query = options.getString("query");
@@ -285,12 +288,12 @@ module.exports = {
             case "lyrics":
               if (isSongPlaying(interaction, player)) return;
 
-              const trackTitle = track.title.replace(
+              trackTitle = track.title.replace(
                 /lyrics|lyric|lyrical|official music video|\(official music video\)|audio|official|official video|official video hd|official hd video|offical video music|\(offical video music\)|extended|hd|(\[.+\])/gi
               );
-              const actualTrack = await gClient.songs.search(trackTitle);
-              const searches = actualTrack[0];
-              const lyrics = await searches.lyrics();
+              actualTrack = await gClient.songs.search(trackTitle);
+              searches = actualTrack[0];
+              lyrics = await searches.lyrics();
 
               return interaction.editReply({
                 embeds: [

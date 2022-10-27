@@ -1,7 +1,7 @@
 const { get } = require("superagent");
 const { EmbedBuilder } = require("discord.js");
 const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
-const { checkUsername, checkText, checkAvatar } = require("./imageHelper.js");
+const { checkUsername, checkText, checkAvatar } = require("./NekoHelper.js");
 
 module.exports = {
   awooify: async (user1, user2, interaction) => {

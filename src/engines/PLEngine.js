@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require("discord.js");
 const PDB = require("../structures/schemas/playlist.js");
 const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
-const { checkPlaylist, validate } = require("../modules/musicHelper.js");
+const { checkPlaylist, validate } = require("./AMHelper.js");
 const Util = require("../utils/utils.js");
 const pms = require("pretty-ms");
 

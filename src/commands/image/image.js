@@ -2,7 +2,7 @@ const {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
 } = require("discord.js");
-const API = require("../../modules/nekoModule.js");
+const API = require("../../modules/NekoEngine.js");
 
 module.exports = {
   data: new SlashCommandBuilder()

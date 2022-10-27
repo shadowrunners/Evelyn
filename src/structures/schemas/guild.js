@@ -41,5 +41,10 @@ module.exports = model(
       channel: String,
       message: String,
     },
+    verify: {
+      enabled: false,
+      verifiedRole: String,
+      unverifiedRole: String,
+    },
   })
 );

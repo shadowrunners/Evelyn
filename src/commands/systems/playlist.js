@@ -12,7 +12,7 @@ const {
   showAllPlaylists,
   setVolume,
   seek,
-} = require("../../modules/playlistModule.js");
+} = require("../../modules/PLEngine.js");
 
 module.exports = {
   botPermissions: ["SendMessages", "EmbedLinks", "Connect", "Speak"],

@@ -1,6 +1,6 @@
 const { get } = require("superagent");
 const { EmbedBuilder } = require("discord.js");
-const { checkTarget } = require("./imageHelper.js");
+const { checkTarget } = require("./NekoHelper.js");
 
 const embed = new EmbedBuilder()
   .setColor("Blurple")
