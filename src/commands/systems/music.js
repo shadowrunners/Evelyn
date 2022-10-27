@@ -15,7 +15,7 @@ const {
   checkVoice,
   setVolume,
   seek,
-} = require("../../modules/AMEngine.js");
+} = require("../../engines/AMEngine.js");
 const pms = require("pretty-ms");
 
 module.exports = {

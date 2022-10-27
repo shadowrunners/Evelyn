@@ -15,7 +15,8 @@ module.exports = {
       const GDB = require("../structures/schemas/guild.js");
 
       let data;
-      let channelTypes;
+      let channel;
+      let buttons;
 
       await DBD.useLicense(client.config.DBDLicense);
       DBD.Dashboard = DBD.UpdatedClass();
@@ -189,7 +190,7 @@ module.exports = {
                 ),
                 getActualSet: async ({ guild }) => {
                   data = await GDB.findOne({ id: guild.id });
-                  return data.welcome.channel || null;
+                  return data.welcome.channel;
                 },
                 setNew: async ({ guild, newData }) => {
                   data = await GDB.findOne({ id: guild.id });
@@ -211,7 +212,7 @@ module.exports = {
                 ),
                 getActualSet: async ({ guild }) => {
                   data = await GDB.findOne({ id: guild.id });
-                  return data.welcome.message || null;
+                  return data.welcome.message;
                 },
                 setNew: async ({ guild, newData }) => {
                   data = await GDB.findOne({ id: guild.id });
@@ -225,18 +226,13 @@ module.exports = {
                 optionDescription: "Enable or disable the goodbye message.",
                 optionType: DBD.formTypes.switch(false),
                 getActualSet: async ({ guild }) => {
-                  const data = await GDB.findOne({ id: guild.id });
-                  const savedData = data.goodbye.enabled;
-                  const defaultState = false;
-                  return savedData === null || savedData == undefined
-                    ? defaultState
-                    : savedData;
+                  data = await GDB.findOne({ id: guild.id });
+                  return data.goodbye.enabled;
                 },
                 setNew: async ({ guild, newData }) => {
-                  const data = await GDB.findOne({ id: guild.id });
+                  data = await GDB.findOne({ id: guild.id });
                   data.goodbye.enabled = newData;
-                  data.save();
-                  return;
+                  return data.save();
                 },
               },
               {
@@ -246,18 +242,13 @@ module.exports = {
                   "Set the channel where the goodbye message will be sent in.",
                 optionType: DBD.formTypes.channelsSelect(false, [GuildText]),
                 getActualSet: async ({ guild }) => {
-                  const data = await GDB.findOne({ id: guild.id });
-                  const savedData = data.goodbye.channel || null;
-                  const defaultState = false;
-                  return savedData === null || savedData == undefined
-                    ? defaultState
-                    : savedData;
+                  data = await GDB.findOne({ id: guild.id });
+                  return data.goodbye.channel;
                 },
                 setNew: async ({ guild, newData }) => {
-                  const data = await GDB.findOne({ id: guild.id });
+                  data = await GDB.findOne({ id: guild.id });
                   data.goodbye.channel = newData;
-                  data.save();
-                  return;
+                  return data.save();
                 },
               },
               {
@@ -273,15 +264,13 @@ module.exports = {
                   false
                 ),
                 getActualSet: async ({ guild }) => {
-                  const data = await GDB.findOne({ id: guild.id });
-                  const savedData = data.goodbye.message || null;
-                  return savedData;
+                  data = await GDB.findOne({ id: guild.id });
+                  return data.goodbye.message;
                 },
                 setNew: async ({ guild, newData }) => {
-                  const data = await GDB.findOne({ id: guild.id });
+                  data = await GDB.findOne({ id: guild.id });
                   data.goodbye.message = newData;
-                  data.save();
-                  return;
+                  return data.save();
                 },
               },
               {
@@ -302,14 +291,13 @@ module.exports = {
                   },
                 }),
                 getActualSet: async ({ guild }) => {
-                  const data = await GDB.findOne({ id: guild.id });
+                  data = await GDB.findOne({ id: guild.id });
                   return data.goodbye.json;
                 },
                 setNew: async ({ guild, newData }) => {
-                  const data = await GDB.findOne({ id: guild.id });
+                  data = await GDB.findOne({ id: guild.id });
                   data.goodbye.json = newData;
-                  data.save();
-                  return;
+                  return data.save();
                 },
               },
             ],
@@ -327,18 +315,13 @@ module.exports = {
                 optionDescription: "Enable or disable tickets.",
                 optionType: DBD.formTypes.switch(false),
                 getActualSet: async ({ guild }) => {
-                  const data = await GDB.findOne({ id: guild.id });
-                  const savedData = data.tickets.enabled;
-                  const defaultState = false;
-                  return savedData === null || savedData == undefined
-                    ? defaultState
-                    : savedData;
+                  data = await GDB.findOne({ id: guild.id });
+                  return data.tickets.enabled;
                 },
                 setNew: async ({ guild, newData }) => {
-                  const data = await GDB.findOne({ id: guild.id });
+                  data = await GDB.findOne({ id: guild.id });
                   data.tickets.enabled = newData;
-                  data.save();
-                  return;
+                  return data.save();
                 },
               },
               {
@@ -351,14 +334,13 @@ module.exports = {
                   (channelTypes = [GuildText])
                 ),
                 getActualSet: async ({ guild }) => {
-                  const data = await GDB.findOne({ id: guild.id });
-                  return data.tickets?.channel || null;
+                  data = await GDB.findOne({ id: guild.id });
+                  return data.tickets.channel;
                 },
                 setNew: async ({ guild, newData }) => {
-                  const data = await GDB.findOne({ id: guild.id });
+                  data = await GDB.findOne({ id: guild.id });
                   data.tickets.channel = newData;
-                  data.save();
-                  return;
+                  return data.save();
                 },
               },
               {
@@ -371,14 +353,13 @@ module.exports = {
                   (channelTypes = [GuildCategory])
                 ),
                 getActualSet: async ({ guild }) => {
-                  const data = await GDB.findOne({ id: guild.id });
-                  return data.tickets.category || null;
+                  data = await GDB.findOne({ id: guild.id });
+                  return data.tickets.category;
                 },
                 setNew: async ({ guild, newData }) => {
-                  const data = await GDB.findOne({ id: guild.id });
-                  data.tickets.category = newData || null;
-                  data.save();
-                  return;
+                  data = await GDB.findOne({ id: guild.id });
+                  data.tickets.category = newData;
+                  return data.save();
                 },
               },
               {
@@ -391,14 +372,13 @@ module.exports = {
                   (channelTypes = [GuildText])
                 ),
                 getActualSet: async ({ guild }) => {
-                  const data = await GDB.findOne({ id: guild.id });
-                  return data.tickets.transcriptChannel || null;
+                  data = await GDB.findOne({ id: guild.id });
+                  return data.tickets.transcriptChannel;
                 },
                 setNew: async ({ guild, newData }) => {
-                  const data = await GDB.findOne({ id: guild.id });
+                  data = await GDB.findOne({ id: guild.id });
                   data.tickets.transcriptChannel = newData;
-                  data.save();
-                  return;
+                  return data.save();
                 },
               },
               {
@@ -408,14 +388,13 @@ module.exports = {
                   "Select the role which will be pinged to handle tickets.",
                 optionType: DBD.formTypes.rolesSelect(false),
                 getActualSet: async ({ guild }) => {
-                  const data = await GDB.findOne({ id: guild.id });
-                  return data.tickets.ticketHandlers || null;
+                  data = await GDB.findOne({ id: guild.id });
+                  return data.tickets.ticketHandlers;
                 },
                 setNew: async ({ guild, newData }) => {
-                  const data = await GDB.findOne({ id: guild.id });
-                  data.tickets.ticketHandlers = newData || null;
-                  data.save();
-                  return;
+                  data = await GDB.findOne({ id: guild.id });
+                  data.tickets.ticketHandlers = newData;
+                  return data.save();
                 },
               },
               {
@@ -452,19 +431,19 @@ module.exports = {
                   },
                 }),
                 getActualSet: async ({ guild }) => {
-                  const data = await GDB.findOne({ id: guild.id });
+                  data = await GDB.findOne({ id: guild.id });
                   return data.tickets.panelJSON;
                 },
                 setNew: async ({ guild, newData }) => {
-                  const data = await GDB.findOne({ id: guild.id });
-                  data.tickets.panelJSON = newData || null;
+                  data = await GDB.findOne({ id: guild.id });
+                  data.tickets.panelJSON = newData;
                   await data.save();
 
-                  const channel = data.tickets?.channel;
+                  channel = data.tickets?.channel;
                   if (channel) {
                     const tpChannel = client.channels.cache.get(channel);
 
-                    const buttons = new ActionRowBuilder();
+                    buttons = new ActionRowBuilder();
                     buttons.addComponents(
                       new ButtonBuilder()
                         .setCustomId("createTicket")
@@ -496,18 +475,13 @@ module.exports = {
                 optionDescription: "Enable or disable the leveling system.",
                 optionType: DBD.formTypes.switch(false),
                 getActualSet: async ({ guild }) => {
-                  const data = await GDB.findOne({ id: guild.id });
-                  const savedData = data.levels?.enabled;
-                  const defaultState = false;
-                  return savedData === null || savedData == undefined
-                    ? defaultState
-                    : savedData;
+                  data = await GDB.findOne({ id: guild.id });
+                  return data.levels.enabled;
                 },
                 setNew: async ({ guild, newData }) => {
-                  const data = await GDB.findOne({ id: guild.id });
+                  data = await GDB.findOne({ id: guild.id });
                   data.levels.enabled = newData;
-                  data.save();
-                  return;
+                  return data.save();
                 },
               },
               {
@@ -520,18 +494,13 @@ module.exports = {
                   (channelTypes = [GuildText])
                 ),
                 getActualSet: async ({ guild }) => {
-                  const data = await GDB.findOne({ id: guild.id });
-                  const savedData = data.levels.channel || null;
-                  const defaultState = false;
-                  return savedData === null || savedData == undefined
-                    ? defaultState
-                    : savedData;
+                  data = await GDB.findOne({ id: guild.id });
+                  return data.levels.channel;
                 },
                 setNew: async ({ guild, newData }) => {
-                  const data = await GDB.findOne({ id: guild.id });
+                  data = await GDB.findOne({ id: guild.id });
                   data.levels.channel = newData;
-                  data.save();
-                  return;
+                  return data.save();
                 },
               },
               {
@@ -546,15 +515,13 @@ module.exports = {
                   false
                 ),
                 getActualSet: async ({ guild }) => {
-                  const data = await GDB.findOne({ id: guild.id });
-                  const savedData = data.levels.message || null;
-                  return savedData;
+                  data = await GDB.findOne({ id: guild.id });
+                  return data.levels.message;
                 },
                 setNew: async ({ guild, newData }) => {
-                  const data = await GDB.findOne({ id: guild.id });
+                  data = await GDB.findOne({ id: guild.id });
                   data.levels.message = newData;
-                  data.save();
-                  return;
+                  return data.save();
                 },
               },
             ],

@@ -5,7 +5,7 @@ const {
 const {
   addServerBlacklist,
   addUserBlacklist,
-} = require("../../modules/BlacklistEngine.js");
+} = require("../../engines/BlacklistEngine.js");
 
 module.exports = {
   botPermissions: ["SendMessages"],

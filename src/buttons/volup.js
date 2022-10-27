@@ -1,5 +1,5 @@
 const { ButtonInteraction } = require("discord.js");
-const { setVolume, isSongPlaying } = require("../modules/AMEngine.js");
+const { setVolume, isSongPlaying } = require("../engines/AMEngine.js");
 const client = require("../structures/index.js");
 
 module.exports = {

@@ -3,7 +3,7 @@ const {
   SlashCommandBuilder,
   ChatInputCommandInteraction,
 } = require("discord.js");
-const { catto } = require("../../modules/CatEngine.js");
+const { catto } = require("../../engines/CatEngine.js");
 
 module.exports = {
   data: new SlashCommandBuilder()

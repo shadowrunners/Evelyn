@@ -3,7 +3,7 @@ const { magenta, white, green, red } = require("chalk");
 const DXP = require("discord-xp");
 const { loadCommands } = require("../../structures/handlers/commands.js");
 const giveawayEnd = require("../../utils/giveawaySystem.js");
-const { dash } = require("../../modules/CCEngine.js");
+const { dash } = require("../../engines/CCEngine.js");
 const { connect } = require("mongoose");
 
 module.exports = {
