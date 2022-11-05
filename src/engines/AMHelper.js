@@ -31,7 +31,7 @@ module.exports = {
       });
   },
   validate: (interaction, pData, track) => {
-    if (pData === null)
+    if (pData === null || !pData)
       return interaction.editReply({
         embeds: [
           embed.setDescription(
@@ -44,6 +44,27 @@ module.exports = {
     if (track === null)
       return interaction.editReply({
         embeds: [embed.setDescription("🔹 | Nothing is playing.")],
+        ephemeral: true,
+      });
+  },
+  validateTrack: async (interaction, song, tracks) => {
+    if (tracks === null || !tracks)
+      return interaction.editReply({
+        embeds: [
+          embed.setDescription(
+            "🔹 | There is no playlist with that name or no data regarding that user."
+          ),
+        ],
+        ephemeral: true,
+      });
+
+    if (song >= tracks.length || song < 0)
+      return interaction.editReply({
+        embeds: [
+          embed.setDescription(
+            "🔹 | Track ID is out of range, see your playlist via /playlist list (playlistName)"
+          ),
+        ],
         ephemeral: true,
       });
   },

@@ -18,6 +18,8 @@ module.exports = {
    * @param {ModalSubmitInteraction} interaction
    */
   execute(interaction) {
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+
     const prize = interaction.fields
       .getTextInputValue("giveaway-prize")
       .slice(0, 256);
@@ -33,18 +35,12 @@ module.exports = {
     const formattedDuration = parseInt((Date.now() + duration) / 1000);
 
     if (isNaN(winners) || !isFinite(winners) || winners < 1) {
-      embed
-        .setColor("Blurple")
-        .setDescription("🔹 | Please provide a valid winner count.")
-        .setTimestamp();
+      embed.setDescription("🔹 | Please provide a valid winner count.");
       return interaction.reply({ embeds: [embed], ephemeral: true });
     }
 
     if (duration === undefined) {
-      embed
-        .setColor("Blurple")
-        .setDescription("🔹 | Please provide a valid duration.")
-        .setTimestamp();
+      embed.setDescription("🔹 | Please provide a valid duration.");
       return interaction.reply({ embeds: [embed], ephemeral: true });
     }
 
@@ -84,7 +80,7 @@ module.exports = {
           messageID: message.id,
           enteredUsers: [],
         }).then((data) => {
-          setTimeout( () => {
+          setTimeout(() => {
             if (!data.hasEnded) endGiveaway(message);
           }, duration);
         });

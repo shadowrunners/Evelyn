@@ -44,7 +44,6 @@ module.exports = model(
     verify: {
       enabled: false,
       verifiedRole: String,
-      unverifiedRole: String,
     },
   })
 );

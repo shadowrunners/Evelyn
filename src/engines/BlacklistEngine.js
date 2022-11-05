@@ -52,7 +52,9 @@ module.exports = {
       });
     } else {
       return interaction.reply({
-        embeds: [embed.setDescription("This user is already blacklisted.")],
+        embeds: [
+          embed.setDescription("🔹 | This user is already blacklisted."),
+        ],
       });
     }
   },
@@ -64,13 +66,13 @@ module.exports = {
       return interaction.reply({
         embeds: [
           embed.setDescription(
-            "This guild has been removed from the blacklist."
+            "🔹 | This guild has been removed from the blacklist."
           ),
         ],
       });
     } else {
       return interaction.reply({
-        embeds: [embed.setDescription("This guild isn't blacklisted.")],
+        embeds: [embed.setDescription("🔹 | This guild isn't blacklisted.")],
       });
     }
   },
@@ -82,7 +84,7 @@ module.exports = {
       return interaction.reply({
         embeds: [
           embed.setDescription(
-            "This user has been removed from the blacklist."
+            "🔹 | This user has been removed from the blacklist."
           ),
         ],
       });

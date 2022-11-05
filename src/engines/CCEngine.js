@@ -452,12 +452,11 @@ module.exports = {
                         .setStyle(ButtonStyle.Primary)
                     );
 
-                    tpChannel.send({
+                    return tpChannel.send({
                       embeds: [data.tickets.panelJSON.embed],
                       components: [buttons],
                     });
                   }
-                  return;
                 },
               },
             ],
@@ -521,6 +520,46 @@ module.exports = {
                 setNew: async ({ guild, newData }) => {
                   data = await GDB.findOne({ id: guild.id });
                   data.levels.message = newData;
+                  return data.save();
+                },
+              },
+            ],
+          },
+          {
+            categoryId: "verification",
+            categoryName: "Verification",
+            categoryDescription:
+              "Protect your server against bots with captchas.",
+            categoryImageURL: "https://i.imgur.com/hlBewaW.png",
+            categoryOptionsList: [
+              {
+                optionId: "verifswitch",
+                optionName: "Enable/Disable Verification",
+                optionDescription: "Enable or disable verification.",
+                optionType: DBD.formTypes.switch(false),
+                getActualSet: async ({ guild }) => {
+                  data = await GDB.findOne({ id: guild.id });
+                  return data.verify.enabled;
+                },
+                setNew: async ({ guild, newData }) => {
+                  data = await GDB.findOne({ id: guild.id });
+                  data.verify.enabled = newData;
+                  return data.save();
+                },
+              },
+              {
+                optionId: "verifiedRole",
+                optionName: "Verified Role",
+                optionDescription:
+                  "Select the role which will be added to a user when they complete verification.",
+                optionType: DBD.formTypes.rolesSelect(false),
+                getActualSet: async ({ guild }) => {
+                  data = await GDB.findOne({ id: guild.id });
+                  return data.verify.verifiedRole;
+                },
+                setNew: async ({ guild, newData }) => {
+                  data = await GDB.findOne({ id: guild.id });
+                  data.verify.verifiedRole = newData;
                   return data.save();
                 },
               },

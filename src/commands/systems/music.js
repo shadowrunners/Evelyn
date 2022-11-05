@@ -117,6 +117,7 @@ module.exports = {
       let query;
       let songs;
       let embeds;
+      let trackTitle;
       let actualTrack;
       let searches;
       let lyrics;

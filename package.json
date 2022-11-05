@@ -5,20 +5,21 @@
   "main": "src/shard.js",
   "scripts": {
     "start": "node ./src/shard.js",
-    "dev": "node ./src/structures/index.js"
+    "dev": "nodemon ./src/shard.js"
   },
   "dependencies": {
     "canvacord": "^5.4.8",
+    "canvas": "^2.10.2",
     "chalk": "^4.1.2",
     "connect-mongodb-session": "^3.1.1",
-    "dbd-soft-ui": "^1.5.23-beta.1",
-    "discord-dashboard": "^2.3.46",
+    "dbd-soft-ui": "^1.5.25-beta.1",
+    "discord-dashboard": "^2.3.492",
+    "discord-gamecord": "^2.1.0",
     "discord-html-transcripts": "^3.1.2",
     "discord-hybrid-sharding": "^1.7.4",
     "discord-together": "^1.3.31",
     "discord-xp": "^1.1.16",
     "discord.js": "^14.6.0",
-    "erela.js": "github:Tomato6966/erela.js",
     "express-session": "^1.17.3",
     "genius-lyrics": "^4.4.0",
     "glob": "^8.0.3",
@@ -26,9 +27,10 @@
     "imdb-api": "^4.4.1",
     "kazagumo": "^2.2.3",
     "kazagumo-spotify": "^1.1.5",
-    "mongoose": "^6.7.0",
+    "mongoose": "^6.7.1",
     "ms": "^2.1.3",
     "node-kitsu": "^1.1.1",
+    "openai": "^3.1.0",
     "pretty-ms": "^7.0.1",
     "session-file-store": "^1.5.0",
     "shoukaku": "^3.2.2",
@@ -43,5 +45,8 @@
   "bugs": {
     "url": "https://github.com//notscrappie/evelyn/issues"
   },
-  "homepage": "https://github.com/notscrappie/evelyn#readme"
+  "homepage": "https://github.com/notscrappie/evelyn#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
 }

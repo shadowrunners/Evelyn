@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require("discord.js");
 const PDB = require("../structures/schemas/playlist.js");
 const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
-const { checkPlaylist, validate } = require("./AMHelper.js");
+const { checkPlaylist, validate, validateTrack } = require("./AMHelper.js");
 const Util = require("../utils/utils.js");
 const pms = require("pretty-ms");
 
@@ -132,80 +132,49 @@ module.exports = {
 
     if (validate(interaction, pData)) return;
 
-    console.log(pData);
-
-    const trackData = pData.playlistData;
-    const list = pData.playlistData.length;
-    const tracks = [];
+    const playlists = [];
     const embeds = [];
 
-    for (let i = 0; i < list; i++) {
-      tracks.push(
-        `${i + 1} • **[${trackData[i].title}](${trackData[i].uri})** • [${pms(
-          trackData[i].duration
-        )}]`
+    for (let i = 0; i < pData.length; i++) {
+      playlists.push(
+        `**${pData[i].playlistName}** • ${pData[i].playlistData?.length} song(s)`
       );
     }
 
-    for (let i = 0; i < tracks.length; i += 10) {
+    for (let i = 0; i < playlists.length; i += 10) {
       embed
-        .setTitle(`${pData.playlistName} by ${pData.name}`)
-        .setDescription(tracks.slice(i, i + 10).join("\n"));
+        .setTitle(`Playlists curated by ${pData[i].name}`)
+        .setDescription(playlists.slice(i, i + 10).join("\n"));
       embeds.push(embed);
     }
 
     return await Util.embedPages(client, interaction, embeds);
   },
-  seek: async (interaction, player, time) => {
-    const seekDuration = Number(time) * 1000;
-    const duration = player.queue.current.length;
+  removeTrack: async (interaction, pName, song) => {
+    const pData = await PDB.findOne({
+      playlistName: pName,
+      userID: interaction.user.id,
+    });
+    const tracks = pData?.playlistData;
+    if (await validateTrack(interaction, song, tracks)) return;
 
-    if (seekDuration <= duration) {
-      await player.shoukaku.seekTo(seekDuration);
-
-      return interaction.editReply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor("Blurple")
-            .setDescription(`🔹 | Seeked to ${pms(seekDuration)}.`)
-            .setTimestamp(),
-        ],
-      });
-    }
-
-    if (seekDuration > duration)
-      return interaction.editReply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor("Blurple")
-            .setDescription(`🔹 | Invalid seek time.`)
-            .setTimestamp(),
-        ],
-      });
-  },
-  setVolume: async (interaction, player, volume) => {
-    if (volume < 0 || volume > 100)
-      return interaction.editReply({
-        embeds: [
-          embed.setDescription(
-            "🔹| You can only set the volume from 0 to 100."
-          ),
-        ],
-        ephemeral: true,
-      });
-
-    await player.setVolume(volume);
+    await PDB.updateOne(
+      {
+        userID: interaction.user.id,
+        playlistName: pName,
+      },
+      {
+        $pull: {
+          playlistData: pData.playlistData[song],
+        },
+      }
+    );
 
     return interaction.editReply({
       embeds: [
-        embed
-          .setDescription(
-            `🔹 | Volume has been set to **${player.volume * 100}%**.`
-          )
-          .setFooter({
-            text: `Action executed by ${interaction.user.username}.`,
-            iconURL: interaction.user.avatarURL({ dynamic: true }),
-          }),
+        embed.setDescription(
+          `🔹 | **${tracks[song].title}** has been removed from your playlist.`
+        ),
       ],
     });
   },
