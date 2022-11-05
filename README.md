@@ -45,9 +45,6 @@ You can find the installation guide [here](https://docs.evelynbot.ml) or alterna
 
 - [Lyxcode](https://youtube.com/c/Lyxcode) - command handler
 - [itstylerrr](https://github.com/itstylerrr/Valiant) - took inspiration from the README
-- [Alvaa](https://github.com/Allvaa/lavalink-musicbot) - repo helped with music system
-- [SudhanPlayz](https://github.com/SudhanPlayz/Discord-MusicBot) - repo helped with music system
-- [Adivise](https://github.com/Adivise/NanoSpacePlus) - repo helped with music system
 - [Cit999](https://github.com/cit999/djs-projects/tree/master/Giveaway%20System) - giveaway system
 
 If we used your code and forgot to add you to the credits, shoot me a message over on Discord at scrappie#5451.
