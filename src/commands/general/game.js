@@ -9,7 +9,6 @@ const {
   Snake,
   TicTacToe,
   Trivia,
-  WouldYouRather,
 } = require("gamecord-extended");
 
 module.exports = {
@@ -191,13 +190,6 @@ module.exports = {
             othersMessage:
               "You are not allowed to use buttons for this message!",
           },
-        }).startGame();
-
-      case "wouldyourather":
-        return new WouldYouRather({
-          interaction: interaction,
-          thinkMessage: "**Thinking..**",
-          buttons: { option1: "Option 1", option2: "Option 2" },
         }).startGame();
     }
   },
