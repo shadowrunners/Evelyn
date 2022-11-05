@@ -103,12 +103,13 @@ module.exports = {
 
     if (validate(interaction, pData)) return;
 
+    let i = 0;
     const trackData = pData.playlistData;
     const list = pData.playlistData.length;
     const tracks = [];
     const embeds = [];
 
-    for (let i = 0; i < list; i++) {
+    for (i; i < list; i++) {
       tracks.push(
         `${i + 1} • **[${trackData[i].title}](${trackData[i].uri})** • [${pms(
           trackData[i].duration
@@ -116,7 +117,7 @@ module.exports = {
       );
     }
 
-    for (let i = 0; i < tracks.length; i += 10) {
+    for (i = 0; i < tracks.length; i += 10) {
       embed
         .setTitle(`${pData.playlistName} by ${pData.name}`)
         .setDescription(tracks.slice(i, i + 10).join("\n"));
