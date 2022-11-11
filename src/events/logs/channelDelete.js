@@ -27,33 +27,6 @@ module.exports = {
     });
     const fetchLogs = allLogs.entries.first();
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-    const embed = new EmbedBuilder()
-      .setColor("Grey")
-      .setAuthor({ name: channel.guild.name, iconURL: channel.guild.iconURL() })
-      .setTitle("Channel Deleted")
-      .addFields([
-        {
-          name: "🔹 | Channel Name",
-          value: `${channel.name}`,
-        },
-        {
-          name: "🔹 | Channel ID",
-          value: `> ${channel.id}`,
-        },
-        {
-          name: "🔹 | Deleted by",
-          value: `> <@${fetchLogs.executor.id}> (${fetchLogs.executor.id})`,
-        },
-      ])
-      .setTimestamp();
-    return client.channels.cache
-      .get(data.logs.channel)
-      .send({ embeds: [embed] });
-=======
->>>>>>> Stashed changes
     return client.channels.cache.get(data.logs.channel).send({
       embeds: [
         embed
@@ -65,11 +38,7 @@ module.exports = {
           .addFields([
             {
               name: "🔹 | Channel Name",
-<<<<<<< Updated upstream
-              value: `${channel.name}`,
-=======
               value: `> ${channel.name}`,
->>>>>>> Stashed changes
             },
             {
               name: "🔹 | Channel ID",
@@ -82,9 +51,5 @@ module.exports = {
           ]),
       ],
     });
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
->>>>>>> Stashed changes
   },
 };

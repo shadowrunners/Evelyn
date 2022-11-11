@@ -46,35 +46,6 @@ client.buttons = new Collection();
 client.modals = new Collection();
 client.cluster = new Cluster.Client(client);
 
-<<<<<<< Updated upstream
-client.manager = new Kazagumo(
-=======
-<<<<<<< Updated upstream
-const kazagumoClient = new Kazagumo(
->>>>>>> Stashed changes
-  {
-    plugins: [
-      new Spotify({
-        clientId: client.config.spotifyClientID,
-        clientSecret: client.config.spotifySecret,
-      }),
-    ],
-    defaultSearchEngine: "youtube",
-    send: (id, payload) => {
-      const guild = client.guilds.cache.get(id);
-      if (guild) guild.shard.send(payload);
-    },
-  },
-  new Connectors.DiscordJS(client),
-  client.config.nodes,
-  {
-    moveOnDisconnect: true,
-    resume: true,
-    reconnectTries: 5,
-    restTimeout: 10000,
-  }
-);
-=======
 client.manager = new Poru(client, client.config.nodes, {
   deezer: {
     playlistLimit: 10,
@@ -89,7 +60,6 @@ client.manager = new Poru(client, client.config.nodes, {
   resumeTimeout: 60,
   reconnectTries: 5,
 });
->>>>>>> Stashed changes
 
 module.exports = client;
 

@@ -1,19 +1,4 @@
-<<<<<<< Updated upstream:src/commands/developer/blacklist.js
-const {
-  SlashCommandBuilder,
-  ChatInputCommandInteraction,
-} = require("discord.js");
-const {
-  addServerBlacklist,
-  addUserBlacklist,
-<<<<<<< Updated upstream:src/commands/developer/blacklist.js
-} = require("../../engines/BlacklistEngine.js");
-=======
-} = require("../../modules/blacklistModule.js");
-=======
 const { SlashCommandBuilder } = require("discord.js");
->>>>>>> Stashed changes:src/commands/developer/blacklist/blacklist.js
->>>>>>> Stashed changes:src/commands/developer/blacklist/blacklist.js
 
 module.exports = {
   botPermissions: ["SendMessages"],
@@ -59,31 +44,4 @@ module.exports = {
             .setRequired(true)
         )
     ),
-<<<<<<< Updated upstream:src/commands/developer/blacklist.js
-  /**
-   * @param {ChatInputCommandInteraction} interaction
-   */
-  async execute(interaction) {
-    const { options } = interaction;
-
-    let serverID;
-    let userID;
-    let reason;
-
-    switch (options.getSubcommand()) {
-      case "server":
-        serverID = options.getString("serverid");
-        reason = options.getString("reason");
-
-        return addServerBlacklist(interaction, serverID, reason);
-
-      case "user":
-        userID = options.getString("userid");
-        reason = options.getString("reason");
-
-        return addUserBlacklist(interaction, userID, reason);
-    }
-  },
-=======
->>>>>>> Stashed changes:src/commands/developer/blacklist/blacklist.js
 };

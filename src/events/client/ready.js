@@ -37,16 +37,8 @@ module.exports = {
           )
       );
 
-<<<<<<< Updated upstream
-    giveawayEnd(client);
-=======
-<<<<<<< Updated upstream
-=======
     client.manager.init(client);
-
     giveawayEnd(client);
->>>>>>> Stashed changes
->>>>>>> Stashed changes
     dash(client);
     DXP.setURL(client.config.database);
 
