@@ -22,7 +22,7 @@ module.exports = {
     });
 
     if (!data) return;
-    if (data.logs.enabled == "false" || data.logs.channel === null) return;
+    if (data.logs.enabled === false || data.logs.channel === null) return;
 
     const allLogs = await guild.fetchAuditLogs({
       type: AuditLogEvent.MemberUpdate,

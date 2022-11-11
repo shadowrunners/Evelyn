@@ -18,34 +18,38 @@ module.exports = {
     });
 
     if (!data) return;
-    if (data.logs.enabled == "false" || data.logs.channel === null) return;
+    if (data.logs.enabled === false || data.logs.channel === null) return;
+
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
     const allLogs = await channel.guild.fetchAuditLogs({
       type: AuditLogEvent.ChannelDelete,
     });
     const fetchLogs = allLogs.entries.first();
 
-    const embed = new EmbedBuilder()
-      .setColor("Grey")
-      .setAuthor({ name: channel.guild.name, iconURL: channel.guild.iconURL() })
-      .setTitle("Channel Deleted")
-      .addFields([
-        {
-          name: "🔹 | Channel Name",
-          value: `${channel.name}`,
-        },
-        {
-          name: "🔹 | Channel ID",
-          value: `> ${channel.id}`,
-        },
-        {
-          name: "🔹 | Deleted by",
-          value: `> <@${fetchLogs.executor.id}> (${fetchLogs.executor.id})`,
-        },
-      ])
-      .setTimestamp();
-    return client.channels.cache
-      .get(data.logs.channel)
-      .send({ embeds: [embed] });
+    return client.channels.cache.get(data.logs.channel).send({
+      embeds: [
+        embed
+          .setAuthor({
+            name: channel.guild.name,
+            iconURL: channel.guild.iconURL(),
+          })
+          .setTitle("Channel Deleted")
+          .addFields([
+            {
+              name: "🔹 | Channel Name",
+              value: `${channel.name}`,
+            },
+            {
+              name: "🔹 | Channel ID",
+              value: `> ${channel.id}`,
+            },
+            {
+              name: "🔹 | Deleted by",
+              value: `> <@${fetchLogs.executor.id}>`,
+            },
+          ]),
+      ],
+    });
   },
 };

@@ -18,36 +18,39 @@ module.exports = {
   /**
    * @param {ChatInputCommandInteraction} interaction
    */
-  async execute(interaction) {
-    const target = interaction.options.getUser("target") || interaction.member;
-    await target.user.fetch();
+  execute(interaction) {
+    const { options, member } = interaction;
+    const target = options.getUser("target") || member;
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
-    const userinfoEmbed = new EmbedBuilder()
-      .setColor("Grey")
-      .setAuthor({
-        name: `${target.user.tag}`,
-        iconURL: `${target.user.avatarURL({ dynamic: true })}`,
-      })
-      .setThumbnail(target.user.avatarURL({ dynamic: true }))
-      .addFields(
-        { name: "🔹 | ID", value: `> ${target.user.id}`, inline: true },
-        {
-          name: "🔹 | Member since",
-          value: `> <t:${parseInt(target.joinedTimestamp / 1000)}:R>`,
-        },
-        {
-          name: "🔹 | Discord member since",
-          value: `> <t:${parseInt(target.user.createdTimestamp / 1000)}:R>`,
-        },
-        {
-          name: "🔹 | Roles",
-          value:
-            `${target.roles.cache
-              .map((r) => r)
-              .join(" ")
-              .replace("@everyone", "")}` || "None.",
-        }
-      );
-    return interaction.reply({ embeds: [userinfoEmbed] });
+    return interaction.reply({
+      embeds: [
+        embed
+          .setAuthor({
+            name: target.user.tag,
+            iconURL: target.user.avatarURL({ dynamic: true }),
+          })
+          .setThumbnail(target.user.avatarURL({ dynamic: true }))
+          .addFields(
+            { name: "🔹 | ID", value: `> ${target.user.id}`, inline: true },
+            {
+              name: "🔹 | Member since",
+              value: `> <t:${parseInt(target.joinedTimestamp / 1000)}:R>`,
+            },
+            {
+              name: "🔹 | Discord member since",
+              value: `> <t:${parseInt(target.user.createdTimestamp / 1000)}:R>`,
+            },
+            {
+              name: "🔹 | Roles",
+              value:
+                `${target.roles.cache
+                  .map((r) => r)
+                  .join(" ")
+                  .replace("@everyone", "")}` || "None.",
+            }
+          ),
+      ],
+    });
   },
 };

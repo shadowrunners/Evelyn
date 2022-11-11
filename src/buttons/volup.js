@@ -1,5 +1,5 @@
 const { ButtonInteraction } = require("discord.js");
-const { setVolume, isSongPlaying } = require("../modules/musicModule.js");
+const { setVolume, isSongPlaying } = require("../engines/AMEngine.js");
 const client = require("../structures/index.js");
 
 module.exports = {
@@ -16,6 +16,6 @@ module.exports = {
     if (!player) return;
     if (isSongPlaying(interaction, player)) return;
 
-    return await setVolume(interaction, player, volume);
+    return setVolume(interaction, player, volume);
   },
 };

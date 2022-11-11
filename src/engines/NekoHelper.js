@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
-const embed = new EmbedBuilder();
+const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
 function checkAvatar(user1, user2, interaction) {
   const avatar = user1?.avatarURL() || user2?.avatarURL();
@@ -29,4 +29,12 @@ function checkText(text, interaction) {
     });
 }
 
-module.exports = { checkAvatar, checkUsername, checkText };
+function checkTarget(target, interaction) {
+  if (!target)
+    return interaction.editReply({
+      embeds: [embed.setDescription("🔹 | You forgot to provide a user.")],
+      ephemeral: true,
+    });
+}
+
+module.exports = { checkAvatar, checkUsername, checkText, checkTarget };

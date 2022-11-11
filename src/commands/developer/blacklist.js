@@ -5,7 +5,7 @@ const {
 const {
   addServerBlacklist,
   addUserBlacklist,
-} = require("../../modules/blacklistModule.js");
+} = require("../../engines/BlacklistEngine.js");
 
 module.exports = {
   botPermissions: ["SendMessages"],
@@ -66,13 +66,13 @@ module.exports = {
         serverID = options.getString("serverid");
         reason = options.getString("reason");
 
-        return await addServerBlacklist(interaction, serverID, reason);
+        return addServerBlacklist(interaction, serverID, reason);
 
       case "user":
         userID = options.getString("userid");
         reason = options.getString("reason");
 
-        return await addUserBlacklist(interaction, userID, reason);
+        return addUserBlacklist(interaction, userID, reason);
     }
   },
 };

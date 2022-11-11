@@ -1,5 +1,5 @@
 const { ButtonInteraction, EmbedBuilder } = require("discord.js");
-const { checkForQueue, isSongPlaying } = require("../modules/musicModule.js");
+const { checkForQueue, isSongPlaying } = require("../engines/AMEngine.js");
 const client = require("../structures/index.js");
 
 module.exports = {

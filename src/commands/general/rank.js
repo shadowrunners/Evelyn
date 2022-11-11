@@ -21,19 +21,16 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
-    const target = interaction.options.getUser("target") || interaction.member;
-    await target.user.fetch();
+    const { options, member } = interaction;
+    const target = options.getUser("target") || member;
 
-    const embed = new EmbedBuilder();
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
     const user = await DXP.fetch(target.id, interaction.guild.id, true);
 
     if (!user)
       return interaction.reply({
         embeds: [
-          embed
-            .setColor("Blurple")
-            .setDescription("🔹 | This user hasn't gained any XP yet.")
-            .setTimestamp(),
+          embed.setDescription("🔹 | This user hasn't gained any XP yet."),
         ],
         ephemeral: true,
       });

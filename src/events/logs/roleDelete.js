@@ -11,7 +11,7 @@ module.exports = {
     const data = await DB.findOne({ id: role.guild.id });
 
     if (!data) return;
-    if (data.logs.enabled == "false" || data.logs.channel === null) return;
+    if (data.logs.enabled === false || data.logs.channel === null) return;
 
     const allLogs = await role.guild.fetchAuditLogs({
       type: AuditLogEvent.RoleDelete,

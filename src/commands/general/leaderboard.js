@@ -17,18 +17,7 @@ module.exports = {
   async execute(interaction, client) {
     const fetchLB = await DXP.fetchLeaderboard(interaction.guild.id, 10);
     const leaderboard = await DXP.computeLeaderboard(client, fetchLB);
-
-    if (!fetchLB || !leaderboard)
-      return interaction.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor("Blurple")
-            .setDescription(
-              "🔹 | Couldn't create a leaderboard as there is no data yet."
-            )
-            .setTimestamp(),
-        ],
-      });
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
     const mappedLB = leaderboard.map(
       (lb) =>
@@ -39,11 +28,15 @@ module.exports = {
         }\``
     );
 
-    const LBEmbed = new EmbedBuilder()
-      .setColor("Blurple")
-      .setTitle(`Leaderboard for ${interaction.guild.name}`)
-      .setDescription(`${mappedLB.join("\n\n")}`)
-      .setTimestamp();
-    return interaction.reply({ embeds: [LBEmbed] });
+    return interaction.reply({
+      embeds: [
+        embed
+          .setTitle(`Leaderboard for ${interaction.guild.name}`)
+          .setDescription(
+            `${mappedLB.join("\n\n")}` ||
+              `This leaderboard is empty as there is currently no data to compute the leaderboard.`
+          ),
+      ],
+    });
   },
 };
