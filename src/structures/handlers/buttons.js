@@ -1,5 +1,5 @@
 async function loadButtons(client) {
-  const { magenta, green } = require("chalk");
+  const { magenta, white, green } = require("chalk");
   const { fileLoad } = require("../../utils/fileLoader.js");
 
   const files = await fileLoad("buttons");
@@ -10,11 +10,7 @@ async function loadButtons(client) {
     client.buttons.set(button.id, button);
 
     return console.log(
-      magenta("[") +
-        magenta("Buttons") +
-        magenta("]") +
-        " Loaded" +
-        green(` ${button.id}.js`)
+      magenta("Buttons") + white(" · ") + "Loaded" + green(` ${button.id}.js`)
     );
   });
 }

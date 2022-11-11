@@ -22,6 +22,8 @@ module.exports = {
 
     const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
+    console.log(channel);
+
     const allLogs = await channel.guild.fetchAuditLogs({
       type: AuditLogEvent.ChannelCreate,
       limit: 1,

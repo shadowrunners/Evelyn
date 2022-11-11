@@ -1,5 +1,5 @@
 async function loadModals(client) {
-  const { magenta, green } = require("chalk");
+  const { magenta, white, green } = require("chalk");
   const { fileLoad } = require("../../utils/fileLoader.js");
 
   const Files = await fileLoad("modals");
@@ -11,11 +11,7 @@ async function loadModals(client) {
     client.modals.set(modal.id, modal);
 
     return console.log(
-      magenta("[") +
-        magenta("Modals") +
-        magenta("]") +
-        " Loaded " +
-        green(`${modal.id}.js`)
+      magenta("Modals") + white(" · ") + "Loaded " + green(`${modal.id}.js`)
     );
   });
 }

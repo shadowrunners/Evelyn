@@ -1,4 +1,4 @@
-const client = require("../../../structures/index.js");
+const client = require("../../structures/index.js");
 const {
   EmbedBuilder,
   ActionRowBuilder,
@@ -6,14 +6,14 @@ const {
   ButtonStyle,
 } = require("discord.js");
 const { Primary } = ButtonStyle;
-const { KazagumoTrack, KazagumoPlayer } = require("kazagumo");
+const { Player, Track } = require("poru");
 const pms = require("pretty-ms");
 
 module.exports = {
-  name: "playerStart",
+  name: "trackStart",
   /**
-   * @param {KazagumoPlayer} player
-   * @param {KazagumoTrack} track
+   * @param {Player} player
+   * @param {Track} track
    */
   async execute(player, track) {
     const buttonRow = new ActionRowBuilder().addComponents(
@@ -33,22 +33,20 @@ module.exports = {
     const nowPlaying = new EmbedBuilder()
       .setColor("Blurple")
       .setTitle("🎧 Started Playing")
-      .setDescription(`**[${track.title}](${track.uri})**`)
+      .setDescription(`**[${track.info.title}](${track.info.uri})**`)
       .addFields(
         {
           name: "Queued by",
-          value: `<@${track.requester.id}>`,
+          value: `<@${track.info.requester.id}>`,
           inline: true,
         },
-        { name: "Duration", value: pms(track.length), inline: true }
+        { name: "Duration", value: pms(track.info.length), inline: true }
       )
       .setThumbnail(track.thumbnail)
       .setTimestamp();
 
-    const message = await client.channels.cache
-      .get(player.textId)
+    await client.channels.cache
+      .get(player.textChannel)
       .send({ embeds: [nowPlaying], components: [buttonRow] });
-
-    setTimeout(() => message.delete(), track.length);
   },
 };

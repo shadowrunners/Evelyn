@@ -5,7 +5,7 @@ module.exports = {
   execute() {
     console.log(
       magenta("[") +
-        magenta("Shoukaku Player") +
+        magenta("Erela") +
         magenta("] ") +
         white(`Player destroyed.`)
     );

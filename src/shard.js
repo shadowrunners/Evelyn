@@ -10,7 +10,8 @@ const manager = new Cluster.Manager(`${__dirname}/structures/index.js`, {
 
 manager.on("clusterCreate", (cluster) =>
   console.log(
-    magenta("[Shard Manager] ") +
+    magenta("Shard Manager") +
+      white(" · ") +
       white("Launched cluster ") +
       green(`${cluster.id}.`)
   )

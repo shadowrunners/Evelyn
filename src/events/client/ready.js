@@ -14,8 +14,8 @@ module.exports = {
    */
   execute(client) {
     console.log(
-      magenta("[Discord API] ") +
-        white("Logged in as ") +
+      magenta("Discord API") +
+        white(" · Logged in as ") +
         green(`${client.user.tag}`)
     );
 
@@ -30,20 +30,31 @@ module.exports = {
 
     if (!client.config.database)
       return console.log(
-        magenta("[Evelyn Notification] ") +
+        magenta("Evelyn Notification") +
+          white(" · ") +
           red(
             "Couldn't connect to database, please check your config.json file."
           )
       );
 
+<<<<<<< Updated upstream
     giveawayEnd(client);
+=======
+<<<<<<< Updated upstream
+=======
+    client.manager.init(client);
+
+    giveawayEnd(client);
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     dash(client);
     DXP.setURL(client.config.database);
 
     connect(client.config.database)
       .then(() => {
         console.log(
-          magenta("[DB] ") +
+          magenta("Database") +
+            white(" · ") +
             green(`${client.user.username} `) +
             white("has successfully connected to the database.")
         );

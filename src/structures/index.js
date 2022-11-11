@@ -5,10 +5,7 @@ const {
   Partials,
 } = require("discord.js");
 const Cluster = require("discord-hybrid-sharding");
-const { Connectors } = require("shoukaku");
-const { Kazagumo } = require("kazagumo");
-const Spotify = require("kazagumo-spotify");
-const { DiscordTogether } = require("discord-together");
+const { Poru } = require("poru");
 
 const {
   Guilds,
@@ -18,7 +15,6 @@ const {
   GuildInvites,
   GuildVoiceStates,
   GuildMessages,
-  GuildMessageReactions,
 } = GatewayIntentBits;
 const { User, Message, Channel, GuildMember, ThreadMember } = Partials;
 
@@ -31,7 +27,6 @@ const client = new Client({
     GuildInvites,
     GuildVoiceStates,
     GuildMessages,
-    GuildMessageReactions,
   ],
   partials: [User, Message, Channel, GuildMember, ThreadMember],
   shards: Cluster.data.SHARD_LIST,
@@ -40,19 +35,23 @@ const client = new Client({
 
 const { loadEvents } = require("./handlers/events.js");
 const { loadButtons } = require("./handlers/buttons.js");
-const { loadShoukakuNodes } = require("./handlers/shoukakuNodes.js");
-const { loadShoukakuPlayer } = require("./handlers/shoukakuPlayer.js");
+const { loadPoru } = require("./handlers/poru.js");
 const { loadModals } = require("./handlers/modals.js");
 
 client.config = require("./config.json");
 client.commands = new Collection();
+client.subCommands = new Collection();
 client.events = new Collection();
 client.buttons = new Collection();
 client.modals = new Collection();
 client.cluster = new Cluster.Client(client);
-client.discordTogether = new DiscordTogether(client);
 
+<<<<<<< Updated upstream
 client.manager = new Kazagumo(
+=======
+<<<<<<< Updated upstream
+const kazagumoClient = new Kazagumo(
+>>>>>>> Stashed changes
   {
     plugins: [
       new Spotify({
@@ -75,13 +74,28 @@ client.manager = new Kazagumo(
     restTimeout: 10000,
   }
 );
+=======
+client.manager = new Poru(client, client.config.nodes, {
+  deezer: {
+    playlistLimit: 10,
+  },
+  spotify: {
+    clientID: client.config.spotifyClientID,
+    clientSecret: client.config.spotifySecret,
+    playlistLimit: 5,
+  },
+  defaultPlatform: "ytsearch",
+  resumeKey: "MyPlayers",
+  resumeTimeout: 60,
+  reconnectTries: 5,
+});
+>>>>>>> Stashed changes
 
 module.exports = client;
 
 loadEvents(client);
 loadButtons(client);
-loadShoukakuNodes(client);
-loadShoukakuPlayer(client);
+loadPoru(client);
 loadModals(client);
 
 client.login(client.config.token);

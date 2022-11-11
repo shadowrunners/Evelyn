@@ -1,5 +1,5 @@
 async function loadEvents(client) {
-  const { magenta, green } = require("chalk");
+  const { magenta, white, green } = require("chalk");
   const { fileLoad } = require("../../utils/fileLoader.js");
 
   await client.events.clear();
@@ -20,11 +20,7 @@ async function loadEvents(client) {
     }
 
     return console.log(
-      magenta("[") +
-        magenta("Events") +
-        magenta("]") +
-        " Loaded " +
-        green(`${event.name}.js`)
+      magenta("Events") + white(" · ") + "Loaded " + green(`${event.name}.js`)
     );
   });
 }

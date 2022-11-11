@@ -8,7 +8,6 @@ module.exports = {
    * @param {Guild} guild
    * @param {Client} client
    */
-
   execute(guild, client) {
     const webhook = new WebhookClient({ url: client.config.watcherHook });
 

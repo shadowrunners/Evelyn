@@ -1,4 +1,5 @@
 const {
+  Client,
   EmbedBuilder,
   ActionRowBuilder,
   ButtonBuilder,
@@ -16,23 +17,28 @@ module.exports = {
   permission: ManageGuild,
   /**
    * @param {ModalSubmitInteraction} interaction
+   * @param {Client} client
    */
+<<<<<<< Updated upstream
   execute(interaction) {
     const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
     const prize = interaction.fields
       .getTextInputValue("giveaway-prize")
       .slice(0, 256);
+=======
+  execute(interaction, client) {
+    const { fields } = interaction;
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+
+    const prize = fields.getTextInputValue("giveaway-prize").slice(0, 256);
+>>>>>>> Stashed changes
 
     const winners = Math.round(
-      parseFloat(interaction.fields.getTextInputValue("giveaway-winners"))
+      parseFloat(fields.getTextInputValue("giveaway-winners"))
     );
 
-    const duration = ms(
-      interaction.fields.getTextInputValue("giveaway-duration")
-    );
-
-    const formattedDuration = parseInt((Date.now() + duration) / 1000);
+    const duration = fields.getTextInputValue("giveaway-duration");
 
     if (isNaN(winners) || !isFinite(winners) || winners < 1) {
       embed.setDescription("🔹 | Please provide a valid winner count.");
@@ -44,22 +50,33 @@ module.exports = {
       return interaction.reply({ embeds: [embed], ephemeral: true });
     }
 
-    const giveawayEmbed = new EmbedBuilder()
-      .setColor("Blurple")
-      .setTitle(prize)
-      .setDescription(
-        `**Hosted by**: ${interaction.member}\n**Winners**: ${winners}\n**Ends**: <t:${formattedDuration}:R> (<t:${formattedDuration}>)`
-      )
-      .setTimestamp(parseInt(Date.now() + duration));
+    //  giveaways.create(client, {
+    //   prize: prize,
+    //    host: interaction.user.id,
+    ///   winners: winners,
+    //   endAfter: duration,
+    //    channelID: interaction.channel.id,
+    //   });
 
-    const button = new ActionRowBuilder().addComponents(
-      new ButtonBuilder()
-        .setCustomId("joinGiveaway")
-        .setEmoji("🎉")
-        .setStyle(ButtonStyle.Success)
-        .setLabel("Join")
-    );
+    return interaction.reply({ content: "Giveaway created.", ephemeral: true });
 
+    // const giveawayEmbed = new EmbedBuilder()
+    //   .setColor("Blurple")
+    //    .setTitle(prize)
+    ///    .setDescription(
+    //      `**Hosted by**: ${interaction.member}\n**Winners**: ${winners}\n**Ends**: <t:${formattedDuration}:R> (<t:${formattedDuration}>)`
+    //    )
+    //   .setTimestamp(parseInt(Date.now() + duration));
+    //
+    //  const button = new ActionRowBuilder().addComponents(
+    //    new ButtonBuilder()
+    //      .setCustomId("joinGiveaway")
+    //      .setEmoji("🎉")
+    //      .setStyle(ButtonStyle.Success)
+    //      .setLabel("Join")
+    //  );
+
+<<<<<<< Updated upstream
     interaction
       .reply({
         content: "🎉 **A wild giveaway has appeared!** 🎉",
@@ -85,5 +102,32 @@ module.exports = {
           }, duration);
         });
       });
+=======
+    // interaction
+    //     .reply({
+    //     content: "🎉 **A wild giveaway has appeared!** 🎉",
+    //     embeds: [giveawayEmbed],
+    //     components: [button],
+    //     fetchReply: true,
+    //    })
+    //    .then(async (message) => {
+    //     await DB.create({
+    //       id: interaction.guild.id,
+    //        channel: interaction.channel.id,
+    //       endTime: formattedDuration,
+    //       hasEnded: false,
+    //      hoster: interaction.user.id,
+    //       prize: prize,
+    //      winners: winners,
+    //       isPaused: false,
+    //       messageID: message.id,
+    //       enteredUsers: [],
+    //      }).then((data) => {
+    //       setTimeout(() => {
+    //         if (!data.hasEnded) endGiveaway(message);
+    //       }, duration);
+    //     });
+    //   });
+>>>>>>> Stashed changes
   },
 };

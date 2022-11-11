@@ -83,12 +83,18 @@ module.exports = {
         });
       }
 
-      if (
-        interaction.guild.members.me.permissions.has(
-          PermissionsBitField.resolve("Administrator")
-        )
-      )
-        command.execute(interaction, client);
+      const subCommand = interaction.options.getSubcommand(false);
+      if (subCommand) {
+        const subCommandFile = client.subCommands.get(
+          `${interaction.commandName}.${subCommand}`
+        );
+        if (!subCommandFile)
+          return interaction.reply({
+            embeds: [embed.setDescription("This subcommand is outdated.")],
+            ephemeral: true,
+          });
+        subCommandFile.execute(interaction, client);
+      }
 
       if (command.botPermissions) {
         if (
