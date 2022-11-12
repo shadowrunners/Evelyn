@@ -1,6 +1,6 @@
 const {
   Client,
-  GuildChannel,
+  GuildMember,
   EmbedBuilder,
   AuditLogEvent,
 } = require("discord.js");
@@ -9,42 +9,35 @@ const DB = require("../../structures/schemas/guild.js");
 module.exports = {
   name: "guildBanAdd",
   /**
-   * @param {GuildChannel} channel
+   * @param {GuildMember} member
    * @param {Client} client
    */
-  async execute(channel, client) {
+  async execute(member, client) {
     const data = await DB.findOne({
-      id: channel.guild.id,
+      id: member.guild.id,
     });
 
     if (!data) return;
     if (data.logs.enabled === false || data.logs.channel === null) return;
 
-    const allLogs = await channel.guild.fetchAuditLogs({
-      type: AuditLogEvent.MemberBanAdd,
-      limit: 1,
-    });
-    const fetchLogs = allLogs.entries.first();
-
     const embed = new EmbedBuilder()
-      .setColor("Grey")
-      .setAuthor({ name: channel.guild.name, iconURL: channel.guild.iconURL() })
+      .setColor("Blurple")
+      .setAuthor({ name: member.guild.name, iconURL: member.guild.iconURL() })
       .setTitle("Member Banned")
       .addFields([
         {
           name: "🔹 | Member Name",
-          value: `> ${fetchLogs.target.username}#${fetchLogs.target.discriminator} (${fetchLogs.target.id})`,
+          value: `> ${member.user.username}`,
+          inline: true,
         },
         {
-          name: "🔹 | Reason",
-          value: `> ${fetchLogs.reason}` || "Not provided.",
-        },
-        {
-          name: "🔹 | Banned by",
-          value: `> <@${fetchLogs.executor.id}> (${fetchLogs.executor.id})`,
+          name: "🔹 | ID",
+          value: `> ${member.user.id}`,
+          inline: true,
         },
       ])
       .setTimestamp();
+
     return client.channels.cache
       .get(data.logs.channel)
       .send({ embeds: [embed] });

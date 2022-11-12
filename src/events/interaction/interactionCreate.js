@@ -4,6 +4,7 @@ const {
   EmbedBuilder,
   PermissionsBitField,
 } = require("discord.js");
+const { check4Perms } = require("../../utils/utils.js");
 const serverBlacklist = require("../../structures/schemas/serverBlacklist.js");
 const userBlacklist = require("../../structures/schemas/userBlacklist.js");
 
@@ -83,40 +84,24 @@ module.exports = {
         });
       }
 
+      if (command.botPermissions) {
+        if (check4Perms(interaction, command)) return;
+      }
+
       const subCommand = interaction.options.getSubcommand(false);
       if (subCommand) {
         const subCommandFile = client.subCommands.get(
           `${interaction.commandName}.${subCommand}`
         );
+
         if (!subCommandFile)
           return interaction.reply({
             embeds: [embed.setDescription("This subcommand is outdated.")],
             ephemeral: true,
           });
-        subCommandFile.execute(interaction, client);
-      }
 
-      if (command.botPermissions) {
-        if (
-          !interaction.guild.members.me.permissions.has(
-            PermissionsBitField.resolve(command.botPermissions || [])
-          )
-        )
-          return interaction.reply({
-            embeds: [
-              embed
-                .setTitle("Missing Permissions")
-                .setDescription(
-                  `🔹 | I'm missing several permissions, might wanna have a look at that.`
-                )
-                .addFields({
-                  name: "Permissions Missing",
-                  value: `${command.botPermissions}`,
-                }),
-            ],
-            ephemeral: true,
-          });
-      }
+        subCommandFile.execute(interaction, client);
+      } else command.execute(interaction, client);
     }
   },
 };

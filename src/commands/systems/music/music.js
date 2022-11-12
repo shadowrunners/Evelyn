@@ -56,24 +56,51 @@ module.exports = {
     )
     .addSubcommand((options) =>
       options
-        .setName("settings")
-        .setDescription("Select an option.")
+        .setName("skip")
+        .setDescription("Skips the currently playing song.")
+    )
+    .addSubcommand((options) =>
+      options
+        .setName("pause")
+        .setDescription("Pauses the currently playing song.")
+    )
+    .addSubcommand((options) =>
+      options
+        .setName("resume")
+        .setDescription("Resumes the currently playing song.")
+    )
+    .addSubcommand((options) =>
+      options
+        .setName("stop")
+        .setDescription(
+          "Stops the currently playing songs and destroys the player."
+        )
+    )
+    .addSubcommand((options) =>
+      options
+        .setName("lyrics")
+        .setDescription("Shows you the lyrics of the currently playing song.")
+    )
+    .addSubcommand((options) =>
+      options.setName("shuffle").setDescription("Shuffles the queue.")
+    )
+    .addSubcommand((options) =>
+      options
+        .setName("nowplaying")
+        .setDescription("Shows you the currently playing song.")
+    )
+    .addSubcommand((options) =>
+      options.setName("queue").setDescription("Shows you the queue.")
+    )
+    .addSubcommand((options) =>
+      options
+        .setName("clear")
+        .setDescription("Clears the queue.")
         .addStringOption((option) =>
           option
-            .setName("options")
-            .setDescription("Select an option.")
+            .setName("query")
+            .setDescription("Provide the name of the song or URL.")
             .setRequired(true)
-            .addChoices(
-              { name: "🔹 | View Queue", value: "queue" },
-              { name: "🔹 | Clear Queue", value: "queueclear" },
-              { name: "🔹 | Skip", value: "skip" },
-              { name: "🔹 | Pause", value: "pause" },
-              { name: "🔹 | Resume", value: "resume" },
-              { name: "🔹 | Stop", value: "stop" },
-              { name: "🔹 | Lyrics", value: "lyrics" },
-              { name: "🔹 | Shuffle", value: "shuffle" },
-              { name: "🔹 | Now Playing", value: "nowplaying" }
-            )
         )
     ),
 };

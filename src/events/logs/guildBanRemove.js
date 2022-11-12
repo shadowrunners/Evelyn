@@ -27,7 +27,7 @@ module.exports = {
     const fetchLogs = allLogs.entries.first();
 
     const embed = new EmbedBuilder()
-      .setColor("Grey")
+      .setColor("Blurple")
       .setAuthor({ name: channel.guild.name, iconURL: channel.guild.iconURL() })
       .setTitle("Member Unbanned")
       .addFields(
@@ -45,6 +45,7 @@ module.exports = {
         }
       )
       .setTimestamp();
+
     return client.channels.cache
       .get(data.logs.channel)
       .send({ embeds: [embed] });

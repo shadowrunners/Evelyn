@@ -1,4 +1,4 @@
-const { Client, Role, EmbedBuilder, AuditLogEvent } = require("discord.js");
+const { Client, Role, EmbedBuilder } = require("discord.js");
 const DB = require("../../structures/schemas/guild.js");
 
 module.exports = {
@@ -13,34 +13,22 @@ module.exports = {
     if (!data) return;
     if (data.logs.enabled === false || data.logs.channel === null) return;
 
-    const allLogs = await role.guild.fetchAuditLogs({
-      type: AuditLogEvent.RoleDelete,
-      limit: 1,
-    });
-    const fetchLogs = allLogs.entries.first();
-
     const embed = new EmbedBuilder()
+      .setColor("Blurple")
       .setAuthor({ name: role.guild.name, iconURL: role.guild.iconURL() })
       .setTitle("Role Deleted")
       .addFields(
         {
           name: "🔹 | Role Name",
-          value: `> ${fetchLogs.changes[0].old}`,
+          value: `> ${role.name}`,
         },
         {
           name: "🔹 | Role ID",
-          value: `> ${fetchLogs.id}`,
-        },
-        {
-          name: "🔹 | Role deleted by",
-          value: `> <@${fetchLogs.executor.id}>`,
+          value: `> ${role.id}`,
         }
       )
-      .setFooter({
-        text: fetchLogs.executor.tag,
-        iconURL: fetchLogs.executor.displayAvatarURL(),
-      })
       .setTimestamp();
+
     return client.channels.cache
       .get(data.logs.channel)
       .send({ embeds: [embed] });

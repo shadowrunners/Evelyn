@@ -14,35 +14,35 @@
     "connect-mongodb-session": "^3.1.1",
     "dbd-soft-ui": "^1.5.25-beta.1",
     "discord-dashboard": "^2.3.492",
+    "discord-economy-super": "^1.6.9",
     "discord-html-transcripts": "^3.1.2",
     "discord-hybrid-sharding": "^1.7.4",
-    "discord-together": "^1.3.31",
     "discord-xp": "^1.1.16",
     "discord.js": "^14.6.0",
     "express-session": "^1.17.3",
     "gamecord-extended": "github:notscrappie/gamecord-extended",
     "genius-lyrics": "^4.4.0",
     "glob": "^8.0.3",
-    "humanize-duration": "^3.27.3",
     "imdb-api": "^4.4.1",
-    "mongoose": "^6.7.1",
+    "moment": "^2.29.4",
+    "mongoose": "^6.7.2",
     "ms": "^2.1.3",
     "node-kitsu": "^1.1.1",
-    "openai": "^3.1.0",
+    "poru": "^3.7.3",
     "pretty-ms": "^7.0.1",
     "session-file-store": "^1.5.0",
     "superagent": "^8.0.3"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/notscrappie/evelyn.git"
+    "url": "git+https://github.com/t3amedge/evelyn.git"
   },
   "author": "notscrappie",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com//notscrappie/evelyn/issues"
+    "url": "https://github.com//t3amedge/evelyn/issues"
   },
-  "homepage": "https://github.com/notscrappie/evelyn#readme",
+  "homepage": "https://github.com/t3amedge/evelyn#readme",
   "devDependencies": {
     "nodemon": "^2.0.20"
   }

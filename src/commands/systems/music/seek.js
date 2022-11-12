@@ -1,5 +1,5 @@
 const { ChatInputCommandInteraction, Client } = require("discord.js");
-const { seek, checkVoice } = require("../../../engines/AMEngine.js");
+const { seek, checkVoice } = require("../../../utils/musicUtils.js");
 
 module.exports = {
   subCommand: "music.seek",

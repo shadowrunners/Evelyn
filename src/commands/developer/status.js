@@ -5,7 +5,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const os = require("os");
-const actualTime = require("humanize-duration");
+const { utc } = require("moment");
 const { switchTo } = require("../../utils/utils.js");
 const { connection } = require("mongoose");
 
@@ -27,14 +27,14 @@ module.exports = {
     await client.application.fetch();
 
     const embed = new EmbedBuilder()
-      .setColor("Grey")
+      .setColor("Blurple")
       .setTitle(`${client.user.username} | Status`)
       .addFields(
         { name: "**Client**", value: "🔷 Online", inline: true },
         { name: "**Ping**", value: `${client.ws.ping}ms`, inline: true },
         {
           name: "**Uptime**",
-          value: `${actualTime(client.uptime)}`,
+          value: `${utc(client.uptime).format("MMMM Do YYYY, h:mm:ss a")}`,
           inline: true,
         },
         {

@@ -10,6 +10,7 @@ module.exports = {
     return new Trivia({
       interaction: interaction,
       embed: {
+        title: "Trivia",
         description: "You have {time} seconds to respond!",
         color: "#5865F2",
         winMessage: "GG, Your answer was correct! It was **{answer}**.",

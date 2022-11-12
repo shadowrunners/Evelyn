@@ -7,6 +7,8 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   execute(interaction) {
+    const { options } = interaction;
+
     return new EightBall({
       interaction: interaction,
       question: options.getString("question"),

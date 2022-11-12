@@ -1,4 +1,9 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  PermissionsBitField,
+} = require("discord.js");
 
 async function embedPages(client, interaction, embeds) {
   const pages = {};
@@ -94,7 +99,30 @@ function switchTo(val) {
   return status;
 }
 
+function check4Perms(interaction, command) {
+  if (
+    !interaction.guild.members.me.permissions.has(
+      PermissionsBitField.resolve(command.botPermissions)
+    )
+  )
+    return interaction.reply({
+      embeds: [
+        embed
+          .setTitle("Missing Permissions")
+          .setDescription(
+            `🔹 | I'm missing several permissions, might wanna have a look at that.`
+          )
+          .addFields({
+            name: "Permissions Missing",
+            value: `${permission}`,
+          }),
+      ],
+      ephemeral: true,
+    });
+}
+
 module.exports = {
+  check4Perms,
   embedPages,
   unique,
   switchTo,

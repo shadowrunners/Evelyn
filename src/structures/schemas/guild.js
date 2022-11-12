@@ -41,9 +41,9 @@ module.exports = model(
       channel: String,
       message: String,
     },
-    verify: {
+    starboard: {
       enabled: false,
-      verifiedRole: String,
+      channel: String,
     },
   })
 );

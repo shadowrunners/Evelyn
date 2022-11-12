@@ -9,24 +9,26 @@ const { Poru } = require("poru");
 
 const {
   Guilds,
+  GuildMessages,
   GuildBans,
   GuildMembers,
   GuildEmojisAndStickers,
+  GuildMessageReactions,
   GuildInvites,
   GuildVoiceStates,
-  GuildMessages,
 } = GatewayIntentBits;
 const { User, Message, Channel, GuildMember, ThreadMember } = Partials;
 
 const client = new Client({
   intents: [
     Guilds,
+    GuildMessages,
     GuildBans,
     GuildMembers,
+    GuildMessageReactions,
     GuildEmojisAndStickers,
     GuildInvites,
     GuildVoiceStates,
-    GuildMessages,
   ],
   partials: [User, Message, Channel, GuildMember, ThreadMember],
   shards: Cluster.data.SHARD_LIST,

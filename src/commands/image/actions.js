@@ -40,9 +40,11 @@ module.exports = {
   /**
    * @param {ChatInputCommandInteraction} interaction
    */
-  execute(interaction) {
+  async execute(interaction) {
     const { options } = interaction;
     const target = options.getUser("target");
+
+    await interaction.deferReply();
 
     switch (options.getString("action")) {
       case "bite":

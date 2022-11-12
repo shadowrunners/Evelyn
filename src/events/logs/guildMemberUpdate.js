@@ -24,12 +24,6 @@ module.exports = {
     if (!data) return;
     if (data.logs.enabled === false || data.logs.channel === null) return;
 
-    const allLogs = await guild.fetchAuditLogs({
-      type: AuditLogEvent.MemberUpdate,
-      limit: 1,
-    });
-    const fetchLogs = allLogs.entries.first();
-
     const oldRoles = oldMember.roles.cache.map((r) => r.id);
     const newRoles = newMember.roles.cache.map((r) => r.id);
 
@@ -48,14 +42,17 @@ module.exports = {
           {
             name: "🔹 | Username",
             value: `> ${oldMember.user.username}`,
+            inline: true,
           },
           {
             name: "🔹 | ID",
             value: `> ${oldMember.user.id}`,
+            inline: true,
           },
           {
             name: "🔹 | Removed Role",
             value: `> <@&${role.id}>`,
+            inline: true,
           }
         );
 
@@ -79,14 +76,17 @@ module.exports = {
           {
             name: "🔹 | Username",
             value: `> ${oldMember.user.username}`,
+            inline: true,
           },
           {
             name: "🔹 | ID",
             value: `> ${oldMember.user.id}`,
+            inline: true,
           },
           {
             name: "🔹 | Added Role",
             value: `> <@&${role.id}>`,
+            inline: true,
           }
         )
         .setTimestamp();
@@ -109,18 +109,20 @@ module.exports = {
         .setTitle("Member Timeout Applied")
         .addFields(
           {
+            name: "🔹 | Username",
+            value: `> ${newMember.user.username}`,
+            inline: true,
+          },
+          {
+            name: "🔹 | ID",
+            value: `> ${newMember.user.id}`,
+            inline: true,
+          },
+          {
             name: "🔹 | Timeout expires",
             value: `> <t:${Math.floor(
               newMember.communicationDisabledUntilTimestamp / 1000
             )}:R>`,
-          },
-          {
-            name: "🔹 | Timed out by",
-            value: `> ${fetchLogs.executor.tag} (${fetchLogs.executor.id})`,
-          },
-          {
-            name: "🔹 | Reason",
-            value: `> ${fetchLogs.reason}` || "Not provided.",
           }
         )
         .setTimestamp();
@@ -140,10 +142,23 @@ module.exports = {
           iconURL: newMember.user.displayAvatarURL({ dynamic: true }),
         })
         .setTitle("Member Timeout Removed")
-        .addFields({
-          name: "🔹 | Reason",
-          value: `> Timeout expired!`,
-        })
+        .addFields(
+          {
+            name: "🔹 | Username",
+            value: `> ${newMember.user.username}`,
+            inline: true,
+          },
+          {
+            name: "🔹 | ID",
+            value: `> ${newMember.user.id}`,
+            inline: true,
+          },
+          {
+            name: "🔹 | Reason",
+            value: `> Timeout expired!`,
+            inline: true,
+          }
+        )
         .setTimestamp();
       return client.channels.cache
         .get(data.logs.channel)
@@ -160,12 +175,24 @@ module.exports = {
         .setTitle("Member Nickname Changed")
         .addFields(
           {
+            name: "🔹 | Username",
+            value: `> ${newMember.user.username}`,
+            inline: true,
+          },
+          {
+            name: "🔹 | ID",
+            value: `> ${newMember.user.id}`,
+            inline: true,
+          },
+          {
             name: "🔹 | Old Nickname",
             value: `> ${oldMember.nickname}`,
+            inline: true,
           },
           {
             name: "🔹 | New Nickname",
             value: `> ${newMember.nickname}`,
+            inline: true,
           }
         )
         .setTimestamp();

@@ -7,6 +7,8 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   execute(interaction) {
+    const { options } = interaction;
+
     return new TicTacToe({
       interaction: interaction,
       opponent: options.getUser("friend"),

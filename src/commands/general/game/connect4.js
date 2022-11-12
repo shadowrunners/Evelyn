@@ -7,6 +7,8 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   execute(interaction) {
+    const { options } = interaction;
+
     return new Connect4({
       interaction: interaction,
       opponent: options.getUser("friend"),

@@ -1,3 +1,8 @@
+/**
+ * This is the file for the Music Utilities.
+ * The main purpose of this file is having some common functions to avoid repeated code.
+ */
+
 const { EmbedBuilder } = require("discord.js");
 const pms = require("pretty-ms");
 const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
@@ -75,7 +80,7 @@ module.exports = {
   repeatMode: async (mode, player, interaction) => {
     switch (mode) {
       case "queue":
-        if (!player.loop === 1) {
+        if (!player.loop == 1) {
           await player.QueueRepeat();
 
           return interaction.editReply({
@@ -91,7 +96,7 @@ module.exports = {
         });
 
       case "song":
-        if (!player.loop === 0) {
+        if (!player.loop == 0) {
           await player.TrackRepeat();
 
           return interaction.editReply({

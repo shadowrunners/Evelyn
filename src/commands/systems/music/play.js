@@ -3,7 +3,7 @@ const {
   Client,
   EmbedBuilder,
 } = require("discord.js");
-const { checkVoice } = require("../../../engines/AMEngine.js");
+const { checkVoice } = require("../../../utils/musicUtils.js");
 
 module.exports = {
   subCommand: "music.play",

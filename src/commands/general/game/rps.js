@@ -7,6 +7,8 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   execute(interaction) {
+    const { options } = interaction;
+
     return new RockPaperScissors({
       interaction: interaction,
       opponent: options.getUser("friend"),

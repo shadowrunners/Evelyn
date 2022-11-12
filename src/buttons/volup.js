@@ -1,5 +1,5 @@
 const { ButtonInteraction } = require("discord.js");
-const { setVolume, isSongPlaying } = require("../engines/AMEngine.js");
+const { setVolume, isSongPlaying } = require("../utils/musicUtils.js");
 const client = require("../structures/index.js");
 
 module.exports = {
@@ -9,7 +9,7 @@ module.exports = {
    */
   async execute(interaction) {
     const player = client.manager.players.get(interaction.guild.id);
-    const volume = Number(player.volume * 100) + 10;
+    const volume = Number(player.filters.volume) + 1;
 
     await interaction.deferReply();
 

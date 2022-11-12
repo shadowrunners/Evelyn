@@ -3,7 +3,7 @@ const {
   setVolume,
   isSongPlaying,
   checkVoice,
-} = require("../../../engines/AMEngine.js");
+} = require("../../../utils/musicUtils.js");
 
 module.exports = {
   subCommand: "music.volume",

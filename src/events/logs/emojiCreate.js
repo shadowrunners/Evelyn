@@ -1,9 +1,4 @@
-const {
-  Client,
-  GuildEmoji,
-  EmbedBuilder,
-  AuditLogEvent,
-} = require("discord.js");
+const { Client, GuildEmoji, EmbedBuilder } = require("discord.js");
 const DB = require("../../structures/schemas/guild.js");
 
 module.exports = {
@@ -20,29 +15,20 @@ module.exports = {
     if (!data) return;
     if (data.logs.enabled === false || data.logs.channel === null) return;
 
-    const logs = await emoji.guild.fetchAuditLogs({
-      type: AuditLogEvent.EmojiCreate,
-      limit: 1,
-    });
-    const fetchLogs = logs.entries.first();
-
-    const animatedStatus = fetchLogs.target.animated ? "Yes." : "No.";
-
     const embed = new EmbedBuilder()
+      .setColor("Blurple")
       .setAuthor({ name: emoji.guild.name, iconURL: emoji.guild.iconURL() })
       .setTitle("Emoji Created")
       .addFields(
         {
-          name: "🔹 | Emoji Added",
-          value: `> <:${emoji.name}:${emoji.id}>`,
+          name: "🔹 | Name",
+          value: `> ${emoji.name}`,
+          inline: true,
         },
         {
-          name: "🔹 | Animated?",
-          value: `> ${animatedStatus}`,
-        },
-        {
-          name: "🔹 | Added by",
-          value: `> <@${fetchLogs.executor.id}> (${fetchLogs.executor.id})`,
+          name: "🔹 | ID",
+          value: `> ${emoji.id}`,
+          inline: true,
         }
       )
       .setTimestamp();

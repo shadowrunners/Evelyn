@@ -1,9 +1,4 @@
-const {
-  Client,
-  GuildChannel,
-  EmbedBuilder,
-  AuditLogEvent,
-} = require("discord.js");
+const { Client, GuildChannel, EmbedBuilder } = require("discord.js");
 const DB = require("../../structures/schemas/guild.js");
 
 module.exports = {
@@ -20,39 +15,34 @@ module.exports = {
     if (!data) return;
     if (data.logs.enabled === "false" || data.logs.channel === null) return;
 
-    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+    const embed = new EmbedBuilder()
+      .setColor("Blurple")
+      .setAuthor({
+        name: channel.guild.name,
+        iconURL: channel.guild.iconURL(),
+      })
+      .setTitle("Channel Created")
+      .addFields([
+        {
+          name: "🔹 | Channel Name",
+          value: `> ${channel.name}`,
+          inline: true,
+        },
+        {
+          name: "🔹 | ID",
+          value: `> ${channel.id}`,
+          inline: true,
+        },
+        {
+          name: "🔹 | Created at",
+          value: `> <t:${parseInt(channel.createdTimestamp / 1000)}:R>`,
+          inline: true,
+        },
+      ])
+      .setTimestamp();
 
-    console.log(channel);
-
-    const allLogs = await channel.guild.fetchAuditLogs({
-      type: AuditLogEvent.ChannelCreate,
-      limit: 1,
-    });
-    const fetchLogs = allLogs.entries.first();
-
-    return client.channels.cache.get(data.logs.channel).send({
-      embeds: [
-        embed
-          .setAuthor({
-            name: channel.guild.name,
-            iconURL: channel.guild.iconURL(),
-          })
-          .setTitle("Channel Created")
-          .addFields([
-            {
-              name: "🔹 | Channel Name",
-              value: `> ${channel.name}`,
-            },
-            {
-              name: "🔹 | Channel ID",
-              value: `> ${channel.id}`,
-            },
-            {
-              name: "🔹 | Created by",
-              value: `> <@${fetchLogs.executor.id}> (${fetchLogs.executor.id})`,
-            },
-          ]),
-      ],
-    });
+    return client.channels.cache
+      .get(data.logs.channel)
+      .send({ embeds: [embed] });
   },
 };

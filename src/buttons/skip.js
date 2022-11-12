@@ -18,7 +18,7 @@ module.exports = {
       iconURL: interaction.user.avatarURL({ dynamic: true }),
     });
 
-    player.skip();
+    player.stop();
 
     return interaction.editReply({ embeds: [embed] });
   },

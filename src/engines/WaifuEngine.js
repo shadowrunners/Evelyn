@@ -14,7 +14,7 @@ module.exports = {
     const { body } = await get("https://api.waifu.pics/sfw/bite");
     if (checkTarget(target, interaction)) return;
 
-    return interaction.reply({
+    return interaction.editReply({
       embeds: [
         embed
           .setAuthor({
@@ -29,7 +29,7 @@ module.exports = {
     const { body } = await get("https://api.waifu.pics/sfw/blush");
     if (checkTarget(target, interaction)) return;
 
-    return interaction.reply({
+    return interaction.editReply({
       embeds: [
         embed
           .setAuthor({
@@ -44,7 +44,7 @@ module.exports = {
     const { body } = await get("https://api.waifu.pics/sfw/bonk");
     if (checkTarget(target, interaction)) return;
 
-    return interaction.reply({
+    return interaction.editReply({
       embeds: [
         embed
           .setAuthor({
@@ -59,7 +59,7 @@ module.exports = {
     const { body } = await get("https://api.waifu.pics/sfw/bully");
     if (checkTarget(target, interaction)) return;
 
-    return interaction.reply({
+    return interaction.editReply({
       embeds: [
         embed
           .setAuthor({
@@ -72,7 +72,7 @@ module.exports = {
   },
   cringe: async (interaction) => {
     const { body } = await get("https://api.waifu.pics/sfw/cringe");
-    return interaction.reply({
+    return interaction.editReply({
       embeds: [
         embed
           .setAuthor({
@@ -85,7 +85,7 @@ module.exports = {
   },
   cry: async (interaction) => {
     const { body } = await get("https://api.waifu.pics/sfw/cry");
-    return interaction.reply({
+    return interaction.editReply({
       embeds: [
         embed
           .setAuthor({
@@ -100,7 +100,7 @@ module.exports = {
     const { body } = await get("https://api.waifu.pics/sfw/cuddle");
     if (checkTarget(target, interaction)) return;
 
-    return interaction.reply({
+    return interaction.editReply({
       embeds: [
         embed
           .setAuthor({
@@ -115,7 +115,7 @@ module.exports = {
     const { body } = await get("https://api.waifu.pics/sfw/handhold");
     if (checkTarget(target, interaction)) return;
 
-    return interaction.reply({
+    return interaction.editReply({
       embeds: [
         embed
           .setAuthor({
@@ -130,7 +130,7 @@ module.exports = {
     const { body } = await get("https://api.waifu.pics/sfw/highfive");
     if (checkTarget(target, interaction)) return;
 
-    return interaction.reply({
+    return interaction.editReply({
       embeds: [
         embed
           .setAuthor({
@@ -145,7 +145,7 @@ module.exports = {
     const { body } = await get("https://api.waifu.pics/sfw/hug");
     if (checkTarget(target, interaction)) return;
 
-    return interaction.reply({
+    return interaction.editReply({
       embeds: [
         embed
           .setAuthor({
@@ -160,7 +160,7 @@ module.exports = {
     const { body } = await get("https://api.waifu.pics/sfw/kiss");
     if (checkTarget(target, interaction)) return;
 
-    return interaction.reply({
+    return interaction.editReply({
       embeds: [
         embed
           .setAuthor({
@@ -175,7 +175,7 @@ module.exports = {
     const { body } = await get("https://api.waifu.pics/sfw/pat");
     if (checkTarget(target, interaction)) return;
 
-    return interaction.reply({
+    return interaction.editReply({
       embeds: [
         embed
           .setAuthor({
@@ -190,7 +190,7 @@ module.exports = {
     const { body } = await get("https://api.waifu.pics/sfw/poke");
     if (checkTarget(target, interaction)) return;
 
-    return interaction.reply({
+    return interaction.editReply({
       embeds: [
         embed
           .setAuthor({
@@ -205,7 +205,7 @@ module.exports = {
     const { body } = await get("https://api.waifu.pics/sfw/slap");
     if (checkTarget(target, interaction)) return;
 
-    return interaction.reply({
+    return interaction.editReply({
       embeds: [
         embed
           .setAuthor({
@@ -220,7 +220,7 @@ module.exports = {
     const { body } = await get("https://api.waifu.pics/sfw/wave");
     if (checkTarget(target, interaction)) return;
 
-    return interaction.reply({
+    return interaction.editReply({
       embeds: [
         embed
           .setAuthor({

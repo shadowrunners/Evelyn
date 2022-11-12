@@ -39,7 +39,7 @@ module.exports = {
 
     client.manager.init(client);
     giveawayEnd(client);
-    dash(client);
+    // dash(client);
     DXP.setURL(client.config.database);
 
     connect(client.config.database)
