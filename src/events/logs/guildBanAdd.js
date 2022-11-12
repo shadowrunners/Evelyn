@@ -1,9 +1,4 @@
-const {
-  Client,
-  GuildMember,
-  EmbedBuilder,
-  AuditLogEvent,
-} = require("discord.js");
+const { Client, GuildMember, EmbedBuilder } = require("discord.js");
 const DB = require("../../structures/schemas/guild.js");
 
 module.exports = {
@@ -39,7 +34,7 @@ module.exports = {
       .setTimestamp();
 
     return client.channels.cache
-      .get(data.logs.channel)
+      .get(data.logs?.channel)
       .send({ embeds: [embed] });
   },
 };

@@ -29,7 +29,7 @@ module.exports = {
       .setTimestamp();
 
     return client.channels.cache
-      .get(data.logs.channel)
+      .get(data.logs?.channel)
       .send({ embeds: [embed] });
   },
 };
