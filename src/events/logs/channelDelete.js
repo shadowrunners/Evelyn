@@ -13,7 +13,7 @@ module.exports = {
     });
 
     if (!data) return;
-    if (data.logs.enabled === false || data.logs.channel === null) return;
+    if (data.logs.enabled === false || data.logs.channel === "") return;
 
     const embed = new EmbedBuilder()
       .setColor("Blurple")
@@ -29,7 +29,7 @@ module.exports = {
           inline: true,
         },
         {
-          name: "🔹 | Channel ID",
+          name: "🔹 | ID",
           value: `> ${channel.id}`,
           inline: true,
         },

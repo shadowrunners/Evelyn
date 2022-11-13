@@ -22,7 +22,7 @@ module.exports = {
     });
 
     if (!data) return;
-    if (data.logs.enabled === false || data.logs.channel === null) return;
+    if (data.logs.enabled === false || data.logs.channel === "") return;
 
     const oldRoles = oldMember.roles.cache.map((r) => r.id);
     const newRoles = newMember.roles.cache.map((r) => r.id);
