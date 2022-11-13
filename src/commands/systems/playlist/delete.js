@@ -1,5 +1,6 @@
-const { ChatInputCommandInteraction } = require("discord.js");
-const { deletePlaylist } = require("../../../engines/PLEngine.js");
+const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
+const { validate } = require("../../../utils/playlistUtils.js");
+const PDB = require("../../../structures/schemas/playlist.js");
 
 module.exports = {
   subCommand: "playlist.delete",
@@ -7,9 +8,24 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
-    const { options } = interaction;
+    const { options, user } = interaction;
     const pName = options.getString("name");
 
-    return deletePlaylist(interaction, pName);
+    const pData = await PDB.findOne({
+      userID: user.id,
+      playlistName: pName,
+    });
+
+    if (validate(interaction, pData)) return;
+
+    await pData.delete();
+
+    return interaction.editReply({
+      embeds: [
+        new EmbedBuilder()
+          .setDescription(`🔹 | Your playlist **${pName}** has been deleted.`)
+          .setTimestamp(),
+      ],
+    });
   },
 };

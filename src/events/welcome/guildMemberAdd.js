@@ -15,6 +15,9 @@ module.exports = {
     if (!data) return;
     if (data.welcome.enabled === false || data.welcome.channel === "") return;
 
+    const welcomeChannel = client.channels.cache.get(data.welcome?.channel);
+    if (!welcomeChannel) return;
+
     const welcomeData = data.welcome.json.embed;
 
     const welcomeMessage = data.welcome.message
@@ -73,8 +76,9 @@ module.exports = {
 
     if (welcomeData.image?.url) welcomeEmbed.setImage(image);
 
-    client.channels.cache
-      .get(data.welcome.channel)
-      .send({ content: welcomeMessage, embeds: [welcomeEmbed] });
+    return welcomeChannel.send({
+      content: welcomeMessage,
+      embeds: [welcomeEmbed],
+    });
   },
 };

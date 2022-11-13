@@ -1,6 +1,6 @@
 const { Client, Message } = require("discord.js");
 const DXP = require("discord-xp");
-const guildDB = require("../../structures/schemas/guild.js");
+const DB = require("../../structures/schemas/guild.js");
 
 module.exports = {
   name: "messageCreate",
@@ -11,10 +11,13 @@ module.exports = {
   async execute(message, client) {
     try {
       const { author, guild } = message;
-      const data = await guildDB.findOne({ id: guild.id });
+      const data = await DB.findOne({ id: guild.id });
 
       if (!guild || author.bot) return;
       if (data.levels.enabled === false || data.levels.channel === "") return;
+
+      const levellingChannel = client.channels.cache.get(data.levels?.channel);
+      if (!levellingChannel) return;
 
       const rndXP = Number(Math.floor(Math.random() * 25));
       const levelledUp = await DXP.appendXp(
@@ -32,10 +35,8 @@ module.exports = {
           .replace(/{userMention}/g, `<@${message.author.id}>`)
           .replace(/{userLevel}/g, `${user.level}`);
 
-        if (data.levels.channel) {
-          client.channels.cache
-            .get(data.levels.channel)
-            .send({ content: `${lvlMessage}` });
+        if (levellingChannel) {
+          levellingChannel.send({ content: `${lvlMessage}` });
         }
       }
     } catch (_err) {}

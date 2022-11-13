@@ -2,32 +2,25 @@ const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
 const serverBlacklist = require("../../../structures/schemas/serverBlacklist.js");
 
 module.exports = {
-  subCommand: "blacklist.server",
+  subCommand: "blacklist-remove.server",
   /**
    * @param {ChatInputCommandInteraction} interaction,
    */
   async execute(interaction) {
     const { options } = interaction;
     const guildId = options.getString("serverid");
-    const blacklist_reason = options.getString("reason");
     const data = await serverBlacklist.findOne({ serverID: guildId });
 
-    if (!data) {
-      const newBlacklist = new serverBlacklist({
-        serverID: guildId,
-        reason: blacklist_reason,
-        time: Date.now(),
-      });
-
-      await newBlacklist.save();
-
+    if (data) {
+      await data.deleteOne({ serverID: guildId });
       return interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setColor("Blurple")
             .setTitle("Evelyn | Blacklist")
-            .setDescription("This guild has been successfully blacklisted.")
-            .addFields({ name: "🔹 | Reason", value: blacklist_reason })
+            .setDescription(
+              "🔹 | This guild has been removed from the blacklist."
+            )
             .setTimestamp(),
         ],
       });
@@ -37,7 +30,7 @@ module.exports = {
           new EmbedBuilder()
             .setColor("Blurple")
             .setTitle("Evelyn | Blacklist")
-            .setDescription("This guild is already blacklisted.")
+            .setDescription("🔹 | This guild isn't blacklisted.")
             .setTimestamp(),
         ],
       });

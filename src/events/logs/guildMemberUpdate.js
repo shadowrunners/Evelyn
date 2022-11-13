@@ -24,6 +24,9 @@ module.exports = {
     if (!data) return;
     if (data.logs.enabled === false || data.logs.channel === "") return;
 
+    const logsChannel = client.channels.cache.get(data.logs?.channel);
+    if (!logsChannel) return;
+
     const oldRoles = oldMember.roles.cache.map((r) => r.id);
     const newRoles = newMember.roles.cache.map((r) => r.id);
 
@@ -56,9 +59,7 @@ module.exports = {
           }
         );
 
-      return client.channels.cache
-        .get(data.logs?.channel)
-        .send({ embeds: [embed] });
+      return logsChannel.send({ embeds: [embed] });
     }
 
     if (oldRoles.length < newRoles.length) {
@@ -91,9 +92,7 @@ module.exports = {
         )
         .setTimestamp();
 
-      return client.channels.cache
-        .get(data.logs?.channel)
-        .send({ embeds: [embed] });
+      return logsChannel.send({ embeds: [embed] });
     }
 
     if (
@@ -126,9 +125,7 @@ module.exports = {
           }
         )
         .setTimestamp();
-      return client.channels.cache
-        .get(data.logs?.channel)
-        .send({ embeds: [embed] });
+      return logsChannel.send({ embeds: [embed] });
     }
 
     if (
@@ -160,9 +157,7 @@ module.exports = {
           }
         )
         .setTimestamp();
-      return client.channels.cache
-        .get(data.logs?.channel)
-        .send({ embeds: [embed] });
+      return logsChannel.send({ embeds: [embed] });
     }
 
     if (oldMember.nickname !== newMember.nickname) {
@@ -196,9 +191,7 @@ module.exports = {
           }
         )
         .setTimestamp();
-      return client.channels.cache
-        .get(data.logs?.channel)
-        .send({ embeds: [embed] });
+      return logsChannel.send({ embeds: [embed] });
     }
   },
 };

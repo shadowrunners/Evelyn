@@ -1,11 +1,4 @@
-const {
-  SlashCommandBuilder,
-  ChatInputCommandInteraction,
-} = require("discord.js");
-const {
-  removeServerBlacklist,
-  removeUserBlacklist,
-} = require("../../engines/BlacklistEngine.js");
+const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
   botPermissions: ["SendMessages"],
@@ -39,23 +32,4 @@ module.exports = {
             .setRequired(true)
         )
     ),
-  /**
-   * @param {ChatInputCommandInteraction} interaction
-   */
-  async execute(interaction) {
-    const { options } = interaction;
-
-    let guildID;
-    let userID;
-
-    switch (options.getSubcommand()) {
-      case "server":
-        guildID = options.getString("serverid");
-        return removeServerBlacklist(interaction, guildID);
-
-      case "user":
-        userID = options.getString("userid");
-        return removeUserBlacklist(interaction, userID);
-    }
-  },
 };

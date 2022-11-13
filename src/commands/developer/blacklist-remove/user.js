@@ -2,32 +2,25 @@ const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
 const userBlacklist = require("../../../structures/schemas/userBlacklist.js");
 
 module.exports = {
-  subCommand: "blacklist.user",
+  subCommand: "blacklist-remove.user",
   /**
    * @param {ChatInputCommandInteraction} interaction,
    */
   async execute(interaction) {
     const { options } = interaction;
     const userId = options.getString("userid");
-    const blacklist_reason = options.getString("reason");
     const data = await userBlacklist.findOne({ userID: userId });
 
-    if (!data) {
-      const newBlacklist = new userBlacklist({
-        userID: userId,
-        reason: blacklist_reason,
-        time: Date.now(),
-      });
-
-      await newBlacklist.save();
-
+    if (data) {
+      await data.deleteOne({ userID: userId });
       return interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setColor("Blurple")
             .setTitle("Evelyn | Blacklist")
-            .setDescription("This user has been successfully blacklisted.")
-            .addFields({ name: "🔹 | Reason", value: blacklist_reason })
+            .setDescription(
+              "🔹 | This user has been removed from the blacklist."
+            )
             .setTimestamp(),
         ],
       });
@@ -37,7 +30,7 @@ module.exports = {
           new EmbedBuilder()
             .setColor("Blurple")
             .setTitle("Evelyn | Blacklist")
-            .setDescription("🔹 | This user is already blacklisted.")
+            .setDescription("This user isn't blacklisted.")
             .setTimestamp(),
         ],
       });

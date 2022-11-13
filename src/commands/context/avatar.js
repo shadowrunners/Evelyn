@@ -17,11 +17,15 @@ module.exports = {
     const target = await interaction.guild.members.fetch(interaction.targetId);
     await target.user.fetch();
 
-    const avatarEmbed = new EmbedBuilder()
-      .setColor("Grey")
-      .setTitle(`${target.user.tag}'s Avatar`)
-      .setImage(target.user.avatarURL({ dynamic: true, size: 2048 }))
-      .setURL(target.avatarURL());
-    return interaction.reply({ embeds: [avatarEmbed], ephemeral: true });
+    return interaction.reply({
+      embeds: [
+        new EmbedBuilder()
+          .setColor("Blurple")
+          .setTitle(`${target.user.tag}'s Avatar`)
+          .setImage(target.user.avatarURL({ dynamic: true, size: 2048 }))
+          .setURL(target.avatarURL()),
+      ],
+      ephemeral: true,
+    });
   },
 };

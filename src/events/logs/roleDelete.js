@@ -13,6 +13,9 @@ module.exports = {
     if (!data) return;
     if (data.logs.enabled === false || data.logs.channel === "") return;
 
+    const logsChannel = client.channels.cache.get(data.logs?.channel);
+    if (!logsChannel) return;
+
     const embed = new EmbedBuilder()
       .setColor("Blurple")
       .setAuthor({ name: role.guild.name, iconURL: role.guild.iconURL() })
@@ -28,9 +31,6 @@ module.exports = {
         }
       )
       .setTimestamp();
-
-    return client.channels.cache
-      .get(data.logs?.channel)
-      .send({ embeds: [embed] });
+    return logsChannel.send({ embeds: [embed] });
   },
 };

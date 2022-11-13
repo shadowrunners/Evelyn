@@ -16,6 +16,9 @@ module.exports = {
     if (data.logs.enabled === false || data.logs.channel === "") return;
     if (member.user.bot) return;
 
+    const logsChannel = client.channels.cache.get(data.logs?.channel);
+    if (!logsChannel) return;
+
     const embed = new EmbedBuilder()
       .setColor("Blurple")
       .setAuthor({
@@ -42,9 +45,6 @@ module.exports = {
       ])
       .setFooter({ text: `${member.guild.name}` })
       .setTimestamp();
-
-    return client.channels.cache
-      .get(data.logs?.channel)
-      .send({ embeds: [embed] });
+    return logsChannel.send({ embeds: [embed] });
   },
 };

@@ -1,12 +1,9 @@
-const {
-  Client,
-  CommandInteraction,
-  EmbedBuilder,
-  PermissionsBitField,
-} = require("discord.js");
+const { Client, CommandInteraction, EmbedBuilder } = require("discord.js");
 const { check4Perms } = require("../../utils/utils.js");
-const serverBlacklist = require("../../structures/schemas/serverBlacklist.js");
-const userBlacklist = require("../../structures/schemas/userBlacklist.js");
+const {
+  isUserBlacklisted,
+  isServerBlacklisted,
+} = require("../../utils/blacklistUtils.js");
 
 module.exports = {
   name: "interactionCreate",
@@ -15,68 +12,15 @@ module.exports = {
    * @param {Client} client
    */
   async execute(interaction, client) {
+    const command = client.commands.get(interaction.commandName);
     if (
       interaction.isChatInputCommand() ||
       interaction.isUserContextMenuCommand()
     ) {
       const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
-      const command = client.commands.get(interaction.commandName);
 
-      const isUserBlacklisted = await userBlacklist.findOne({
-        userID: interaction.user.id,
-      });
-
-      const isGuildBlacklisted = await serverBlacklist.findOne({
-        serverID: interaction.guild.id,
-      });
-
-      if (isUserBlacklisted) {
-        return interaction.reply({
-          embeds: [
-            embed
-              .setTitle("Blacklisted")
-              .setDescription(
-                `🔹 | You have been blacklisted from using Evelyn, the reason behind this decision and the time this has occured is attached below. `
-              )
-              .addFields(
-                {
-                  name: "Reason",
-                  value: `${isUserBlacklisted.reason}`,
-                  inline: true,
-                },
-                {
-                  name: "Time",
-                  value: `<t:${parseInt(isUserBlacklisted.time / 1000)}:R>`,
-                  inline: true,
-                }
-              ),
-          ],
-        });
-      }
-
-      if (isGuildBlacklisted) {
-        return interaction.reply({
-          embeds: [
-            embed
-              .setTitle("Server Blacklisted")
-              .setDescription(
-                `🔹 | This server has been blacklisted from using Evelyn, the reason behind this decision and the time this has occured is attached below. `
-              )
-              .addFields(
-                {
-                  name: "Reason",
-                  value: `${isGuildBlacklisted.reason}`,
-                  inline: true,
-                },
-                {
-                  name: "Time",
-                  value: `<t:${parseInt(isGuildBlacklisted.time / 1000)}:R>`,
-                  inline: true,
-                }
-              ),
-          ],
-        });
-      }
+      if (await isUserBlacklisted(interaction)) return;
+      if (await isServerBlacklisted(interaction)) return;
 
       if (!command) {
         return interaction.reply({

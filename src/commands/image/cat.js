@@ -1,9 +1,10 @@
 const {
   Client,
+  EmbedBuilder,
   SlashCommandBuilder,
   ChatInputCommandInteraction,
 } = require("discord.js");
-const { catto } = require("../../engines/CatEngine.js");
+const { get } = require("superagent");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -14,6 +15,19 @@ module.exports = {
    * @param {Client} client
    */
   async execute(interaction, client) {
-    catto(interaction, client);
+    get("https://api.thecatapi.com/v1/images/search", {
+      headers: {
+        "x-api-key": client.config.cattoKey,
+      },
+    }).then(function (res) {
+      return interaction.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor("Blurple")
+            .setImage(res.body[0].url)
+            .setTimestamp(),
+        ],
+      });
+    });
   },
 };

@@ -15,6 +15,9 @@ module.exports = {
     if (!data) return;
     if (data.goodbye.enabled === false || data.goodbye.channel === "") return;
 
+    const goodbyeChannel = client.channels.cache.get(data.goodbye?.channel);
+    if (!goodbyeChannel) return;
+
     const goodbyeData = data.goodbye.json.embed;
 
     const goodbyeMessage = data.goodbye.message
@@ -65,8 +68,9 @@ module.exports = {
 
     if (goodbyeData.image?.url) welcomeEmbed.setImage(image);
 
-    client.channels.cache
-      .get(data.goodbye.channel)
-      .send({ content: goodbyeMessage, embeds: [goodbyeEmbed] });
+    return goodbyeChannel.send({
+      content: goodbyeMessage,
+      embeds: [goodbyeEmbed],
+    });
   },
 };
