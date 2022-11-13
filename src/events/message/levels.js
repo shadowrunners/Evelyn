@@ -14,7 +14,7 @@ module.exports = {
       const data = await guildDB.findOne({ id: guild.id });
 
       if (!guild || author.bot) return;
-      if (data.levels.enabled === false) return;
+      if (data.levels.enabled === false || data.levels.channel === "") return;
 
       const rndXP = Number(Math.floor(Math.random() * 25));
       const levelledUp = await DXP.appendXp(

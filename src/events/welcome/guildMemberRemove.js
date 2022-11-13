@@ -13,7 +13,7 @@ module.exports = {
     });
 
     if (!data) return;
-    if (data.goodbye.enabled === false || data.goodbye.channel === null) return;
+    if (data.goodbye.enabled === false || data.goodbye.channel === "") return;
 
     const goodbyeData = data.goodbye.json.embed;
 
