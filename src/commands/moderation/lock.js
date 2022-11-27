@@ -44,6 +44,7 @@ module.exports = {
     channel.permissionOverwrites.edit(guild.id, {
       SendMessages: false,
     });
+
     interaction.reply({
       embeds: [
         Embed.setDescription(`🔹 | This channel is now locked for: ${reason}`)
@@ -53,25 +54,24 @@ module.exports = {
     });
 
     if (time) {
-      const expiredate = Date.now() + ms(time);
-      DB.create({ GuildID: guild.id, ChannelID: channel.id, Time: expiredate });
+      DB.create({
+        guildId: guild.id,
+        channelId: channel.id,
+        timeLocked: Date.now() + ms(time),
+      });
 
       setTimeout(async () => {
         channel.permissionOverwrites.edit(guild.id, {
           SendMessages: null,
         });
-        interaction
-          .editReply({
-            embeds: [
-              Embed.setDescription(
-                "🔹 | This channel has been unlocked."
-              ).setColor("Blurple"),
-            ],
-          })
-          .catch(function () {
-            /* Should always be empty. */
-          });
-        await DB.deleteOne({ ChannelID: channel.id });
+        interaction.editReply({
+          embeds: [
+            Embed.setDescription(
+              "🔹 | This channel has been unlocked."
+            ).setColor("Blurple"),
+          ],
+        });
+        await DB.deleteOne({ channelId: channel.id }).catch(_err);
       }, ms(time));
     }
   },

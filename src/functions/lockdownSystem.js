@@ -1,34 +1,34 @@
 const { Client } = require("discord.js");
-const DB = require("../structures/schemas/lockdownDB.js");
+const DB = require("../structures/schemas/lockdown.js");
 
-/**
- * @param {Client} client
- */
+module.exports = {
+  /**
+   * @param {Client} client
+   */
+  check4Lockdowns: async (client) => {
+    DB.find().then(async (data) => {
+      data.forEach(async (data) => {
+        const channel = client.guilds.cache
+          .get(data.guildId)
+          .channels.cache.get(data.channelId);
+        if (!channel) return;
 
-module.exports = async (client) => {
-  DB.find().then(async (documentsArray) => {
-    documentsArray.forEach(async (d) => {
-      const channel = client.guilds.cache
-        .get(d.GuildID)
-        .channels.cache.get(d.ChannelID);
-      if (!channel) return;
+        if (data.timeLocked < Date.now()) {
+          await DB.deleteOne({ channelId: channel.id });
 
-      const timenow = Date.now();
-      if (d.time < timenow) {
-        channel.permissionOverwrites.edit(d.GuildID, {
-          SEND_MESSAGES: null,
-        });
-        return await DB.deleteOne({ ChannelID: channel.id });
-      }
+          return channel.permissionOverwrites.edit(data.guildId, {
+            SendMessages: null,
+          });
+        }
 
-      const expiredate = d.time - Date.now();
+        setTimeout(async () => {
+          await DB.deleteOne({ ChannelID: channel.id });
 
-      setTimeout(async () => {
-        channel.permissionOverwrites.edit(d.GuildID, {
-          SEND_MESSAGES: null,
-        });
-        await DB.deleteOne({ ChannelID: channel.id });
-      }, expiredate);
+          return channel.permissionOverwrites.edit(data.guildId, {
+            SendMessages: null,
+          });
+        }, data.timeLocked - Date.now());
+      });
     });
-  });
+  },
 };
