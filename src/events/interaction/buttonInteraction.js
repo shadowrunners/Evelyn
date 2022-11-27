@@ -12,7 +12,7 @@ module.exports = {
     const button = client.buttons.get(interaction.customId);
 
     if (!button) return;
-    if (button == undefined) return;
+    if (button === undefined) return;
 
     if (
       button.permission &&

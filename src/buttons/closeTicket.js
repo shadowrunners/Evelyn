@@ -44,7 +44,7 @@ module.exports = {
         ],
       });
 
-    if (!ticketsData.closer == member.id)
+    if (!ticketsData.closer === member.id)
       return interaction.reply({
         embeds: [
           Embed.setColor("Blurple")

@@ -24,8 +24,9 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    * @param {Client} client
    */
-  execute(interaction, client) {
+  async execute(interaction, client) {
     const { options } = interaction;
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
     const target = options.getMember("target");
     const reason = options.getString("reason") || "No reason specified.";
 
@@ -51,23 +52,26 @@ module.exports = {
     )
       return interaction.reply({ embeds: [evenHigherEmbed], ephemeral: true });
 
-    const bannedEmbed = new EmbedBuilder()
-      .setColor("Blurple")
-      .setTitle(`${client.user.username} | Notice`)
-      .setDescription(
-        `You have been banned from ${interaction.guild.name} for ${reason}`
-      )
-      .setTimestamp();
+    target
+      .send({
+        embeds: [
+          embed
+            .setTitle(`${client.user.username} | Notice`)
+            .setDescription(
+              `You have been banned from ${interaction.guild.name} for ${reason}`
+            ),
+        ],
+      })
+      .catch();
 
-    const successEmbed = new EmbedBuilder()
-      .setColor("Blurple")
-      .setDescription(`${target.user.tag} has been banned for ${reason}.`)
-      .setTimestamp();
-
-    target.send({ embeds: [bannedEmbed] }).catch(_err);
-
-    return interaction.reply({ embeds: [successEmbed] }).then(() => {
-      target.ban({ reason });
-    });
+    return interaction
+      .reply({
+        embeds: [
+          embed.setDescription(
+            `${target.user.tag} has been banned for ${reason}.`
+          ),
+        ],
+      })
+      .then(() => target.ban({ reason }));
   },
 };

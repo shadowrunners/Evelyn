@@ -28,46 +28,53 @@ module.exports = {
     const { options } = interaction;
     const target = options.getMember("target");
     const reason = options.getString("reason") || "No reason specified.";
-
-    const higherEmbed = new EmbedBuilder()
-      .setColor("Blurple")
-      .setDescription(
-        "🔹 | You can't kick someone with a role higher than yours."
-      )
-      .setTimestamp();
-
-    const evenHigherEmbed = new EmbedBuilder()
-      .setColor("Blurple")
-      .setDescription("🔹 | I can't kick someone with a role higher than mine.")
-      .setTimestamp();
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
     if (
       target.roles.highest.position >= interaction.member.roles.highest.position
     )
-      return interaction.reply({ embeds: [higherEmbed], ephemeral: true });
+      return interaction.reply({
+        embeds: [
+          embed.setDescription(
+            "🔹 | You can't kick someone with a role higher than yours."
+          ),
+        ],
+        ephemeral: true,
+      });
+
     if (
       target.roles.highest.position >=
       interaction.guild.members.me.roles.highest.position
     )
-      return interaction.reply({ embeds: [evenHigherEmbed], ephemeral: true });
+      return interaction.reply({
+        embeds: [
+          embed.setDescription(
+            "🔹 | I can't kick someone with a role higher than mine."
+          ),
+        ],
+        ephemeral: true,
+      });
 
-    const kickedNotif = new EmbedBuilder()
-      .setColor("Blurple")
-      .setTitle(`${client.user.username} | Notice`)
-      .setDescription(
-        `You have been kicked from ${interaction.guild.name} for ${reason}`
-      )
-      .setTimestamp();
+    target
+      .send({
+        embeds: [
+          embed
+            .setTitle(`${client.user.username} | Notice`)
+            .setDescription(
+              `You have been kicked from ${interaction.guild.name} for ${reason}`
+            ),
+        ],
+      })
+      .catch();
 
-    const successEmbed = new EmbedBuilder()
-      .setColor("Blurple")
-      .setDescription(`${target.user.tag} has been kicked for ${reason}.`)
-      .setTimestamp();
-
-    target.send({ embeds: [kickedNotif] }).catch(_err);
-
-    return interaction.reply({ embeds: [successEmbed] }).then(() => {
-      target.kick({ reason });
-    });
+    return interaction
+      .reply({
+        embeds: [
+          embed.setDescription(
+            `${target.user.tag} has been kicked for ${reason}.`
+          ),
+        ],
+      })
+      .then(() => target.kick({ reason }));
   },
 };

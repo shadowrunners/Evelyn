@@ -19,7 +19,7 @@ module.exports = {
       headers: {
         "x-api-key": client.config.cattoKey,
       },
-    }).then(function (res) {
+    }).then((res) => {
       return interaction.reply({
         embeds: [
           new EmbedBuilder()
