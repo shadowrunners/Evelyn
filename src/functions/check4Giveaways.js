@@ -1,7 +1,7 @@
 const DB = require("../structures/schemas/giveaway.js");
 const { endGiveaway } = require("./giveawayUtils.js");
 
-async function check4Giveaways(client) {
+function check4Giveaways(client) {
   DB.find().then((data) => {
     data.forEach(async (data) => {
       if (!data) return;

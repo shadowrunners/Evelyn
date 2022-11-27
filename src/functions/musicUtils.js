@@ -151,7 +151,7 @@ module.exports = {
         ],
       });
   },
-  setVolume: async (interaction, player, volume) => {
+  setVolume: (interaction, player, volume) => {
     if (volume < 0 || volume > 5)
       return interaction.editReply({
         embeds: [

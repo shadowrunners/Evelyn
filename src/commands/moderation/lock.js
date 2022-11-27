@@ -71,7 +71,7 @@ module.exports = {
             ).setColor("Blurple"),
           ],
         });
-        await DB.deleteOne({ channelId: channel.id }).catch(_err);
+        await DB.deleteOne({ channelId: channel.id }).catch();
       }, ms(time));
     }
   },

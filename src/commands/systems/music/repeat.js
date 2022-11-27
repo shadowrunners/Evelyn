@@ -3,6 +3,7 @@ const {
   checkForQueue,
   isSongPlaying,
   checkVoice,
+  repeatMode,
 } = require("../../../functions/musicUtils.js");
 
 module.exports = {
@@ -23,10 +24,10 @@ module.exports = {
     switch (options.getString("type")) {
       case "queue":
         if (!checkForQueue(interaction, player)) return;
-        return await repeatMode("queue", player, interaction);
+        return repeatMode("queue", player, interaction);
       case "song":
         if (isSongPlaying(interaction, player)) return;
-        return await repeatMode("song", player, interaction);
+        return repeatMode("song", player, interaction);
     }
   },
 };

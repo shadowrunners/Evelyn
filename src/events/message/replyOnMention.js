@@ -6,7 +6,7 @@ module.exports = {
    * @param {Message} message
    * @param {Client} client
    */
-  async execute(message, client) {
+  execute(message, client) {
     const { author } = message;
 
     const embed = new EmbedBuilder()

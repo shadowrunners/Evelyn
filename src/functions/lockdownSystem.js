@@ -5,8 +5,8 @@ module.exports = {
   /**
    * @param {Client} client
    */
-  check4Lockdowns: async (client) => {
-    DB.find().then(async (data) => {
+  check4Lockdowns: (client) => {
+    DB.find().then((data) => {
       data.forEach(async (data) => {
         const channel = client.guilds.cache
           .get(data.guildId)

@@ -49,6 +49,6 @@ module.exports = {
       embeds.push(embed);
     }
 
-    return await Util.embedPages(client, interaction, embeds);
+    await Util.embedPages(client, interaction, embeds);
   },
 };

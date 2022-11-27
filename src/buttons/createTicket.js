@@ -103,7 +103,7 @@ module.exports = {
           })
           .then((m) => {
             setTimeout(() => {
-              m.delete().catch(_err);
+              m.delete().catch();
             }, 5 * 1000);
           });
         await interaction.reply({

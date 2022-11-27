@@ -47,7 +47,7 @@ module.exports = {
         ephemeral: true,
       });
   },
-  validateTrack: async (interaction, song, tracks) => {
+  validateTrack: (interaction, song, tracks) => {
     if (tracks === null || !tracks)
       return interaction.editReply({
         embeds: [
