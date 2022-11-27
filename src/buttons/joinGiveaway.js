@@ -7,60 +7,45 @@ module.exports = {
    * @param {ButtonInteraction} interaction
    */
   async execute(interaction) {
-    const embed = new EmbedBuilder();
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
     const data = await DB.findOne({
-      id: interaction.guild.id,
-      channel: interaction.channel.id,
-      messageID: interaction.message.id,
+      guildId: interaction.guild.id,
+      channelId: interaction.channel.id,
+      messageId: interaction.message.id,
     });
 
     if (!data) {
-      embed
-        .setColor("Blurple")
-        .setDescription("🔹 | There is no data in the database.")
-        .setTimestamp();
+      embed.setDescription("🔹 | There is no data in the database.");
       return interaction.reply({ embeds: [embed], ephemeral: true });
     }
 
     if (data.enteredUsers.includes(interaction.user.id)) {
-      embed
-        .setColor("Blurple")
-        .setDescription("🔹 | You have already joined the giveaway.")
-        .setTimestamp();
+      embed.setDescription("🔹 | You have already joined the giveaway.");
       return interaction.reply({ embeds: [embed], ephemeral: true });
     }
 
     if (data.isPaused === true) {
-      embed
-        .setColor("Blurple")
-        .setDescription("🔹 | This giveaway is currently paused.")
-        .setTimestamp();
+      embed.setDescription("🔹 | This giveaway is currently paused.");
       return interaction.reply({ embeds: [embed], ephemeral: true });
     }
 
     if (data.hasEnded === true) {
-      embed
-        .setColor("Blurple")
-        .setDescription("🔹 | Unfortunately, this giveaway has ended.")
-        .setTimestamp();
+      embed.setDescription("🔹 | Unfortunately, this giveaway has ended.");
       return interaction.reply({ embeds: [embed], ephemeral: true });
     }
 
     await DB.findOneAndUpdate(
       {
-        id: interaction.guild.id,
-        channel: interaction.channel.id,
-        messageID: interaction.message.id,
+        guildId: interaction.guild.id,
+        channelId: interaction.channel.id,
+        messageId: interaction.message.id,
       },
       {
         $push: { enteredUsers: interaction.user.id },
       }
     ).then(() => {
-      embed
-        .setColor("Blurple")
-        .setDescription("🔹 | Your entry has been confirmed. Good luck!")
-        .setTimestamp();
+      embed.setDescription("🔹 | Your entry has been confirmed. Good luck!");
       return interaction.reply({ embeds: [embed], ephemeral: true });
     });
   },

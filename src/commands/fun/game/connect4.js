@@ -12,6 +12,17 @@ module.exports = {
     return new Connect4({
       interaction: interaction,
       opponent: options.getUser("friend"),
+      embed: {
+        title: "Connect4",
+        statusTitle: "Status",
+      },
+      emojis: {
+        board: "⚪",
+        player1: "🔴",
+        player2: "🟡",
+      },
+      timeoutTime: 60000,
+      buttonStyle: "PRIMARY",
       waitMessage: "🔹 | Waiting for your opponent.",
       turnMessage: "🔹 | It's now **{player}**'s turn.",
       winMessage: "🍾 **{winner} won the game!** 🍾",

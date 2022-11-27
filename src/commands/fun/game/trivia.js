@@ -8,7 +8,19 @@ module.exports = {
    */
   execute(interaction) {
     return new Trivia({
-      interaction: interaction,
+      message: interaction,
+      isSlashGame: true,
+      embed: {
+        title: "Trivia",
+        color: "#5865F2",
+        description: "You have 60 seconds to guess the answer.",
+      },
+      timeoutTime: 60000,
+      buttonStyle: "PRIMARY",
+      trueButtonStyle: "SUCCESS",
+      falseButtonStyle: "DANGER",
+      mode: "multiple",
+      difficulty: "medium",
       embed: {
         title: "Trivia",
         description: "You have {time} seconds to respond!",

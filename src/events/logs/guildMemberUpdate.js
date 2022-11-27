@@ -1,11 +1,6 @@
-const {
-  Client,
-  GuildMember,
-  EmbedBuilder,
-  AuditLogEvent,
-} = require("discord.js");
+const { Client, GuildMember, EmbedBuilder } = require("discord.js");
 const DB = require("../../structures/schemas/guild.js");
-const { unique } = require("../../utils/utils.js");
+const { unique } = require("../../functions/utils.js");
 
 module.exports = {
   name: "guildMemberUpdate",

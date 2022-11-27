@@ -1,5 +1,5 @@
 const { ButtonInteraction } = require("discord.js");
-const { setVolume, isSongPlaying } = require("../utils/musicUtils.js");
+const { setVolume, isSongPlaying } = require("../functions/musicUtils.js");
 const client = require("../structures/index.js");
 
 module.exports = {

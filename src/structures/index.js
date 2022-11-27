@@ -38,7 +38,6 @@ const client = new Client({
 const { loadEvents } = require("./handlers/events.js");
 const { loadButtons } = require("./handlers/buttons.js");
 const { loadPoru } = require("./handlers/poru.js");
-const { loadModals } = require("./handlers/modals.js");
 
 client.config = require("./config.json");
 client.commands = new Collection();
@@ -68,6 +67,8 @@ module.exports = client;
 loadEvents(client);
 loadButtons(client);
 loadPoru(client);
-loadModals(client);
+
+process.on("unhandledRejection", (err) => console.log(err));
+process.on("unhandledException", (err) => console.log(err));
 
 client.login(client.config.token);

@@ -13,13 +13,15 @@ module.exports = {
 
     await interaction.deferReply();
 
-    embed.setDescription(`🔹 | Skipped.`).setFooter({
-      text: `Action executed by ${interaction.user.username}.`,
-      iconURL: interaction.user.avatarURL({ dynamic: true }),
-    });
-
     player.stop();
 
-    return interaction.editReply({ embeds: [embed] });
+    return interaction.editReply({
+      embeds: [
+        embed.setDescription(`🔹 | Skipped.`).setFooter({
+          text: `Action executed by ${interaction.user.username}.`,
+          iconURL: interaction.user.avatarURL({ dynamic: true }),
+        }),
+      ],
+    });
   },
 };

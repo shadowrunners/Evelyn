@@ -3,7 +3,7 @@ const {
   Client,
   EmbedBuilder,
 } = require("discord.js");
-const { checkVoice } = require("../../../utils/musicUtils.js");
+const { checkVoice } = require("../../../functions/musicUtils.js");
 
 module.exports = {
   subCommand: "music.stop",
@@ -20,13 +20,13 @@ module.exports = {
     if (!player) return;
     if (await checkVoice(interaction)) return;
 
-    await player.stop();
+    await player.destroy();
 
     return interaction.editReply({
       embeds: [
         new EmbedBuilder()
           .setColor("Blurple")
-          .setDescription("🔹 | Stopped.")
+          .setDescription("🔹 | Disconnected.")
           .setTimestamp(),
       ],
     });

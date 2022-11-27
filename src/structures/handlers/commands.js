@@ -1,12 +1,12 @@
 async function loadCommands(client) {
   const { magenta, green, white } = require("chalk");
-  const { fileLoad } = require("../../utils/fileLoader.js");
+  const { fileLoad } = require("../../functions/fileLoader.js");
 
   await client.commands.clear();
   await client.subCommands.clear();
 
-  const commandsArray = [];
-  const developerArray = [];
+  let commandsArray = [];
+  let developerArray = [];
 
   const files = await fileLoad("commands");
   files.forEach((file) => {

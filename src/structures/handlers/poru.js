@@ -1,6 +1,6 @@
 async function loadPoru(client) {
   const { magenta, white, green } = require("chalk");
-  const { fileLoad } = require("../../utils/fileLoader.js");
+  const { fileLoad } = require("../../functions/fileLoader.js");
 
   const files = await fileLoad("events/poru");
   files.forEach((file) => {

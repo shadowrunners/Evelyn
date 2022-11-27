@@ -1,9 +1,9 @@
 const { model, Schema } = require("mongoose");
 
 module.exports = model(
-  "ServerBlacklist",
+  "SBlacklist",
   new Schema({
-    serverID: String,
+    guildId: String,
     reason: String,
     time: Number,
   })

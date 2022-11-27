@@ -1,9 +1,9 @@
 const { model, Schema } = require("mongoose");
 
 module.exports = model(
-  "UserBlacklist",
+  "UBlacklist",
   new Schema({
-    userID: String,
+    userId: String,
     reason: String,
     time: Number,
   })

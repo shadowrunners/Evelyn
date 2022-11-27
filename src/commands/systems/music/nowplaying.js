@@ -7,7 +7,7 @@ const {
   checkVoice,
   isSongPlaying,
   progressbar,
-} = require("../../../utils/musicUtils.js");
+} = require("../../../functions/musicUtils.js");
 const pms = require("pretty-ms");
 
 module.exports = {

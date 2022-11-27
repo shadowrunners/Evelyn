@@ -21,12 +21,10 @@ module.exports = model(
       message: String,
       json: Object,
     },
-    automod: {
-      enabled: false,
-    },
-    antiscam: {
-      enabled: false,
-      channel: String,
+    blacklist: {
+      isBlacklisted: false,
+      reason: String,
+      time: String,
     },
     tickets: {
       enabled: false,

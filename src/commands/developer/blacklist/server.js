@@ -1,5 +1,5 @@
 const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
-const serverBlacklist = require("../../../structures/schemas/serverBlacklist.js");
+const SB = require("../../../structures/schemas/serverBlacklist.js");
 
 module.exports = {
   subCommand: "blacklist.server",
@@ -8,13 +8,23 @@ module.exports = {
    */
   async execute(interaction) {
     const { options } = interaction;
-    const guildId = options.getString("serverid");
+    const guildID = options.getString("serverid");
     const blacklist_reason = options.getString("reason");
-    const data = await serverBlacklist.findOne({ serverID: guildId });
+    const data = await SB.findOne({ guildId: guildID });
 
-    if (!data) {
-      const newBlacklist = new serverBlacklist({
-        serverID: guildId,
+    if (data)
+      return interaction.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor("Blurple")
+            .setTitle("Evelyn | Blacklist")
+            .setDescription("This guild is already blacklisted.")
+            .setTimestamp(),
+        ],
+      });
+    else {
+      const newBlacklist = new SB({
+        guildId: guildID,
         reason: blacklist_reason,
         time: Date.now(),
       });
@@ -28,16 +38,6 @@ module.exports = {
             .setTitle("Evelyn | Blacklist")
             .setDescription("This guild has been successfully blacklisted.")
             .addFields({ name: "🔹 | Reason", value: blacklist_reason })
-            .setTimestamp(),
-        ],
-      });
-    } else {
-      return interaction.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor("Blurple")
-            .setTitle("Evelyn | Blacklist")
-            .setDescription("This guild is already blacklisted.")
             .setTimestamp(),
         ],
       });

@@ -1,5 +1,5 @@
 const { ButtonInteraction, EmbedBuilder } = require("discord.js");
-const { checkForQueue, isSongPlaying } = require("../utils/musicUtils.js");
+const { checkForQueue, isSongPlaying } = require("../functions/musicUtils.js");
 const client = require("../structures/index.js");
 
 module.exports = {
@@ -20,13 +20,15 @@ module.exports = {
     )
       return;
 
-    embed.setDescription("🔹 | Shuffled the queue.").setFooter({
-      text: `Action executed by ${interaction.user.username}.`,
-      iconURL: interaction.user.avatarURL({ dynamic: true }),
-    });
-
     player.queue.shuffle();
 
-    return interaction.editReply({ embeds: [embed] });
+    return interaction.editReply({
+      embeds: [
+        embed.setDescription("🔹 | Shuffled the queue.").setFooter({
+          text: `Action executed by ${interaction.user.username}.`,
+          iconURL: interaction.user.avatarURL({ dynamic: true }),
+        }),
+      ],
+    });
   },
 };

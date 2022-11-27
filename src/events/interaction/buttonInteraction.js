@@ -7,39 +7,36 @@ module.exports = {
    * @param {Client} client
    */
   execute(interaction, client) {
-    if (interaction.isButton()) {
-      const Embed = new EmbedBuilder();
-      const button = client.buttons.get(interaction.customId);
+    if (!interaction.isButton()) return;
+    const Embed = new EmbedBuilder();
+    const button = client.buttons.get(interaction.customId);
 
-      if (!button) return;
-      if (button == undefined) return;
+    if (!button) return;
+    if (button == undefined) return;
 
-      if (
-        button.permission &&
-        !interaction.member.permissions.has(button.permission)
-      )
-        return interaction.reply({
-          embeds: [
-            Embed.setColor("Blurple")
-              .setDescription(
-                "🔹 | You don't have the required permissions to use this button."
-              )
-              .setTimestamp(),
-          ],
-        });
+    if (
+      button.permission &&
+      !interaction.member.permissions.has(button.permission)
+    )
+      return interaction.reply({
+        embeds: [
+          Embed.setColor("Blurple")
+            .setDescription(
+              "🔹 | You don't have the required permissions to use this button."
+            )
+            .setTimestamp(),
+        ],
+      });
 
-      if (button.developer && interaction.user.id !== client.config.ownerIDs)
-        return interaction.reply({
-          embeds: [
-            Embed.setColor("Blurple")
-              .setDescription(
-                "🔹 | This button is only available to developers."
-              )
-              .setTimestamp(),
-          ],
-        });
+    if (button.developer && interaction.user.id !== client.config.ownerIDs)
+      return interaction.reply({
+        embeds: [
+          Embed.setColor("Blurple")
+            .setDescription("🔹 | This button is only available to developers.")
+            .setTimestamp(),
+        ],
+      });
 
-      button.execute(interaction, client);
-    }
+    button.execute(interaction, client);
   },
 };

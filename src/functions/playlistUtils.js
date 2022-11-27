@@ -2,7 +2,7 @@ const { EmbedBuilder } = require("discord.js");
 const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
 module.exports = {
-  checkPlaylist: (pName, pData, userData) => {
+  checkPlaylist: (interaction, pName, pData, userData) => {
     if (pName.length > 12)
       return interaction.editReply({
         embeds: [

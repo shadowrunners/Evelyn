@@ -6,7 +6,7 @@ const {
 } = require("discord.js");
 const os = require("os");
 const { utc } = require("moment");
-const { switchTo } = require("../../utils/utils.js");
+const { switchTo } = require("../../functions/utils.js");
 const { connection } = require("mongoose");
 
 module.exports = {

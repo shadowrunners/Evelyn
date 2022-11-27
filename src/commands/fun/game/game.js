@@ -6,6 +6,13 @@ module.exports = {
     .setDescription("Play some games inside Discord!")
     .addSubcommand((option) =>
       option
+        .setName("2048")
+        .setDescription(
+          "Math but you add up squares to 2048 instead of doing hard equations."
+        )
+    )
+    .addSubcommand((option) =>
+      option
         .setName("8ball")
         .setDescription("Ask a question to the almighty 8-ball.")
         .addStringOption((option) =>
@@ -25,6 +32,18 @@ module.exports = {
             .setDescription("Provide your friend here.")
             .setRequired(true)
         )
+    )
+    .addSubcommand((option) =>
+      option.setName("findemoji").setDescription("Find the correct emoji.")
+    )
+    .addSubcommand((option) =>
+      option.setName("guessthatpokemon").setDescription("Guess that pokemon!")
+    )
+    .addSubcommand((option) =>
+      option.setName("hangman").setDescription("The classic version of Wordle.")
+    )
+    .addSubcommand((option) =>
+      option.setName("minesweeper").setDescription("A certified hood classic.")
     )
     .addSubcommand((option) =>
       option
@@ -55,5 +74,13 @@ module.exports = {
       option
         .setName("trivia")
         .setDescription("Answer a random trivia question.")
+    )
+    .addSubcommand((option) =>
+      option.setName("wordle").setDescription("Guess the word.")
+    )
+    .addSubcommand((option) =>
+      option
+        .setName("wouldyourather")
+        .setDescription("So, would you rather use this command or pass by?")
     ),
 };

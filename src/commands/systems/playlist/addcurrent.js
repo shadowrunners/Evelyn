@@ -3,7 +3,7 @@ const {
   Client,
   EmbedBuilder,
 } = require("discord.js");
-const { validate } = require("../../../utils/playlistUtils.js");
+const { validate } = require("../../../functions/playlistUtils.js");
 const PDB = require("../../../structures/schemas/playlist.js");
 
 module.exports = {

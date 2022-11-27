@@ -12,8 +12,6 @@ module.exports = {
       id: invite.guild.id,
     });
 
-    console.log(invite);
-
     if (!data) return;
     if (data.logs.enabled === false || data.logs.channel === "") return;
 

@@ -1,5 +1,6 @@
 const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require("discord.js");
 const DB = require("../structures/schemas/giveaway.js");
+const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
 function getMultipleRandom(arr, num) {
   const shuffled = [...arr].sort(() => 0.5 - Math.random());
@@ -12,15 +13,15 @@ async function endGiveaway(message, reroll = false) {
   if (!message.client.guilds.cache.get(message.guild.id)) return;
 
   const data = await DB.findOne({
-    id: message.guild.id,
-    messageID: message.id,
+    guildId: message.guild.id,
+    messageId: message.id,
   });
 
   if (!data) return;
   if (
     !message.guild.channels.cache
-      .get(data.channel)
-      ?.messages.fetch(data.messageID)
+      .get(data.channelId)
+      ?.messages.fetch(data.messageId)
   )
     return;
 
@@ -47,33 +48,67 @@ async function endGiveaway(message, reroll = false) {
 
   const endGiveawayEmbed = EmbedBuilder.from(message.embeds[0])
     .setColor("Blurple")
-    .setDescription(
-      `**Hosted by**: <@${data.hoster}>\n**Winners**: ${
-        winnerIdArray.map((user) => `<@${user}>`).join(", ") || "None"
-      }\n**Ends in**: <t:${data.endTime}:R> (<t:${data.endTime}>)`
-    );
+    .setTitle(`${data.prize} [Ended]`);
 
   await DB.findOneAndUpdate(
     {
-      id: data.id,
-      channel: data.channel,
-      messageID: message.id,
+      guildId: data.guildId,
+      channelId: data.channelId,
+      messageId: message.id,
     },
-    { Ended: true }
+    { hasEnded: true }
   );
 
   await message.edit({
-    content: "🎊 **Giveaway Ended** 🎊",
     embeds: [endGiveawayEmbed],
     components: [disableButton],
   });
+
   message.reply({
     content: winnerIdArray.length
       ? `🥳 Congratulations ${winnerIdArray
           .map((user) => `<@${user}>`)
-          .join(", ")}! You won **${data.prize}**! 🥳`
+          .join(", ")}, you won **${data.prize}**! 🥳`
       : "No winner was decided because no one entered the giveaway. ☹️",
   });
 }
 
-module.exports = { endGiveaway };
+function check4Data(data, interaction) {
+  if (!data) {
+    embed.setDescription(
+      "🔹 | There is no data in the database regarding that giveaway."
+    );
+    return interaction.reply({ embeds: [embed], ephemeral: true });
+  }
+}
+
+function check4Message(message, interaction) {
+  if (!message) {
+    embed.setDescription("🔹 | This giveaway doesn't exist.");
+    return interaction.reply({ embeds: [embed], ephemeral: true });
+  }
+}
+
+function check4Pause(data, interaction) {
+  if (data.isPaused) {
+    embed.setDescription(
+      "🔹 | This giveaway is currently paused. Unpause it to end the giveaway."
+    );
+    return interaction.reply({ embeds: [embed], ephemeral: true });
+  }
+}
+
+function hasItEnded(data, interaction) {
+  if (data.hasEnded) {
+    embed.setDescription("🔹 | This giveaway has already ended.");
+    return interaction.reply({ embeds: [embed], ephemeral: true });
+  }
+}
+
+module.exports = {
+  endGiveaway,
+  check4Data,
+  check4Message,
+  check4Pause,
+  hasItEnded,
+};

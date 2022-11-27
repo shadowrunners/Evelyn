@@ -3,6 +3,7 @@ const {
   ButtonBuilder,
   ButtonStyle,
   PermissionsBitField,
+  EmbedBuilder,
 } = require("discord.js");
 
 async function embedPages(client, interaction, embeds) {
@@ -104,10 +105,13 @@ function check4Perms(interaction, command) {
     !interaction.guild.members.me.permissions.has(
       PermissionsBitField.resolve(command.botPermissions)
     )
-  )
+  ) {
+    const permission = PermissionsBitField.resolve(command.botPermissions);
+
     return interaction.reply({
       embeds: [
-        embed
+        new EmbedBuilder()
+          .setColor("Blurple")
           .setTitle("Missing Permissions")
           .setDescription(
             `🔹 | I'm missing several permissions, might wanna have a look at that.`
@@ -119,6 +123,7 @@ function check4Perms(interaction, command) {
       ],
       ephemeral: true,
     });
+  }
 }
 
 module.exports = {

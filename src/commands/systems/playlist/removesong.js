@@ -1,5 +1,5 @@
 const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
-const { validateTrack } = require("../../../utils/playlistUtils.js");
+const { validateTrack } = require("../../../functions/playlistUtils.js");
 const PDB = require("../../../structures/schemas/playlist.js");
 
 module.exports = {

@@ -3,7 +3,7 @@ const {
   setVolume,
   isSongPlaying,
   checkVoice,
-} = require("../../../utils/musicUtils.js");
+} = require("../../../functions/musicUtils.js");
 
 module.exports = {
   subCommand: "music.volume",
@@ -15,7 +15,7 @@ module.exports = {
     const { options, guildId } = interaction;
 
     const player = client.manager.players.get(guildId);
-    const percent = options.getString("percent");
+    const percent = options.getNumber("percent");
 
     await interaction.deferReply();
 

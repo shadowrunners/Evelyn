@@ -2,7 +2,8 @@ const { Client, ActivityType } = require("discord.js");
 const { magenta, white, green, red } = require("chalk");
 const DXP = require("discord-xp");
 const { loadCommands } = require("../../structures/handlers/commands.js");
-const giveawayEnd = require("../../utils/giveawaySystem.js");
+const { check4Giveaways } = require("../../functions/check4Giveaways.js");
+const { check4Reminders } = require("../../functions/reminderChecker.js");
 const { dash } = require("../../engines/CCEngine.js");
 const { connect } = require("mongoose");
 
@@ -13,13 +14,13 @@ module.exports = {
    * @param {Client} client
    */
   execute(client) {
+    loadCommands(client);
+
     console.log(
       magenta("Discord API") +
         white(" · Logged in as ") +
         green(`${client.user.tag}`)
     );
-
-    loadCommands(client);
 
     client.user.setPresence({
       activities: [
@@ -38,8 +39,8 @@ module.exports = {
       );
 
     client.manager.init(client);
-    giveawayEnd(client);
-    // dash(client);
+    //require("../../utils/lockdownSystem.js")(client);
+    dash(client);
     DXP.setURL(client.config.database);
 
     connect(client.config.database)
@@ -54,5 +55,8 @@ module.exports = {
       .catch((err) => {
         console.log(err);
       });
+
+    check4Giveaways(client);
+    check4Reminders(client);
   },
 };

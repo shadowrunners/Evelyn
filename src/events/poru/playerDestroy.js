@@ -1,13 +1,10 @@
-const { magenta, white } = require("chalk");
+const { magenta, white, green } = require("chalk");
 
 module.exports = {
   name: "playerDestroy",
   execute() {
     console.log(
-      magenta("[") +
-        magenta("Erela") +
-        magenta("] ") +
-        white(`Player destroyed.`)
+      magenta("Lavalink") + white(" · ") + green(`Player destroyed.`)
     );
   },
 };

@@ -3,8 +3,11 @@ const {
   Client,
   EmbedBuilder,
 } = require("discord.js");
-const { checkVoice, checkForQueue } = require("../../../utils/musicUtils.js");
-const { embedPages } = require("../../../utils/utils.js");
+const {
+  checkVoice,
+  checkForQueue,
+} = require("../../../functions/musicUtils.js");
+const { embedPages } = require("../../../functions/utils.js");
 
 module.exports = {
   subCommand: "music.queue",

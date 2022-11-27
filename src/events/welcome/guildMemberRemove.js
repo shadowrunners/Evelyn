@@ -30,8 +30,8 @@ module.exports = {
     const goodbyeEmbed = new EmbedBuilder();
 
     if (goodbyeData.color) goodbyeEmbed.setColor(color);
-    if (goodbyeData.title) goodbyeEmbed.setTitle(welcomeData.title);
-    if (goodbyeData.titleUrl) goodbyeEmbed.setURL(welcomeData.titleUrl);
+    if (goodbyeData.title) goodbyeEmbed.setTitle(goodbyeData.title);
+    if (goodbyeData.titleUrl) goodbyeEmbed.setURL(goodbyeData.titleUrl);
 
     if (goodbyeData.description) {
       const textEmbed = goodbyeData.description
@@ -66,7 +66,7 @@ module.exports = {
     if (goodbyeData.footer && goodbyeData.footer?.icon_url)
       goodbyeEmbed.setFooter({ text: footer, iconURL: footerIcon });
 
-    if (goodbyeData.image?.url) welcomeEmbed.setImage(image);
+    if (goodbyeData.image?.url) goodbyeEmbed.setImage(image);
 
     return goodbyeChannel.send({
       content: goodbyeMessage,

@@ -3,7 +3,7 @@ const {
   checkForQueue,
   isSongPlaying,
   checkVoice,
-} = require("../../../utils/musicUtils.js");
+} = require("../../../functions/musicUtils.js");
 
 module.exports = {
   subCommand: "music.repeat",

@@ -4,8 +4,8 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const PDB = require("../../../structures/schemas/playlist.js");
-const { validate } = require("../../../utils/playlistUtils.js");
-const Util = require("../../../utils/utils.js");
+const { validate } = require("../../../functions/playlistUtils.js");
+const Util = require("../../../functions/utils.js");
 const pms = require("pretty-ms");
 
 module.exports = {

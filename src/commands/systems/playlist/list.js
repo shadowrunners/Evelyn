@@ -3,9 +3,9 @@ const {
   Client,
   EmbedBuilder,
 } = require("discord.js");
-const { validate } = require("../../../utils/playlistUtils.js");
+const { validate } = require("../../../functions/playlistUtils.js");
 const PDB = require("../../../structures/schemas/playlist.js");
-const Util = require("../../../utils/utils.js");
+const Util = require("../../../functions/utils.js");
 
 module.exports = {
   subCommand: "playlist.list",

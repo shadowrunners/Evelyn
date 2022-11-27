@@ -3,7 +3,10 @@ const {
   Client,
   EmbedBuilder,
 } = require("discord.js");
-const { checkVoice, isSongPlaying } = require("../../../utils/musicUtils.js");
+const {
+  checkVoice,
+  isSongPlaying,
+} = require("../../../functions/musicUtils.js");
 
 module.exports = {
   subCommand: "music.skip",

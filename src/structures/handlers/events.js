@@ -1,8 +1,8 @@
 async function loadEvents(client) {
   const { magenta, white, green } = require("chalk");
-  const { fileLoad } = require("../../utils/fileLoader.js");
+  const { fileLoad } = require("../../functions/fileLoader.js");
 
-  await client.events.clear();
+  //await client.events.clear();
 
   const files = await fileLoad("events");
   files.forEach((file) => {

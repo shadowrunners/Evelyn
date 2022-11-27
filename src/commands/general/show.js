@@ -27,7 +27,7 @@ module.exports = {
 
     imdbClient
       .get({ name: `${title}`, type: imdb.TVShow }, { timeout: 30000 })
-      .then( (result) => {
+      .then((result) => {
         const date = result.released;
         const showinfoEmbed = new EmbedBuilder()
           .setAuthor({ name: `${result.title}` })

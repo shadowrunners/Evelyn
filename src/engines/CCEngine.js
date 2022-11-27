@@ -526,40 +526,39 @@ module.exports = {
             ],
           },
           {
-            categoryId: "verification",
-            categoryName: "Verification",
-            categoryDescription:
-              "Protect your server against bots with captchas.",
+            categoryId: "starboard",
+            categoryName: "Starboard",
+            categoryDescription: "The easiest way of archiving funny messages.",
             categoryImageURL: "https://i.imgur.com/hlBewaW.png",
             categoryOptionsList: [
               {
-                optionId: "verifswitch",
-                optionName: "Enable/Disable Verification",
-                optionDescription: "Enable or disable verification.",
+                optionId: "starswitch",
+                optionName: "Enable/Disable Starboard",
+                optionDescription: "Enable or disable the starboard.",
                 optionType: DBD.formTypes.switch(false),
                 getActualSet: async ({ guild }) => {
                   data = await GDB.findOne({ id: guild.id });
-                  return data.verify.enabled;
+                  return data.starboard.enabled;
                 },
                 setNew: async ({ guild, newData }) => {
                   data = await GDB.findOne({ id: guild.id });
-                  data.verify.enabled = newData;
+                  data.starboard.enabled = newData;
                   return data.save();
                 },
               },
               {
-                optionId: "verifiedRole",
-                optionName: "Verified Role",
+                optionId: "starchannel",
+                optionName: "Starboard Channel",
                 optionDescription:
-                  "Select the role which will be added to a user when they complete verification.",
+                  "This option controls the channel in which messages will be archived.",
                 optionType: DBD.formTypes.rolesSelect(false),
                 getActualSet: async ({ guild }) => {
                   data = await GDB.findOne({ id: guild.id });
-                  return data.verify.verifiedRole;
+                  return data.starboard.channel;
                 },
                 setNew: async ({ guild, newData }) => {
                   data = await GDB.findOne({ id: guild.id });
-                  data.verify.verifiedRole = newData;
+                  data.starboard.channel = newData;
                   return data.save();
                 },
               },

@@ -1,5 +1,5 @@
 const { ChatInputCommandInteraction, Client } = require("discord.js");
-const { seek, checkVoice } = require("../../../utils/musicUtils.js");
+const { seek, checkVoice } = require("../../../functions/musicUtils.js");
 
 module.exports = {
   subCommand: "music.seek",
@@ -17,6 +17,6 @@ module.exports = {
     if (await checkVoice(interaction)) return;
 
     const time = options.getNumber("time");
-    return seek(interaction, track, time);
+    return seek(interaction, player, time);
   },
 };
