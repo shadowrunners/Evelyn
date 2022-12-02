@@ -16,19 +16,21 @@ const {
   GuildMessageReactions,
   GuildInvites,
   GuildVoiceStates,
+  MessageContent,
 } = GatewayIntentBits;
 const { User, Message, Channel, GuildMember, ThreadMember } = Partials;
 
 const client = new Client({
   intents: [
     Guilds,
-    GuildMessages,
     GuildBans,
+    GuildInvites,
     GuildMembers,
+    GuildMessages,
+    GuildVoiceStates,
     GuildMessageReactions,
     GuildEmojisAndStickers,
-    GuildInvites,
-    GuildVoiceStates,
+    MessageContent,
   ],
   partials: [User, Message, Channel, GuildMember, ThreadMember],
   shards: Cluster.data.SHARD_LIST,
@@ -47,13 +49,13 @@ client.buttons = new Collection();
 client.modals = new Collection();
 client.cluster = new Cluster.Client(client);
 
-client.manager = new Poru(client, client.config.nodes, {
+client.manager = new Poru(client, client.config.music.nodes, {
   deezer: {
     playlistLimit: 10,
   },
   spotify: {
-    clientID: client.config.spotifyClientID,
-    clientSecret: client.config.spotifySecret,
+    clientID: client.config.music.spotifyClientID,
+    clientSecret: client.config.music.spotifySecret,
     playlistLimit: 5,
   },
   defaultPlatform: "ytsearch",

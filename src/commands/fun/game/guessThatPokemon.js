@@ -9,7 +9,6 @@ module.exports = {
   execute(interaction) {
     return new GuessThatPokemon({
       interaction: interaction,
-      timeoutTime: 60000,
     }).startGame();
   },
 };

@@ -12,30 +12,6 @@ module.exports = {
     return new Connect4({
       interaction: interaction,
       opponent: options.getUser("friend"),
-      embed: {
-        title: "Connect4",
-        statusTitle: "Status",
-      },
-      emojis: {
-        board: "⚪",
-        player1: "🔴",
-        player2: "🟡",
-      },
-      timeoutTime: 60000,
-      buttonStyle: "PRIMARY",
-      waitMessage: "🔹 | Waiting for your opponent.",
-      turnMessage: "🔹 | It's now **{player}**'s turn.",
-      winMessage: "🍾 **{winner} won the game!** 🍾",
-      gameEndMessage: "🔹 | The game has gone unfinished. :(",
-      drawMessage: "🔹 | It's a draw!",
-      othersMessage:
-        "🔹 | You are not allowed to use the buttons of this message!",
-      askMessage:
-        "🔹 | Hey {opponent}, {challenger} has challenged you to a game of Connect 4!",
-      cancelMessage:
-        "🔹 | Looks like they refused to play a game of Connect4 with you. :(",
-      timeEndMessage:
-        "🔹 | Since the opponent didn't answer in time, the match was cancelled.",
     }).startGame();
   },
 };

@@ -1,11 +1,12 @@
 const { Client, ActivityType } = require("discord.js");
 const { magenta, white, green, red } = require("chalk");
-const DXP = require("discord-xp");
 const { loadCommands } = require("../../structures/handlers/commands.js");
 const { check4Giveaways } = require("../../functions/check4Giveaways.js");
-const { check4Reminders } = require("../../functions/reminderChecker.js");
-const { dash } = require("../../engines/CCEngine.js");
+const { check4Reminders } = require("../../functions/check4Reminders.js");
+const { check4Lockdowns } = require("../../functions/check4Lockdowns.js");
+const { dash } = require("../../functions/dashServer.js");
 const { connect } = require("mongoose");
+const DXP = require("discord-xp");
 
 module.exports = {
   name: "ready",
@@ -39,9 +40,6 @@ module.exports = {
       );
 
     client.manager.init(client);
-    //require("../../utils/lockdownSystem.js")(client);
-    dash(client);
-    DXP.setURL(client.config.database);
 
     connect(client.config.database)
       .then(() => {
@@ -56,7 +54,10 @@ module.exports = {
         console.log(err);
       });
 
+    dash(client);
     check4Giveaways(client);
     check4Reminders(client);
+    check4Lockdowns(client);
+    DXP.setURL(client.config.database);
   },
 };

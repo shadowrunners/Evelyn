@@ -18,7 +18,7 @@ module.exports = {
       let channel;
       let buttons;
 
-      await DBD.useLicense(client.config.DBDLicense);
+      await DBD.useLicense(client.config.dash.DBDLicense);
       DBD.Dashboard = DBD.UpdatedClass();
 
       const Dashboard = new DBD.Dashboard({
@@ -27,8 +27,8 @@ module.exports = {
           id: client.config.clientID,
           secret: client.config.clientSecret,
         },
-        redirectUri: client.config.redirectUri,
-        domain: client.config.domain,
+        redirectUri: client.config.dash.redirectUri,
+        domain: client.config.dash.domain,
         ownerIDs: client.config.ownerIDs,
         bot: client,
         sessionStore: new MongoDBStore({

@@ -24,7 +24,7 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    * @param {Client} client
    */
-  async execute(interaction, client) {
+  execute(interaction, client) {
     const { options } = interaction;
     const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
     const target = options.getMember("target");

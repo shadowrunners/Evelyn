@@ -1,45 +1,72 @@
 const {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
-  ModalBuilder,
-  TextInputBuilder,
-  TextInputStyle,
-  ActionRowBuilder,
+  EmbedBuilder,
 } = require("discord.js");
+const { reminded } = require("../../functions/reminderUtils.js");
+const DB = require("../../structures/schemas/reminders.js");
+const ms = require("ms");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("remind")
-    .setDescription("Sets a reminder for you."),
+    .setDescription("Sets a reminder for you.")
+    .addStringOption((options) =>
+      options
+        .setName("message")
+        .setDescription("What should I remind you of?")
+        .setRequired(true)
+    )
+    .addStringOption((options) =>
+      options
+        .setName("time")
+        .setDescription("When should I remind you?")
+        .setRequired(true)
+    ),
   /**
    * @param {ChatInputCommandInteraction} interaction
    */
-  async execute(interaction) {
-    const whyRemind = new ActionRowBuilder().addComponents(
-      new TextInputBuilder()
-        .setCustomId("whyRemind")
-        .setLabel("What should I remind you of?")
-        .setStyle(TextInputStyle.Short)
-        .setPlaceholder("Example: Feed the dogs.")
-        .setMaxLength(256)
-        .setRequired(true)
-    );
+  async execute(interaction, client) {
+    const { options } = interaction;
+    const remindMessage = options.getString("message");
+    const time = ms(options.getString("time"));
 
-    const remindMeIn = new ActionRowBuilder().addComponents(
-      new TextInputBuilder()
-        .setCustomId("remindMeIn")
-        .setLabel("When should I remind you?")
-        .setStyle(TextInputStyle.Short)
-        .setPlaceholder("Example: 1 hour")
-        .setMaxLength(256)
-        .setRequired(true)
-    );
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
-    const modal = new ModalBuilder()
-      .setCustomId("remind")
-      .setTitle("Set a Reminder")
-      .setComponents(whyRemind, remindMeIn);
+    if (time === NaN)
+      return interaction.reply({
+        embeds: [
+          embed.setDescription("🔹 | An invalid time has been provided."),
+        ],
+      });
 
-    await interaction.showModal(modal);
+    interaction
+      .reply({
+        embeds: [
+          embed
+            .setTitle("Reminder set!")
+            .setDescription(
+              `Okay, I'll remind you to \`${remindMessage}\` <t:${parseInt(
+                (Date.now() + time) / 1000
+              )}:R>.`
+            ),
+        ],
+        fetchReply: true,
+      })
+      .then(async (message) => {
+        await DB.create({
+          guildId: interaction.guild.id,
+          channelId: interaction.channel.id,
+          messageId: message.id,
+          userId: interaction.user.id,
+          scheduledTime: parseInt((Date.now() + time) / 1000),
+          reminder: remindMessage,
+          hasBeenReminded: false,
+        }).then((data) => {
+          setTimeout(async () => {
+            if (!data.hasBeenReminded) await reminded(message);
+          }, time);
+        });
+      });
   },
 };

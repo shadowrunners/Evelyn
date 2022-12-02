@@ -5,8 +5,8 @@ async function loadCommands(client) {
   await client.commands.clear();
   await client.subCommands.clear();
 
-  let commandsArray = [];
-  let developerArray = [];
+  const commandsArray = [];
+  const developerArray = [];
 
   const files = await fileLoad("commands");
   files.forEach((file) => {
@@ -30,7 +30,7 @@ async function loadCommands(client) {
 
   client.application.commands.set(commandsArray);
 
-  const developerGuild = client.guilds.cache.get(client.config.devGuild);
+  const developerGuild = client.guilds.cache.get(client.config.debug.devGuild);
   developerGuild.commands.set(developerArray);
 
   return console.log(

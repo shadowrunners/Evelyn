@@ -9,8 +9,6 @@ module.exports = {
   execute(interaction) {
     return new TwentyFortyEight({
       interaction: interaction,
-      timeoutTime: 60000,
-      playerOnlyMessage: "Only {player} can use these buttons.",
     }).startGame();
   },
 };

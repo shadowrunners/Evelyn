@@ -9,7 +9,6 @@ module.exports = {
    */
   async execute(interaction) {
     const { guild, member, channel } = interaction;
-
     const Embed = new EmbedBuilder();
 
     const ticketsData = await ticketData.findOne({
