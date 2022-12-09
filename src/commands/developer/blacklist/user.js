@@ -8,39 +8,30 @@ module.exports = {
    */
   async execute(interaction) {
     const { options } = interaction;
-    const userID = options.getString("userid");
+    const userId = options.getString("userid");
     const blacklist_reason = options.getString("reason");
-    const data = await UB.findOne({ userId: userID });
+    const data = await UB.findOne({ userID: userId });
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
     if (data)
       return interaction.reply({
         embeds: [
-          new EmbedBuilder()
-            .setColor("Blurple")
-            .setTitle("Evelyn | Blacklist")
-            .setDescription("🔹 | This user is already blacklisted.")
-            .setTimestamp(),
+          embed.setDescription("🔹 | This user is already blacklisted."),
         ],
       });
-    else {
-      const newBlacklist = new UB({
-        userID: userID,
-        reason: blacklist_reason,
-        time: Date.now(),
-      });
 
-      await newBlacklist.save();
+    await UB.create({
+      userID: userId,
+      reason: blacklist_reason,
+      time: Date.now(),
+    });
 
-      return interaction.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor("Blurple")
-            .setTitle("Evelyn | Blacklist")
-            .setDescription("This user has been successfully blacklisted.")
-            .addFields({ name: "🔹 | Reason", value: blacklist_reason })
-            .setTimestamp(),
-        ],
-      });
-    }
+    return interaction.reply({
+      embeds: [
+        embed.setDescription(
+          `🔹 | This user has been successfully blacklisted for ${blacklist_reason}.`
+        ),
+      ],
+    });
   },
 };

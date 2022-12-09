@@ -11,36 +11,25 @@ module.exports = {
     const guildID = options.getString("serverid");
     const blacklist_reason = options.getString("reason");
     const data = await SB.findOne({ guildId: guildID });
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
     if (data)
       return interaction.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor("Blurple")
-            .setTitle("Evelyn | Blacklist")
-            .setDescription("This guild is already blacklisted.")
-            .setTimestamp(),
-        ],
-      });
-    else {
-      const newBlacklist = new SB({
-        guildId: guildID,
-        reason: blacklist_reason,
-        time: Date.now(),
+        embeds: [embed.setDescription("This guild is already blacklisted.")],
       });
 
-      await newBlacklist.save();
+    await SB.create({
+      guildId: guildID,
+      reason: blacklist_reason,
+      time: Date.now(),
+    });
 
-      return interaction.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor("Blurple")
-            .setTitle("Evelyn | Blacklist")
-            .setDescription("This guild has been successfully blacklisted.")
-            .addFields({ name: "🔹 | Reason", value: blacklist_reason })
-            .setTimestamp(),
-        ],
-      });
-    }
+    return interaction.reply({
+      embeds: [
+        embed.setDescription(
+          `This guild has been successfully blacklisted for ${blacklist_reason}`
+        ),
+      ],
+    });
   },
 };

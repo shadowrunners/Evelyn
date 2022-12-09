@@ -1,4 +1,5 @@
 const { ButtonInteraction, Client, EmbedBuilder } = require("discord.js");
+const { isBlacklisted } = require("../../functions/isBlacklisted.js");
 
 module.exports = {
   name: "interactionCreate",
@@ -6,13 +7,15 @@ module.exports = {
    * @param {ButtonInteraction} interaction
    * @param {Client} client
    */
-  execute(interaction, client) {
+  async execute(interaction, client) {
     if (!interaction.isButton()) return;
     const Embed = new EmbedBuilder();
     const button = client.buttons.get(interaction.customId);
 
     if (!button) return;
     if (button === undefined) return;
+
+    if (await isBlacklisted(interaction)) return;
 
     if (
       button.permission &&

@@ -23,6 +23,6 @@ module.exports = {
       return interaction.reply({
         embeds: [embed.setDescription("This command is outdated.")],
       });
-    } else command.execute(interaction, client);
+    } else return command.execute(interaction, client);
   },
 };
