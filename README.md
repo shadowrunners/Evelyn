@@ -17,7 +17,7 @@ Evelyn is an open-source Discord Bot and a safe alternative to bots that are hea
 - 🎧 **Music**: `music play`, `music volume`, `music queue`, `music skip`, `music pause`, `music resume`, `music stop`, `music shuffle`, `music lyrics`.
 - 📦 **Miscellaneous**: `avatar`, `anime`, `announce`, `leaderboard`, `movie`, `rank`, `remind`, `show`, `userinfo`, `serverinfo`.
 - 😀 **Actions**: `actions bite`, `actions blush`, `actions bonk`, `actions bully`, `actions cringe`, `actions cry`, `actions cuddle`, `actions handhold`, `actions highfive`, `actions hug`, `actions kill`, `actions kiss`, `actions pat`, `actions poke`, `actions poke`, `actions slap`, `actions smile`, `actions wave`, `actions yeet`.
-- 📷 **Fun**: `cat`, `game (2048, 8ball, connect4, findemoji, guessthatpokemon, hangman, minesweeper, rps, snake, tictactoe, trivia, wordle, wouldyourather), `image (awooify, baguette, blurpify, captcha, changemymind, deepfry, kannagen, phcomment, threats, trash, trumptweet, tweet)`.
+- 📷 **Fun**: `cat`, `game (2048, 8ball, connect4, findemoji, guessthatpokemon, hangman, minesweeper, rps, snake, tictactoe, trivia, wordle, wouldyourather)`, `image (awooify, baguette, blurpify, captcha, changemymind, deepfry, kannagen, phcomment, threats, trash, trumptweet, tweet)`.
 
 ## Installation
 
