@@ -1,10 +1,11 @@
-<img src="https://cdn.discordapp.com/avatars/832289090128969787/a6dbf8e910c7f3efbfef5dd83c56c69d.webp?size=2048" alt="Evelyn" height="150px" width="150px" align="left" style="float: left; margin: 0 10px 0 0;" alt="Jinx">
+<img src="https://cdn.discordapp.com/avatars/832289090128969787/a6dbf8e910c7f3efbfef5dd83c56c69d.webp?size=2048" alt="Evelyn" height="155px" width="155px" align="left" style="float: left; margin: 0 10px 0 0;" alt="Jinx">
 
 # Evelyn
 [![](https://img.shields.io/badge/discord.js-v14.6.0-blue.svg?logo=npm)](https://github.com/discordjs)
 [![](https://img.shields.io/github/issues/notscrappie/Evelyn)](https://github.com/t3amedge/Evelyn/issues)
 [![](https://img.shields.io/github/stars/notscrappie/Evelyn)](https://github.com/t3amedge/Evelyn)
 [![](https://img.shields.io/discord/838499177243738172?color=5865F2&logo=discord&logoColor=white)](https://discord.gg/HwkDSs7X82)
+
 > Unleash the full potential of your server.
 
 ## About
