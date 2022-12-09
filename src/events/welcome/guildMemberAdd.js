@@ -20,7 +20,7 @@ module.exports = {
 
     const welcomeData = data.welcome.json.embed;
 
-    const welcomeMessage = data.welcome.message
+    const welcomeMessage = data.welcome.message.json.content
       ?.replace(/{userTag}/g, `${member.user.tag}`)
       .replace(/{userName}/g, `${member.user.username}`)
       .replace(/{userMention}/g, `<@${member.user.id}>`)
@@ -29,9 +29,8 @@ module.exports = {
 
     const welcomeEmbed = new EmbedBuilder();
 
-    if (welcomeData.color) welcomeEmbed.setColor(color);
+    if (welcomeData.color) welcomeEmbed.setColor(welcomeData.color);
     if (welcomeData.title) welcomeEmbed.setTitle(welcomeData.title);
-    if (welcomeData.titleUrl) welcomeEmbed.setURL(welcomeData.titleUrl);
 
     if (welcomeData.description) {
       const textEmbed = welcomeData.description
@@ -57,7 +56,7 @@ module.exports = {
     if (welcomeData.author?.icon_url)
       welcomeEmbed.setAuthor({
         name: welcomeData.author.name,
-        iconURL: authorImgURL,
+        iconURL: welcomeData.author.icon_url,
       });
 
     if (welcomeData.footer?.text) {
@@ -72,9 +71,12 @@ module.exports = {
     }
 
     if (welcomeData.footer && welcomeData.footer.icon_url)
-      welcomeEmbed.setFooter({ text: footer, iconURL: footerIcon });
+      welcomeEmbed.setFooter({
+        text: welcomeData.footer,
+        iconURL: welcomeData.footer.icon_url,
+      });
 
-    if (welcomeData.image?.url) welcomeEmbed.setImage(image);
+    if (welcomeData.image?.url) welcomeEmbed.setImage(welcomeData.image?.url);
 
     return welcomeChannel.send({
       content: welcomeMessage,

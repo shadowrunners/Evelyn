@@ -6,7 +6,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 
-async function embedPages(client, interaction, embeds) {
+async function embedPages(interaction, embeds) {
   const pages = {};
   const getRow = (id) => {
     const row = new ActionRowBuilder().addComponents(

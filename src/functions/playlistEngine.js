@@ -57,7 +57,7 @@ module.exports = class PlaylistEngine {
       }
     );
 
-    return interaction.editReply({
+    return this.interaction.editReply({
       embeds: [
         this.embed.setDescription(
           `🔹 | **[${track.title}](${track.uri})** has been added to your playlist.`
@@ -90,14 +90,12 @@ module.exports = class PlaylistEngine {
         ],
       });
 
-    const data = await new PDB({
+    await PDB.create({
       name: this.interaction.user.username,
       userID: this.interaction.user.id,
-      playlistName: playlistName,
+      playlistName: pName,
       created: Math.round(Date.now() / 1000),
     });
-
-    await data.save();
 
     return this.interaction.editReply({
       embeds: [
@@ -115,7 +113,7 @@ module.exports = class PlaylistEngine {
       playlistName: pName,
     });
 
-    if (validatePlaylist(playlistName)) return;
+    if (this.validatePlaylist(pName)) return;
 
     await playlistData.delete();
 
@@ -132,7 +130,7 @@ module.exports = class PlaylistEngine {
   async info(pName) {
     const pData = await PDB.findOne({
       playlistName: pName,
-      userID: user.id,
+      userID: this.interaction.user.id,
     });
 
     if (this.validatePlaylist(pName)) return;
@@ -155,10 +153,10 @@ module.exports = class PlaylistEngine {
       this.embed
         .setTitle(`${pData.playlistName} by ${pData.name}`)
         .setDescription(tracks.slice(i, i + 10).join("\n"));
-      embeds.push(embed);
+      embeds.push(this.embed);
     }
 
-    return embedPages(client, interaction, embeds);
+    return embedPages(this.interaction, embeds);
   }
 
   /** Shows all your playlists. */
@@ -186,10 +184,10 @@ module.exports = class PlaylistEngine {
       this.embed
         .setTitle(`Playlists curated by ${pData[i].name}`)
         .setDescription(playlists.slice(i, i + 10).join("\n"));
-      embeds.push(embed);
+      embeds.push(this.embed);
     }
 
-    return embedPages(client, interaction, embeds);
+    return embedPages(this.interaction, embeds);
   }
 
   /** Removes the song provided from the specified playlist. */
@@ -200,7 +198,7 @@ module.exports = class PlaylistEngine {
     });
 
     if (!pData?.playlistData)
-      return interaction.editReply({
+      return this.interaction.editReply({
         embeds: [
           embed.setDescription(
             "🔹 | There is no playlist with that name or no data regarding that user."
@@ -210,7 +208,7 @@ module.exports = class PlaylistEngine {
       });
 
     if (song >= pData?.playlistData.length || song < 0)
-      return interaction.editReply({
+      return this.interaction.editReply({
         embeds: [
           this.embed.setDescription(
             "🔹 | Track ID is out of range, see your playlist via /playlist list (playlistName)"
@@ -231,7 +229,7 @@ module.exports = class PlaylistEngine {
       }
     );
 
-    return interaction.editReply({
+    return this.interaction.editReply({
       embeds: [
         this.embed.setDescription(
           `🔹 | **${tracks[song].title}** has been removed from your playlist.`

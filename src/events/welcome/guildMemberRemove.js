@@ -20,7 +20,7 @@ module.exports = {
 
     const goodbyeData = data.goodbye.json.embed;
 
-    const goodbyeMessage = data.goodbye.message
+    const goodbyeMessage = data.goodbye.message.json.content
       ?.replace(/{userTag}/g, `${member.user.tag}`)
       .replace(/{userName}/g, `${member.user.username}`)
       .replace(/{userMention}/g, `<@${member.user.id}>`)
@@ -29,9 +29,8 @@ module.exports = {
 
     const goodbyeEmbed = new EmbedBuilder();
 
-    if (goodbyeData.color) goodbyeEmbed.setColor(color);
+    if (goodbyeData.color) goodbyeEmbed.setColor(goodbyeData.color);
     if (goodbyeData.title) goodbyeEmbed.setTitle(goodbyeData.title);
-    if (goodbyeData.titleUrl) goodbyeEmbed.setURL(goodbyeData.titleUrl);
 
     if (goodbyeData.description) {
       const textEmbed = goodbyeData.description
@@ -53,6 +52,12 @@ module.exports = {
       goodbyeEmbed.setAuthor(authorName);
     }
 
+    if (goodbyeData.author?.icon_url)
+      goodbyeEmbed.setAuthor({
+        name: goodbyeData.author.name,
+        iconURL: goodbyeData.author.icon_url,
+      });
+
     if (goodbyeData.footer?.text) {
       const footerData = goodbyeData.footer?.text
         .replace(/{userTag}/g, `${member.user.tag}`)
@@ -64,9 +69,12 @@ module.exports = {
     }
 
     if (goodbyeData.footer && goodbyeData.footer?.icon_url)
-      goodbyeEmbed.setFooter({ text: footer, iconURL: footerIcon });
+      goodbyeEmbed.setFooter({
+        text: goodbyeData.footer,
+        iconURL: goodbyeData.footer?.icon_url,
+      });
 
-    if (goodbyeData.image?.url) goodbyeEmbed.setImage(image);
+    if (goodbyeData.image?.url) goodbyeEmbed.setImage(goodbyeData.image?.url);
 
     return goodbyeChannel.send({
       content: goodbyeMessage,

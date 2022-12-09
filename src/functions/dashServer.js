@@ -199,24 +199,29 @@ module.exports = {
                 },
               },
               {
-                optionId: "welcome_message",
-                optionName: "Welcome Message",
+                optionId: "welcomeemb",
+                optionName: "Welcome Embed",
                 optionDescription:
-                  "Sends a message alongside the welcome embed! This is not suitable for full welcome messages as it does not replace anything with user mentions, tags, etc. This is only for a small message to be sent alongside the embed.",
-                optionType: DBD.formTypes.textarea(
-                  "Set the welcome message here.",
-                  null,
-                  100,
-                  false,
-                  false
-                ),
+                  "Configure the embed that will be sent once someone joins.",
+                optionType: DBD.formTypes.embedBuilder({
+                  username: client.user.username,
+                  avatarURL: client.user.avatarURL({ dynamic: true }),
+                  defaultJson: {
+                    embed: {
+                      description: `Welcome, {user.username}!\nHave fun!`,
+                      footer: {
+                        text: "This is a sample message. Change it to your liking.",
+                      },
+                    },
+                  },
+                }),
                 getActualSet: async ({ guild }) => {
                   data = await GDB.findOne({ id: guild.id });
-                  return data.welcome.message;
+                  return data.welcome.json;
                 },
                 setNew: async ({ guild, newData }) => {
                   data = await GDB.findOne({ id: guild.id });
-                  data.welcome.message = newData;
+                  data.welcome.json = newData;
                   return data.save();
                 },
               },
@@ -248,28 +253,6 @@ module.exports = {
                 setNew: async ({ guild, newData }) => {
                   data = await GDB.findOne({ id: guild.id });
                   data.goodbye.channel = newData;
-                  return data.save();
-                },
-              },
-              {
-                optionId: "goodbye_message",
-                optionName: "Goodbye Message",
-                optionDescription:
-                  "Sends a message alongside the goodbye embed! This is not suitable for full welcome messages as it does not replace anything with user mentions, tags, etc. This is only for a small message to be sent alongside the embed.",
-                optionType: DBD.formTypes.textarea(
-                  "Set the goodbye message here.",
-                  null,
-                  100,
-                  false,
-                  false
-                ),
-                getActualSet: async ({ guild }) => {
-                  data = await GDB.findOne({ id: guild.id });
-                  return data.goodbye.message;
-                },
-                setNew: async ({ guild, newData }) => {
-                  data = await GDB.findOne({ id: guild.id });
-                  data.goodbye.message = newData;
                   return data.save();
                 },
               },
