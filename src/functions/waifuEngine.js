@@ -57,7 +57,7 @@ module.exports = class WaifuEngine {
   /** Fetches blushing images from the API and replies with an embed of it. */
   async blush(interaction) {
     await this.fetchImage("blush").then((image) => {
-      return this.this.interaction.editReply({
+      return this.interaction.editReply({
         embeds: [
           embed
             .setAuthor({
@@ -75,7 +75,7 @@ module.exports = class WaifuEngine {
     if (this.checkTarget(target, interaction)) return;
 
     await this.fetchImage("bonk").then((image) => {
-      return this.this.interaction.editReply({
+      return this.interaction.editReply({
         embeds: [
           this.embed
             .setAuthor({
