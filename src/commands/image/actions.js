@@ -92,6 +92,9 @@ module.exports = {
 
       case "wave":
         return WaifuEngine.wave(target);
+
+      default:
+        break;
     }
   },
 };

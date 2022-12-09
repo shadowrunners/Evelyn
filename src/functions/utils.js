@@ -96,6 +96,8 @@ function switchTo(val) {
     case 3:
       status = `🟨 Disconnecting`;
       break;
+    default:
+      break;
   }
   return status;
 }

@@ -22,12 +22,10 @@ module.exports = {
           { name: "🔹 | Deepfry", value: "deepfry" },
           { name: "🔹 | Kanna", value: "kannagen" },
           { name: "🔹 | PH Comment", value: "phcomment" },
-          { name: "🔹 | Ship", value: "ship" },
           { name: "🔹 | Threats", value: "threats" },
           { name: "🔹 | Trash", value: "trash" },
           { name: "🔹 | Trump Tweet", value: "trumptweet" },
-          { name: "🔹 | Tweet", value: "tweet" },
-          { name: "🔹 | Who would win?", value: "whowouldwin" }
+          { name: "🔹 | Tweet", value: "tweet" }
         )
     )
     .addUserOption((option) =>
@@ -52,8 +50,8 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
-    const API = new importNeko(interaction);
     const { options } = interaction;
+    const API = new importNeko(interaction);
     const choices = options.getString("type");
 
     const user1 = options.getUser("user1");
@@ -87,9 +85,6 @@ module.exports = {
       case "phcomment":
         return API.phcomment(user1, user2, text);
 
-      case "ship":
-        return API.ship(user1, user2);
-
       case "threats":
         return API.threats(user1, user2);
 
@@ -102,8 +97,8 @@ module.exports = {
       case "tweet":
         return API.tweet(user1, user2, text);
 
-      case "whowouldwin":
-        return API.whowouldwin(user1, user2);
+      default:
+        break;
     }
   },
 };
