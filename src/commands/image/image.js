@@ -2,7 +2,7 @@ const {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
 } = require("discord.js");
-const API = require("../../engines/NekoEngine.js");
+const importNeko = require("../../functions/nekoAPI.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -52,6 +52,7 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
+    const API = new importNeko(interaction);
     const { options } = interaction;
     const choices = options.getString("type");
 
@@ -63,25 +64,25 @@ module.exports = {
 
     switch (choices) {
       case "awooify":
-        return API.awooify(user1, user2, interaction);
+        return API.awooify(user1, user2);
 
       case "baguette":
-        return API.baguette(user1, user2, interaction);
+        return API.baguette(user1, user2);
 
       case "blurpify":
-        return API.blurpify(user1, user2, interaction);
+        return API.blurpify(user1, user2);
 
       case "captcha":
-        return API.captcha(user1, user2, interaction);
+        return API.captcha(user1, user2);
 
       case "changemymind":
-        return API.changemymind(text, interaction);
+        return API.changemymind(text);
 
       case "deepfry":
-        return API.deepfry(user1, user2, interaction);
+        return API.deepfry(user1, user2);
 
       case "kannagen":
-        return API.kannagen(text, interaction);
+        return API.kannagen(text);
 
       case "phcomment":
         return API.phcomment(user1, user2, text);
@@ -99,10 +100,10 @@ module.exports = {
         return API.trumptweet(text);
 
       case "tweet":
-        return API.tweet(user1, user2, text, interaction);
+        return API.tweet(user1, user2, text);
 
       case "whowouldwin":
-        return API.whowouldwin(user1, user2, interaction);
+        return API.whowouldwin(user1, user2);
     }
   },
 };

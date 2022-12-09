@@ -148,7 +148,7 @@ module.exports = class WaifuEngine {
     if (this.checkTarget(target)) return;
 
     await this.fetchImage("cuddle").then((image) => {
-      return interaction.editReply({
+      return this.interaction.editReply({
         embeds: [
           this.embed
             .setAuthor({
