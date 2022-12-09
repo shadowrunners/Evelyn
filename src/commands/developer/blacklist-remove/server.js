@@ -10,30 +10,20 @@ module.exports = {
     const { options } = interaction;
     const guildID = options.getString("serverid");
     const data = await SB.findOne({ guildId: guildID });
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
     if (!data)
       return interaction.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor("Blurple")
-            .setTitle("Evelyn | Blacklist")
-            .setDescription("🔹 | This guild isn't blacklisted.")
-            .setTimestamp(),
-        ],
+        embeds: [embed.setDescription("🔹 | This guild isn't blacklisted.")],
       });
-    else {
-      await data.deleteOne({ guildId: guildID });
-      return interaction.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor("Blurple")
-            .setTitle("Evelyn | Blacklist")
-            .setDescription(
-              "🔹 | This guild has been removed from the blacklist."
-            )
-            .setTimestamp(),
-        ],
-      });
-    }
+
+    await data.deleteOne({ guildId: guildID });
+    return interaction.reply({
+      embeds: [
+        embed.setDescription(
+          "🔹 | This guild has been removed from the blacklist."
+        ),
+      ],
+    });
   },
 };

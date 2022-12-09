@@ -29,7 +29,9 @@ module.exports = {
 
     if (check4Message(message, interaction)) return;
 
-    await endGiveaway(message, (reroll = true)).then(() => {
+    let reroll = true;
+
+    await endGiveaway(message, reroll).then(() => {
       embed.setDescription("🔹 | Giveaway has been successfully rerolled.");
       return interaction.reply({
         embeds: [embed],

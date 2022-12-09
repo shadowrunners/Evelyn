@@ -10,30 +10,20 @@ module.exports = {
     const { options } = interaction;
     const userID = options.getString("userid");
     const data = await UB.findOne({ userId: userID });
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
     if (!data)
       return interaction.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor("Blurple")
-            .setTitle("Evelyn | Blacklist")
-            .setDescription("This user isn't blacklisted.")
-            .setTimestamp(),
-        ],
+        embeds: [embed.setDescription("This user isn't blacklisted.")],
       });
-    else {
-      await data.deleteOne({ userId: userID });
-      return interaction.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor("Blurple")
-            .setTitle("Evelyn | Blacklist")
-            .setDescription(
-              "🔹 | This user has been removed from the blacklist."
-            )
-            .setTimestamp(),
-        ],
-      });
-    }
+
+    await data.deleteOne({ userId: userID });
+    return interaction.reply({
+      embeds: [
+        embed.setDescription(
+          "🔹 | This user has been removed from the blacklist."
+        ),
+      ],
+    });
   },
 };

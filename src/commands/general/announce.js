@@ -38,18 +38,11 @@ module.exports = {
       .setTimestamp();
 
     interaction.reply({
-      embeds: [
-        embed
-          .setColor("Blurple")
-          .setDescription("🔹 | Announcement sent.")
-          .setRequired(true),
-      ],
+      embeds: [embed.setDescription("🔹 | Announcement sent.")],
     });
 
     if (role)
       return channel.send({ content: `<@${role.id}>`, embeds: [embed] });
-    else {
-      return channel.send({ embeds: [embed] });
-    }
+    return channel.send({ embeds: [embed] });
   },
 };

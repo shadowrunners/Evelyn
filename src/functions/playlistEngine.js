@@ -42,7 +42,7 @@ module.exports = class PlaylistEngine {
 
     await PDB.updateOne(
       {
-        userID: user.id,
+        userID: this.interaction.user.id,
         playlistName: pName,
       },
       {
@@ -200,7 +200,7 @@ module.exports = class PlaylistEngine {
     if (!pData?.playlistData)
       return this.interaction.editReply({
         embeds: [
-          embed.setDescription(
+          this.embed.setDescription(
             "🔹 | There is no playlist with that name or no data regarding that user."
           ),
         ],
@@ -232,7 +232,7 @@ module.exports = class PlaylistEngine {
     return this.interaction.editReply({
       embeds: [
         this.embed.setDescription(
-          `🔹 | **${tracks[song].title}** has been removed from your playlist.`
+          `🔹 | **${pData.playlistData[song].title}** has been removed from your playlist.`
         ),
       ],
     });
