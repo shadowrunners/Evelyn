@@ -15,7 +15,7 @@ module.exports = {
     const { options, guildId } = interaction;
 
     const player = client.manager.players.get(guildId);
-    const percent = options.getNumber("percent");
+    const percent = options.getNumber("percent", true);
 
     await interaction.deferReply();
 

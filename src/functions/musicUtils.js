@@ -15,10 +15,10 @@ module.exports = {
 
     if (!player.queue.current) return `${slider}${line.repeat(size - 1)}]`;
     const current =
-      player.currentTrack.length !== 0
-        ? player.position
-        : player.currentTrack.length;
-    const total = player.currentTrack.length;
+      player.queue.current.length !== 0
+        ? player.shoukaku.position
+        : player.queue.current.length;
+    const total = player.queue.current.length;
     const bar =
       current > total
         ? [line.repeat((size / 2) * 2), (current / total) * 100]
@@ -61,7 +61,7 @@ module.exports = {
       });
   },
   isSongPlaying: (interaction, player) => {
-    if (!player.isPlaying)
+    if (!player.playing)
       return interaction.editReply({
         embeds: [
           new EmbedBuilder().setDescription(
@@ -80,33 +80,21 @@ module.exports = {
   repeatMode: async (mode, player, interaction) => {
     switch (mode) {
       case "queue":
-        if (!player.loop === 1) {
-          await player.QueueRepeat();
+        await player.setLoop("queue");
 
-          return interaction.editReply({
-            embeds: [
-              embed.setDescription("🔹 | Repeat mode is now on. (Queue)"),
-            ],
-          });
-        }
-
-        await player.DisableRepeat();
         return interaction.editReply({
-          embeds: [embed.setDescription("🔹 | Repeat mode is now off.")],
+          embeds: [embed.setDescription("🔹 | Repeat mode is now on. (Queue)")],
         });
 
       case "song":
-        if (!player.loop === 0) {
-          await player.TrackRepeat();
+        await player.setLoop("track");
 
-          return interaction.editReply({
-            embeds: [
-              embed.setDescription("🔹 | Repeat mode is now on. (Song)"),
-            ],
-          });
-        }
+        return interaction.editReply({
+          embeds: [embed.setDescription("🔹 | Repeat mode is now on. (Song)")],
+        });
 
-        await player.DisableRepeat();
+      case "none":
+        await player.setLoop("off");
 
         return interaction.editReply({
           embeds: [embed.setDescription("🔹 | Repeat mode is now off.")],
@@ -114,22 +102,11 @@ module.exports = {
     }
   },
   seek: async (interaction, player, time) => {
-    const seekDuration = time * 1000;
-    const duration = player.currentTrack.length;
-
-    if (!player.currentTrack.isSeekable)
-      return interaction.editReply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor("Blurple")
-            .setDescription("🔹 | This track isn't seekable.")
-            .setTimestamp(),
-        ],
-        ephemeral: true,
-      });
+    const seekDuration = Number(time) * 1000;
+    const duration = player.queue.track.length;
 
     if (seekDuration <= duration) {
-      await player.seekTo(seekDuration);
+      await player.shoukaku.seekTo(seekDuration);
 
       return interaction.editReply({
         embeds: [
@@ -152,11 +129,11 @@ module.exports = {
       });
   },
   setVolume: (interaction, player, volume) => {
-    if (volume < 0 || volume > 5)
+    if (volume < 0 || volume > 100)
       return interaction.editReply({
         embeds: [
           embed.setDescription(
-            "🔹| To protect your ears from extreme audio distortion, we have limited the volume to up to 5%."
+            "🔹| You can only set the volume from 0 to 100."
           ),
         ],
         ephemeral: true,
@@ -168,7 +145,7 @@ module.exports = {
       embeds: [
         embed
           .setDescription(
-            `🔹 | Volume has been set to **${player.filters.volume}%**.`
+            `🔹 | Volume has been set to **${player.volume * 100}%**.`
           )
           .setFooter({
             text: `Action executed by ${interaction.user.username}.`,

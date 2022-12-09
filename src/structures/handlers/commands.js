@@ -21,10 +21,9 @@ async function loadCommands(client) {
     else commandsArray.push(command.data.toJSON());
 
     console.log(
-      magenta("Commands") +
-        white(" · ") +
-        "Loaded" +
-        green(` ${command.data.name}.js`)
+      `${magenta("Commands")} ${white("· Loaded")} ${green(
+        `${command.data.name}.js`
+      )}`
     );
   });
 
@@ -34,9 +33,9 @@ async function loadCommands(client) {
   developerGuild.commands.set(developerArray);
 
   return console.log(
-    magenta("Discord API") +
-      white(" · ") +
-      white("Refreshed application commands for public and developer guilds.")
+    `${magenta("Discord API")} ${white(
+      "· Refreshed application commands for public and developer guilds."
+    )}`
   );
 }
 

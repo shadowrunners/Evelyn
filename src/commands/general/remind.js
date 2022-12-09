@@ -26,14 +26,14 @@ module.exports = {
   /**
    * @param {ChatInputCommandInteraction} interaction
    */
-  async execute(interaction, client) {
+  async execute(interaction) {
     const { options } = interaction;
     const remindMessage = options.getString("message");
     const time = ms(options.getString("time"));
 
     const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
-    if (time === NaN)
+    if (isNaN(time))
       return interaction.reply({
         embeds: [
           embed.setDescription("🔹 | An invalid time has been provided."),

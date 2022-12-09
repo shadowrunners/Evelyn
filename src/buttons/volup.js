@@ -9,7 +9,7 @@ module.exports = {
    */
   async execute(interaction) {
     const player = client.manager.players.get(interaction.guild.id);
-    const volume = Number(player.filters.volume) + 1;
+    const volume = Number(player.volume * 100) + 10;
 
     await interaction.deferReply();
 

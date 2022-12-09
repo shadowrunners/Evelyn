@@ -18,36 +18,35 @@ module.exports = {
     loadCommands(client);
 
     console.log(
-      magenta("Discord API") +
-        white(" · Logged in as ") +
-        green(`${client.user.tag}`)
+      `${magenta("Discord API")} ${white("· Logged in as")} ${green(
+        `${client.user.tag}`
+      )}`
     );
 
     client.user.setPresence({
       activities: [
-        { name: "Fly Me to The Moon", type: ActivityType.Listening },
+        {
+          name: "v4 (Unleashed) || dash.evelynbot.ml",
+          type: ActivityType.Playing,
+        },
       ],
-      status: "online",
     });
 
     if (!client.config.database)
-      return console.log(
-        magenta("Evelyn Notification") +
-          white(" · ") +
-          red(
-            "Couldn't connect to database, please check your config.json file."
-          )
+      return console.error(
+        `${magenta("Evelyn Notification")} ${white("·")} ${red(
+          `Couldn't connect to database, please check your config.json file.`
+        )}`
       );
 
-    client.manager.init(client);
+    client.statcord.autopost();
 
     connect(client.config.database)
       .then(() => {
         console.log(
-          magenta("Database") +
-            white(" · ") +
-            green(`${client.user.username} `) +
-            white("has successfully connected to the database.")
+          `${magenta("Database")} ${white("·")} ${green(
+            `${client.user.username}`
+          )} ${white("has successfully connected to the database.")}`
         );
       })
       .catch((err) => {

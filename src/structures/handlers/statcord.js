@@ -1,18 +1,18 @@
-async function loadPoru(client) {
+async function loadStats(client) {
   const { magenta, white, green } = require("chalk");
   const { fileLoad } = require("../../functions/fileLoader.js");
 
-  const files = await fileLoad("events/poru");
+  const files = await fileLoad("events/statcord");
   files.forEach((file) => {
     const event = require(file);
     const execute = (...args) => event.execute(...args, client);
 
-    client.manager.on(event.name, execute);
+    client.statcord.on(event.name, execute);
 
     return console.log(
-      magenta("Poru") + white(" · ") + "Loaded " + green(`${event.name}.js`)
+      `${magenta("Statcord")} ${white("· Loaded")} ${green(`${event.name}.js`)}`
     );
   });
 }
 
-module.exports = { loadPoru };
+module.exports = { loadStats };

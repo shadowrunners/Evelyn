@@ -10,7 +10,7 @@ async function loadButtons(client) {
     client.buttons.set(button.id, button);
 
     return console.log(
-      magenta("Buttons") + white(" · ") + "Loaded" + green(` ${button.id}.js`)
+      `${magenta("Buttons")} ${white("· Loaded")} ${green(`${button.id}.js`)}`
     );
   });
 }

@@ -18,45 +18,47 @@ module.exports = {
     await interaction.deferReply();
     if (await checkVoice(interaction)) return;
 
-    const player = client.manager.createConnection({
+    const player = await client.manager.createPlayer({
       guildId: interaction.guild.id,
-      voiceChannel: interaction.member.voice.channelId,
-      textChannel: interaction.channelId,
-      selfDeaf: true,
+      voiceId: interaction.member.voice.channelId,
+      textId: interaction.channelId,
+      deaf: true,
     });
 
     const query = options.getString("query");
-    const res = await client.manager.resolve(query);
-    const { loadType, tracks, playlistInfo } = res;
+    const res = await player.search(query, { requester: interaction.user });
 
-    if (player.state !== "CONNECTED") player.connect();
-
-    if (res.loadType === "LOAD_FAILED") {
-      if (!player.queue.current) player.destroy();
+    if (!res.tracks.length) {
+      if (player) player.destroy();
 
       return interaction.editReply({
-        embeds: [embed.setDescription("🔹 | An error has occured.")],
+        embeds: [embed.setDescription("🔹 | No matches found.")],
       });
     }
 
-    if (loadType === "PLAYLIST_LOADED") {
-      for (const track of tracks) {
-        track.info.requester = interaction.member;
-        player.queue.add(track);
-      }
+    if (res.type === "PLAYLIST") {
+      const tracks = res.tracks;
+      for (const track of tracks) player.queue.add(track);
 
-      await interaction.editReply({
+      if (
+        !player.playing &&
+        !player.paused &&
+        player.queue.totalSize === res.tracks.length
+      )
+        player.play();
+
+      return interaction.editReply({
         embeds: [
           embed
             .setAuthor({
               name: "Playlist added to the queue",
               iconURL: member.user.avatarURL({ dynamic: true }),
             })
-            .setDescription(`**[${playlistInfo.name}](${query})**`)
+            .setDescription(`**[${res.playlistName}](${query})**`)
             .addFields(
               {
                 name: "Added",
-                value: `\`${tracks.length}\` tracks`,
+                value: `\`${res.tracks.length}\` tracks`,
                 inline: true,
               },
               {
@@ -67,36 +69,32 @@ module.exports = {
             ),
         ],
       });
-
-      if (!player.isPlaying && !player.isPaused) return player.play();
     }
 
-    if (loadType === "TRACK_LOADED" || loadType === "SEARCH_RESULT") {
-      const track = tracks.shift();
-      track.info.requester = interaction.member;
+    if (res.type === "TRACK" || res.type === "SEARCH") {
+      player.queue.add(res.tracks[0]);
+
+      if (!player.playing && !player.paused && !player.queue.size)
+        player.play();
 
       embed
         .setAuthor({
           name: "Added to the queue",
           iconURL: member.user.avatarURL({ dynamic: true }),
         })
-        .setDescription(`**[${track.info.title}](${track.info.uri})** `)
+        .setDescription(`**[${res.tracks[0].title}](${res.tracks[0].uri})** `)
         .addFields({
           name: "Queued by",
           value: `${member}`,
           inline: true,
         })
-        .setThumbnail(track.info.image);
+        .setThumbnail(res.tracks[0].thumbnail);
       await interaction.editReply({ embeds: [embed] });
 
-      player.queue.add(track);
-
-      if (!player.isPlaying && !player.isPaused) return player.play();
-
-      if (player.queue.length > 1)
+      if (player.queue.totalSize > 1)
         embed.addFields({
           name: "Position in queue",
-          value: `${player.queue.size - 1}`,
+          value: `${player.queue.size - 0}`,
           inline: true,
         });
       return interaction.editReply({ embeds: [embed] });

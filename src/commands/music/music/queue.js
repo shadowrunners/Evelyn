@@ -25,25 +25,27 @@ module.exports = {
     if (await checkVoice(interaction)) return;
     if (checkForQueue(interaction, player)) return;
 
-    const track = player.currentTrack;
-    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
-    const getQueue =
-      player.queue.length > 10 ? player.queue.slice(0, 10) : player.queue;
-    const mappedQueue = getQueue.map(
-      (t, i) =>
-        `**${i + 1}.** [${t.info.title}](${t.info.uri}) [${t.info.requester}]`
-    );
-
+    const songs = [];
     const embeds = [];
 
-    if (getQueue.length) {
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+
+    for (let i = 0; i < player.queue.length; i++) {
+      songs.push(
+        `${i + 1}. [${player.queue[i].title}](${player.queue[i].uri}) [${
+          player.queue[i].requester
+        }]`
+      );
+    }
+
+    for (let i = 0; i < songs.length; i += 10) {
       embed
         .setAuthor({ name: `Current queue for ${guild.name}` })
-        .setTitle(`▶️ | Currently playing: ${track.info.title}`)
-        .setDescription(mappedQueue.join("\n"));
+        .setTitle(`▶️ | Currently playing: ${player.queue.current.title}`)
+        .setDescription(songs.slice(i, i + 10).join("\n"));
       embeds.push(embed);
     }
 
-    await embedPages(client, interaction, embeds);
+    return await embedPages(client, interaction, embeds);
   },
 };

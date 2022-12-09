@@ -20,7 +20,7 @@ async function loadEvents(client) {
     }
 
     return console.log(
-      magenta("Events") + white(" · ") + "Loaded " + green(`${event.name}.js`)
+      `${magenta("Events")} ${white("· Loaded")} ${green(`${event.name}.js`)}`
     );
   });
 }

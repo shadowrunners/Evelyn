@@ -2,7 +2,8 @@ const {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
 } = require("discord.js");
-const WAPI = require("../../engines/WaifuEngine.js");
+const WE = require("../../functions/waifuEngine.js");
+const WaifuEngine = new WE();
 
 module.exports = {
   botPermissions: ["SendMessages", "EmbedLinks"],
@@ -48,7 +49,7 @@ module.exports = {
 
     switch (options.getString("action")) {
       case "bite":
-        return WAPI.bite(interaction, target);
+        return WaifuEngine.bite(target, interaction);
 
       case "blush":
         return WAPI.blush(interaction, target);

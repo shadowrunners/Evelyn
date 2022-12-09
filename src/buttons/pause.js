@@ -14,7 +14,7 @@ module.exports = {
 
     await interaction.deferReply();
 
-    if (!player.isPaused) {
+    if (!player.paused) {
       player.pause(true);
 
       embed.setDescription("🔹 | Paused.").setFooter({
@@ -24,7 +24,7 @@ module.exports = {
       return interaction.editReply({ embeds: [embed] });
     }
 
-    if (player.isPaused) {
+    if (player.paused) {
       player.pause(false);
 
       embed.setDescription("🔹 | Resumed.").setFooter({

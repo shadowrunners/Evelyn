@@ -26,9 +26,9 @@ module.exports = {
     if (await checkVoice(interaction)) return;
     if (isSongPlaying(interaction, player)) return;
 
-    const track = player.currentTrack;
+    const track = player.queue.current;
 
-    const trackTitle = track.info.title.replace(
+    const trackTitle = track.title.replace(
       /lyrics|lyric|lyrical|official music video|\(official music video\)|audio|official|official video|official video hd|official hd video|offical video music|\(offical video music\)|extended|hd|(\[.+\])/gi
     );
     const actualTrack = await gClient.songs.search(trackTitle);

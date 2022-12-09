@@ -13,7 +13,7 @@ module.exports = {
 
     await interaction.deferReply();
 
-    player.stop();
+    player.skip();
 
     return interaction.editReply({
       embeds: [
