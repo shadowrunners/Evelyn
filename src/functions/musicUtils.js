@@ -99,6 +99,9 @@ module.exports = {
         return interaction.editReply({
           embeds: [embed.setDescription("🔹 | Repeat mode is now off.")],
         });
+
+      default:
+        break;
     }
   },
   seek: async (interaction, player, time) => {

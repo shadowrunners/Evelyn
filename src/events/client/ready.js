@@ -5,7 +5,7 @@ const { check4Giveaways } = require("../../functions/check4Giveaways.js");
 const { check4Reminders } = require("../../functions/check4Reminders.js");
 const { check4Lockdowns } = require("../../functions/check4Lockdowns.js");
 const { dash } = require("../../functions/dashServer.js");
-const { connect } = require("mongoose");
+const { connect, set } = require("mongoose");
 const DXP = require("discord-xp");
 
 module.exports = {
@@ -41,7 +41,8 @@ module.exports = {
 
     client.statcord.autopost();
 
-    connect(client.config.database)
+    set("strictQuery", true)
+      .connect(client.config.database)
       .then(() => {
         console.log(
           `${magenta("Database")} ${white("·")} ${green(

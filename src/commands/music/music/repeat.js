@@ -28,6 +28,11 @@ module.exports = {
       case "song":
         if (isSongPlaying(interaction, player)) return;
         return repeatMode("song", player, interaction);
+      case "off":
+        if (isSongPlaying(interaction, player)) return;
+        return repeatMode("off", player, interaction);
+      default:
+        break;
     }
   },
 };
