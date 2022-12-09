@@ -3,7 +3,6 @@ const {
   SlashCommandBuilder,
 } = require("discord.js");
 const importedWaifu = require("../../functions/waifuEngine.js");
-const WaifuEngine = new importedWaifu();
 
 module.exports = {
   botPermissions: ["SendMessages", "EmbedLinks"],
@@ -43,55 +42,56 @@ module.exports = {
    */
   async execute(interaction) {
     const { options } = interaction;
+    const WaifuEngine = new importedWaifu(interaction);
     const target = options.getUser("target");
 
     await interaction.deferReply();
 
     switch (options.getString("action")) {
       case "bite":
-        return WaifuEngine.bite(target, interaction);
+        return WaifuEngine.bite(target);
 
       case "blush":
-        return WaifuEngine.blush(interaction, target);
+        return WaifuEngine.blush();
 
       case "bonk":
-        return WaifuEngine.bonk(interaction, target);
+        return WaifuEngine.bonk(target);
 
       case "bully":
-        return WaifuEngine.bully(interaction, target);
+        return WaifuEngine.bully(target);
 
       case "cringe":
-        return WaifuEngine.cringe(interaction);
+        return WaifuEngine.cringe();
 
       case "cry":
-        return WaifuEngine.cry(interaction);
+        return WaifuEngine.cry();
 
       case "cuddle":
-        return WaifuEngine.cuddle(interaction, target);
+        return WaifuEngine.cuddle(target);
 
       case "handhold":
-        return WaifuEngine.bite(interaction, target);
+        return WaifuEngine.handhold(target);
 
       case "highfive":
-        return WaifuEngine.highfive(interaction, target);
+        return WaifuEngine.highfive(target);
 
       case "hug":
-        return WaifuEngine.hug(interaction, target);
+        return WaifuEngine.hug(target);
 
       case "kiss":
-        return WaifuEngine.kiss(interaction, target);
+        return WaifuEngine.kiss(target);
 
       case "pat":
-        return WaifuEngine.pat(interaction, target);
+        return WaifuEngine.pat(target);
 
       case "poke":
-        return WaifuEngine.poke(interaction, target);
+        return WaifuEngine.poke(target);
 
       case "slap":
-        return WaifuEngine.slap(interaction, target);
+        return WaifuEngine.slap(target);
 
       case "wave":
-        return WaifuEngine.wave(interaction, target);
+        return WaifuEngine.wave(target);
     }
   },
 };

@@ -26,7 +26,7 @@ module.exports = {
     client.user.setPresence({
       activities: [
         {
-          name: "v4 (Unleashed) || dash.evelynbot.ml",
+          name: "v4-beta (Unleashed) || dash.evelynbot.ml",
           type: ActivityType.Playing,
         },
       ],

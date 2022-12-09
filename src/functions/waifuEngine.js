@@ -1,9 +1,13 @@
+/**
+ * This class contains our own custom version of a wrapper for the waifu.pics API to reduce the amount of packages we're using.
+ */
 const { get } = require("superagent");
 const { EmbedBuilder } = require("discord.js");
 
 module.exports = class WaifuEngine {
-  constructor() {
-    /** API URL. */
+  /** Creates a new instance of the Waifu Engine class. */
+  constructor(interaction) {
+    /** API URL for waifu.pics. */
     this.apiURL = "https://api.waifu.pics/sfw/";
     /** Base embed used to reduce repeated code. */
     this.embed = new EmbedBuilder()
@@ -12,6 +16,8 @@ module.exports = class WaifuEngine {
         text: "This image was brought to you by the waifu.pics API.",
       })
       .setTimestamp();
+    /** The interaction object used for replying and fetching usernames. */
+    this.interaction = interaction;
   }
 
   /** Retrieves the image from the endpoint provided. */
@@ -21,9 +27,8 @@ module.exports = class WaifuEngine {
   }
 
   /** Checks for a target user to display in the embed whenever a person needs to be mentioned. */
-  checkTarget(target, interaction) {
+  checkTarget(target) {
     this.target = target;
-    this.interaction = interaction;
 
     if (!this.target)
       return this.interaction.editReply({
@@ -37,16 +42,16 @@ module.exports = class WaifuEngine {
   }
 
   /** Fetches the biting images from the API and replies with an embed of it. */
-  async bite(target, interaction) {
-    if (this.checkTarget(target, interaction)) return;
+  async bite(target) {
+    if (this.checkTarget(target)) return;
 
     await this.fetchImage("bite").then((image) => {
       return this.interaction.editReply({
         embeds: [
           this.embed
             .setAuthor({
-              name: `${interaction.user.username} bites ${target.username}`,
-              iconURL: interaction.user.avatarURL({ dynamic: true }),
+              name: `${this.interaction.user.username} bites ${target.username}`,
+              iconURL: this.interaction.user.avatarURL({ dynamic: true }),
             })
             .setImage(image),
         ],
@@ -55,14 +60,14 @@ module.exports = class WaifuEngine {
   }
 
   /** Fetches blushing images from the API and replies with an embed of it. */
-  async blush(interaction) {
+  async blush() {
     await this.fetchImage("blush").then((image) => {
       return this.interaction.editReply({
         embeds: [
-          embed
+          this.embed
             .setAuthor({
-              name: `${interaction.user.username} blushes`,
-              iconURL: interaction.user.avatarURL({ dynamic: true }),
+              name: `${this.interaction.user.username} blushes`,
+              iconURL: this.interaction.user.avatarURL({ dynamic: true }),
             })
             .setImage(image),
         ],
@@ -71,16 +76,16 @@ module.exports = class WaifuEngine {
   }
 
   /** Fetches bonk images from the API and replies with an embed of it. */
-  async bonk(target, interaction) {
-    if (this.checkTarget(target, interaction)) return;
+  async bonk(target) {
+    if (this.checkTarget(target)) return;
 
     await this.fetchImage("bonk").then((image) => {
       return this.interaction.editReply({
         embeds: [
           this.embed
             .setAuthor({
-              name: `${interaction.user.username} bonks ${target.username}`,
-              iconURL: interaction.user.avatarURL({ dynamic: true }),
+              name: `${this.interaction.user.username} bonks ${target.username}`,
+              iconURL: this.interaction.user.avatarURL({ dynamic: true }),
             })
             .setImage(image),
         ],
@@ -89,16 +94,16 @@ module.exports = class WaifuEngine {
   }
 
   /** Fetches bully images from the API and replies with an embed of it. */
-  async bully(target, interaction) {
-    if (this.checkTarget(target, interaction)) return;
+  async bully(target) {
+    if (this.checkTarget(target)) return;
 
     await this.fetchImage("bully").then((image) => {
       return this.interaction.editReply({
         embeds: [
           this.embed
             .setAuthor({
-              name: `${interaction.user.username} bullies ${target.username}`,
-              iconURL: interaction.user.avatarURL({ dynamic: true }),
+              name: `${this.interaction.user.username} bullies ${target.username}`,
+              iconURL: this.interaction.user.avatarURL({ dynamic: true }),
             })
             .setImage(image),
         ],
@@ -107,14 +112,14 @@ module.exports = class WaifuEngine {
   }
 
   /** Fetches cringe images from the API and replies with an embed of it. */
-  async cringe(interaction) {
+  async cringe() {
     await this.fetchImage("cringe").then((image) => {
       return this.interaction.editReply({
         embeds: [
           this.embed
             .setAuthor({
-              name: `${interaction.user.username} thinks that's pretty cringe`,
-              iconURL: interaction.user.avatarURL({ dynamic: true }),
+              name: `${this.interaction.user.username} thinks that's pretty cringe`,
+              iconURL: this.interaction.user.avatarURL({ dynamic: true }),
             })
             .setImage(image),
         ],
@@ -123,14 +128,14 @@ module.exports = class WaifuEngine {
   }
 
   /** Fetches crying images from the API and replies with an embed of it. */
-  async cry(interaction) {
+  async cry() {
     await this.fetchImage("cry").then((image) => {
       return this.interaction.editReply({
         embeds: [
           this.embed
             .setAuthor({
-              name: `${interaction.user.username} is crying :c`,
-              iconURL: interaction.user.avatarURL({ dynamic: true }),
+              name: `${this.interaction.user.username} is crying :c`,
+              iconURL: this.interaction.user.avatarURL({ dynamic: true }),
             })
             .setImage(image),
         ],
@@ -139,16 +144,16 @@ module.exports = class WaifuEngine {
   }
 
   /** Fetches cuddling images from the API and replies with an embed of it. */
-  async cuddle(target, interaction) {
-    if (this.checkTarget(target, interaction)) return;
+  async cuddle(target) {
+    if (this.checkTarget(target)) return;
 
     await this.fetchImage("cuddle").then((image) => {
-      return this.interaction.editReply({
+      return interaction.editReply({
         embeds: [
           this.embed
             .setAuthor({
-              name: `${interaction.user.username} cuddles ${target.username}`,
-              iconURL: interaction.user.avatarURL({ dynamic: true }),
+              name: `${this.interaction.user.username} cuddles ${target.username}`,
+              iconURL: this.interaction.user.avatarURL({ dynamic: true }),
             })
             .setImage(image),
         ],
@@ -157,16 +162,16 @@ module.exports = class WaifuEngine {
   }
 
   /** Fetches handholding images from the API and replies with an embed of it. */
-  async handhold(target, interaction) {
-    if (this.checkTarget(target, interaction)) return;
+  async handhold(target) {
+    if (this.checkTarget(target)) return;
 
     await this.fetchImage("handhold").then((image) => {
       return this.interaction.editReply({
         embeds: [
           this.embed
             .setAuthor({
-              name: `${interaction.user.username} is holding ${target.username}'s hand`,
-              iconURL: interaction.user.avatarURL({ dynamic: true }),
+              name: `${this.interaction.user.username} is holding ${target.username}'s hand`,
+              iconURL: this.interaction.user.avatarURL({ dynamic: true }),
             })
             .setImage(image),
         ],
@@ -175,16 +180,16 @@ module.exports = class WaifuEngine {
   }
 
   /** Fetches highfive images from the API and replies with an embed of it. */
-  async highfive(target, interaction) {
-    if (this.checkTarget(target, interaction)) return;
+  async highfive(target) {
+    if (this.checkTarget(target)) return;
 
     await this.fetchImage("highfive").then((image) => {
       return this.interaction.editReply({
         embeds: [
           this.embed
             .setAuthor({
-              name: `${interaction.user.username} highfives ${target.username}`,
-              iconURL: interaction.user.avatarURL({ dynamic: true }),
+              name: `${this.interaction.user.username} highfives ${target.username}`,
+              iconURL: this.interaction.user.avatarURL({ dynamic: true }),
             })
             .setImage(image),
         ],
@@ -193,16 +198,16 @@ module.exports = class WaifuEngine {
   }
 
   /** Fetches hugging images from the API and replies with an embed of it. */
-  async hug(target, interaction) {
-    if (this.checkTarget(target, interaction)) return;
+  async hug(target) {
+    if (this.checkTarget(target)) return;
 
     await this.fetchImage("hug").then((image) => {
       return this.interaction.editReply({
         embeds: [
           this.embed
             .setAuthor({
-              name: `${interaction.user.username} hugs ${target.username}`,
-              iconURL: interaction.user.avatarURL({ dynamic: true }),
+              name: `${this.interaction.user.username} hugs ${target.username}`,
+              iconURL: this.interaction.user.avatarURL({ dynamic: true }),
             })
             .setImage(image),
         ],
@@ -211,16 +216,16 @@ module.exports = class WaifuEngine {
   }
 
   /** Fetches kissing images from the API and replies with an embed of it. */
-  async kiss(target, interaction) {
-    if (this.checkTarget(target, interaction)) return;
+  async kiss(target) {
+    if (this.checkTarget(target)) return;
 
     await this.fetchImage("kiss").then((image) => {
       return this.interaction.editReply({
         embeds: [
           this.embed
             .setAuthor({
-              name: `${interaction.user.username} kisses ${target.username}`,
-              iconURL: interaction.user.avatarURL({ dynamic: true }),
+              name: `${this.interaction.user.username} kisses ${target.username}`,
+              iconURL: this.interaction.user.avatarURL({ dynamic: true }),
             })
             .setImage(image),
         ],
@@ -229,16 +234,16 @@ module.exports = class WaifuEngine {
   }
 
   /** Fetches patting images from the API and replies with an embed of it. */
-  async pat(target, interaction) {
-    if (this.checkTarget(target, interaction)) return;
+  async pat(target) {
+    if (this.checkTarget(target)) return;
 
     await this.fetchImage("pat").then((image) => {
       return this.interaction.editReply({
         embeds: [
           this.embed
             .setAuthor({
-              name: `${interaction.user.username} pats ${target.username}`,
-              iconURL: interaction.user.avatarURL({ dynamic: true }),
+              name: `${this.interaction.user.username} pats ${target.username}`,
+              iconURL: this.interaction.user.avatarURL({ dynamic: true }),
             })
             .setImage(image),
         ],
@@ -247,16 +252,16 @@ module.exports = class WaifuEngine {
   }
 
   /** Fetches poking images from the API and replies with an embed of it. */
-  async poke(target, interaction) {
-    if (this.checkTarget(target, interaction)) return;
+  async poke(target) {
+    if (this.checkTarget(target)) return;
 
     await this.fetchImage("poke").then((image) => {
       return this.interaction.editReply({
         embeds: [
           this.embed
             .setAuthor({
-              name: `${interaction.user.username} blushes`,
-              iconURL: interaction.user.avatarURL({ dynamic: true }),
+              name: `${this.interaction.user.username} blushes`,
+              iconURL: this.interaction.user.avatarURL({ dynamic: true }),
             })
             .setImage(image),
         ],
@@ -265,16 +270,16 @@ module.exports = class WaifuEngine {
   }
 
   /** Fetches slapping images from the API and replies with an embed of it. */
-  async slap(target, interaction) {
-    if (this.checkTarget(target, interaction)) return;
+  async slap(target) {
+    if (this.checkTarget(target)) return;
 
     await this.fetchImage("slap").then((image) => {
       return this.interaction.editReply({
         embeds: [
           this.embed
             .setAuthor({
-              name: `${interaction.user.username} slaps ${target.username}`,
-              iconURL: interaction.user.avatarURL({ dynamic: true }),
+              name: `${this.interaction.user.username} slaps ${target.username}`,
+              iconURL: this.interaction.user.avatarURL({ dynamic: true }),
             })
             .setImage(image),
         ],
@@ -283,16 +288,16 @@ module.exports = class WaifuEngine {
   }
 
   /** Fetches waving images from the API and replies with an embed of it. */
-  async wave(target, interaction) {
-    if (this.checkTarget(target, interaction)) return;
+  async wave(target) {
+    if (this.checkTarget(target)) return;
 
     await this.fetchImage("wave").then((image) => {
       return this.interaction.editReply({
         embeds: [
           this.embed
             .setAuthor({
-              name: `${interaction.user.username} waves at ${target.username}`,
-              iconURL: interaction.user.avatarURL({ dynamic: true }),
+              name: `${this.interaction.user.username} waves at ${target.username}`,
+              iconURL: this.interaction.user.avatarURL({ dynamic: true }),
             })
             .setImage(image),
         ],
