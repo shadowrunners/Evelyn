@@ -1,7 +1,7 @@
 const DB = require("../structures/schemas/reminders.js");
 const { reminded } = require("../functions/reminderUtils.js");
 
-async function check4Reminders(client) {
+function check4Reminders(client) {
   DB.find().then((data) => {
     data.forEach(async (data) => {
       if (!data) return;

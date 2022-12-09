@@ -26,7 +26,7 @@ module.exports = {
   /**
    * @param {ChatInputCommandInteraction} interaction
    */
-  async execute(interaction) {
+  execute(interaction) {
     const { options } = interaction;
     const remindMessage = options.getString("message");
     const time = ms(options.getString("time"));

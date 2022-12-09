@@ -46,6 +46,6 @@ module.exports = {
       embeds.push(embed);
     }
 
-    return await embedPages(client, interaction, embeds);
+    return embedPages(client, interaction, embeds);
   },
 };
