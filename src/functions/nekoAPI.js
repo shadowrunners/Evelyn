@@ -72,7 +72,7 @@ module.exports = class NekoAPI {
       `?type=awooify&url=${this.user1.avatarURL() || this.user2.avatarURL()}`
     ).then((image) => {
       return this.interaction.editReply({
-        embeds: [embed.setImage(image)],
+        embeds: [this.embed.setImage(image)],
       });
     });
   }
@@ -88,7 +88,7 @@ module.exports = class NekoAPI {
       `?type=baguette&url=${this.user1.avatarURL() || this.user2.avatarURL()}`
     ).then((image) => {
       return this.interaction.editReply({
-        embeds: [embed.setImage(image)],
+        embeds: [this.embed.setImage(image)],
       });
     });
   }
@@ -104,7 +104,7 @@ module.exports = class NekoAPI {
       `?type=blurpify&image=${this.user1.avatarURL() || this.user2.avatarURL()}`
     ).then((image) => {
       return this.interaction.editReply({
-        embeds: [embed.setImage(image)],
+        embeds: [this.embed.setImage(image)],
       });
     });
   }
@@ -122,7 +122,7 @@ module.exports = class NekoAPI {
       }&username=${this.user1.username || this.user2.username}`
     ).then((image) => {
       return this.interaction.editReply({
-        embeds: [embed.setImage(image)],
+        embeds: [this.embed.setImage(image)],
       });
     });
   }
@@ -135,7 +135,7 @@ module.exports = class NekoAPI {
     await this.fetchImage(`?type=changemymind&text=${this.text}`).then(
       (image) => {
         return this.interaction.editReply({
-          embeds: [embed.setImage(image)],
+          embeds: [this.embed.setImage(image)],
         });
       }
     );
@@ -152,7 +152,7 @@ module.exports = class NekoAPI {
       `?type=deepfry&image=${this.user1.avatarURL() || this.user2.avatarURL()}`
     ).then((image) => {
       return this.interaction.editReply({
-        embeds: [embed.setImage(image)],
+        embeds: [this.embed.setImage(image)],
       });
     });
   }
@@ -164,13 +164,13 @@ module.exports = class NekoAPI {
 
     await this.fetchImage(`?type=kannagen&text=${this.text}`).then((image) => {
       return this.interaction.editReply({
-        embeds: [embed.setImage(image)],
+        embeds: [this.embed.setImage(image)],
       });
     });
   }
 
   /** Fetches the PH image from the API and replies with an embed of it. */
-  async phcomment(user1, user2) {
+  async phcomment(user1, user2, text) {
     if (this.checkTarget(user1, user2)) return;
     if (this.checkText(text)) return;
 
@@ -186,7 +186,7 @@ module.exports = class NekoAPI {
       }`
     ).then((image) => {
       return this.interaction.editReply({
-        embeds: [embed.setImage(image)],
+        embeds: [this.embed.setImage(image)],
       });
     });
   }
@@ -202,7 +202,7 @@ module.exports = class NekoAPI {
       `?type=threats&url=${this.user1.avatarURL() || this.user2.avatarURL()}`
     ).then((image) => {
       return this.interaction.editReply({
-        embeds: [embed.setImage(image)],
+        embeds: [this.embed.setImage(image)],
       });
     });
   }
@@ -218,7 +218,7 @@ module.exports = class NekoAPI {
       `?type=trash&image=${this.user1.avatarURL() || this.user2.avatarURL()}`
     ).then((image) => {
       return this.interaction.editReply({
-        embeds: [embed.setImage(image)],
+        embeds: [this.embed.setImage(image)],
       });
     });
   }
@@ -232,7 +232,7 @@ module.exports = class NekoAPI {
     await this.fetchImage(`?type=trumptweet&text=${this.text}`).then(
       (image) => {
         return this.interaction.editReply({
-          embeds: [embed.setImage(image)],
+          embeds: [this.embed.setImage(image)],
         });
       }
     );
@@ -252,7 +252,7 @@ module.exports = class NekoAPI {
       }&text=${this.text}`
     ).then((image) => {
       return this.interaction.editReply({
-        embeds: [embed.setImage(image)],
+        embeds: [this.embed.setImage(image)],
       });
     });
   }

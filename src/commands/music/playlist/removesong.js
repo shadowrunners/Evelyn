@@ -1,6 +1,5 @@
-const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
-const { validateTrack } = require("../../../functions/playlistUtils.js");
-const PDB = require("../../../structures/schemas/playlist.js");
+const { ChatInputCommandInteraction } = require("discord.js");
+const importEngine = require("../../../functions/playlistEngine.js");
 
 module.exports = {
   subCommand: "playlist.removesong",
@@ -11,7 +10,8 @@ module.exports = {
     const { options, user } = interaction;
     const pName = options.getString("name");
     const song = options.getNumber("songid");
+    const PlaylistEngine = new importEngine(interaction);
 
-    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+    return PlaylistEngine.removeThisSong(pName, song);
   },
 };

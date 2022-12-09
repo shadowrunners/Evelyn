@@ -13,16 +13,16 @@ module.exports = class PlaylistEngine {
   }
 
   /** Checks to see if there is any data with the name you provided. */
-  async validatePlaylist(playlistName) {
+  async validatePlaylist(pName) {
     const playlistData = await PDB.findOne({
       userID: this.interaction.user.id,
-      playlistName: playlistName,
+      playlistName: pName,
     });
 
     if (!playlistData)
-      return interaction.editReply({
+      return this.interaction.editReply({
         embeds: [
-          embed.setDescription(
+          this.embed.setDescription(
             "🔹 | There is no playlist with that name or no data regarding that user."
           ),
         ],
@@ -31,17 +31,12 @@ module.exports = class PlaylistEngine {
   }
 
   /** Adds the current track to your playlist. */
-  async addCurrentTrack(player, playlistName) {
+  async addCurrentTrack(player, pName) {
     const track = player.queue.current;
-
-    const pData = await PDB.findOne({
-      playlistName: playlistName,
-      userID: this.interaction.user.id,
-    });
 
     if (!track)
       return this.interaction.editReply({
-        embeds: [embed.setDescription("🔹 | Nothing is playing.")],
+        embeds: [this.embed.setDescription("🔹 | Nothing is playing.")],
         ephemeral: true,
       });
 
@@ -64,7 +59,7 @@ module.exports = class PlaylistEngine {
 
     return interaction.editReply({
       embeds: [
-        embed.setDescription(
+        this.embed.setDescription(
           `🔹 | **[${track.title}](${track.uri})** has been added to your playlist.`
         ),
       ],
@@ -72,24 +67,24 @@ module.exports = class PlaylistEngine {
   }
 
   /** Creates a new playlist. */
-  async create(playlistName) {
+  async create(pName) {
     const userData = await PDB.findOne({
       userID: this.interaction.user.id,
     });
 
-    if (playlistName.length > 12)
-      return interaction.editReply({
+    if (pName.length > 12)
+      return this.interaction.editReply({
         embeds: [
-          embed.setDescription(
+          this.embed.setDescription(
             "🔹 | The name of the playlist cannot be more than 12 characters."
           ),
         ],
       });
 
     if (userData?.length >= 10)
-      return interaction.editReply({
+      return this.interaction.editReply({
         embeds: [
-          embed.setDescription(
+          this.embed.setDescription(
             "🔹 | You can only create 10 playlists at a time."
           ),
         ],
@@ -106,29 +101,27 @@ module.exports = class PlaylistEngine {
 
     return this.interaction.editReply({
       embeds: [
-        new EmbedBuilder()
-          .setDescription(
-            `🔹 | Your playlist **${playlistName}** has been created.`
-          )
-          .setTimestamp(),
+        this.embed.setDescription(
+          `🔹 | Your playlist **${pName}** has been created.`
+        ),
       ],
     });
   }
 
   /** Deletes a playlist. */
-  async delete(playlistName) {
+  async delete(pName) {
     const playlistData = await PDB.findOne({
       userID: this.interaction.user.id,
-      playlistName: playlistName,
+      playlistName: pName,
     });
 
     if (validatePlaylist(playlistName)) return;
 
     await playlistData.delete();
 
-    return interaction.editReply({
+    return this.interaction.editReply({
       embeds: [
-        embed.setDescription(
+        this.embed.setDescription(
           `🔹 | Your playlist **${pName}** has been deleted.`
         ),
       ],
@@ -142,7 +135,7 @@ module.exports = class PlaylistEngine {
       userID: user.id,
     });
 
-    if (this.validatePlaylist(interaction)) return;
+    if (this.validatePlaylist(pName)) return;
 
     let i = 0;
     const trackData = pData.playlistData;
@@ -159,7 +152,7 @@ module.exports = class PlaylistEngine {
     }
 
     for (i = 0; i < tracks.length; i += 10) {
-      embed
+      this.embed
         .setTitle(`${pData.playlistName} by ${pData.name}`)
         .setDescription(tracks.slice(i, i + 10).join("\n"));
       embeds.push(embed);
@@ -174,7 +167,11 @@ module.exports = class PlaylistEngine {
       userID: this.interaction.user.id,
     });
 
-    if (this.validatePlaylist(interaction)) return;
+    if (!pData)
+      return this.interaction.editReply({
+        embeds: [this.embed.setDescription("🔹 | You have no playlists.")],
+        ephemeral: true,
+      });
 
     const playlists = [];
     const embeds = [];
@@ -186,13 +183,13 @@ module.exports = class PlaylistEngine {
     }
 
     for (let i = 0; i < playlists.length; i += 10) {
-      embed
+      this.embed
         .setTitle(`Playlists curated by ${pData[i].name}`)
         .setDescription(playlists.slice(i, i + 10).join("\n"));
       embeds.push(embed);
     }
 
-    return Util.embedPages(client, interaction, embeds);
+    return embedPages(client, interaction, embeds);
   }
 
   /** Removes the song provided from the specified playlist. */
@@ -215,7 +212,7 @@ module.exports = class PlaylistEngine {
     if (song >= pData?.playlistData.length || song < 0)
       return interaction.editReply({
         embeds: [
-          embed.setDescription(
+          this.embed.setDescription(
             "🔹 | Track ID is out of range, see your playlist via /playlist list (playlistName)"
           ),
         ],
@@ -236,7 +233,7 @@ module.exports = class PlaylistEngine {
 
     return interaction.editReply({
       embeds: [
-        embed.setDescription(
+        this.embed.setDescription(
           `🔹 | **${tracks[song].title}** has been removed from your playlist.`
         ),
       ],
