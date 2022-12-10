@@ -8,9 +8,8 @@ module.exports = {
    * @param {Guild} guild
    * @param {Client} client
    */
-
   async execute(guild, client) {
-    const webhook = new WebhookClient({ url: client.config.watcherHook });
+    const webhook = new WebhookClient({ url: client.config.debug.watcherHook });
 
     await GDB.create({ id: guild.id });
 

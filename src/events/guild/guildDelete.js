@@ -8,17 +8,17 @@ module.exports = {
    * @param {Guild} guild
    * @param {Client} client
    */
-  execute(guild, client) {
-    const webhook = new WebhookClient({ url: client.config.watcherHook });
+  async execute(guild, client) {
+    const webhook = new WebhookClient({ url: client.config.debug.watcherHook });
 
-    GDB.findOneAndDelete({
+    await GDB.findOneAndDelete({
       id: guild.id,
     });
 
     const embed = new EmbedBuilder()
       .setColor("Blurple")
       .setTitle("Guild Left")
-      .setDescription(`Aeolian has been left a guild.`)
+      .setDescription(`Evelyn has been left a guild.`)
       .setThumbnail(guild.iconURL({ dynamic: true }))
       .addFields(
         { name: "Name", value: `${guild.name}` },
