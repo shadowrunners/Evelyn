@@ -146,7 +146,7 @@ module.exports = class NekoAPI {
   /** Fetches the change my mind image from the API and replies with an embed of it. */
   changemymind(text) {
     if (this.checkText(text)) return;
-    return this.fetchandSend("changemymind", user1, user2, `text=${text}`);
+    return this.fetchandSend("changemymind", "", "", `text=${text}`);
   }
 
   /** Fetches the deepfried image from the API and replies with an embed of it. */
@@ -162,7 +162,7 @@ module.exports = class NekoAPI {
   /** Fetches the kanna image from the API and replies with an embed of it. */
   kannagen(text) {
     if (this.checkText(text)) return;
-    return this.fetchandSend("kannagen", user1, user2, `text=${text}`);
+    return this.fetchandSend("kannagen", "", "", `text=${text}`);
   }
 
   /** Fetches the PH image from the API and replies with an embed of it. */
@@ -203,7 +203,7 @@ module.exports = class NekoAPI {
   /** Fetches the trump tweet image from the API and replies with an embed of it. */
   trumptweet(text) {
     if (this.checkText(text)) return;
-    return this.fetchandSend("trumptweet", user1, user2, `text=${text}`);
+    return this.fetchandSend("trumptweet", "", "", `text=${text}`);
   }
 
   /** Fetches the tweet image from the API and replies with an embed of it. */
@@ -213,7 +213,7 @@ module.exports = class NekoAPI {
       "tweet",
       user1,
       user2,
-      `username=${fetchUsername(user1, user2)}&text=${text}`
+      `username=${this.fetchUsername(user1, user2)}&text=${text}`
     );
   }
 };
