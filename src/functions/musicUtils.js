@@ -140,7 +140,7 @@ module.exports = class MusicUtils {
 
   /** Sets the volume for the player. */
   setVolume(volume) {
-    const clampedVolume = clampVolume(volume);
+    const clampedVolume = this.clampVolume(volume);
     this.player.setVolume(clampedVolume);
 
     return this.interaction.editReply({

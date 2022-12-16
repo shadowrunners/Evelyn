@@ -18,6 +18,6 @@ module.exports = {
 
     if (utils.check()) return;
 
-    return setVolume(percent);
+    return utils.setVolume(percent);
   },
 };
