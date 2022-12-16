@@ -5,7 +5,7 @@ const { check4Giveaways } = require("../../functions/check4Giveaways.js");
 const { check4Reminders } = require("../../functions/check4Reminders.js");
 const { check4Lockdowns } = require("../../functions/check4Lockdowns.js");
 const { dash } = require("../../functions/dashServer.js");
-const { connect, set } = require("mongoose");
+const { set } = require("mongoose");
 const DXP = require("discord-xp");
 
 module.exports = {
@@ -26,7 +26,7 @@ module.exports = {
     client.user.setPresence({
       activities: [
         {
-          name: "v4-beta (Unleashed) || dash.evelynbot.ml",
+          name: "v4 - Unleashed || dash.evelynbot.ml",
           type: ActivityType.Playing,
         },
       ],

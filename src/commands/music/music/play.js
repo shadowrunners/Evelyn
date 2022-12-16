@@ -1,9 +1,8 @@
 const {
-  ChatInputCommandInteraction,
   Client,
   EmbedBuilder,
+  ChatInputCommandInteraction,
 } = require("discord.js");
-const { checkVoice } = require("../../../functions/musicUtils.js");
 
 module.exports = {
   subCommand: "music.play",
@@ -12,21 +11,29 @@ module.exports = {
    * @param {Client} client
    */
   async execute(interaction, client) {
-    const { options, member } = interaction;
+    const { guild, options, member, channelId, user } = interaction;
     const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
     await interaction.deferReply();
-    if (await checkVoice(interaction)) return;
+
+    if (!member.voice.channel)
+      return interaction.editReply({
+        embeds: [
+          embed.setDescription(
+            "🔹 | You need to be in a voice channel to use this command."
+          ),
+        ],
+      });
 
     const player = await client.manager.createPlayer({
-      guildId: interaction.guild.id,
-      voiceId: interaction.member.voice.channelId,
-      textId: interaction.channelId,
+      guildId: guild.id,
+      voiceId: member.voice.channelId,
+      textId: channelId,
       deaf: true,
     });
 
     const query = options.getString("query");
-    const res = await player.search(query, { requester: interaction.user });
+    const res = await player.search(query, { requester: user });
 
     if (!res.tracks.length) {
       if (player) player.destroy();

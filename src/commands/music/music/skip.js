@@ -1,12 +1,9 @@
 const {
-  ChatInputCommandInteraction,
   Client,
   EmbedBuilder,
+  ChatInputCommandInteraction,
 } = require("discord.js");
-const {
-  checkVoice,
-  isSongPlaying,
-} = require("../../../functions/musicUtils.js");
+const MusicUtils = require("../../../functions/musicUtils.js");
 
 module.exports = {
   subCommand: "music.skip",
@@ -15,24 +12,18 @@ module.exports = {
    * @param {Client} client
    */
   async execute(interaction, client) {
-    const { guildId } = interaction;
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+    const player = client.manager.players.get(interaction.guildId);
+    const utils = new MusicUtils(interaction, player);
 
-    const player = client.manager.players.get(guildId);
     await interaction.deferReply();
 
-    if (!player) return;
-    if (await checkVoice(interaction)) return;
-    if (isSongPlaying(interaction, player)) return;
+    if (utils.check()) return;
 
     await player.stop();
 
-    return interaction.reply({
-      embeds: [
-        new EmbedBuilder()
-          .setColor("Blurple")
-          .setDescription("🔹 | Skipped.")
-          .setTimestamp(),
-      ],
+    return interaction.editReply({
+      embeds: [embed.setDescription("🔹 | Skipped.")],
     });
   },
 };

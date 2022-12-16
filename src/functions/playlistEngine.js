@@ -7,8 +7,11 @@ const { EmbedBuilder } = require("discord.js");
 const pms = require("pretty-ms");
 
 module.exports = class PlaylistEngine {
-  constructor(interaction) {
+  /** Creates a new instance of the Playlist Engine class. */
+  constructor(interaction, player) {
+    /** The interaction object. */
     this.interaction = interaction;
+    /** The base embed used for keeping away from repeated code. */
     this.embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
   }
 

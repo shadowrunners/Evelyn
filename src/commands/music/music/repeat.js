@@ -1,10 +1,5 @@
 const { ChatInputCommandInteraction, Client } = require("discord.js");
-const {
-  checkForQueue,
-  isSongPlaying,
-  checkVoice,
-  repeatMode,
-} = require("../../../functions/musicUtils.js");
+const MusicUtils = require("../../../functions/musicUtils.js");
 
 module.exports = {
   subCommand: "music.repeat",
@@ -14,23 +9,19 @@ module.exports = {
    */
   async execute(interaction, client) {
     const { options, guildId } = interaction;
-
     const player = client.manager.players.get(guildId);
+    const utils = new MusicUtils(interaction, player);
     await interaction.deferReply();
 
-    if (!player) return;
-    if (await checkVoice(interaction)) return;
+    if (utils.check()) return;
 
     switch (options.getString("type")) {
       case "queue":
-        if (!checkForQueue(interaction, player)) return;
-        return repeatMode("queue", player, interaction);
+        return utils.repeatMode("queue");
       case "song":
-        if (isSongPlaying(interaction, player)) return;
-        return repeatMode("song", player, interaction);
+        return utils.repeatMode("song");
       case "off":
-        if (isSongPlaying(interaction, player)) return;
-        return repeatMode("off", player, interaction);
+        return utils.repeatMode("off");
       default:
         break;
     }

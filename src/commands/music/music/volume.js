@@ -1,9 +1,5 @@
 const { ChatInputCommandInteraction, Client } = require("discord.js");
-const {
-  setVolume,
-  isSongPlaying,
-  checkVoice,
-} = require("../../../functions/musicUtils.js");
+const MusicUtils = require("../../../functions/musicUtils.js");
 
 module.exports = {
   subCommand: "music.volume",
@@ -13,16 +9,15 @@ module.exports = {
    */
   async execute(interaction, client) {
     const { options, guildId } = interaction;
+    const utils = new MusicUtils(interaction, player);
 
     const player = client.manager.players.get(guildId);
     const percent = options.getNumber("percent", true);
 
     await interaction.deferReply();
 
-    if (!player) return;
-    if (await isSongPlaying(interaction, player)) return;
-    if (await checkVoice(interaction)) return;
+    if (utils.check()) return;
 
-    return setVolume(interaction, player, percent);
+    return setVolume(percent);
   },
 };

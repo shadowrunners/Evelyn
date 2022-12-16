@@ -1,9 +1,9 @@
 const {
-  ChatInputCommandInteraction,
   Client,
   EmbedBuilder,
+  ChatInputCommandInteraction,
 } = require("discord.js");
-const { checkVoice } = require("../../../functions/musicUtils.js");
+const MusicUtils = require("../../../functions/musicUtils.js");
 
 module.exports = {
   subCommand: "music.stop",
@@ -12,23 +12,18 @@ module.exports = {
    * @param {Client} client
    */
   async execute(interaction, client) {
-    const { guildId } = interaction;
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+    const player = client.manager.players.get(interaction.guildId);
+    const utils = new MusicUtils(interaction, player);
 
-    const player = client.manager.players.get(guildId);
     await interaction.deferReply();
 
-    if (!player) return;
-    if (await checkVoice(interaction)) return;
+    if (utils.check()) return;
 
     await player.destroy();
 
     return interaction.editReply({
-      embeds: [
-        new EmbedBuilder()
-          .setColor("Blurple")
-          .setDescription("🔹 | Disconnected.")
-          .setTimestamp(),
-      ],
+      embeds: [embed.setDescription("🔹 | Disconnected.")],
     });
   },
 };

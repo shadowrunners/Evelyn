@@ -5,156 +5,155 @@
 
 const { EmbedBuilder } = require("discord.js");
 const pms = require("pretty-ms");
-const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
-module.exports = {
-  progressbar: (player) => {
+module.exports = class MusicUtils {
+  /** Creates a new instance of the Music Utils Engine class. */
+  constructor(interaction, player) {
+    /** The interaction object. */
+    this.interaction = interaction;
+    /** The base embed used for keeping away from repeated code. */
+    this.embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+    /** The player object. */
+    this.player = player;
+
+    /** Returns if the player isn't defined. */
+    if (this.player) return;
+  }
+
+  /** Generates the progress bar for the Now Playing command. */
+  progressbar() {
     const size = 15;
     const line = "▬";
     const slider = "🔘";
 
-    if (!player.queue.current) return `${slider}${line.repeat(size - 1)}]`;
+    if (!this.player.queue.current) return `${slider}${line.repeat(size - 1)}]`;
     const current =
-      player.queue.current.length !== 0
-        ? player.shoukaku.position
-        : player.queue.current.length;
-    const total = player.queue.current.length;
-    const bar =
-      current > total
-        ? [line.repeat((size / 2) * 2), (current / total) * 100]
-        : [
-            line
-              .repeat(Math.round((size / 2) * (current / total)))
-              .replace(/.$/, slider) +
-              line.repeat(size - Math.round(size * (current / total)) + 1),
-            current / total,
-          ];
+      this.player.queue.current.length !== 0
+        ? this.player.shoukaku.position
+        : this.player.queue.current.length;
+    const total = this.player.queue.current.length;
+    const barSize = Math.min(current, total);
+    const bar = line.repeat(barSize) + line.slice(-1);
+    const barFilled = bar.slice(0, -1) + slider;
 
-    if (!String(bar).includes(slider))
-      return `${slider}${line.repeat(size - 1)}`;
-    return `${bar[0]}`;
-  },
-  checkVoice: (interaction) => {
-    const VC = interaction.member.voice.channel;
+    if (current > total) return `${barFilled}${line.repeat(size - barSize)}`;
+    return `${bar}${line.repeat(size - barSize)}`;
+  }
+
+  /** Handles all checks regarding songs, queues etc. */
+  check() {
+    const VC = this.interaction.member.voice.channel;
+    const botVC = this.interaction.guild.members.me.voice.channelId;
+
+    if (!this.player?.playing && this.player?.queue.length === 0)
+      return this.interaction.editReply({
+        embeds: [
+          this.embed.setDescription(
+            "If you're seeing this embed instead of the one you requested, something bad happened in the background.\n\nYou're seeing this either\na) the bot isn't playing;\nb) the queue is empty.\n\nIn this case, just queue 2 songs for the queue to exist or 1 song for it to be actually playing. :)"
+          ),
+        ],
+      });
 
     if (!VC)
-      return interaction.editReply({
+      return this.interaction.editReply({
         embeds: [
-          embed.setDescription(
+          this.embed.setDescription(
             "🔹 | You need to be in a voice channel to use this command."
           ),
         ],
-        ephemeral: true,
       });
 
-    if (
-      interaction.guild.members.me.voice.channelId &&
-      VC.id !== interaction.guild.members.me.voice.channelId
-    )
-      return interaction.editReply({
+    if (botVC && VC.id !== botVC)
+      return this.interaction.editReply({
         embeds: [
-          embed.setDescription(
-            `🔹 | Sorry but I'm already playing music in <#${interaction.guild.members.me.voice.channelId}>.`
+          this.embed.setDescription(
+            `🔹 | Sorry but I'm already playing music in <#${botVC}>.`
           ),
         ],
-        ephemeral: true,
       });
-  },
-  isSongPlaying: (interaction, player) => {
-    if (!player.playing)
-      return interaction.editReply({
-        embeds: [
-          new EmbedBuilder().setDescription(
-            "🔹 | I'm not playing anything right now."
-          ),
-        ],
-        ephemeral: true,
-      });
-  },
-  checkForQueue: (interaction, player) => {
-    if (player.queue.length === 0)
-      return interaction.editReply({
-        embeds: [embed.setDescription("🔹 | There is nothing in the queue.")],
-      });
-  },
-  repeatMode: async (mode, player, interaction) => {
+  }
+
+  /** This function switches the repeat modes. */
+  async repeatMode(mode) {
     switch (mode) {
-      case "queue":
-        await player.setLoop("queue");
+      default:
+        break;
 
-        return interaction.editReply({
-          embeds: [embed.setDescription("🔹 | Repeat mode is now on. (Queue)")],
+      case "queue":
+        await this.player.setLoop("queue");
+
+        return this.interaction.editReply({
+          embeds: [
+            this.embed.setDescription("🔹 | Repeat mode is now on. (Queue)"),
+          ],
         });
 
       case "song":
-        await player.setLoop("track");
+        await this.player.setLoop("track");
 
-        return interaction.editReply({
-          embeds: [embed.setDescription("🔹 | Repeat mode is now on. (Song)")],
+        return this.interaction.editReply({
+          embeds: [
+            this.embed.setDescription("🔹 | Repeat mode is now on. (Song)"),
+          ],
         });
 
       case "none":
-        await player.setLoop("off");
+        await this.player.setLoop("off");
 
-        return interaction.editReply({
-          embeds: [embed.setDescription("🔹 | Repeat mode is now off.")],
+        return this.interaction.editReply({
+          embeds: [this.embed.setDescription("🔹 | Repeat mode is now off.")],
         });
-
-      default:
-        break;
     }
-  },
-  seek: async (interaction, player, time) => {
-    const seekDuration = Number(time) * 1000;
-    const duration = player.queue.track.length;
+  }
 
-    if (seekDuration <= duration) {
-      await player.shoukaku.seekTo(seekDuration);
+  /** This function seeks to the time provided by you. */
+  async seek(time) {
+    const duration = Number.isInteger(time * 1000);
+    const trackDuration = this.player.queue.track.length;
 
-      return interaction.editReply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor("Blurple")
-            .setDescription(`🔹 | Seeked to ${pms(seekDuration)}.`)
-            .setTimestamp(),
-        ],
+    if (duration > trackDuration)
+      return this.interaction.editReply({
+        embeds: [this.embed.setDescription(`🔹 | Invalid seek time.`)],
       });
-    }
 
-    if (seekDuration > duration)
-      return interaction.editReply({
+    await this.player.shoukaku.seekTo(duration);
+
+    return this.interaction.editReply({
+      embeds: [this.embed.setDescription(`🔹 | Seeked to ${pms(duration)}.`)],
+    });
+  }
+
+  /** Checks if the volume is between 0 and 100. */
+  clampVolume(volume) {
+    if (volume > 100 || volume < 0)
+      return this.interaction.editReply({
         embeds: [
-          new EmbedBuilder()
-            .setColor("Blurple")
-            .setDescription(`🔹 | Invalid seek time.`)
-            .setTimestamp(),
-        ],
-      });
-  },
-  setVolume: (interaction, player, volume) => {
-    if (volume < 0 || volume > 100)
-      return interaction.editReply({
-        embeds: [
-          embed.setDescription(
+          this.embed.setDescription(
             "🔹| You can only set the volume from 0 to 100."
           ),
         ],
         ephemeral: true,
       });
 
-    player.setVolume(volume);
+    return Math.min(Math.max(volume, 0), 100);
+  }
 
-    return interaction.editReply({
+  /** Sets the volume for the player. */
+  setVolume(volume) {
+    const clampedVolume = clampVolume(volume);
+    this.player.setVolume(clampedVolume);
+
+    return this.interaction.editReply({
       embeds: [
-        embed
+        this.embed
           .setDescription(
-            `🔹 | Volume has been set to **${player.volume * 100}%**.`
+            `🔹 | Volume has been set to **${this.player.volume * 100}%**.`
           )
           .setFooter({
-            text: `Action executed by ${interaction.user.username}.`,
-            iconURL: interaction.user.avatarURL({ dynamic: true }),
+            text: `Action executed by ${this.interaction.user.username}.`,
+            iconURL: this.interaction.user.avatarURL({ dynamic: true }),
           }),
       ],
     });
-  },
+  }
 };

@@ -3,10 +3,7 @@ const {
   Client,
   EmbedBuilder,
 } = require("discord.js");
-const {
-  checkVoice,
-  checkForQueue,
-} = require("../../../functions/musicUtils.js");
+const MusicUtils = require("../../../functions/musicUtils.js");
 const { embedPages } = require("../../../functions/utils.js");
 
 module.exports = {
@@ -18,12 +15,10 @@ module.exports = {
   async execute(interaction, client) {
     const { guild, guildId } = interaction;
     const player = client.manager.players.get(guildId);
-
+    const utils = new MusicUtils(interaction, player);
     await interaction.deferReply();
 
-    if (!player) return;
-    if (await checkVoice(interaction)) return;
-    if (checkForQueue(interaction, player)) return;
+    if (utils.check()) return;
 
     const embeds = [];
     const songs = [];
@@ -38,6 +33,7 @@ module.exports = {
 
     for (let i = 0; i < songs.length; i += 10) {
       const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+
       embed
         .setAuthor({ name: `Current queue for ${guild.name}` })
         .setTitle(`▶️ | Currently playing: ${player.queue.current.title}`)

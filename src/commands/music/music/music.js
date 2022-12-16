@@ -93,14 +93,6 @@ module.exports = {
       options.setName("queue").setDescription("Shows you the queue.")
     )
     .addSubcommand((options) =>
-      options
-        .setName("clear")
-        .setDescription("Clears the queue.")
-        .addStringOption((option) =>
-          option
-            .setName("query")
-            .setDescription("Provide the name of the song or URL.")
-            .setRequired(true)
-        )
+      options.setName("clear").setDescription("Clears the queue.")
     ),
 };
