@@ -17,18 +17,16 @@ module.exports = {
    */
   async execute(interaction, client) {
     const { guild, guildId } = interaction;
-
     const player = client.manager.players.get(guildId);
+
     await interaction.deferReply();
 
     if (!player) return;
     if (await checkVoice(interaction)) return;
     if (checkForQueue(interaction, player)) return;
 
-    const songs = [];
     const embeds = [];
-
-    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+    const songs = [];
 
     for (let i = 0; i < player.queue.length; i++) {
       songs.push(
@@ -39,6 +37,7 @@ module.exports = {
     }
 
     for (let i = 0; i < songs.length; i += 10) {
+      const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
       embed
         .setAuthor({ name: `Current queue for ${guild.name}` })
         .setTitle(`▶️ | Currently playing: ${player.queue.current.title}`)
@@ -46,6 +45,6 @@ module.exports = {
       embeds.push(embed);
     }
 
-    return embedPages(client, interaction, embeds);
+    return embedPages(interaction, embeds);
   },
 };
