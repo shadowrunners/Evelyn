@@ -17,6 +17,8 @@ module.exports = class NekoAPI {
         text: "This image was brought to you by the NekoBot API.",
       })
       .setTimestamp();
+    /** Base embed used for other purposes. */
+    this.otherEmbed = new EmbedBuilder().setColor("Blurple").setTimestamp();
     /** The interaction object used for replying and fetching usernames. */
     this.interaction = interaction;
 
@@ -25,9 +27,24 @@ module.exports = class NekoAPI {
   }
 
   /** Retrieves the image from the endpoint provided. */
-  async fetchImage(endpoint) {
-    const { body } = await get(`${this.apiURL}${endpoint}`);
-    return body.message;
+  fetchImage(endpoint) {
+    return new Promise((resolve, reject) => {
+      get(`${this.apiURL}${endpoint}`)
+        .then((res) => {
+          resolve(res.body.message);
+        })
+        .catch((err) => {
+          reject(err);
+
+          return this.interaction.editReply({
+            embeds: [
+              this.otherEmbed.setDescription(
+                "🔹 | There was an error while fetching the image from the API."
+              ),
+            ],
+          });
+        });
+    });
   }
 
   /** Checks for a target user to display in the embed whenever a person needs to be mentioned. */
@@ -38,11 +55,8 @@ module.exports = class NekoAPI {
     if (!this.target1)
       return this.interaction.editReply({
         embeds: [
-          new EmbedBuilder().setDescription(
-            "🔹 | You forgot to provide a user."
-          ),
+          this.otherEmbed.setDescription("🔹 | You forgot to provide a user."),
         ],
-        ephemeral: true,
       });
   }
 
@@ -53,207 +67,153 @@ module.exports = class NekoAPI {
     if (!text)
       return this.interaction.editReply({
         embeds: [
-          new EmbedBuilder().setDescription(
+          this.otherEmbed.setDescription(
             "🔹 | You forgot to provide some text."
           ),
         ],
-        ephemeral: true,
       });
+  }
+
+  /** Fetches the avatars of users. */
+  fetchAvatars(user1, user2) {
+    this.user1 = user1;
+    this.user2 = user2;
+
+    const avatarFetch = (user1 || user2).avatarURL();
+    return avatarFetch;
+  }
+
+  /** Fetches the usernames of users. */
+  fetchUsername(user1, user2) {
+    this.user1 = user1;
+    this.user2 = user2;
+
+    const fetchName = (user1 || user2).username();
+    return fetchName;
+  }
+
+  /** Fetches the image and replies with it in an embed. */
+  async fetchandSend(type, user1, user2, params) {
+    if (this.checkTarget(user1, user2)) return;
+
+    const image = await this.fetchImage(`?type=${type}&${params}`);
+    return this.interaction.editReply({ embeds: [this.embed.setImage(image)] });
   }
 
   /** Fetches the awooified image from the API and replies with an embed of it. */
-  async awooify(user1, user2) {
-    if (this.checkTarget(user1, user2)) return;
-
-    this.user1 = user1;
-    this.user2 = user2;
-
-    await this.fetchImage(
-      `?type=awooify&url=${this.user1.avatarURL() || this.user2.avatarURL()}`
-    ).then((image) => {
-      return this.interaction.editReply({
-        embeds: [this.embed.setImage(image)],
-      });
-    });
+  awooify(user1, user2) {
+    return this.fetchandSend(
+      "awooify",
+      user1,
+      user2,
+      `url=${this.fetchAvatars(user1, user2)}`
+    );
   }
 
   /** Fetches the baguette image from the API and replies with an embed of it. */
-  async baguette(user1, user2) {
-    if (this.checkTarget(user1, user2)) return;
-
-    this.user1 = user1;
-    this.user2 = user2;
-
-    await this.fetchImage(
-      `?type=baguette&url=${this.user1.avatarURL() || this.user2.avatarURL()}`
-    ).then((image) => {
-      return this.interaction.editReply({
-        embeds: [this.embed.setImage(image)],
-      });
-    });
+  baguette(user1, user2) {
+    return this.fetchandSend(
+      "baguette",
+      user1,
+      user2,
+      `url=${this.fetchAvatars(user1, user2)}`
+    );
   }
 
   /** Fetches the blurpified image from the API and replies with an embed of it. */
-  async blurpify(user1, user2) {
-    if (this.checkTarget(user1, user2)) return;
-
-    this.user1 = user1;
-    this.user2 = user2;
-
-    await this.fetchImage(
-      `?type=blurpify&image=${this.user1.avatarURL() || this.user2.avatarURL()}`
-    ).then((image) => {
-      return this.interaction.editReply({
-        embeds: [this.embed.setImage(image)],
-      });
-    });
+  blurpify(user1, user2) {
+    return this.fetchandSend(
+      "blurpify",
+      user1,
+      user2,
+      `url=${this.fetchAvatars(user1, user2)}`
+    );
   }
 
   /** Fetches the captcha image from the API and replies with an embed of it. */
-  async captcha(user1, user2) {
-    if (this.checkTarget(user1, user2)) return;
-
-    this.user1 = user1;
-    this.user2 = user2;
-
-    await this.fetchImage(
-      `?type=captcha&url=${
-        this.user1.avatarURL() || this.user2.avatarURL()
-      }&username=${this.user1.username || this.user2.username}`
-    ).then((image) => {
-      return this.interaction.editReply({
-        embeds: [this.embed.setImage(image)],
-      });
-    });
+  captcha(user1, user2) {
+    return this.fetchandSend(
+      "captcha",
+      user1,
+      user2,
+      `url=${this.fetchAvatars(user1, user2)}&username=${this.fetchUsername(
+        user1,
+        user2
+      )}`
+    );
   }
 
   /** Fetches the change my mind image from the API and replies with an embed of it. */
-  async changemymind(text) {
+  changemymind(text) {
     if (this.checkText(text)) return;
-    this.text = text;
-
-    await this.fetchImage(`?type=changemymind&text=${this.text}`).then(
-      (image) => {
-        return this.interaction.editReply({
-          embeds: [this.embed.setImage(image)],
-        });
-      }
-    );
+    return this.fetchandSend("changemymind", user1, user2, `text=${text}`);
   }
 
   /** Fetches the deepfried image from the API and replies with an embed of it. */
-  async deepfry(user1, user2) {
-    if (this.checkTarget(user1, user2)) return;
-
-    this.user1 = user1;
-    this.user2 = user2;
-
-    await this.fetchImage(
-      `?type=deepfry&image=${this.user1.avatarURL() || this.user2.avatarURL()}`
-    ).then((image) => {
-      return this.interaction.editReply({
-        embeds: [this.embed.setImage(image)],
-      });
-    });
-  }
-
-  /** Fetches the kanna image from the API and replies with an embed of it. */
-  async kannagen(text) {
-    if (this.checkText(text)) return;
-    this.text = text;
-
-    await this.fetchImage(`?type=kannagen&text=${this.text}`).then((image) => {
-      return this.interaction.editReply({
-        embeds: [this.embed.setImage(image)],
-      });
-    });
-  }
-
-  /** Fetches the PH image from the API and replies with an embed of it. */
-  async phcomment(user1, user2, text) {
-    if (this.checkTarget(user1, user2)) return;
-    if (this.checkText(text)) return;
-
-    this.text = text;
-    this.user1 = user1;
-    this.user2 = user2;
-
-    await this.fetchImage(
-      `?type=phcomment&username=${
-        this.user1.username || this.user2.username
-      }&image=${this.user1.avatarURL() || this.user2.avatarURL()}&text=${
-        this.text
-      }`
-    ).then((image) => {
-      return this.interaction.editReply({
-        embeds: [this.embed.setImage(image)],
-      });
-    });
-  }
-
-  /** Fetches the threats image from the API and replies with an embed of it. */
-  async threats(user1, user2) {
-    if (this.checkTarget(user1, user2)) return;
-
-    this.user1 = user1;
-    this.user2 = user2;
-
-    await this.fetchImage(
-      `?type=threats&url=${this.user1.avatarURL() || this.user2.avatarURL()}`
-    ).then((image) => {
-      return this.interaction.editReply({
-        embeds: [this.embed.setImage(image)],
-      });
-    });
-  }
-
-  /** Fetches the trash image from the API and replies with an embed of it. */
-  async trash(user1, user2) {
-    if (this.checkTarget(user1, user2)) return;
-
-    this.user1 = user1;
-    this.user2 = user2;
-
-    await this.fetchImage(
-      `?type=trash&image=${this.user1.avatarURL() || this.user2.avatarURL()}`
-    ).then((image) => {
-      return this.interaction.editReply({
-        embeds: [this.embed.setImage(image)],
-      });
-    });
-  }
-
-  /** Fetches the trump tweet image from the API and replies with an embed of it. */
-  async trumptweet(text) {
-    if (this.checkText(text)) return;
-
-    this.text = text;
-
-    await this.fetchImage(`?type=trumptweet&text=${this.text}`).then(
-      (image) => {
-        return this.interaction.editReply({
-          embeds: [this.embed.setImage(image)],
-        });
-      }
+  deepfry(user1, user2) {
+    return this.fetchandSend(
+      "deepfry",
+      user1,
+      user2,
+      `url=${this.fetchAvatars(user1, user2)}`
     );
   }
 
+  /** Fetches the kanna image from the API and replies with an embed of it. */
+  kannagen(text) {
+    if (this.checkText(text)) return;
+    return this.fetchandSend("kannagen", user1, user2, `text=${text}`);
+  }
+
+  /** Fetches the PH image from the API and replies with an embed of it. */
+  phcomment(user1, user2, text) {
+    if (this.checkText(text)) return;
+
+    return this.fetchandSend(
+      "phcomment",
+      user1,
+      user2,
+      `username=${this.fetchUsername(user1, user2)}&image=${this.fetchAvatars(
+        user1,
+        user2
+      )}&text=${text}`
+    );
+  }
+
+  /** Fetches the threats image from the API and replies with an embed of it. */
+  threats(user1, user2) {
+    return this.fetchandSend(
+      "threats",
+      user1,
+      user2,
+      `url=${this.fetchAvatars(user1, user2)}`
+    );
+  }
+
+  /** Fetches the trash image from the API and replies with an embed of it. */
+  trash(user1, user2) {
+    return this.fetchandSend(
+      "threats",
+      user1,
+      user2,
+      `image=${this.fetchAvatars(user1, user2)}`
+    );
+  }
+
+  /** Fetches the trump tweet image from the API and replies with an embed of it. */
+  trumptweet(text) {
+    if (this.checkText(text)) return;
+    return this.fetchandSend("trumptweet", user1, user2, `text=${text}`);
+  }
+
   /** Fetches the tweet image from the API and replies with an embed of it. */
-  async tweet(user1, user2, text) {
+  tweet(user1, user2, text) {
     if (this.checkTarget(user1, user2)) return;
-
-    this.text = text;
-    this.user1 = user1;
-    this.user2 = user2;
-
-    await this.fetchImage(
-      `?type=tweet&username=${
-        this.user1.username || this.user2.username
-      }&text=${this.text}`
-    ).then((image) => {
-      return this.interaction.editReply({
-        embeds: [this.embed.setImage(image)],
-      });
-    });
+    return this.fetchandSend(
+      "tweet",
+      user1,
+      user2,
+      `username=${fetchUsername(user1, user2)}&text=${text}`
+    );
   }
 };

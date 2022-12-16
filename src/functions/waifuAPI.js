@@ -47,7 +47,7 @@ module.exports = class WaifuEngine {
       });
   }
 
-  /** Fetches the image and */
+  /** Fetches the image and replies with it in an embed. */
   async reply(action, text, target) {
     if (target) {
       if (this.checkTarget(target)) return;
@@ -73,76 +73,76 @@ module.exports = class WaifuEngine {
 
   /** Fetches the biting images from the API and replies with an embed of it. */
   bite(target) {
-    this.reply("bite", "bites", target);
+    return this.reply("bite", "bites", target);
   }
 
   /** Fetches blushing images from the API and replies with an embed of it. */
   blush() {
-    this.reply("blush", "blushes");
+    return this.reply("blush", "blushes");
   }
 
   /** Fetches bonk images from the API and replies with an embed of it. */
   bonk(target) {
-    this.reply("bonk", "bonks", target);
+    return this.reply("bonk", "bonks", target);
   }
 
   /** Fetches bully images from the API and replies with an embed of it. */
   bully(target) {
-    this.reply("bully", "bullies", target);
+    return this.reply("bully", "bullies", target);
   }
 
   /** Fetches cringe images from the API and replies with an embed of it. */
   cringe() {
-    this.reply("cringe", "thinks that's pretty cringe");
+    return this.reply("cringe", "thinks that's pretty cringe");
   }
 
   /** Fetches crying images from the API and replies with an embed of it. */
   cry() {
-    this.reply("cry", "is crying... :c");
+    return this.reply("cry", "is crying... :c");
   }
 
   /** Fetches cuddling images from the API and replies with an embed of it. */
   cuddle(target) {
-    this.reply("cuddle", "cuddles", target);
+    return this.reply("cuddle", "cuddles", target);
   }
 
   /** Fetches handholding images from the API and replies with an embed of it. */
   handhold(target) {
-    this.reply("handhold", "is holding hands with", target);
+    return this.reply("handhold", "is holding hands with", target);
   }
 
   /** Fetches highfive images from the API and replies with an embed of it. */
   highfive(target) {
-    this.reply("highfive", "highfives", target);
+    return this.reply("highfive", "highfives", target);
   }
 
   /** Fetches hugging images from the API and replies with an embed of it. */
   hug(target) {
-    this.reply("hug", "hugs", target);
+    return this.reply("hug", "hugs", target);
   }
 
   /** Fetches kissing images from the API and replies with an embed of it. */
   kiss(target) {
-    this.reply("kiss", "kisses", target);
+    return this.reply("kiss", "kisses", target);
   }
 
   /** Fetches patting images from the API and replies with an embed of it. */
   pat(target) {
-    this.reply("pat", "pats", target);
+    return this.reply("pat", "pats", target);
   }
 
   /** Fetches poking images from the API and replies with an embed of it. */
   poke(target) {
-    this.reply("poke", "pokes", target);
+    return this.reply("poke", "pokes", target);
   }
 
   /** Fetches slapping images from the API and replies with an embed of it. */
   slap(target) {
-    this.reply("slap", "slaps", target);
+    return this.reply("slap", "slaps", target);
   }
 
   /** Fetches waving images from the API and replies with an embed of it. */
   wave(target) {
-    this.reply("waves", "is waving at", target);
+    return this.reply("waves", "is waving at", target);
   }
 };
