@@ -48,7 +48,7 @@ module.exports = class Util {
         text: `Page ${pages[id] + 1} from ${Pagemax}`,
       });
 
-      await interaction.editReply({
+      await this.interaction.editReply({
         embeds: [embeds[pages[id]]],
         components: [getRow(id)],
         fetchReply: true,
