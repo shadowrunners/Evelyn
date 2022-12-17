@@ -1,4 +1,7 @@
 const { Client, GuildMember, EmbedBuilder } = require("discord.js");
+const {
+  replacePlaceholders,
+} = require("../../functions/replacePlaceholders.js");
 const DB = require("../../structures/schemas/guild.js");
 
 module.exports = {
@@ -12,71 +15,51 @@ module.exports = {
       id: member.guild.id,
     });
 
-    if (!data) return;
-    if (data.goodbye.enabled === false || data.goodbye.channel === "") return;
+    if (!data || !data.goodbye.enabled || !data.goodbye.channel) return;
 
     const goodbyeChannel = client.channels.cache.get(data.goodbye?.channel);
     if (!goodbyeChannel) return;
 
-    const goodbyeData = data.goodbye.json.embed;
+    const { embed } = data.goodbye.json.embed;
+    const content = data.goodbye.json.content;
 
-    const goodbyeMessage = data.goodbye.message.json.content
-      ?.replace(/{userTag}/g, `${member.user.tag}`)
-      .replace(/{userName}/g, `${member.user.username}`)
-      .replace(/{userMention}/g, `<@${member.user.id}>`)
-      .replace(/{guildName}/g, `${member.guild.name}`)
-      .replace(/{memberCount}/g, `${member.guild.memberCount}`);
-
+    const goodbyeMessage = replacePlaceholders(content, member);
     const goodbyeEmbed = new EmbedBuilder();
 
-    if (goodbyeData.color) goodbyeEmbed.setColor(goodbyeData.color);
-    if (goodbyeData.title) goodbyeEmbed.setTitle(goodbyeData.title);
+    if (embed.color) goodbyeEmbed.setColor(embed.color);
+    if (embed.title) goodbyeEmbed.setTitle(embed.title);
 
-    if (goodbyeData.description) {
-      const textEmbed = goodbyeData.description
-        ?.replace(/{userTag}/g, `${member.user.tag}`)
-        .replace(/{userName}/g, `${member.user.username}`)
-        .replace(/{userMention}/g, `<@${member.user.id}>`)
-        .replace(/{userID}/g, `${member.id}`)
-        .replace(/{guildName}/g, `${member.guild.name}`)
-        .replace(/{memberCount}/g, `${member.guild.memberCount}`);
+    if (embed.description) {
+      const textEmbed = replacePlaceholders(embed.description, member);
       goodbyeEmbed.setDescription(textEmbed);
     }
 
-    if (goodbyeData.author?.name) {
-      const authorName = goodbyeData.author.name
-        .replace(/{userName}/g, `${member.user.username}`)
-        .replace(/{userID}/g, `${member.id}`)
-        .replace(/{guildName}/g, `${member.guild.name}`)
-        .replace(/{memberCount}/g, `${member.guild.memberCount}`);
+    if (embed.author?.name) {
+      const authorName = replacePlaceholders(embed.author.name, member);
       goodbyeEmbed.setAuthor(authorName);
     }
 
-    if (goodbyeData.author?.icon_url)
+    if (embed.author?.icon_url)
       goodbyeEmbed.setAuthor({
-        name: goodbyeData.author.name,
-        iconURL: goodbyeData.author.icon_url,
+        name: embed.author.name,
+        iconURL: embed.author.icon_url,
       });
 
-    if (goodbyeData.footer?.text) {
-      const footerData = goodbyeData.footer?.text
-        .replace(/{userTag}/g, `${member.user.tag}`)
-        .replace(/{userName}/g, `${member.user.username}`)
-        .replace(/{userID}/g, `${member.id}`)
-        .replace(/{guildName}/g, `${member.guild.name}`)
-        .replace(/{memberCount}/g, `${member.guild.memberCount}`);
+    if (embed.footer?.text) {
+      const footerData = replacePlaceholders(embed.footer.text, member);
       goodbyeEmbed.setFooter({ text: footerData });
     }
 
-    if (goodbyeData.footer && goodbyeData.footer?.icon_url)
+    if (embed.footer && embed.footer?.icon_url)
       goodbyeEmbed.setFooter({
-        text: goodbyeData.footer,
-        iconURL: goodbyeData.footer?.icon_url,
+        text: embed.footer,
+        iconURL: embed.footer?.icon_url,
       });
 
-    if (goodbyeData.image?.url) goodbyeEmbed.setImage(goodbyeData.image?.url);
+    if (embed.image?.url) goodbyeEmbed.setImage(embed.image?.url);
+    if (embed.thumbnail?.url) goodbyeEmbed.setThumbnail(embed.thumbnail.url);
 
-    return goodbyeChannel.send({
+    goodbyeChannel.send({
       content: goodbyeMessage,
       embeds: [goodbyeEmbed],
     });

@@ -17,12 +17,13 @@ module.exports = {
 
     if (!data || !data.welcome.enabled || !data.welcome.channel) return;
 
-    const welcomeChannel = client.channels.cache.get(data.welcome.channel);
+    const welcomeChannel = client.channels.cache.get(data.welcome?.channel);
     if (!welcomeChannel) return;
 
-    const { embed } = data.welcome.json;
+    const { embed } = data.welcome.json.embed;
+    const content = data.welcome.json.content;
 
-    const welcomeMessage = replacePlaceholders(embed.content, member);
+    const welcomeMessage = replacePlaceholders(content, member);
     const welcomeEmbed = new EmbedBuilder();
 
     if (embed.color) welcomeEmbed.setColor(embed.color);
@@ -58,7 +59,7 @@ module.exports = {
     if (embed.image?.url) welcomeEmbed.setImage(welcomeData.image?.url);
     if (embed.thumbnail?.url) welcomeEmbed.setThumbnail(embed.thumbnail.url);
 
-    return welcomeChannel.send({
+    welcomeChannel.send({
       content: welcomeMessage,
       embeds: [welcomeEmbed],
     });
