@@ -9,10 +9,10 @@ module.exports = {
    */
   async execute(interaction, client) {
     const { options, guildId } = interaction;
-    const utils = new MusicUtils(interaction, player);
 
     const player = client.manager.players.get(guildId);
     const percent = options.getNumber("percent", true);
+    const utils = new MusicUtils(interaction, player);
 
     await interaction.deferReply();
 

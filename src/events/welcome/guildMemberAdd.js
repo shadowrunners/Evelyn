@@ -1,4 +1,7 @@
 const { Client, GuildMember, EmbedBuilder } = require("discord.js");
+const {
+  replacePlaceholders,
+} = require("../../functions/replacePlaceholders.js");
 const DB = require("../../structures/schemas/guild.js");
 
 module.exports = {
@@ -12,71 +15,48 @@ module.exports = {
       id: member.guild.id,
     });
 
-    if (!data) return;
-    if (data.welcome.enabled === false || data.welcome.channel === "") return;
+    if (!data || !data.welcome.enabled || !data.welcome.channel) return;
 
-    const welcomeChannel = client.channels.cache.get(data.welcome?.channel);
+    const welcomeChannel = client.channels.cache.get(data.welcome.channel);
     if (!welcomeChannel) return;
 
-    const welcomeData = data.welcome.json.embed;
+    const { embed } = data.welcome.json;
 
-    const welcomeMessage = data.welcome.message.json.content
-      ?.replace(/{userTag}/g, `${member.user.tag}`)
-      .replace(/{userName}/g, `${member.user.username}`)
-      .replace(/{userMention}/g, `<@${member.user.id}>`)
-      .replace(/{guildName}/g, `${member.guild.name}`)
-      .replace(/{memberCount}/g, `${member.guild.memberCount}`);
-
+    const welcomeMessage = replacePlaceholders(embed.content, member);
     const welcomeEmbed = new EmbedBuilder();
 
-    if (welcomeData.color) welcomeEmbed.setColor(welcomeData.color);
-    if (welcomeData.title) welcomeEmbed.setTitle(welcomeData.title);
+    if (embed.color) welcomeEmbed.setColor(embed.color);
+    if (embed.title) welcomeEmbed.setTitle(embed.title);
 
-    if (welcomeData.description) {
-      const textEmbed = welcomeData.description
-        .replace(/{userTag}/g, `${member.user.tag}`)
-        .replace(/{userName}/g, `${member.user.username}`)
-        .replace(/{userID}/g, `${member.id}`)
-        .replace(/{userMention}/g, `<@${member.user.id}>`)
-        .replace(/{guildName}/g, `${member.guild.name}`)
-        .replace(/{memberCount}/g, `${member.guild.memberCount}`);
+    if (embed.description) {
+      const textEmbed = replacePlaceholders(embed.description, member);
       welcomeEmbed.setDescription(textEmbed);
     }
 
-    if (welcomeData.author?.name) {
-      const authorName = welcomeData.author.name
-        .replace(/{userTag}/g, `${member.user.tag}`)
-        .replace(/{userName}/g, `${member.user.username}`)
-        .replace(/{userID}/g, `${member.id}`)
-        .replace(/{guildName}/g, `${member.guild.name}`)
-        .replace(/{memberCount}/g, `${member.guild.memberCount}`);
+    if (embed.author?.name) {
+      const authorName = replacePlaceholders(embed.author.name, member);
       welcomeEmbed.setAuthor(authorName);
     }
 
-    if (welcomeData.author?.icon_url)
+    if (embed.author?.icon_url)
       welcomeEmbed.setAuthor({
-        name: welcomeData.author.name,
-        iconURL: welcomeData.author.icon_url,
+        name: embed.author.name,
+        iconURL: embed.author.icon_url,
       });
 
-    if (welcomeData.footer?.text) {
-      const footerData = welcomeData.footer?.text
-        .replace(/{userTag}/g, `${member.user.tag}`)
-        .replace(/{userName}/g, `${member.user.username}`)
-        .replace(/{userID}/g, `${member.id}`)
-        .replace(/{guildName}/g, `${member.guild.name}`)
-        .replace(/{guildID}/g, `${member.guild.id}`)
-        .replace(/{memberCount}/g, `${member.guild.memberCount}`);
+    if (embed.footer?.text) {
+      const footerData = replacePlaceholders(embed.footer.text, member);
       welcomeEmbed.setFooter({ text: footerData });
     }
 
-    if (welcomeData.footer && welcomeData.footer.icon_url)
+    if (embed.footer && embed.footer.icon_url)
       welcomeEmbed.setFooter({
-        text: welcomeData.footer,
-        iconURL: welcomeData.footer.icon_url,
+        text: embed.footer,
+        iconURL: embed.footer.icon_url,
       });
 
-    if (welcomeData.image?.url) welcomeEmbed.setImage(welcomeData.image?.url);
+    if (embed.image?.url) welcomeEmbed.setImage(welcomeData.image?.url);
+    if (embed.thumbnail?.url) welcomeEmbed.setThumbnail(embed.thumbnail.url);
 
     return welcomeChannel.send({
       content: welcomeMessage,
