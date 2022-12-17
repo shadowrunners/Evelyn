@@ -3,7 +3,6 @@ const GDB = require("../../structures/schemas/guild.js");
 
 module.exports = {
   name: "guildCreate",
-  once: false,
   /**
    * @param {Guild} guild
    * @param {Client} client

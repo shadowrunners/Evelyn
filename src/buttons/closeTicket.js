@@ -11,7 +11,7 @@ module.exports = {
   async execute(interaction) {
     const { guild, member, channel } = interaction;
 
-    const Embed = new EmbedBuilder();
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
     const ticketsData = await ticketData.findOne({
       id: guild.id,
@@ -24,34 +24,27 @@ module.exports = {
       !member.roles.cache.find(
         (r) => r.id === gTicketData.tickets.ticketHandlers
       )
-    ) {
+    )
       return interaction.reply({
         embeds: [
-          Embed.setColor("Blurple")
-            .setDescription("🔹 | Only the support team can use these buttons.")
-            .setTimestamp(),
+          embed.setDescription(
+            "🔹 | Only the support team can use these buttons."
+          ),
         ],
         ephemeral: true,
       });
-    }
 
     if (ticketsData.closed === true)
       return interaction.reply({
-        embeds: [
-          Embed.setColor("Blurple")
-            .setDescription("🔹 | This ticket is already closed.")
-            .setTimestamp(),
-        ],
+        embeds: [embed.setDescription("🔹 | This ticket is already closed.")],
       });
 
     if (!ticketsData.closer === member.id)
       return interaction.reply({
         embeds: [
-          Embed.setColor("Blurple")
-            .setDescription(
-              "🔹 | You are not the user that closed this ticket!"
-            )
-            .setTimestamp(),
+          embed.setDescription(
+            "🔹 | You are not the user that closed this ticket!"
+          ),
         ],
         ephemeral: true,
       });
@@ -76,25 +69,23 @@ module.exports = {
       .get(gTicketData.tickets.transcriptChannel)
       .send({
         embeds: [
-          Embed.setColor("Blurple")
-            .setTitle("Ticket Closed")
-            .addFields(
-              { name: "Opened by", value: `<@!${ticketsData.creatorId}>` },
-              {
-                name: "Claimed by",
-                value: `<@!${ticketsData.claimer}>` || "No one.",
-              },
-              { name: "Closed at", value: `${new Date().toLocaleString()}` }
-            ),
+          embed.setTitle("Ticket Closed").addFields(
+            { name: "Opened by", value: `<@!${ticketsData.creatorId}>` },
+            {
+              name: "Claimed by",
+              value: `<@!${ticketsData.claimer}>` || "No one.",
+            },
+            { name: "Closed at", value: `${new Date().toLocaleString()}` }
+          ),
         ],
         files: [attachment],
       });
 
     interaction.reply({
       embeds: [
-        Embed.setDescription(
+        embed.setDescription(
           `🔹 | Transcript saved: [transcripthere](${message.url}).`
-        ).setTimestamp(),
+        ),
       ],
     });
     setTimeout(() => {

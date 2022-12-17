@@ -9,7 +9,7 @@ module.exports = {
    */
   async execute(interaction) {
     const { guild, member, channel } = interaction;
-    const Embed = new EmbedBuilder();
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
     const ticketsData = await ticketData.findOne({
       id: guild.id,
@@ -22,27 +22,23 @@ module.exports = {
       !member.roles.cache.find(
         (r) => r.id === gTicketData.tickets.ticketHandlers
       )
-    ) {
+    )
       return interaction.reply({
         embeds: [
-          Embed.setColor("Blurple")
-            .setDescription("🔹 | Only the support team can use these buttons.")
-            .setTimestamp(),
+          embed.setDescription(
+            "🔹 | Only the support team can use these buttons."
+          ),
         ],
         ephemeral: true,
       });
-    }
 
-    if (ticketsData.claimed === true) {
+    if (ticketsData.claimed === true)
       return interaction.reply({
         embeds: [
-          Embed.setColor("Blurple")
-            .setDescription("🔹 | This ticket has already been claimed.")
-            .setTimestamp(),
+          embed.setDescription("🔹 | This ticket has already been claimed."),
         ],
         ephemeral: true,
       });
-    }
 
     await ticketData.updateMany(
       {
@@ -55,7 +51,7 @@ module.exports = {
     );
 
     return interaction.reply({
-      embeds: [Embed.setDescription(`🔹 | Ticket claimed.`).setTimestamp()],
+      embeds: [embed.setDescription(`🔹 | Ticket claimed.`)],
       ephemeral: true,
     });
   },

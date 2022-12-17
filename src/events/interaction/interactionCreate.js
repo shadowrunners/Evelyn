@@ -3,7 +3,7 @@ const {
   ChatInputCommandInteraction,
   EmbedBuilder,
 } = require("discord.js");
-const { check4Perms } = require("../../functions/utils.js");
+const importUtils = require("../../functions/utils.js");
 const { isBlacklisted } = require("../../functions/isBlacklisted.js");
 
 module.exports = {
@@ -15,6 +15,7 @@ module.exports = {
   async execute(interaction, client) {
     if (!interaction.isChatInputCommand()) return;
 
+    const utils = new importUtils(interaction);
     const command = client.commands.get(interaction.commandName);
     const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
@@ -27,7 +28,7 @@ module.exports = {
     }
 
     if (command.botPermissions) {
-      if (check4Perms(interaction, command)) return;
+      if (utils.check4Perms(command)) return;
     }
 
     const subCommand = interaction.options.getSubcommand(false);
@@ -41,6 +42,8 @@ module.exports = {
           embeds: [embed.setDescription("This subcommand is outdated.")],
           ephemeral: true,
         });
+
+      console.log(subCommandFile);
 
       subCommandFile.execute(interaction, client);
     } else command.execute(interaction, client);

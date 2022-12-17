@@ -9,12 +9,11 @@ module.exports = {
    */
   async execute(interaction, client) {
     if (!interaction.isButton()) return;
-    const Embed = new EmbedBuilder();
+
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
     const button = client.buttons.get(interaction.customId);
 
-    if (!button) return;
-    if (button === undefined) return;
-
+    if (!button || button === undefined) return;
     if (await isBlacklisted(interaction)) return;
 
     if (
@@ -23,20 +22,18 @@ module.exports = {
     )
       return interaction.reply({
         embeds: [
-          Embed.setColor("Blurple")
-            .setDescription(
-              "🔹 | You don't have the required permissions to use this button."
-            )
-            .setTimestamp(),
+          embed.setDescription(
+            "🔹 | You don't have the required permissions to use this button."
+          ),
         ],
       });
 
     if (button.developer && interaction.user.id !== client.config.ownerIDs)
       return interaction.reply({
         embeds: [
-          Embed.setColor("Blurple")
-            .setDescription("🔹 | This button is only available to developers.")
-            .setTimestamp(),
+          embed.setDescription(
+            "🔹 | This button is only available to developers."
+          ),
         ],
       });
 

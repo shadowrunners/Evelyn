@@ -3,7 +3,6 @@ const GDB = require("../../structures/schemas/guild.js");
 
 module.exports = {
   name: "guildDelete",
-  once: false,
   /**
    * @param {Guild} guild
    * @param {Client} client

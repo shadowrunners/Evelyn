@@ -156,4 +156,313 @@ module.exports = class MusicUtils {
       ],
     });
   }
+
+  /** Easily manage filters. */
+  async filters(mode) {
+    switch (mode) {
+      case "3d":
+        await this.player.send({
+          op: "filters",
+          guildId: this.interaction.guild.id,
+          rotation: { rotationHz: 0.2 },
+        });
+
+        return this.interaction.editReply({
+          embeds: [
+            this.embed.setDescription("🔹 | The 3D filter has been applied."),
+          ],
+        });
+      case "bass":
+        await this.player.send({
+          op: "filters",
+          guildId: this.interaction.guild.id,
+          equalizer: [
+            { band: 0, gain: 0.1 },
+            { band: 1, gain: 0.1 },
+            { band: 2, gain: 0.05 },
+            { band: 3, gain: 0.05 },
+            { band: 4, gain: -0.05 },
+            { band: 5, gain: -0.05 },
+            { band: 6, gain: 0 },
+            { band: 7, gain: -0.05 },
+            { band: 8, gain: -0.05 },
+            { band: 9, gain: 0 },
+            { band: 10, gain: 0.05 },
+            { band: 11, gain: 0.05 },
+            { band: 12, gain: 0.1 },
+            { band: 13, gain: 0.1 },
+          ],
+        });
+
+        return this.interaction.editReply({
+          embeds: [
+            this.embed.setDescription("🔹 | The Bass filter has been applied."),
+          ],
+        });
+      case "bassboost":
+        await this.player.send({
+          op: "filters",
+          guildId: this.interaction.guild.id,
+          equalizer: [
+            { band: 0, gain: 0.1 },
+            { band: 1, gain: 0.1 },
+            { band: 2, gain: 0.05 },
+            { band: 3, gain: 0.05 },
+            { band: 4, gain: -0.05 },
+            { band: 5, gain: -0.05 },
+            { band: 6, gain: 0 },
+            { band: 7, gain: -0.05 },
+            { band: 8, gain: -0.05 },
+            { band: 9, gain: 0 },
+            { band: 10, gain: 0.05 },
+            { band: 11, gain: 0.05 },
+            { band: 12, gain: 0.1 },
+            { band: 13, gain: 0.1 },
+          ],
+        });
+
+        return this.interaction.editReply({
+          embeds: [
+            this.embed.setDescription(
+              "🔹 | The `bass boost` filter has been applied."
+            ),
+          ],
+        });
+      case "nightcore":
+        await this.player.send({
+          op: "filters",
+          guildId: this.interaction.guild.id,
+          timescale: {
+            speed: 1.1,
+            pitch: 1.125,
+            rate: 1.05,
+          },
+        });
+
+        return this.interaction.editReply({
+          embeds: [
+            this.embed.setDescription(
+              "🔹 | The `nightcore` filter has been applied."
+            ),
+          ],
+        });
+      case "pop":
+        await this.player.send({
+          op: "filters",
+          guildId: this.interaction.guild.id,
+          equalizer: [
+            { band: 0, gain: 0.65 },
+            { band: 1, gain: 0.45 },
+            { band: 2, gain: -0.45 },
+            { band: 3, gain: -0.65 },
+            { band: 4, gain: -0.35 },
+            { band: 5, gain: 0.45 },
+            { band: 6, gain: 0.55 },
+            { band: 7, gain: 0.6 },
+            { band: 8, gain: 0.6 },
+            { band: 9, gain: 0.6 },
+            { band: 10, gain: 0 },
+            { band: 11, gain: 0 },
+            { band: 12, gain: 0 },
+            { band: 13, gain: 0 },
+          ],
+        });
+
+        return this.interaction.editReply({
+          embeds: [
+            this.embed.setDescription(
+              "🔹 | The `Pop` filter has been applied."
+            ),
+          ],
+        });
+
+      case "slowmo":
+        await this.player.send({
+          op: "filters",
+          guildId: this.interaction.guild.id,
+          timescale: {
+            speed: 0.5,
+            pitch: 1.0,
+            rate: 0.8,
+          },
+        });
+
+        return this.interaction.editReply({
+          embeds: [
+            this.embed.setDescription("🔹 | The 3D filter has been applied."),
+          ],
+        });
+      case "soft":
+        await this.player.send({
+          op: "filters",
+          guildId: this.interaction.guild.id,
+          equalizer: [
+            { band: 0, gain: 0 },
+            { band: 1, gain: 0 },
+            { band: 2, gain: 0 },
+            { band: 3, gain: 0 },
+            { band: 4, gain: 0 },
+            { band: 5, gain: 0 },
+            { band: 6, gain: 0 },
+            { band: 7, gain: 0 },
+            { band: 8, gain: -0.25 },
+            { band: 9, gain: -0.25 },
+            { band: 10, gain: -0.25 },
+            { band: 11, gain: -0.25 },
+            { band: 12, gain: -0.25 },
+            { band: 13, gain: -0.25 },
+          ],
+        });
+
+        return this.interaction.editReply({
+          embeds: [
+            this.embed.setDescription(
+              "🔹 | The `soft` filter has been applied."
+            ),
+          ],
+        });
+      case "tv":
+        await this.player.send({
+          op: "filters",
+          guildId: this.interaction.guild.id,
+          equalizer: [
+            { band: 0, gain: 0 },
+            { band: 1, gain: 0 },
+            { band: 2, gain: 0 },
+            { band: 3, gain: 0 },
+            { band: 4, gain: 0 },
+            { band: 5, gain: 0 },
+            { band: 6, gain: 0 },
+            { band: 7, gain: 0.65 },
+            { band: 8, gain: 0.65 },
+            { band: 9, gain: 0.65 },
+            { band: 10, gain: 0.65 },
+            { band: 11, gain: 0.65 },
+            { band: 12, gain: 0.65 },
+            { band: 13, gain: 0.65 },
+          ],
+        });
+
+        return this.interaction.editReply({
+          embeds: [
+            this.embed.setDescription("🔹 | The `TV` filter has been applied."),
+          ],
+        });
+      case "treblebass":
+        await this.player.send({
+          op: "filters",
+          guildId: this.interaction.guild.id,
+          equalizer: [
+            { band: 0, gain: 0.6 },
+            { band: 1, gain: 0.67 },
+            { band: 2, gain: 0.67 },
+            { band: 3, gain: 0 },
+            { band: 4, gain: -0.5 },
+            { band: 5, gain: 0.15 },
+            { band: 6, gain: -0.45 },
+            { band: 7, gain: 0.23 },
+            { band: 8, gain: 0.35 },
+            { band: 9, gain: 0.45 },
+            { band: 10, gain: 0.55 },
+            { band: 11, gain: 0.6 },
+            { band: 12, gain: 0.55 },
+            { band: 13, gain: 0 },
+          ],
+        });
+
+        return this.interaction.editReply({
+          embeds: [
+            this.embed.setDescription(
+              "🔹 | The `treble bass` filter has been applied."
+            ),
+          ],
+        });
+      case "tremolo":
+        await this.player.send({
+          op: "filters",
+          guildId: this.interaction.guild.id,
+          tremolo: { frequency: 4.0, depth: 0.75 },
+        });
+
+        return this.interaction.editReply({
+          embeds: [
+            this.embed.setDescription(
+              "🔹 | The `tremolo` filter has been applied."
+            ),
+          ],
+        });
+      case "vaporwave":
+        await this.player.send({
+          op: "filters",
+          guildId: this.interaction.guild.id,
+          equalizer: [
+            { band: 0, gain: 0 },
+            { band: 1, gain: 0 },
+            { band: 2, gain: 0 },
+            { band: 3, gain: 0 },
+            { band: 4, gain: 0 },
+            { band: 5, gain: 0 },
+            { band: 6, gain: 0 },
+            { band: 7, gain: 0 },
+            { band: 8, gain: 0.15 },
+            { band: 9, gain: 0.15 },
+            { band: 10, gain: 0.15 },
+            { band: 11, gain: 0.15 },
+            { band: 12, gain: 0.15 },
+            { band: 13, gain: 0.15 },
+          ],
+          timescale: {
+            pitch: 0.55,
+          },
+        });
+
+        return this.interaction.editReply({
+          embeds: [
+            this.embed.setDescription(
+              "🔹 | The `vaporwave` filter has been applied."
+            ),
+          ],
+        });
+      case "vibrate":
+        await this.player.send({
+          op: "filters",
+          guildId: this.interaction.guild.id,
+          vibrato: { frequency: 4.0, depth: 0.75 },
+          tremolo: { frequency: 4.0, depth: 0.75 },
+        });
+
+        return this.interaction.editReply({
+          embeds: [
+            this.embed.setDescription(
+              "🔹 | The `vibrate` filter has been applied."
+            ),
+          ],
+        });
+      case "vibrato":
+        await this.player.send({
+          op: "filters",
+          guildId: this.interaction.guild.id,
+          vibrato: { frequency: 4.0, depth: 0.75 },
+        });
+
+        return this.interaction.editReply({
+          embeds: [
+            this.embed.setDescription(
+              "🔹 | The `vibrato` filter has been applied."
+            ),
+          ],
+        });
+      case "reset":
+        await this.player.send({
+          op: "filters",
+          guildId: this.interaction.guild.id,
+        });
+
+        this.setVolume(100);
+
+        return this.interaction.editReply({
+          embeds: [this.embed.setDescription("🔹 | Filters have been reset.")],
+        });
+    }
+  }
 };

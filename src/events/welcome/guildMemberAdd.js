@@ -56,7 +56,7 @@ module.exports = {
         iconURL: embed.footer.icon_url,
       });
 
-    if (embed.image?.url) welcomeEmbed.setImage(welcomeData.image?.url);
+    if (embed.image?.url) welcomeEmbed.setImage(embed.image?.url);
     if (embed.thumbnail?.url) welcomeEmbed.setThumbnail(embed.thumbnail.url);
 
     welcomeChannel.send({

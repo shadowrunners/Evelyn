@@ -13,7 +13,7 @@ module.exports = {
     const data = await DB.findOne({ id: guild.id });
 
     if (!guild || author.bot) return;
-    if (data?.levels.enabled === false || data?.levels.channel === "") return;
+    if (!data?.levels.enabled || !data?.levels.channel) return;
 
     const levellingChannel = client.channels.cache.get(data?.levels.channel);
     if (!levellingChannel) return;

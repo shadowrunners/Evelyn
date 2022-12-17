@@ -19,30 +19,25 @@ module.exports = {
    * @param {ButtonInteraction} interaction
    */
   async execute(interaction) {
-    const { guild, member } = interaction;
-
+    const { guild, member, user } = interaction;
     const data = await setupData.findOne({ id: guild.id });
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+
     if (!data) return;
 
     const ticketsData = await ticketData.findOne({
-      creatorId: interaction.user.id,
+      creatorId: user.id,
     });
 
-    if (ticketsData.creatorId && !ticketsData.closed) {
+    if (ticketsData.creatorId && !ticketsData.closed)
       return interaction.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor("Blurple")
-            .setDescription("🔹 | You already have a ticket open.")
-            .setTimestamp(),
-        ],
+        embeds: [embed.setDescription("🔹 | You already have a ticket open.")],
         ephemeral: true,
       });
-    }
 
     await guild.channels
       .create({
-        name: `${interaction.user.username}-ticket`,
+        name: `${user.username}-ticket`,
         type: GuildText,
         parent: data.tickets.category,
         permissionOverwrites: [
@@ -51,7 +46,7 @@ module.exports = {
             allow: [SendMessages, ViewChannel, ReadMessageHistory],
           },
           {
-            id: interaction.guild.roles.everyone.id,
+            id: guild.roles.everyone.id,
             deny: [SendMessages, ViewChannel, ReadMessageHistory],
           },
         ],
@@ -63,21 +58,11 @@ module.exports = {
           claimed: false,
           closed: false,
           deleted: false,
-          creatorId: interaction.user.id,
+          creatorId: user.id,
           claimer: null,
         });
 
         channel.setRateLimitPerUser(2);
-
-        const Embed = new EmbedBuilder()
-          .setAuthor({
-            name: `${guild.name} | Your Ticket`,
-            iconURL: guild.iconURL({ dynamic: true }),
-          })
-          .setDescription(
-            `Hiya, <@${interaction.user.id}>! Please wait patiently while a staff member is coming to assist you with your issue. In the meantime, describe your issue as detailed as possible.`
-          )
-          .setTimestamp();
 
         const Buttons = new ActionRowBuilder();
         Buttons.addComponents(
@@ -94,7 +79,16 @@ module.exports = {
         );
         channel.send({
           content: `<@&${data.tickets?.ticketHandlers}>`,
-          embeds: [Embed],
+          embeds: [
+            embed
+              .setAuthor({
+                name: `${guild.name} | Your Ticket`,
+                iconURL: guild.iconURL({ dynamic: true }),
+              })
+              .setDescription(
+                `Hiya, <@${user.id}>! Please wait patiently while a staff member is coming to assist you with your issue. In the meantime, describe your issue as detailed as possible.`
+              ),
+          ],
           components: [Buttons],
         });
         await channel
