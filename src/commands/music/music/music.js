@@ -94,5 +94,32 @@ module.exports = {
     )
     .addSubcommand((options) =>
       options.setName("clear").setDescription("Clears the queue.")
+    )
+    .addSubcommand((options) =>
+      options
+        .setName("filters")
+        .setDescription("Applies a filter.")
+        .addStringOption((option) =>
+          option
+            .setName("option")
+            .setDescription("Select the filter you would like to be applied.")
+            .setRequired(true)
+            .addChoices(
+              { name: "🔹 | 3D", value: "3d" },
+              { name: "🔹 | Bass", value: "bass" },
+              { name: "🔹 | Bass Boost", value: "bassboost" },
+              { name: "🔹 | Nightcore", value: "nightcore" },
+              { name: "🔹 | Pop", value: "pop" },
+              { name: "🔹 | Slow Motion", value: "slowmo" },
+              { name: "🔹 | Soft", value: "soft" },
+              { name: "🔹 | TV", value: "tv" },
+              { name: "🔹 | Treble Bass", value: "treblebass" },
+              { name: "🔹 | Tremolo", value: "tremolo" },
+              { name: "🔹 | Vaporwave", value: "vaporwave" },
+              { name: "🔹 | Vibrate", value: "vibrate" },
+              { name: "🔹 | Vibrato", value: "vibrato" },
+              { name: "🔹 | Reset", value: "reset" }
+            )
+        )
     ),
 };
