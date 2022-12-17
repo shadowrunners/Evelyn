@@ -1,36 +1,37 @@
-const { Client, Invite, EmbedBuilder } = require("discord.js");
+const { webhookDelivery } = require("../../functions/webhookDelivery.js");
 const DB = require("../../structures/schemas/guild.js");
+const { Invite, EmbedBuilder } = require("discord.js");
 
 module.exports = {
   name: "inviteDelete",
   /**
    * @param {Invite} invite
-   * @param {Client} client
    */
-  async execute(invite, client) {
+  async execute(invite) {
+    const { guild, code } = invite;
+
     const data = await DB.findOne({
       id: invite.guild.id,
     });
 
-    if (!data) return;
-    if (data.logs.enabled === false || data.logs.channel === "") return;
+    if (!data || !data.logs.enabled || !data.logs.channel || !data.logs.webhook)
+      return;
 
-    const logsChannel = client.channels.cache.get(data.logs?.channel);
-    if (!logsChannel) return;
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
-    const embed = new EmbedBuilder()
-      .setColor("Blurple")
-      .setAuthor({
-        name: invite.guild.name,
-        iconURL: invite.guild.iconURL({ dynamic: true }),
-      })
-      .setTitle("Invite Deleted")
-      .addFields({
-        name: "🔹 | Invite Link",
-        value: `> ${invite.code}`,
-      })
-      .setTimestamp();
-
-    return logsChannel.send({ embeds: [embed] });
+    return webhookDelivery(
+      data,
+      embed
+        .setAuthor({
+          name: guild.name,
+          iconURL: guild.iconURL({ dynamic: true }),
+        })
+        .setTitle("Invite Deleted")
+        .addFields({
+          name: "🔹 | Invite Link",
+          value: `> ${code}`,
+        })
+        .setTimestamp()
+    );
   },
 };

@@ -1,55 +1,60 @@
-const { Client, Message, EmbedBuilder } = require("discord.js");
+const { webhookDelivery } = require("../../functions/webhookDelivery.js");
 const DB = require("../../structures/schemas/guild.js");
+const { Message, EmbedBuilder } = require("discord.js");
 
 module.exports = {
   name: "messageDelete",
   /**
    * @param {Message} message
-   * @param {Client} client
    */
-  async execute(message, client) {
+  async execute(message) {
+    const { guild, author, content, createdTimestamp } = message;
+
     const data = await DB.findOne({
-      id: message.guild.id,
+      id: guild.id,
     });
 
-    if (!data) return;
-    if (data.logs.enabled === false || data.logs.channel === "") return;
+    if (
+      !data ||
+      !data.logs.enabled ||
+      !data.logs.channel ||
+      !data.logs.webhook ||
+      author.bot
+    )
+      return;
 
-    const logsChannel = client.channels.cache.get(data.logs?.channel);
-    if (!logsChannel) return;
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
-    if (message.author.bot) return;
-
-    const embed = new EmbedBuilder()
-      .setColor("Blurple")
-      .setAuthor({
-        name: message.guild.name,
-        iconURL: message.guild.iconURL(),
-      })
-      .setTitle("Message Deleted")
-      .addFields([
-        {
-          name: "🔹 | Message Content",
-          value: `> ${message.content}`,
-          inline: true,
-        },
-        {
-          name: "🔹 | ID",
-          value: `> ${message.id}`,
-          inline: true,
-        },
-        {
-          name: "🔹 | Message sent by",
-          value: `> ${message.author}`,
-          inline: true,
-        },
-        {
-          name: "🔹 | Deleted at",
-          value: `> <t:${parseInt(message.createdTimestamp / 1000)}:R>`,
-          inline: true,
-        },
-      ])
-      .setTimestamp();
-    return logsChannel.send({ embeds: [embed] });
+    return webhookDelivery(
+      data,
+      embed
+        .setAuthor({
+          name: guild.name,
+          iconURL: guild.iconURL(),
+        })
+        .setTitle("Message Deleted")
+        .addFields([
+          {
+            name: "🔹 | Message Content",
+            value: `> ${content}`,
+            inline: true,
+          },
+          {
+            name: "🔹 | ID",
+            value: `> ${message.id}`,
+            inline: true,
+          },
+          {
+            name: "🔹 | Message sent by",
+            value: `> ${author}`,
+            inline: true,
+          },
+          {
+            name: "🔹 | Deleted at",
+            value: `> <t:${parseInt(createdTimestamp / 1000)}:R>`,
+            inline: true,
+          },
+        ])
+    );
   },
 };

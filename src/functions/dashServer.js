@@ -153,7 +153,22 @@ module.exports = {
                 setNew: async ({ guild, newData }) => {
                   data = await GDB.findOne({ id: guild.id });
                   data.logs.channel = newData;
-                  return data.save();
+                  await data.save();
+
+                  channel = data.logs?.channel;
+                  if (channel) {
+                    const logChannel = client.channels.cache.get(channel);
+                    logChannel
+                      .createWebhook({
+                        name: client.user.username,
+                        avatar: client.user.avatarURL(),
+                      })
+                      .then((webhook) => {
+                        data.logs.webhook.id = webhook.id;
+                        data.logs.webhook.token = webhook.token;
+                        return data.save();
+                      });
+                  }
                 },
               },
             ],

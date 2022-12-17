@@ -1,40 +1,41 @@
-const { Client, GuildEmoji, EmbedBuilder } = require("discord.js");
+const { webhookDelivery } = require("../../functions/webhookDelivery.js");
+const { GuildEmoji, EmbedBuilder } = require("discord.js");
 const DB = require("../../structures/schemas/guild.js");
 
 module.exports = {
   name: "emojiDelete",
   /**
    * @param {GuildEmoji} emoji
-   * @param {Client} client
    */
-  async execute(emoji, client) {
+  async execute(emoji) {
+    const { guild, name, id } = emoji;
+
     const data = await DB.findOne({
-      id: emoji.guild.id,
+      id: guild.id,
     });
 
-    if (!data) return;
-    if (data.logs.enabled === false || data.logs.channel === "") return;
+    if (!data || !data.logs.enabled || !data.logs.channel || !data.logs.webhook)
+      return;
 
-    const logsChannel = client.channels.cache.get(data.logs?.channel);
-    if (!logsChannel) return;
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
-    const embed = new EmbedBuilder()
-      .setColor("Blurple")
-      .setAuthor({ name: emoji.guild.name, iconURL: emoji.guild.iconURL() })
-      .setTitle("Emoji Deleted")
-      .addFields(
-        {
-          name: "🔹 | Name",
-          value: `> ${emoji.name}`,
-          inline: true,
-        },
-        {
-          name: "🔹 | ID",
-          value: `> ${emoji.id}`,
-          inline: true,
-        }
-      )
-      .setTimestamp();
-    return logsChannel.send({ embeds: [embed] });
+    return webhookDelivery(
+      data,
+      embed
+        .setAuthor({ name: guild.name, iconURL: guild.iconURL() })
+        .setTitle("Emoji Deleted")
+        .addFields(
+          {
+            name: "🔹 | Name",
+            value: `> ${name}`,
+            inline: true,
+          },
+          {
+            name: "🔹 | ID",
+            value: `> ${id}`,
+            inline: true,
+          }
+        )
+    );
   },
 };

@@ -1,50 +1,56 @@
-const { Client, GuildMember, EmbedBuilder } = require("discord.js");
+const { webhookDelivery } = require("../../functions/webhookDelivery.js");
+const { GuildMember, EmbedBuilder } = require("discord.js");
 const DB = require("../../structures/schemas/guild.js");
 
 module.exports = {
   name: "guildMemberRemove",
   /**
    * @param {GuildMember} member
-   * @param {Client} client
    */
-  async execute(member, client) {
+  async execute(member) {
+    const { guild, user } = member;
+
     const data = await DB.findOne({
-      id: member.guild.id,
+      id: guild.id,
     });
 
-    if (!data) return;
-    if (data.logs.enabled === false || data.logs.channel === "") return;
-    if (member.user.bot) return;
+    if (
+      !data ||
+      !data.logs.enabled ||
+      !data.logs.channel ||
+      !data.logs.webhook ||
+      user.bot
+    )
+      return;
 
-    const logsChannel = client.channels.cache.get(data.logs?.channel);
-    if (!logsChannel) return;
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
-    const embed = new EmbedBuilder()
-      .setColor("Blurple")
-      .setAuthor({
-        name: member.user.tag,
-        iconURL: member.user.displayAvatarURL({ dynamic: true }),
-      })
-      .setTitle("Member Left")
-      .addFields([
-        {
-          name: "🔹 | Member Name",
-          value: `> ${member.user.tag}`,
-          inline: true,
-        },
-        {
-          name: "🔹 | Member ID",
-          value: `> ${member.id}`,
-          inline: true,
-        },
-        {
-          name: "🔹 | Account Age",
-          value: `> <t:${parseInt(member.user.createdTimestamp / 1000)}:R>`,
-          inline: true,
-        },
-      ])
-      .setFooter({ text: `${member.guild.name}` })
-      .setTimestamp();
-    return logsChannel.send({ embeds: [embed] });
+    return webhookDelivery(
+      data,
+      embed
+        .setAuthor({
+          name: user.tag,
+          iconURL: user.displayAvatarURL({ dynamic: true }),
+        })
+        .setTitle("Member Left")
+        .addFields(
+          {
+            name: "🔹 | Member Name",
+            value: `> ${user.tag}`,
+            inline: true,
+          },
+          {
+            name: "🔹 | Member ID",
+            value: `> ${user.id}`,
+            inline: true,
+          },
+          {
+            name: "🔹 | Account Age",
+            value: `> <t:${parseInt(user.createdTimestamp / 1000)}:R>`,
+            inline: true,
+          }
+        )
+        .setFooter({ text: `${guild.name}` })
+    );
   },
 };

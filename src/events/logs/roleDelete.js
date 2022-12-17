@@ -1,36 +1,36 @@
-const { Client, Role, EmbedBuilder } = require("discord.js");
+const { webhookDelivery } = require("../../functions/webhookDelivery.js");
 const DB = require("../../structures/schemas/guild.js");
+const { Role, EmbedBuilder } = require("discord.js");
 
 module.exports = {
   name: "roleDelete",
   /**
    * @param {Role} role
-   * @param {Client} client
    */
-  async execute(role, client) {
-    const data = await DB.findOne({ id: role.guild.id });
+  async execute(role) {
+    const { guild, name, id } = role;
+    const data = await DB.findOne({ id: guild.id });
 
-    if (!data) return;
-    if (data.logs.enabled === false || data.logs.channel === "") return;
+    if (!data || !data.logs.enabled || !data.logs.channel || !data.logs.webhook)
+      return;
 
-    const logsChannel = client.channels.cache.get(data.logs?.channel);
-    if (!logsChannel) return;
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
-    const embed = new EmbedBuilder()
-      .setColor("Blurple")
-      .setAuthor({ name: role.guild.name, iconURL: role.guild.iconURL() })
-      .setTitle("Role Deleted")
-      .addFields(
-        {
-          name: "🔹 | Role Name",
-          value: `> ${role.name}`,
-        },
-        {
-          name: "🔹 | Role ID",
-          value: `> ${role.id}`,
-        }
-      )
-      .setTimestamp();
-    return logsChannel.send({ embeds: [embed] });
+    return webhookDelivery(
+      data,
+      embed
+        .setAuthor({ name: guild.name, iconURL: guild.iconURL() })
+        .setTitle("Role Deleted")
+        .addFields(
+          {
+            name: "🔹 | Role Name",
+            value: `> ${name}`,
+          },
+          {
+            name: "🔹 | Role ID",
+            value: `> ${id}`,
+          }
+        )
+    );
   },
 };

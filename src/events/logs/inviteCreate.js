@@ -1,63 +1,70 @@
-const { Client, Invite, EmbedBuilder } = require("discord.js");
+const { webhookDelivery } = require("../../functions/webhookDelivery.js");
 const DB = require("../../structures/schemas/guild.js");
+const { Invite, EmbedBuilder } = require("discord.js");
 
 module.exports = {
   name: "inviteCreate",
   /**
    * @param {Invite} invite
-   * @param {Client} client
    */
-  async execute(invite, client) {
+  async execute(invite) {
+    const {
+      guild,
+      code,
+      createdTimestamp,
+      inviter,
+      maxUses,
+      expiresTimestamp,
+    } = invite;
+
     const data = await DB.findOne({
-      id: invite.guild.id,
+      id: guild.id,
     });
 
-    if (!data) return;
-    if (data.logs.enabled === false || data.logs.channel === "") return;
+    if (!data || !data.logs.enabled || !data.logs.channel || !data.logs.webhook)
+      return;
 
-    const logsChannel = client.channels.cache.get(data.logs?.channel);
-    if (!logsChannel) return;
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
-    const embed = new EmbedBuilder()
-      .setColor("Blurple")
-      .setAuthor({
-        name: invite.guild.name,
-        iconURL: invite.guild.iconURL({ dynamic: true }),
-      })
-      .setTitle("Invite Created")
-      .addFields(
-        {
-          name: "🔹 | Invite Link",
-          value: `> ${invite.code}`,
-          inline: true,
-        },
-        {
-          name: "🔹 | Invite created at",
-          value: `> <t:${parseInt(invite.createdTimestamp / 1000)}:R>`,
-          inline: true,
-        },
-        {
-          name: "🔹 | Invite expires at",
-          value: `> <t:${parseInt(invite.expiresTimestamp / 1000)}:R>`,
-          inline: true,
-        },
-        {
-          name: "🔹 | Invite created by",
-          value: `> <@${invite.inviter.id}>`,
-          inline: true,
-        },
-        {
-          name: "🔹 | Max Uses",
-          value: `> ${invite.maxUses.toString()}`,
-          inline: true,
-        }
-      )
-      .setFooter({
-        text: invite.inviter.tag,
-        iconURL: invite.inviter.displayAvatarURL({ dynamic: true }),
-      })
-      .setTimestamp();
-
-    return logsChannel.send({ embeds: [embed] });
+    return webhookDelivery(
+      data,
+      embed
+        .setAuthor({
+          name: guild.name,
+          iconURL: guild.iconURL({ dynamic: true }),
+        })
+        .setTitle("Invite Created")
+        .addFields(
+          {
+            name: "🔹 | Invite Link",
+            value: `> ${code}`,
+            inline: true,
+          },
+          {
+            name: "🔹 | Invite created at",
+            value: `> <t:${parseInt(createdTimestamp / 1000)}:R>`,
+            inline: true,
+          },
+          {
+            name: "🔹 | Invite expires at",
+            value: `> <t:${parseInt(expiresTimestamp / 1000)}:R>`,
+            inline: true,
+          },
+          {
+            name: "🔹 | Invite created by",
+            value: `> <@${inviter.id}>`,
+            inline: true,
+          },
+          {
+            name: "🔹 | Max Uses",
+            value: `> ${maxUses.toString()}`,
+            inline: true,
+          }
+        )
+        .setFooter({
+          text: inviter.tag,
+          iconURL: inviter.displayAvatarURL({ dynamic: true }),
+        })
+    );
   },
 };

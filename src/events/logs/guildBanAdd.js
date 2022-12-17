@@ -1,40 +1,41 @@
-const { Client, GuildMember, EmbedBuilder } = require("discord.js");
+const { webhookDelivery } = require("../../functions/webhookDelivery.js");
+const { GuildMember, EmbedBuilder } = require("discord.js");
 const DB = require("../../structures/schemas/guild.js");
 
 module.exports = {
   name: "guildBanAdd",
   /**
    * @param {GuildMember} member
-   * @param {Client} client
    */
-  async execute(member, client) {
+  async execute(member) {
+    const { guild, user } = member;
+
     const data = await DB.findOne({
-      id: member.guild.id,
+      id: guild.id,
     });
 
-    if (!data) return;
-    if (data.logs.enabled === false || data.logs.channel === "") return;
+    if (!data || !data.logs.enabled || !data.logs.channel || !data.logs.webhook)
+      return;
 
-    const logsChannel = client.channels.cache.get(data.logs?.channel);
-    if (!logsChannel) return;
+    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
-    const embed = new EmbedBuilder()
-      .setColor("Blurple")
-      .setAuthor({ name: member.guild.name, iconURL: member.guild.iconURL() })
-      .setTitle("Member Banned")
-      .addFields([
-        {
-          name: "🔹 | Member Name",
-          value: `> ${member.user.username}`,
-          inline: true,
-        },
-        {
-          name: "🔹 | ID",
-          value: `> ${member.user.id}`,
-          inline: true,
-        },
-      ])
-      .setTimestamp();
-    return logsChannel.send({ embeds: [embed] });
+    return webhookDelivery(
+      data,
+      embed
+        .setAuthor({ name: guild.name, iconURL: guild.iconURL() })
+        .setTitle("Member Banned")
+        .addFields(
+          {
+            name: "🔹 | Member Name",
+            value: `> ${user.username}`,
+            inline: true,
+          },
+          {
+            name: "🔹 | ID",
+            value: `> ${user.id}`,
+            inline: true,
+          }
+        )
+    );
   },
 };
