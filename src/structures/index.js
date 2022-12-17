@@ -7,6 +7,7 @@ const {
 const Cluster = require("discord-hybrid-sharding");
 const Statcord = require("statcord.js");
 
+const Economy = require("discord-economy-super/mongodb");
 const { Kazagumo } = require("kazagumo");
 const { Connectors } = require("shoukaku");
 const Spotify = require("kazagumo-spotify");
@@ -42,6 +43,7 @@ const client = new Client({
   shardCount: Cluster.data.TOTAL_SHARDS,
 });
 
+const { loadEco } = require("./handlers/economy.js");
 const { loadEvents } = require("./handlers/events.js");
 const { loadStats } = require("./handlers/statcord.js");
 const { loadButtons } = require("./handlers/buttons.js");
@@ -54,6 +56,12 @@ client.events = new Collection();
 client.buttons = new Collection();
 client.modals = new Collection();
 client.cluster = new Cluster.Client(client);
+client.economy = new Economy({
+  connection: {
+    connectionURI: client.config.database,
+    collectionName: "Economy",
+  },
+});
 
 client.statcord = new Statcord.Client({
   client,
@@ -95,9 +103,10 @@ client.manager = new Kazagumo(
 
 module.exports = client;
 
+loadEco(client);
+loadStats(client);
 loadEvents(client);
 loadButtons(client);
-loadStats(client);
 loadShoukaku(client);
 
 process.on("unhandledRejection", (err) => console.log(err));
