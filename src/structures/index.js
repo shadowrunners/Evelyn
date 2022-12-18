@@ -59,8 +59,12 @@ client.cluster = new Cluster.Client(client);
 client.economy = new Economy({
   connection: {
     connectionURI: client.config.database,
-    collectionName: "Economy",
+    collectionName: "economy",
+    dbName: "test",
   },
+  dailyAmount: 80,
+  workAmount: [60, 100],
+  weeklyAmount: 300,
 });
 
 client.statcord = new Statcord.Client({

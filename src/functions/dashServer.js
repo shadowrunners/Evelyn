@@ -13,6 +13,7 @@ module.exports = {
       const DBD = require("discord-dashboard");
       const SoftUI = require("dbd-soft-ui");
       const GDB = require("../structures/schemas/guild.js");
+      const os = require("os");
 
       let data;
       let channel;
@@ -38,11 +39,55 @@ module.exports = {
         useTheme404: true,
         theme: SoftUI({
           customThemeOptions: {
-            index: ({ req, res, config }) => {
+            index: ({ req }) => {
               return {
                 values: [],
                 graph: {},
-                cards: [],
+                cards: [
+                  {
+                    title: "Current User",
+                    icon: "single-02",
+                    getValue: req.session?.user?.username || "Runner",
+                    progressBar: {
+                      enabled: false,
+                      getProgress: client.guilds.cache.size,
+                    },
+                  },
+                  {
+                    title: "CPU",
+                    icon: "single-02",
+                    getValue: os
+                      .cpus()[0]
+                      .model.replace("(R) Core(TM) ", " ")
+                      .replace(" CPU ", "")
+                      .split("@")[0],
+                    progressBar: {
+                      enabled: false,
+                      getProgress: 50,
+                    },
+                  },
+                  {
+                    title: "System Platform",
+                    icon: "single-02",
+                    getValue: os
+                      .platform()
+                      .replace("win32", "Windows")
+                      .replace("linux", "Linux"),
+                    progressBar: {
+                      enabled: false,
+                      getProgress: 50,
+                    },
+                  },
+                  {
+                    title: "Server count",
+                    icon: "single-02",
+                    getValue: `${client.guilds.cache.size} out of 75`,
+                    progressBar: {
+                      enabled: true,
+                      getProgress: (client.guilds.cache.size / 75) * 100,
+                    },
+                  },
+                ],
               };
             },
           },
@@ -50,11 +95,12 @@ module.exports = {
           colorScheme: "pink",
           supporteMail: "hi@edgelabs.ml",
           icons: {
-            favicon: "https://i.imgur.com/0eXmmD9.png",
+            favicon:
+              "https://cdn.discordapp.com/avatars/832289090128969787/a6dbf8e910c7f3efbfef5dd83c56c69d.webp?size=2048",
             noGuildIcon: "https://i.imgur.com/mtrlifm.jpg",
             sidebar: {
               darkUrl:
-                "https://cdn.discordapp.com/avatars/832289090128969787/3e8394e754ee4d7f9e2d9edd43aec3f3.webp?size=2048",
+                "https://cdn.discordapp.com/avatars/832289090128969787/a6dbf8e910c7f3efbfef5dd83c56c69d.webp?size=2048",
               lightUrl: "",
               hideName: false,
               borderRadius: false,
@@ -67,7 +113,7 @@ module.exports = {
               index: {
                 feeds: [],
                 card: {
-                  category: "",
+                  category: "Meta",
                   title: "Welcome!",
                   description:
                     "Welcome to Evelyn's Control Center, your one-stop shop for tweaks made for Evelyn.",

@@ -463,6 +463,8 @@ module.exports = class MusicUtils {
         return this.interaction.editReply({
           embeds: [this.embed.setDescription("🔹 | Filters have been reset.")],
         });
+      default:
+        break;
     }
   }
 };

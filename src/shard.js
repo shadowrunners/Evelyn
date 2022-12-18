@@ -4,7 +4,7 @@
 
 const { Manager } = require("discord-hybrid-sharding");
 const { token } = require("./structures/config.json");
-const { magenta, white, green } = require("chalk");
+const { magenta, white } = require("chalk");
 
 const manager = new Manager(`${__dirname}/structures/index.js`, {
   totalShards: "auto",
