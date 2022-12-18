@@ -10,7 +10,7 @@
 
 ## About
 
-Evelyn is an open-source Discord Bot made as a safe alternative to bots that are heavily paywalled. You can invite her to your server using [this link](https://invite.evelynbot.ml) or learn how to set up your own instance using our documentation located [here](https://docs.evelynbot.ml). Also, you can [join our Discord server](https://discord.gg/HwkDSs7X82) to see sneak peeks of future updates.
+Evelyn is an open-source Discord Bot made as a safe alternative to bots that are heavily paywalled. You can invite her to your server using [this link](https://invite.evelynbot.ml) or learn how to set up your own instance using our documentation located [here](https://docs.evelynbot.ml). Also, you can [join our Discord server](https://discord.gg/HwkDSs7X82) to see sneak peeks of future updates or get help if you're encountering issues.
 
 ## Features
 
