@@ -10,7 +10,7 @@
 
 ## About
 
-Evelyn is an open-source Discord Bot and a safe alternative to bots that are heavily paywalled.
+Evelyn is an open-source Discord Bot made as a safe alternative to bots that are heavily paywalled. You can invite her to your server using [this link](https://invite.evelynbot.ml) or learn how to set up your own instance using our documentation located [here](https://docs.evelynbot.ml). Also, you can [join our Discord server](https://discord.gg/HwkDSs7X82) to see sneak peeks of future updates.
 
 ## Features
 
@@ -19,10 +19,6 @@ Evelyn is an open-source Discord Bot and a safe alternative to bots that are hea
 - 📦 **Miscellaneous**: `avatar`, `anime`, `announce`, `leaderboard`, `movie`, `rank`, `remind`, `show`, `userinfo`, `serverinfo`.
 - 😀 **Actions**: `actions bite`, `actions blush`, `actions bonk`, `actions bully`, `actions cringe`, `actions cry`, `actions cuddle`, `actions handhold`, `actions highfive`, `actions hug`, `actions kill`, `actions kiss`, `actions pat`, `actions poke`, `actions poke`, `actions slap`, `actions smile`, `actions wave`, `actions yeet`.
 - 📷 **Fun**: `cat`, `game (2048, 8ball, connect4, findemoji, guessthatpokemon, hangman, minesweeper, rps, snake, tictactoe, trivia, wordle, wouldyourather)`, `image (awooify, baguette, blurpify, captcha, changemymind, deepfry, kannagen, phcomment, threats, trash, trumptweet, tweet)`.
-
-## Installation
-
-You can find the installation guide [here](https://docs.evelynbot.ml) or alternatively, you can invite our hosted version of Evelyn [here](https://discord.com/oauth2/authorize?client_id=832289090128969787&permissions=8&scope=bot%20applications.commands).
 
 ## Credits
 
