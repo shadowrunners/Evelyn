@@ -1,6 +1,6 @@
-const { ButtonInteraction } = require("discord.js");
-const { setVolume, isSongPlaying } = require("../functions/musicUtils.js");
 const client = require("../structures/index.js");
+const { ButtonInteraction } = require("discord.js");
+const MusicUtils = require("../functions/musicUtils.js");
 
 module.exports = {
   id: "voldown",
@@ -8,14 +8,16 @@ module.exports = {
    * @param {ButtonInteraction} interaction
    */
   async execute(interaction) {
-    const player = client.manager.players.get(interaction.guild.id);
+    const { guildId } = interaction;
+
+    const player = client.manager.players.get(guildId);
     const volume = Number(player.volume * 100) - 10;
+    const utils = new MusicUtils(interaction, player);
 
     await interaction.deferReply();
 
-    if (!player) return;
-    if (isSongPlaying(interaction, player)) return;
+    if (utils.check()) return;
 
-    return setVolume(interaction, player, volume);
+    return utils.setVolume(volume);
   },
 };

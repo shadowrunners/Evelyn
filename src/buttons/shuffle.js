@@ -1,5 +1,5 @@
 const { ButtonInteraction, EmbedBuilder } = require("discord.js");
-const { checkForQueue, isSongPlaying } = require("../functions/musicUtils.js");
+const MusicUtils = require("../functions/musicUtils.js");
 const client = require("../structures/index.js");
 
 module.exports = {
@@ -8,25 +8,23 @@ module.exports = {
    * @param {ButtonInteraction} interaction
    */
   async execute(interaction) {
-    const player = client.manager.players.get(interaction.guild.id);
+    const { guildId, user } = interaction;
+
+    const player = client.manager.players.get(guildId);
     const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+    const utils = new MusicUtils(interaction, player);
 
     await interaction.deferReply();
 
-    if (!player) return;
-    if (
-      isSongPlaying(interaction, player) ||
-      checkForQueue(interaction, player)
-    )
-      return;
+    if (utils.check()) return;
 
     player.queue.shuffle();
 
     return interaction.editReply({
       embeds: [
         embed.setDescription("🔹 | Shuffled the queue.").setFooter({
-          text: `Action executed by ${interaction.user.username}.`,
-          iconURL: interaction.user.avatarURL({ dynamic: true }),
+          text: `Action executed by ${user.username}.`,
+          iconURL: user.avatarURL({ dynamic: true }),
         }),
       ],
     });

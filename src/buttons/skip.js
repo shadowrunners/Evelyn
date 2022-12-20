@@ -7,7 +7,9 @@ module.exports = {
    * @param {ButtonInteraction} interaction
    */
   async execute(interaction) {
-    const player = client.manager.players.get(interaction.guild.id);
+    const { guildId, user } = interaction;
+
+    const player = client.manager.players.get(guildId);
     const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
     if (!player) return;
 
@@ -18,8 +20,8 @@ module.exports = {
     return interaction.editReply({
       embeds: [
         embed.setDescription(`🔹 | Skipped.`).setFooter({
-          text: `Action executed by ${interaction.user.username}.`,
-          iconURL: interaction.user.avatarURL({ dynamic: true }),
+          text: `Action executed by ${user.username}.`,
+          iconURL: user.avatarURL({ dynamic: true }),
         }),
       ],
     });
