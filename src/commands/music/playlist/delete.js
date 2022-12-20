@@ -11,6 +11,8 @@ module.exports = {
     const pName = options.getString("name");
     const PlaylistEngine = new importEngine(interaction);
 
+    await interaction.deferReply();
+
     return PlaylistEngine.delete(pName);
   },
 };

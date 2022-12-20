@@ -7,10 +7,12 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
-    const { options, user } = interaction;
+    const { options } = interaction;
     const pName = options.getString("name");
     const song = options.getNumber("songid");
     const PlaylistEngine = new importEngine(interaction);
+
+    await interaction.deferReply();
 
     return PlaylistEngine.removeThisSong(pName, song);
   },

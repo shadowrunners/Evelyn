@@ -39,7 +39,7 @@ function shouldILeave(state) {
   return !members || members === 1;
 }
 
-async function savePerformance(player, oldState, newState) {
+function savePerformance(player, oldState, newState) {
   setTimeout(() => {
     const guild = client.guilds.cache.get(newState.guild.id);
     const textChannel = guild.channels.cache.get(player?.textId);
