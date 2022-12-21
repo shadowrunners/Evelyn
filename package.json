@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "canvacord": "^5.4.8",
-    "canvas": "^2.10.2",
     "chalk": "^4.1.2",
     "connect-mongodb-session": "^3.1.1",
     "dbd-soft-ui": "^1.5.49-beta.1",
