@@ -25,7 +25,5 @@ Evelyn is an open-source Discord Bot made as a safe alternative to bots that are
 - [Lyxcode](https://youtube.com/c/Lyxcode) - command handler
 - [Cit999](https://github.com/cit999/djs-projects/tree/master/Giveaway%20System) - giveaway system
 
-To keep up to date with Evelyn, you can find our Discord server [here](https://discord.gg/HwkDSs7X82).
-
 If we used your code and forgot to add you to the credits, shoot me a message over on Discord at scrappie#5451.
 If you decide to use this source code, I kindly ask you to give credit to me and to the people/repos that helped me bring this project to life.
