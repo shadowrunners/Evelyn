@@ -2,17 +2,19 @@
  * This class contains Evelyn's custom playlist system to give users a way to save their favorite songs.
  */
 const PDB = require("../structures/schemas/playlist.js");
-const { embedPages } = require("../functions/utils.js");
+const utils = require("../functions/utils.js");
 const { EmbedBuilder } = require("discord.js");
 const pms = require("pretty-ms");
 
 module.exports = class PlaylistEngine {
   /** Creates a new instance of the Playlist Engine class. */
-  constructor(interaction, player) {
+  constructor(interaction) {
     /** The interaction object. */
     this.interaction = interaction;
     /** The base embed used for keeping away from repeated code. */
     this.embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+    /** Utils used for pagination. */
+    this.util = new utils(this.interaction);
   }
 
   /** Checks to see if there is any data with the name you provided. */
@@ -159,7 +161,7 @@ module.exports = class PlaylistEngine {
       embeds.push(this.embed);
     }
 
-    return embedPages(this.interaction, embeds);
+    return this.util.embedPages(embeds);
   }
 
   /** Shows all your playlists. */
@@ -190,7 +192,7 @@ module.exports = class PlaylistEngine {
       embeds.push(this.embed);
     }
 
-    return embedPages(this.interaction, embeds);
+    return this.util.embedPages(embeds);
   }
 
   /** Removes the song provided from the specified playlist. */
