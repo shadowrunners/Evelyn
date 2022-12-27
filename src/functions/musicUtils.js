@@ -50,7 +50,7 @@ module.exports = class MusicUtils {
   }
 
   checkQueue() {
-    if (!this.player?.queue.size === 0)
+    if (this.player?.queue.size === 0)
       return this.interaction.editReply({
         embeds: [
           this.embed.setDescription("🔹 | There is nothing in the queue."),

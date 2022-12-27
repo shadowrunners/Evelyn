@@ -1,5 +1,5 @@
 const { ButtonInteraction, EmbedBuilder } = require("discord.js");
-const MusicUtils = require("../../../functions/musicUtils.js");
+const MusicUtils = require("../functions/musicUtils.js");
 const client = require("../structures/index.js");
 
 module.exports = {
