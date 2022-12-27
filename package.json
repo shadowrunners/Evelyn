@@ -15,7 +15,7 @@
     "discord-dashboard": "^2.3.6",
     "discord-economy-super": "^1.7.1-dev.f91aa6e.1670879766",
     "discord-html-transcripts": "^3.1.2",
-    "discord-hybrid-sharding": "^1.7.5",
+    "discord-hybrid-sharding": "^2.0.0",
     "discord-xp": "^1.1.16",
     "discord.js": "^14.7.1",
     "express-session": "^1.17.3",
