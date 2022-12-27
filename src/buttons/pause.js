@@ -1,4 +1,5 @@
 const { ButtonInteraction, EmbedBuilder } = require("discord.js");
+const MusicUtils = require("../../../functions/musicUtils.js");
 const client = require("../structures/index.js");
 
 module.exports = {
@@ -9,31 +10,33 @@ module.exports = {
   async execute(interaction) {
     const { guildId, user } = interaction;
 
+    const utils = new MusicUtils(interaction, player);
     const player = client.manager.players.get(guildId);
-    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+    const embed = new EmbedBuilder()
+      .setColor("Blurple")
+      .setTimestamp()
+      .setFooter({
+        text: `Action executed by ${user.username}.`,
+        iconURL: user.avatarURL({ dynamic: true }),
+      });
 
-    if (!player) return;
+    if (utils.check()) return;
 
     await interaction.deferReply();
 
     if (!player.paused) {
       player.pause(true);
-
-      embed.setDescription("🔹 | Paused.").setFooter({
-        text: `Action executed by ${user.username}.`,
-        iconURL: user.avatarURL({ dynamic: true }),
+      return interaction.editReply({
+        embeds: [embed.setDescription("🔹 | Paused.")],
       });
-      return interaction.editReply({ embeds: [embed] });
     }
 
     if (player.paused) {
       player.pause(false);
 
-      embed.setDescription("🔹 | Resumed.").setFooter({
-        text: `Action executed by ${user.username}.`,
-        iconURL: user.avatarURL({ dynamic: true }),
+      return interaction.editReply({
+        embeds: [embed.setDescription("🔹 | Resumed.")],
       });
-      return interaction.editReply({ embeds: [embed] });
     }
   },
 };
