@@ -1,3 +1,7 @@
+/**
+ * This class contains a couple utilities used by Evelyn across systems.
+ */
+
 const {
   ActionRowBuilder,
   ButtonBuilder,
@@ -7,7 +11,9 @@ const {
 } = require("discord.js");
 
 module.exports = class Util {
+  /** Creates a new instance of the Util class. */
   constructor(interaction) {
+    /** The interaction object. */
     this.interaction = interaction;
   }
 
@@ -73,6 +79,7 @@ module.exports = class Util {
     });
   }
 
+  /** Determines the value of the current database connection status. */
   switchTo(val) {
     let status;
     switch (val) {
@@ -94,6 +101,7 @@ module.exports = class Util {
     return status;
   }
 
+  /** Checks to see if the bot has a certain permission. */
   check4Perms(command) {
     if (
       !this.interaction.guild.members.me.permissions.has(
