@@ -1,6 +1,6 @@
 {
   "name": "evelyn",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "A Discord Bot that puts you as its first priority with no paywalls to interrupt your supercharged experience.",
   "main": "src/shard.js",
   "scripts": {
