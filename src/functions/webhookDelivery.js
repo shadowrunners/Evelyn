@@ -1,4 +1,4 @@
-/** This function delivers the logs using Discord Webhooks? It exists as a separate dedicated function to avoid repeating code. */
+/** This function delivers the logs using Discord Webhooks. It exists as a separate dedicated function to avoid repeating code. */
 
 const { WebhookClient } = require("discord.js");
 

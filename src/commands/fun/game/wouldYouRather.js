@@ -5,10 +5,9 @@ module.exports = {
   subCommand: "game.wouldyourather",
   /**
    * @param {ChatInputCommandInteraction} interaction
+   * @param {Client} client
    */
   execute(interaction) {
-    return new WouldYouRather({
-      interaction: interaction,
-    }).startGame();
+    return new WouldYouRather({ interaction }).startGame();
   },
 };
