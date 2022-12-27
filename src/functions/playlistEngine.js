@@ -17,24 +17,6 @@ module.exports = class PlaylistEngine {
     this.util = new utils(this.interaction);
   }
 
-  /** Checks to see if there is any data with the name you provided. */
-  async validatePlaylist(pName) {
-    const playlistData = await PDB.findOne({
-      userID: this.interaction.user.id,
-      playlistName: pName,
-    });
-
-    if (!playlistData)
-      return this.interaction.editReply({
-        embeds: [
-          this.embed.setDescription(
-            "🔹 | There is no playlist with that name or no data regarding that user."
-          ),
-        ],
-        ephemeral: true,
-      });
-  }
-
   /** Adds the current track to your playlist. */
   async addCurrentTrack(player, pName) {
     const track = player.queue.current;
@@ -118,7 +100,15 @@ module.exports = class PlaylistEngine {
       playlistName: pName,
     });
 
-    if (this.validatePlaylist(pName)) return;
+    if (!playlistData)
+      return this.interaction.editReply({
+        embeds: [
+          this.embed.setDescription(
+            "🔹 | There is no playlist with that name or no data regarding that user."
+          ),
+        ],
+        ephemeral: true,
+      });
 
     await playlistData.delete();
 
@@ -138,7 +128,15 @@ module.exports = class PlaylistEngine {
       userID: this.interaction.user.id,
     });
 
-    if (this.validatePlaylist(pName)) return;
+    if (!pData)
+      return this.interaction.editReply({
+        embeds: [
+          this.embed.setDescription(
+            "🔹 | There is no playlist with that name or no data regarding that user."
+          ),
+        ],
+        ephemeral: true,
+      });
 
     let i = 0;
     const trackData = pData.playlistData;
