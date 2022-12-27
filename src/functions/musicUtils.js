@@ -49,7 +49,7 @@ module.exports = class MusicUtils {
       });
   }
 
-  async checkQueue() {
+  checkQueue() {
     if (!this.player?.queue.size === 0)
       return this.interaction.editReply({
         embeds: [

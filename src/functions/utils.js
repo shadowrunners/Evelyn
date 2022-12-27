@@ -71,7 +71,7 @@ module.exports = class Util {
         text: `Page ${pages[id] + 1} of ${Pagemax}`,
       });
 
-      await interaction.editReply({
+      await this.interaction.editReply({
         embeds: [embeds[pages[id]]],
         components: [getRow(id)],
         fetchReply: true,
@@ -81,7 +81,7 @@ module.exports = class Util {
 
   /** Determines the value of the current database connection status. */
   switchTo(val) {
-    let status;
+    let status = "";
     switch (val) {
       case 0:
         status = "🟥 Disconnected";

@@ -10,8 +10,8 @@ module.exports = {
   async execute(interaction) {
     const { guildId, user } = interaction;
 
-    const utils = new MusicUtils(interaction, player);
     const player = client.manager.players.get(guildId);
+    const utils = new MusicUtils(interaction, player);
     const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
 
     if (utils.check() || utils.checkQueue()) return;
