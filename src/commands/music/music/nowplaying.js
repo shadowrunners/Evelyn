@@ -4,7 +4,6 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const MusicUtils = require("../../../functions/musicUtils.js");
-const pms = require("pretty-ms");
 
 module.exports = {
   subCommand: "music.nowplaying",
@@ -31,12 +30,7 @@ module.exports = {
             iconURL: member.user.avatarURL(),
           })
           .setDescription(
-            `**[${track.title}](${track.uri})** [${track.requester}]
-                
-                \`${pms(player.shoukaku.position)}\` [${utils.progressbar(
-              player
-            )}] \`${pms(track.length)}\`
-              `
+            `**[${track.title}](${track.uri})** [${track.requester}]`
           ),
       ],
     });

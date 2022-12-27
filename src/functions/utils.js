@@ -1,3 +1,7 @@
+/**
+ * This class contains a couple utilities used by Evelyn across systems.
+ */
+
 const {
   ActionRowBuilder,
   ButtonBuilder,
@@ -7,7 +11,9 @@ const {
 } = require("discord.js");
 
 module.exports = class Util {
+  /** Creates a new instance of the Util class. */
   constructor(interaction) {
+    /** The interaction object. */
     this.interaction = interaction;
   }
 
@@ -35,27 +41,21 @@ module.exports = class Util {
     pages[id] = pages[id] || 0;
     const Pagemax = embeds.length;
 
-    const filter = (i) => i.user.id === this.interaction.user.id;
-    const time = 1000 * 60 * 5;
-
-    const collector = await this.interaction.createMessageComponentCollector({
-      filter,
-      time,
+    const embed = embeds[pages[id]];
+    await embeds[pages[id]].setFooter({
+      text: `Page ${pages[id] + 1} from ${Pagemax}`,
     });
 
-    const updateEmbed = async () => {
-      await embeds[pages[id]].setFooter({
-        text: `Page ${pages[id] + 1} from ${Pagemax}`,
-      });
+    const replyEmbed = await this.interaction.editReply({
+      embeds: [embed],
+      components: [getRow(id)],
+      fetchReply: true,
+    });
 
-      await this.interaction.editReply({
-        embeds: [embeds[pages[id]]],
-        components: [getRow(id)],
-        fetchReply: true,
-      });
-    };
-
-    await updateEmbed();
+    const collector = await replyEmbed.createMessageComponentCollector({
+      filter: (i) => i.user.id === this.interaction.user.id,
+      time: 1000 * 60 * 5,
+    });
 
     collector.on("collect", async (b) => {
       if (!b) return;
@@ -67,12 +67,21 @@ module.exports = class Util {
       else if (b.customId === "next_embed" && pages[id] < embeds.length - 1)
         ++pages[id];
 
-      await updateEmbed();
+      await embeds[pages[id]].setFooter({
+        text: `Page ${pages[id] + 1} of ${Pagemax}`,
+      });
+
+      await this.interaction.editReply({
+        embeds: [embeds[pages[id]]],
+        components: [getRow(id)],
+        fetchReply: true,
+      });
     });
   }
 
+  /** Determines the value of the current database connection status. */
   switchTo(val) {
-    let status = " ";
+    let status = "";
     switch (val) {
       case 0:
         status = "🟥 Disconnected";
@@ -92,6 +101,7 @@ module.exports = class Util {
     return status;
   }
 
+  /** Checks to see if the bot has a certain permission. */
   check4Perms(command) {
     if (
       !this.interaction.guild.members.me.permissions.has(

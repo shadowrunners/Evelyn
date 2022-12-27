@@ -4,7 +4,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const MusicUtils = require("../../../functions/musicUtils.js");
-const { embedPages } = require("../../../functions/utils.js");
+const utils = require("../../../functions/utils.js");
 
 module.exports = {
   subCommand: "music.queue",
@@ -13,12 +13,13 @@ module.exports = {
    * @param {Client} client
    */
   async execute(interaction, client) {
+    const util = new utils(interaction);
     const { guild, guildId } = interaction;
     const player = client.manager.players.get(guildId);
-    const utils = new MusicUtils(interaction, player);
+    const musicUtils = new MusicUtils(interaction, player);
     await interaction.deferReply();
 
-    if (utils.check()) return;
+    if (musicUtils.check() || musicUtils.checkQueue()) return;
 
     const embeds = [];
     const songs = [];
@@ -41,6 +42,6 @@ module.exports = {
       embeds.push(embed);
     }
 
-    return embedPages(interaction, embeds);
+    return util.embedPages(embeds);
   },
 };

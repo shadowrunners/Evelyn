@@ -1,4 +1,5 @@
 const { ButtonInteraction, EmbedBuilder } = require("discord.js");
+const MusicUtils = require("../functions/musicUtils.js");
 const client = require("../structures/index.js");
 
 module.exports = {
@@ -10,8 +11,10 @@ module.exports = {
     const { guildId, user } = interaction;
 
     const player = client.manager.players.get(guildId);
+    const utils = new MusicUtils(interaction, player);
     const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
-    if (!player) return;
+
+    if (utils.check() || utils.checkQueue()) return;
 
     await interaction.deferReply();
 

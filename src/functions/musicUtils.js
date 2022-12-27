@@ -20,38 +20,14 @@ module.exports = class MusicUtils {
     if (this.player) return;
   }
 
-  /** Generates the progress bar for the Now Playing command. */
-  progressbar() {
-    const size = 15;
-    const line = "▬";
-    const slider = "🔘";
-
-    if (!this.player.queue.current) return `${slider}${line.repeat(size - 1)}]`;
-    const current =
-      this.player.queue.current.length !== 0
-        ? this.player.shoukaku.position
-        : this.player.queue.current.length;
-    const total = this.player.queue.current.length;
-    const barSize = Math.min(current, total);
-    const bar = line.repeat(barSize) + line.slice(-1);
-    const barFilled = bar.slice(0, -1) + slider;
-
-    if (current > total) return `${barFilled}${line.repeat(size - barSize)}`;
-    return `${bar}${line.repeat(size - barSize)}`;
-  }
-
   /** Handles all checks regarding songs, queues etc. */
   check() {
     const VC = this.interaction.member.voice.channel;
     const botVC = this.interaction.guild.members.me.voice.channelId;
 
-    if (!this.player?.playing && this.player?.queue.length === 0)
+    if (!this.player?.playing)
       return this.interaction.editReply({
-        embeds: [
-          this.embed.setDescription(
-            "If you're seeing this embed instead of the one you requested, something bad happened in the background.\n\nYou're seeing this either\na) the bot isn't playing;\nb) the queue is empty.\n\nIn this case, just queue 2 songs for the queue to exist or 1 song for it to be actually playing. :)"
-          ),
-        ],
+        embeds: [this.embed.setDescription("🔹 | I'm not playing anything.")],
       });
 
     if (!VC)
@@ -69,6 +45,15 @@ module.exports = class MusicUtils {
           this.embed.setDescription(
             `🔹 | Sorry but I'm already playing music in <#${botVC}>.`
           ),
+        ],
+      });
+  }
+
+  checkQueue() {
+    if (this.player?.queue.size === 0)
+      return this.interaction.editReply({
+        embeds: [
+          this.embed.setDescription("🔹 | There is nothing in the queue."),
         ],
       });
   }

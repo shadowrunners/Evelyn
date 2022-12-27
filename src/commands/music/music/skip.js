@@ -18,7 +18,7 @@ module.exports = {
 
     await interaction.deferReply();
 
-    if (utils.check()) return;
+    if (utils.check() || utils.checkQueue()) return;
 
     await player.stop();
 
