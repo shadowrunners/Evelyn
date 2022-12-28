@@ -12,6 +12,7 @@ const { Kazagumo } = require("kazagumo");
 const { Connectors } = require("shoukaku");
 const Spotify = require("kazagumo-spotify");
 const Deezer = require("kazagumo-deezer");
+const { crashReporter } = require("../functions/crashReport");
 
 const {
   Guilds,
@@ -113,7 +114,7 @@ loadEvents(client);
 loadButtons(client);
 loadShoukaku(client);
 
-process.on("unhandledRejection", (err) => console.log(err));
-process.on("unhandledException", (err) => console.log(err));
+process.on("unhandledRejection", (err) => crashReporter(client, err));
+process.on("unhandledException", (err) => crashReporter(client, err));
 
 client.login(client.config.token);
