@@ -25,11 +25,6 @@ module.exports = class MusicUtils {
     const VC = this.interaction.member.voice.channel;
     const botVC = this.interaction.guild.members.me.voice.channelId;
 
-    if (!this.player?.playing)
-      return this.interaction.editReply({
-        embeds: [this.embed.setDescription("🔹 | I'm not playing anything.")],
-      });
-
     if (!VC)
       return this.interaction.editReply({
         embeds: [
@@ -55,6 +50,13 @@ module.exports = class MusicUtils {
         embeds: [
           this.embed.setDescription("🔹 | There is nothing in the queue."),
         ],
+      });
+  }
+
+  checkPlaying() {
+    if (!this.player?.playing)
+      return this.interaction.editReply({
+        embeds: [this.embed.setDescription("🔹 | I'm not playing anything.")],
       });
   }
 
@@ -108,8 +110,8 @@ module.exports = class MusicUtils {
     });
   }
 
-  /** Checks if the volume is between 0 and 100. */
-  clampVolume(volume) {
+  /** Sets the volume for the player. */
+  async setVolume(volume) {
     if (volume > 100 || volume < 0)
       return this.interaction.editReply({
         embeds: [
@@ -120,13 +122,7 @@ module.exports = class MusicUtils {
         ephemeral: true,
       });
 
-    return Math.min(Math.max(volume, 0), 100);
-  }
-
-  /** Sets the volume for the player. */
-  setVolume(volume) {
-    const clampedVolume = this.clampVolume(volume);
-    this.player.setVolume(clampedVolume);
+    this.player.setVolume(volume);
 
     return this.interaction.editReply({
       embeds: [

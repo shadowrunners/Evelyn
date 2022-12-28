@@ -18,6 +18,8 @@ module.exports = {
 
     if (utils.check()) return;
 
+    console.log(volume);
+
     return utils.setVolume(volume);
   },
 };

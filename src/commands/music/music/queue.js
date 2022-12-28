@@ -19,7 +19,8 @@ module.exports = {
     const musicUtils = new MusicUtils(interaction, player);
     await interaction.deferReply();
 
-    if (musicUtils.check() || musicUtils.checkQueue()) return;
+    if (musicUtils.check()) return;
+    if (musicUtils.checkQueue()) return;
 
     const embeds = [];
     const songs = [];

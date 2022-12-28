@@ -12,12 +12,12 @@ module.exports = {
 
     const player = client.manager.players.get(guildId);
     const percent = options.getNumber("percent", true);
-    const utils = new MusicUtils(interaction, player);
+    const musicUtils = new MusicUtils(interaction, player);
 
     await interaction.deferReply();
 
-    if (utils.check()) return;
+    if (musicUtils.check()) return;
 
-    return utils.setVolume(percent);
+    return musicUtils.setVolume(percent);
   },
 };

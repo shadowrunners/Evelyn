@@ -10,18 +10,18 @@ module.exports = {
   async execute(interaction, client) {
     const { options, guildId } = interaction;
     const player = client.manager.players.get(guildId);
-    const utils = new MusicUtils(interaction, player);
+    const musicUtils = new MusicUtils(interaction, player);
     await interaction.deferReply();
 
-    if (utils.check()) return;
+    if (musicUtils.check()) return;
 
     switch (options.getString("type")) {
       case "queue":
-        return utils.repeatMode("queue");
+        return musicUtils.repeatMode("queue");
       case "song":
-        return utils.repeatMode("song");
+        return musicUtils.repeatMode("song");
       case "off":
-        return utils.repeatMode("off");
+        return musicUtils.repeatMode("off");
       default:
         break;
     }

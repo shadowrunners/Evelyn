@@ -36,7 +36,7 @@ module.exports = {
     const res = await player.search(query, { requester: user });
 
     if (!res.tracks.length) {
-      if (player) player.destroy();
+      if (player) player?.destroy();
 
       return interaction.editReply({
         embeds: [embed.setDescription("🔹 | No matches found.")],

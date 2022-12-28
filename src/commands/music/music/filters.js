@@ -10,40 +10,41 @@ module.exports = {
   async execute(interaction, client) {
     const { options, guildId } = interaction;
     const player = client.manager.players.get(guildId);
-    const utils = new MusicUtils(interaction, player);
+    const musicUtils = new MusicUtils(interaction, player);
     await interaction.deferReply();
 
-    if (utils.check()) return;
+    if (musicUtils.check()) return;
+    if (musicUtils.checkPlaying()) return;
 
     switch (options.getString("type")) {
       case "3d":
-        return utils.filters("3d");
+        return musicUtils.filters("3d");
       case "bass":
-        return utils.filters("bass");
+        return musicUtils.filters("bass");
       case "bassboost":
-        return utils.filters("bassboost");
+        return musicUtils.filters("bassboost");
       case "nightcore":
-        return utils.filters("nightcore");
+        return musicUtils.filters("nightcore");
       case "pop":
-        return utils.filters("pop");
+        return musicUtils.filters("pop");
       case "slowmo":
-        return utils.filters("slowmo");
+        return musicUtils.filters("slowmo");
       case "soft":
-        return utils.filters("soft");
+        return musicUtils.filters("soft");
       case "tv":
-        return utils.filters("tv");
+        return musicUtils.filters("tv");
       case "treblebass":
-        return utils.filters("treblebass");
+        return musicUtils.filters("treblebass");
       case "tremolo":
-        return utils.filters("tremolo");
+        return musicUtils.filters("tremolo");
       case "vaporwave":
-        return utils.filters("vaporwave");
+        return musicUtils.filters("vaporwave");
       case "vibrate":
-        return utils.filters("vibrate");
+        return musicUtils.filters("vibrate");
       case "vibrato":
-        return utils.filters("vibrato");
+        return musicUtils.filters("vibrato");
       case "reset":
-        return utils.filters("reset");
+        return musicUtils.filters("reset");
       default:
         break;
     }

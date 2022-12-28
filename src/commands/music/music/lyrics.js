@@ -16,10 +16,11 @@ module.exports = {
   async execute(interaction, client) {
     const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
     const player = client.manager.players.get(interaction.guildId);
-    const utils = new MusicUtils(interaction, player);
+    const musicUtils = new MusicUtils(interaction, player);
     await interaction.deferReply();
 
-    if (utils.check()) return;
+    if (musicUtils.check()) return;
+    if (musicUtils.checkPlaying()) return;
 
     const track = player.queue.current;
 
