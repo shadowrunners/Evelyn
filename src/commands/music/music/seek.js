@@ -18,6 +18,6 @@ module.exports = {
     if (musicUtils.checkPlaying()) return;
 
     const time = options.getNumber("time");
-    return utils.seek(time);
+    return musicUtils.seek(time);
   },
 };

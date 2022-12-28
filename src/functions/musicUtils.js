@@ -95,15 +95,15 @@ module.exports = class MusicUtils {
 
   /** This function seeks to the time provided by you. */
   async seek(time) {
-    const duration = Number.isInteger(time * 1000);
-    const trackDuration = this.player.queue.track.length;
+    const duration = Number(time) * 1000;
+    const trackDuration = this.player.queue.current.length;
 
     if (duration > trackDuration)
       return this.interaction.editReply({
         embeds: [this.embed.setDescription(`🔹 | Invalid seek time.`)],
       });
 
-    await this.player.shoukaku.seekTo(duration);
+    await this.player.seek(duration);
 
     return this.interaction.editReply({
       embeds: [this.embed.setDescription(`🔹 | Seeked to ${pms(duration)}.`)],
