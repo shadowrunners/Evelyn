@@ -46,6 +46,8 @@
   },
   "homepage": "https://github.com/t3amedge/evelyn#readme",
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "eslint": "^8.30.0",
+    "nodemon": "^2.0.20",
+    "prettier": "^2.8.1"
   }
 }
