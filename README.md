@@ -5,6 +5,7 @@
 [![](https://img.shields.io/github/issues/notscrappie/Evelyn)](https://github.com/t3amedge/Evelyn/issues)
 [![](https://img.shields.io/github/stars/notscrappie/Evelyn)](https://github.com/t3amedge/Evelyn)
 [![](https://img.shields.io/discord/838499177243738172?color=5865F2&logo=discord&logoColor=white)](https://discord.gg/HwkDSs7X82)
+[![](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee)](https://buymeacoffee.com/scr3ppie)
 
 > Unleash the full potential of your server.
 
