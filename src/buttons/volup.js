@@ -1,25 +1,24 @@
-const client = require("../structures/index.js");
-const { ButtonInteraction } = require("discord.js");
-const MusicUtils = require("../functions/musicUtils.js");
+// eslint-disable-next-line no-unused-vars
+const { ButtonInteraction, Client } = require('discord.js');
+const MusicUtils = require('../functions/musicUtils.js');
 
 module.exports = {
-  id: "volup",
-  /**
-   * @param {ButtonInteraction} interaction
-   */
-  async execute(interaction) {
-    const { guildId } = interaction;
+	id: 'volup',
+	/**
+	 * @param {ButtonInteraction} interaction
+	 * @param {Client} client
+	 */
+	async execute(interaction, client) {
+		const { guildId } = interaction;
 
-    const player = client.manager.players.get(guildId);
-    const volume = Number(player.volume * 100) + 10;
-    const utils = new MusicUtils(interaction, player);
+		const player = client.manager.players.get(guildId);
+		const volume = Number(player.volume * 100) + 10;
+		const utils = new MusicUtils(interaction, player);
 
-    await interaction.deferReply();
+		await interaction.deferReply();
 
-    if (utils.check()) return;
+		if (utils.check()) return;
 
-    console.log(volume);
-
-    return utils.setVolume(volume);
-  },
+		return utils.setVolume(volume);
+	},
 };
