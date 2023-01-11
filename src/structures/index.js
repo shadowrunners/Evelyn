@@ -113,7 +113,7 @@ loadEvents(client);
 loadButtons(client);
 loadShoukaku(client);
 
-process.on('unhandledRejection', (err) => console.log(err));
+process.on('unhandledRejection', (err) => crashReporter(client, err));
 process.on('unhandledException', (err) => crashReporter(client, err));
 
 client.login(client.config.token);
