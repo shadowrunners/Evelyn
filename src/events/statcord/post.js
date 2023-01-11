@@ -2,6 +2,7 @@ const { magenta, white, red } = require("chalk");
 
 module.exports = {
   name: "post",
+  once: true,
   execute(status) {
     if (!status)
       console.log(
