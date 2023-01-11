@@ -1,23 +1,25 @@
-const { ChatInputCommandInteraction, Client } = require("discord.js");
-const MusicUtils = require("../../../functions/musicUtils.js");
+/* eslint-disable no-unused-vars */
+const { ChatInputCommandInteraction, Client } = require('discord.js');
+const MusicUtils = require('../../../functions/musicUtils.js');
 
 module.exports = {
-  subCommand: "music.seek",
-  /**
-   * @param {ChatInputCommandInteraction} interaction
-   * @param {Client} client
-   */
-  async execute(interaction, client) {
-    const { options, guildId } = interaction;
-    const player = client.manager.players.get(guildId);
-    const musicUtils = new MusicUtils(interaction, player);
+	subCommand: 'music.seek',
+	/**
+	 * @param {ChatInputCommandInteraction} interaction
+	 * @param {Client} client
+	 */
+	async execute(interaction, client) {
+		const { options, guildId } = interaction;
 
-    await interaction.deferReply();
+		const player = client.manager.players.get(guildId);
+		const musicUtils = new MusicUtils(interaction, player);
 
-    if (musicUtils.check()) return;
-    if (musicUtils.checkPlaying()) return;
+		await interaction.deferReply();
 
-    const time = options.getNumber("time");
-    return musicUtils.seek(time);
-  },
+		if (musicUtils.voiceCheck()) return;
+		if (musicUtils.checkPlaying()) return;
+
+		const time = options.getNumber('time');
+		return musicUtils.seek(time);
+	},
 };

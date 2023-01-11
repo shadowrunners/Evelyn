@@ -1,28 +1,31 @@
+/* eslint-disable no-unused-vars */
 const {
-  Client,
-  EmbedBuilder,
-  ChatInputCommandInteraction,
-} = require("discord.js");
-const MusicUtils = require("../../../functions/musicUtils.js");
+	Client,
+	EmbedBuilder,
+	ChatInputCommandInteraction,
+} = require('discord.js');
+const MusicUtils = require('../../../functions/musicUtils.js');
 
 module.exports = {
-  subCommand: "music.clear",
-  /**
-   * @param {ChatInputCommandInteraction} interaction
-   * @param {Client} client
-   */
-  async execute(interaction, client) {
-    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
-    const player = client.manager.players.get(interaction.guildId);
-    const musicUtils = new MusicUtils(interaction, player);
+	subCommand: 'music.clear',
+	/**
+	 * @param {ChatInputCommandInteraction} interaction
+	 * @param {Client} client
+	 */
+	async execute(interaction, client) {
+		const { guildId } = interaction;
 
-    await interaction.deferReply();
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		const player = client.manager.players.get(guildId);
+		const musicUtils = new MusicUtils(interaction, player);
 
-    if (musicUtils.check()) return;
-    player.queue.clear();
+		await interaction.deferReply();
 
-    return interaction.editReply({
-      embeds: [embed.setDescription("🔹 | Queue cleared.")],
-    });
-  },
+		if (musicUtils.voiceCheck()) return;
+		player.queue.clear();
+
+		return interaction.editReply({
+			embeds: [embed.setDescription('🔹 | Queue cleared.')],
+		});
+	},
 };

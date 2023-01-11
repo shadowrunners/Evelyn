@@ -1,28 +1,31 @@
+/* eslint-disable no-unused-vars */
 const {
-  Client,
-  EmbedBuilder,
-  ChatInputCommandInteraction,
-} = require("discord.js");
-const MusicUtils = require("../../../functions/musicUtils.js");
+	Client,
+	EmbedBuilder,
+	ChatInputCommandInteraction,
+} = require('discord.js');
+const MusicUtils = require('../../../functions/musicUtils.js');
 
 module.exports = {
-  subCommand: "music.shuffle",
-  /**
-   * @param {ChatInputCommandInteraction} interaction
-   * @param {Client} client
-   */
-  async execute(interaction, client) {
-    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
-    const player = client.manager.players.get(interaction.guildId);
-    const musicUtils = new MusicUtils(interaction, player);
-    await interaction.deferReply();
+	subCommand: 'music.shuffle',
+	/**
+	 * @param {ChatInputCommandInteraction} interaction
+	 * @param {Client} client
+	 */
+	async execute(interaction, client) {
+		const { guildId } = interaction;
 
-    if (musicUtils.check()) return;
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		const player = client.manager.players.get(guildId);
+		const musicUtils = new MusicUtils(interaction, player);
+		await interaction.deferReply();
 
-    await player.queue.shuffle();
+		if (musicUtils.check()) return;
 
-    return interaction.editReply({
-      embeds: [embed.setDescription("🔹 | Shuffled.")],
-    });
-  },
+		await player.queue.shuffle();
+
+		return interaction.editReply({
+			embeds: [embed.setDescription('🔹 | Shuffled.')],
+		});
+	},
 };
