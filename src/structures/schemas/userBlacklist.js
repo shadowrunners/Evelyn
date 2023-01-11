@@ -1,10 +1,10 @@
-const { model, Schema } = require("mongoose");
+const { model, Schema } = require('mongoose');
 
 module.exports = model(
-  "UBlacklist",
-  new Schema({
-    userId: String,
-    reason: String,
-    time: Number,
-  })
+	'UBlacklist',
+	new Schema({
+		userId: String,
+		reason: String,
+		time: Number,
+	}),
 );
