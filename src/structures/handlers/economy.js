@@ -9,9 +9,7 @@ async function loadEco(client) {
 
 		client.economy.on(event.name, execute);
 
-		return console.log(
-			`${magenta('Economy')} ${white('· Loaded')} ${green(`${event.name}.js`)}`,
-		);
+		return console.log(magenta('Economy') + ' ' + white('· Loaded') + ' ' + green(event.name + '.js'));
 	});
 }
 

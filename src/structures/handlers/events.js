@@ -14,13 +14,19 @@ async function loadEvents(client) {
 		if (event.rest) {
 			if (event.once) client.rest.once(event.name, execute);
 			else client.rest.on(event.name, execute);
-		} else {
+		}
+		else {
+			// eslint-disable-next-line no-lonely-if
 			if (event.once) client.once(event.name, execute);
 			else client.on(event.name, execute);
 		}
 
 		return console.log(
-			`${magenta('Events')} ${white('· Loaded')} ${green(`${event.name}.js`)}`,
+			magenta('Events') +
+				' ' +
+				white('· Loaded') +
+				' ' +
+				green(event.name + '.js'),
 		);
 	});
 }

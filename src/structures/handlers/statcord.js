@@ -10,7 +10,11 @@ async function loadStats(client) {
 		client.statcord.once(event.name, execute);
 
 		return console.log(
-			`${magenta('Statcord')} ${white('· Loaded')} ${green(`${event.name}.js`)}`,
+			magenta('Statcord') +
+				' ' +
+				white('· Loaded') +
+				' ' +
+				green(event.name + '.js'),
 		);
 	});
 }

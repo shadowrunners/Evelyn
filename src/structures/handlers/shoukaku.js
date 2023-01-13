@@ -11,7 +11,11 @@ async function loadShoukaku(client) {
 		else client.manager.on(event.name, execute);
 
 		return console.log(
-			`${magenta('Shoukaku')} ${white('· Loaded')} ${green(`${event.name}.js`)}`,
+			magenta('Shoukaku') +
+				' ' +
+				white('· Loaded') +
+				' ' +
+				green(event.name + '.js'),
 		);
 	});
 }

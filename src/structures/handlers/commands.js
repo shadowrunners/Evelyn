@@ -21,11 +21,7 @@ async function loadCommands(client) {
 		if (command.developer) developerArray.push(command.data.toJSON());
 		else commandsArray.push(command.data.toJSON());
 
-		console.log(
-			`${magenta('Commands')} ${white('· Loaded')} ${green(
-				`${command.data.name}.js`,
-			)}`,
-		);
+		console.log(magenta('Commands') + ' ' + white('· Loaded') + ' ' + green(command.data.name + '.js'));
 	});
 
 	client.application.commands.set(commandsArray);
@@ -33,11 +29,7 @@ async function loadCommands(client) {
 	const developerGuild = client.guilds.cache.get(client.config.debug.devGuild);
 	developerGuild.commands.set(developerArray);
 
-	return console.log(
-		`${magenta('Discord API')} ${white(
-			'· Refreshed application commands for public and developer guilds.',
-		)}`,
-	);
+	return console.log(magenta('Discord API') + ' ' + white('· Refreshed application commands for public and developer guilds.'));
 }
 
 module.exports = { loadCommands };
