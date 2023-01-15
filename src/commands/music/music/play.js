@@ -46,14 +46,9 @@ module.exports = {
 		}
 
 		if (res.type === 'PLAYLIST') {
-			const tracks = res.tracks;
-			for (const track of tracks) player.queue.add(track);
+			for (const track of res.tracks) player.queue.add(track);
 
-			if (
-				!player.playing &&
-				!player.paused &&
-				player.queue.totalSize === res.tracks.length
-			) {
+			if (!player.playing && !player.paused) {
 				player.play();
 			}
 

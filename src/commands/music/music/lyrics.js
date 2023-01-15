@@ -6,7 +6,7 @@ const {
 } = require('discord.js');
 const genius = require('genius-lyrics');
 const gClient = new genius.Client();
-const MusicUtils = require('../../../functions/musicUtils.js');
+const MusicUtils = require('../../../modules/Utils/musicUtils.js');
 
 module.exports = {
 	subCommand: 'music.lyrics',

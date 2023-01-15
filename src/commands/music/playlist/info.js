@@ -1,5 +1,5 @@
 const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
-const importEngine = require("../../../functions/playlistEngine.js");
+const importEngine = require("../../../modules/Engines/playlistEngine.js");
 
 module.exports = {
   subCommand: "playlist.info",

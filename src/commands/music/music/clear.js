@@ -1,10 +1,11 @@
-/* eslint-disable no-unused-vars */
 const {
+	// eslint-disable-next-line no-unused-vars
 	Client,
 	EmbedBuilder,
+	// eslint-disable-next-line no-unused-vars
 	ChatInputCommandInteraction,
 } = require('discord.js');
-const MusicUtils = require('../../../functions/musicUtils.js');
+const MusicUtils = require('../../../modules/Utils/musicUtils.js');
 
 module.exports = {
 	subCommand: 'music.clear',

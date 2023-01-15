@@ -4,7 +4,7 @@ const {
 	EmbedBuilder,
 	ChatInputCommandInteraction,
 } = require('discord.js');
-const MusicUtils = require('../../../functions/musicUtils.js');
+const MusicUtils = require('../../../modules/Utils/musicUtils.js');
 
 module.exports = {
 	subCommand: 'music.skip',
@@ -24,7 +24,7 @@ module.exports = {
 		if (musicUtils.voiceCheck()) return;
 		if (musicUtils.checkQueue()) return;
 
-		await player.stop();
+		await player.skip();
 
 		return interaction.editReply({
 			embeds: [embed.setDescription('🔹 | Skipped.')],

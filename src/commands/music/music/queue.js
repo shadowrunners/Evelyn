@@ -4,8 +4,8 @@ const {
 	Client,
 	EmbedBuilder,
 } = require('discord.js');
-const MusicUtils = require('../../../functions/musicUtils.js');
-const utils = require('../../../functions/utils.js');
+const MusicUtils = require('../../../modules/Utils/musicUtils.js');
+const utils = require('../../../modules/Utils/utils.js');
 
 module.exports = {
 	subCommand: 'music.queue',
