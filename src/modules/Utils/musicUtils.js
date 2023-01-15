@@ -72,7 +72,7 @@ module.exports = class MusicUtils {
 	async repeatMode(mode) {
 		switch (mode) {
 		case 'queue':
-			await this.player.setLoop('queue');
+			this.player.setLoop('queue');
 
 			return this.interaction.editReply({
 				embeds: [
@@ -80,7 +80,7 @@ module.exports = class MusicUtils {
 				],
 			});
 		case 'song':
-			await this.player.setLoop('track');
+			this.player.setLoop('track');
 
 			return this.interaction.editReply({
 				embeds: [
@@ -88,7 +88,7 @@ module.exports = class MusicUtils {
 				],
 			});
 		case 'none':
-			await this.player.setLoop('off');
+			this.player.setLoop('off');
 
 			return this.interaction.editReply({
 				embeds: [this.embed.setDescription('🔹 | Repeat mode is now off.')],
@@ -147,6 +147,12 @@ module.exports = class MusicUtils {
 
 	/** Easily manage filters. */
 	async filters(mode) {
+		const embed = new EmbedBuilder()
+			.setTitle('🎧 Filter applied!')
+			.setDescription(
+				'The filter you requested will be applied. It may take a few seconds for it to propagate.',
+			);
+
 		switch (mode) {
 		case '3d':
 			await this.player.send({
@@ -156,9 +162,7 @@ module.exports = class MusicUtils {
 			});
 
 			return this.interaction.editReply({
-				embeds: [
-					this.embed.setDescription('🔹 | The 3D filter has been applied.'),
-				],
+				embeds: [embed],
 			});
 		case 'bass':
 			await this.player.send({
@@ -183,9 +187,7 @@ module.exports = class MusicUtils {
 			});
 
 			return this.interaction.editReply({
-				embeds: [
-					this.embed.setDescription('🔹 | The Bass filter has been applied.'),
-				],
+				embeds: [embed],
 			});
 		case 'bassboost':
 			await this.player.send({
@@ -210,11 +212,7 @@ module.exports = class MusicUtils {
 			});
 
 			return this.interaction.editReply({
-				embeds: [
-					this.embed.setDescription(
-						'🔹 | The `bass boost` filter has been applied.',
-					),
-				],
+				embeds: [embed],
 			});
 		case 'nightcore':
 			await this.player.send({
@@ -228,11 +226,7 @@ module.exports = class MusicUtils {
 			});
 
 			return this.interaction.editReply({
-				embeds: [
-					this.embed.setDescription(
-						'🔹 | The `nightcore` filter has been applied.',
-					),
-				],
+				embeds: [embed],
 			});
 		case 'pop':
 			await this.player.send({
@@ -257,13 +251,8 @@ module.exports = class MusicUtils {
 			});
 
 			return this.interaction.editReply({
-				embeds: [
-					this.embed.setDescription(
-						'🔹 | The `Pop` filter has been applied.',
-					),
-				],
+				embeds: [embed],
 			});
-
 		case 'slowmo':
 			await this.player.send({
 				op: 'filters',
@@ -276,9 +265,7 @@ module.exports = class MusicUtils {
 			});
 
 			return this.interaction.editReply({
-				embeds: [
-					this.embed.setDescription('🔹 | The 3D filter has been applied.'),
-				],
+				embeds: [embed],
 			});
 		case 'soft':
 			await this.player.send({
@@ -303,11 +290,7 @@ module.exports = class MusicUtils {
 			});
 
 			return this.interaction.editReply({
-				embeds: [
-					this.embed.setDescription(
-						'🔹 | The `soft` filter has been applied.',
-					),
-				],
+				embeds: [embed],
 			});
 		case 'tv':
 			await this.player.send({
@@ -332,9 +315,7 @@ module.exports = class MusicUtils {
 			});
 
 			return this.interaction.editReply({
-				embeds: [
-					this.embed.setDescription('🔹 | The `TV` filter has been applied.'),
-				],
+				embeds: [embed],
 			});
 		case 'treblebass':
 			await this.player.send({
@@ -359,11 +340,7 @@ module.exports = class MusicUtils {
 			});
 
 			return this.interaction.editReply({
-				embeds: [
-					this.embed.setDescription(
-						'🔹 | The `treble bass` filter has been applied.',
-					),
-				],
+				embeds: [embed],
 			});
 		case 'tremolo':
 			await this.player.send({
@@ -373,11 +350,7 @@ module.exports = class MusicUtils {
 			});
 
 			return this.interaction.editReply({
-				embeds: [
-					this.embed.setDescription(
-						'🔹 | The `tremolo` filter has been applied.',
-					),
-				],
+				embeds: [embed],
 			});
 		case 'vaporwave':
 			await this.player.send({
@@ -405,11 +378,7 @@ module.exports = class MusicUtils {
 			});
 
 			return this.interaction.editReply({
-				embeds: [
-					this.embed.setDescription(
-						'🔹 | The `vaporwave` filter has been applied.',
-					),
-				],
+				embeds: [embed],
 			});
 		case 'vibrate':
 			await this.player.send({
@@ -420,11 +389,7 @@ module.exports = class MusicUtils {
 			});
 
 			return this.interaction.editReply({
-				embeds: [
-					this.embed.setDescription(
-						'🔹 | The `vibrate` filter has been applied.',
-					),
-				],
+				embeds: [embed],
 			});
 		case 'vibrato':
 			await this.player.send({
@@ -434,11 +399,7 @@ module.exports = class MusicUtils {
 			});
 
 			return this.interaction.editReply({
-				embeds: [
-					this.embed.setDescription(
-						'🔹 | The `vibrato` filter has been applied.',
-					),
-				],
+				embeds: [embed],
 			});
 		case 'reset':
 			await this.player.send({
@@ -449,7 +410,7 @@ module.exports = class MusicUtils {
 			this.setVolume(100);
 
 			return this.interaction.editReply({
-				embeds: [this.embed.setDescription('🔹 | Filters have been reset.')],
+				embeds: [embed],
 			});
 		default:
 			break;
