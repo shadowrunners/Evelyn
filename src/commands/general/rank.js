@@ -1,10 +1,9 @@
 const {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
-  EmbedBuilder,
   AttachmentBuilder,
 } = require("discord.js");
-const { Rank } = require("canvacord");
+const { profileImage } = require("discord-arts");
 const DXP = require("discord-xp");
 
 module.exports = {
@@ -21,42 +20,31 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
-    const { options, member } = interaction;
+    const { options, member, guildId } = interaction;
     const target = options.getUser("target") || member;
+    const user = await DXP.fetch(target.id, guildId, true);
 
-    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
-    const user = await DXP.fetch(target.id, interaction.guild.id, true);
+    await interaction.deferReply();
 
     if (!user)
-      return interaction.reply({
-        embeds: [
-          embed.setDescription("🔹 | This user hasn't gained any XP yet."),
-        ],
+      return interaction.editReply({
+        content: "🔹 | This user hasn't gained any XP yet.",
         ephemeral: true,
       });
 
     const requiredlvl = DXP.xpFor(parseInt(user.level) + 1);
-
-    const buildRankCard = new Rank()
-      .setAvatar(target.displayAvatarURL({ forceStatic: true }))
-      .setBackground(
-        "IMAGE",
-        "https://cdn.discordapp.com/attachments/925125325107658832/1025831914818510908/rankcard.png"
-      )
-      .setCurrentXP(user.xp)
-      .setLevel(user.level, "Level")
-      .setRank(user.position)
-      .setRequiredXP(requiredlvl)
-      .setProgressBar("#FFFFFF", "COLOR")
-      .setUsername(target.user.username)
-      .setDiscriminator(target.user.discriminator);
-
-    const rankCard = await buildRankCard
-      .build()
-      .catch((_err) => console.log(_err));
+    const rankCard = await profileImage(target.id, {
+      rankData: {
+        currentXp: user.xp,
+        requiredXp: requiredlvl,
+        rank: user.position,
+        level: user.level,
+        barColor: "5865F2"
+      }
+    })
     const attachment = new AttachmentBuilder(rankCard, { name: "card.png" });
 
-    return interaction.reply({
+    return interaction.editReply({
       files: [attachment],
     });
   },
