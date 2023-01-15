@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 const { ButtonInteraction, EmbedBuilder, Client } = require('discord.js');
-const MusicUtils = require('../functions/musicUtils.js');
+const MusicUtils = require('../modules/Utils/musicUtils.js');
 
 module.exports = {
 	id: 'pause',

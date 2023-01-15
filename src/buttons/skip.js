@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 const { ButtonInteraction, EmbedBuilder, Client } = require('discord.js');
-const MusicUtils = require('../functions/musicUtils.js');
+const MusicUtils = require('../modules/Utils/musicUtils.js');
 
 module.exports = {
 	id: 'skip',
@@ -15,7 +15,7 @@ module.exports = {
 		const utils = new MusicUtils(interaction, player);
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
-		if (utils.check() || utils.checkQueue()) return;
+		if (utils.voiceCheck() || utils.checkQueue()) return;
 
 		await interaction.deferReply();
 
