@@ -43,7 +43,7 @@ module.exports = model(
       channel: String,
       message: String,
     },
-    starboard: {
+    qotd: {
       enabled: false,
       channel: String,
     },
