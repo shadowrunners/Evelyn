@@ -1,5 +1,5 @@
 module.exports = {
-	dash: function(client) {
+	dash: function (client) {
 		(async () => {
 			const {
 				ChannelType,
@@ -94,7 +94,7 @@ module.exports = {
 					},
 					websiteName: 'Evelyn',
 					colorScheme: 'pink',
-					supporteMail: 'hi@edgelabs.ml',
+					supporteMail: 'hi@rebootlabs.ml',
 					icons: {
 						favicon:
 							'https://cdn.discordapp.com/avatars/832289090128969787/a6dbf8e910c7f3efbfef5dd83c56c69d.webp?size=2048',
@@ -554,39 +554,40 @@ module.exports = {
 						],
 					},
 					{
-						categoryId: 'starboard',
-						categoryName: 'Starboard',
-						categoryDescription: 'The easiest way of archiving funny messages.',
+						categoryId: 'qotd',
+						categoryName: 'QOTD',
+						categoryDescription: 'A way of automating daily questions of the day.',
 						categoryImageURL: 'https://i.imgur.com/hlBewaW.png',
 						categoryOptionsList: [
 							{
-								optionId: 'starswitch',
-								optionName: 'Enable/Disable Starboard',
-								optionDescription: 'Enable or disable the starboard.',
+								optionId: 'qotdswitch',
+								optionName: 'Enable/Disable QOTD',
+								optionDescription: 'Enable or disable the QOTD module.',
 								optionType: DBD.formTypes.switch(false),
 								getActualSet: async ({ guild }) => {
 									data = await GDB.findOne({ id: guild.id });
-									return data.starboard.enabled;
+									return data.qotd.enabled;
 								},
 								setNew: async ({ guild, newData }) => {
 									data = await GDB.findOne({ id: guild.id });
-									data.starboard.enabled = newData;
+									data.qotd.enabled = newData;
 									return data.save();
 								},
 							},
 							{
-								optionId: 'starchannel',
-								optionName: 'Starboard Channel',
+								optionId: 'qotdchannel',
+								optionName: 'QOTD Channel',
 								optionDescription:
-									'This option controls the channel in which messages will be archived.',
-								optionType: DBD.formTypes.rolesSelect(false),
+									'This option controls the channel in which QOTDs will be sent.',
+								optionType: DBD.formTypes.channelsSelect(false, channelTypes),
 								getActualSet: async ({ guild }) => {
 									data = await GDB.findOne({ id: guild.id });
-									return data.starboard.channel;
+									return data.qotd.channel;
 								},
 								setNew: async ({ guild, newData }) => {
 									data = await GDB.findOne({ id: guild.id });
-									data.starboard.channel = newData;
+									data.qotd.channel = newData;
+									data.qotd.serverId = guild.id;
 									return data.save();
 								},
 							},
