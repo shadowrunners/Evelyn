@@ -14,17 +14,15 @@ module.exports = {
    * @param {UserContextMenuCommandInteraction} interaction
    */
   async execute(interaction) {
-    const target = await interaction.guild.members.fetch(interaction.targetId);
-    await target.user.fetch();
+    const { guild, targetId } = interaction;
+    const target = await guild.members.fetch(targetId);
+    const { user } = target;
 
-    if (!target.user.banner)
+    await user.fetch();
+
+    if (!user.banner)
       return interaction.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor("Blurple")
-            .setDescription("This user doesn't have a banner.")
-            .setTimestamp(),
-        ],
+        content: "🔹 | This user doesn't have a banner.",
         ephemeral: true,
       });
 
@@ -32,19 +30,10 @@ module.exports = {
       embeds: [
         new EmbedBuilder()
           .setColor("Blurple")
-          .setAuthor({
-            name: `${target.user.username}'s Banner`,
-            iconURL: target.user.avatarURL({ dynamic: true }),
-          })
-          .setDescription(
-            `You can obtain their banner **[here](${target.user.bannerURL({
-              dynamic: true,
-              format: "png",
-              size: 4096,
-            })})** if you really like it.`
-          )
+          .setTitle(`${user.username}'s Banner`)
+          .setURL(user.bannerURL({ size: 4096, format: "png", size: 4096 }))
           .setImage(
-            target.user.bannerURL({ dynamic: true, format: "png", size: 4096 })
+            user.bannerURL({ dynamic: true, format: "png", size: 4096 })
           ),
       ],
       ephemeral: true,

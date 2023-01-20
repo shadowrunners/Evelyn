@@ -7,7 +7,7 @@ const {
 } = require('discord.js');
 
 module.exports = {
-	botPermissions: ['SendMessages'],
+	botPermissions: ['SendMessages', "EmbedLinks"],
 	data: new ContextMenuCommandBuilder()
 		.setName('User Avatar')
 		.setType(ApplicationCommandType.User),
@@ -15,16 +15,19 @@ module.exports = {
 	 * @param {UserContextMenuCommandInteraction} interaction
 	 */
 	async execute(interaction) {
-		const target = await interaction.guild.members.fetch(interaction.targetId);
-		await target.user.fetch();
+		const { guild, targetId } = interaction;
+		const target = await guild.members.fetch(targetId);
+		const { user } = target;
+
+		await user.fetch();
 
 		return interaction.reply({
 			embeds: [
 				new EmbedBuilder()
 					.setColor('Blurple')
-					.setTitle(`${target.user.tag}'s Avatar`)
-					.setImage(target.user.avatarURL({ dynamic: true, size: 2048 }))
-					.setURL(target.avatarURL()),
+					.setTitle(`${user.tag}'s Avatar`)
+					.setImage(user.avatarURL({ dynamic: true, size: 2048 }))
+					.setURL(user.avatarURL()),
 			],
 			ephemeral: true,
 		});
