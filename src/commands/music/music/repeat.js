@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 const { ChatInputCommandInteraction, Client } = require('discord.js');
-const MusicUtils = require('../../../functions/musicUtils.js');
+const MusicUtils = require('../../../modules/Utils/musicUtils.js');
 
 module.exports = {
 	subCommand: 'music.repeat',
@@ -17,14 +17,14 @@ module.exports = {
 		if (musicUtils.voiceCheck()) return;
 
 		switch (options.getString('type')) {
-		case 'queue':
-			return musicUtils.repeatMode('queue');
-		case 'song':
-			return musicUtils.repeatMode('song');
-		case 'off':
-			return musicUtils.repeatMode('off');
-		default:
-			break;
+			case 'queue':
+				return musicUtils.repeatMode('queue');
+			case 'song':
+				return musicUtils.repeatMode('song');
+			case 'off':
+				return musicUtils.repeatMode('off');
+			default:
+				break;
 		}
 	},
 };

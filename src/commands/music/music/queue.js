@@ -4,8 +4,8 @@ const {
 	Client,
 	EmbedBuilder,
 } = require('discord.js');
-const MusicUtils = require('../../../functions/musicUtils.js');
-const utils = require('../../../functions/utils.js');
+const MusicUtils = require('../../../modules/Utils/musicUtils.js');
+const utils = require('../../../modules/Utils/utils.js');
 
 module.exports = {
 	subCommand: 'music.queue',
@@ -28,8 +28,7 @@ module.exports = {
 
 		for (let i = 0; i < player.queue.length; i++) {
 			songs.push(
-				`${i + 1}. [${player.queue[i].title}](${player.queue[i].uri}) [${
-					player.queue[i].requester
+				`${i + 1}. [${player.queue[i].title}](${player.queue[i].uri}) [${player.queue[i].requester
 				}]`,
 			);
 		}

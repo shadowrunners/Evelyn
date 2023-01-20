@@ -5,8 +5,7 @@ const {
 	ChatInputCommandInteraction,
 } = require('discord.js');
 const genius = require('genius-lyrics');
-const gClient = new genius.Client();
-const MusicUtils = require('../../../functions/musicUtils.js');
+const MusicUtils = require('../../../modules/Utils/musicUtils.js');
 
 module.exports = {
 	subCommand: 'music.lyrics',
@@ -16,6 +15,7 @@ module.exports = {
 	 */
 	async execute(interaction, client) {
 		const { guildId } = interaction;
+		const gClient = new genius.Client(client.config.API.geniusKey);
 
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 		const player = client.manager.players.get(guildId);

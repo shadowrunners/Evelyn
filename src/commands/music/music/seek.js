@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 const { ChatInputCommandInteraction, Client } = require('discord.js');
-const MusicUtils = require('../../../functions/musicUtils.js');
+const MusicUtils = require('../../../modules/Utils/musicUtils.js');
 
 module.exports = {
 	subCommand: 'music.seek',
