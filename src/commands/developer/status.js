@@ -1,12 +1,13 @@
-/* eslint-disable no-unused-vars */
 const {
+	// eslint-disable-next-line no-unused-vars
 	Client,
 	SlashCommandBuilder,
+	// eslint-disable-next-line no-unused-vars
 	ChatInputCommandInteraction,
 	EmbedBuilder,
 } = require('discord.js');
 const { connection } = require('mongoose');
-const Util = require('../../functions/utils.js');
+const Util = require('../../modules/Utils/utils.js');
 const os = require('os');
 
 module.exports = {
