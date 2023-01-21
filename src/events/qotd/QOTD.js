@@ -11,9 +11,7 @@ module.exports = {
      * @param {Client} client
      */
     execute(client) {
-        console.log("QOTD event fired.")
         DB.find().then((data) => {
-            console.log(data)
             data.forEach((docs) => {
                 if (!docs.qotd) return;
 
