@@ -8,7 +8,7 @@ module.exports = {
      */
     async execute(interaction) {
         const { options, guildId } = interaction;
-        let data = await GDB.findOne({ id: guildId });
+        const data = await GDB.findOne({ id: guildId });
         const embed = new EmbedBuilder().setColor("Blurple");
 
         await interaction.deferReply();
