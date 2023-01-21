@@ -80,6 +80,8 @@ module.exports = class NekoAPI {
 
 	/** Fetches the avatars of users. */
 	fetchAvatars(user1, user2) {
+		if (this.checkTarget(user1, user2)) return;
+
 		this.user1 = user1;
 		this.user2 = user2;
 
@@ -89,10 +91,12 @@ module.exports = class NekoAPI {
 
 	/** Fetches the usernames of users. */
 	fetchUsername(user1, user2) {
+		if (this.checkTarget(user1, user2)) return;
+
 		this.user1 = user1;
 		this.user2 = user2;
 
-		const fetchName = (user1 || user2).username();
+		const fetchName = (user1 || user2).username;
 		return fetchName;
 	}
 
@@ -212,7 +216,8 @@ module.exports = class NekoAPI {
 
 	/** Fetches the tweet image from the API and replies with an embed of it. */
 	tweet(user1, user2, text) {
-		if (this.checkTarget(user1, user2)) return;
+		if (this.checkText(text)) return;
+
 		return this.fetchandSend(
 			'tweet',
 			user1,
