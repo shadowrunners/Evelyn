@@ -13,12 +13,14 @@ module.exports = {
     const data = await DB.findOne({ id: guild.id });
 
     if (!guild || author.bot) return;
-    if (!data?.levels.enabled || !data?.levels.channel) return;
+    if (!data?.levels.enabled || !data?.levels.channel || !data?.levels.message) return;
 
     const levellingChannel = client.channels.cache.get(data?.levels.channel);
     if (!levellingChannel) return;
 
     const rndXP = Number(Math.floor(Math.random() * 25));
+    if (rndXP === 0) return;
+
     const levelledUp = await DXP.appendXp(
       message.author.id,
       message.guild.id,
