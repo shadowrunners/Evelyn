@@ -20,6 +20,9 @@ module.exports = class WaifuEngine {
 			.setTimestamp();
 		/** The interaction object used for replying and fetching usernames. */
 		this.interaction = interaction;
+
+		this.name = null;
+		this.iconURL = null;
 	}
 
 	/** Retrieves the image from the endpoint provided. */
@@ -57,15 +60,14 @@ module.exports = class WaifuEngine {
 		}
 
 		const image = await this.fetchImage(action);
-		let name, iconURL;
 
 		if (target) {
-			name = `${this.interaction.user.username} ${text} ${target.username}`;
-			iconURL = `${this.interaction.user.avatarURL()}`;
+			this.name = `${this.interaction.user.username} ${text} ${target.username}`;
+			this.iconURL = `${this.interaction.user.avatarURL()}`;
 		}
 		else {
-			name = `${this.interaction.user.username} ${text}`;
-			iconURL = `${this.interaction.user.avatarURL()}`;
+			this.name = `${this.interaction.user.username} ${text}`;
+			this.iconURL = `${this.interaction.user.avatarURL()}`;
 		}
 
 		return this.interaction.editReply({

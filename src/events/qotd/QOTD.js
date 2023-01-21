@@ -10,27 +10,20 @@ module.exports = {
     /**
      * @param {Client} client
      */
-    async execute(client) {
+    execute(client) {
         console.log("QOTD event fired.")
         DB.find().then((data) => {
             console.log(data)
-            data.forEach(async (docs) => {
-                console.log("Reached data forEach.")
+            data.forEach((docs) => {
                 if (!docs.qotd) return;
-                console.log("Passed data check.")
 
                 const guild = client.guilds.cache.get(docs.id);
-                console.log(guild)
                 if (!guild) return;
 
-                console.log("Passed guild check.")
-
                 if (!docs?.qotd.enabled || !docs?.qotd.channel) return;
-                console.log("Passed data check.")
-
                 const QOTDChannel = docs.qotd.channel;
 
-                schedule("* * * * *", async function () {
+                schedule("0 23 * * *", async function () {
                     let questions = JSON.parse(readFileSync(resolve(__dirname, '../../utils/QOTD.json')));
                     console.log(questions)
                     const question = questions[Math.floor(Math.random() * questions.length)];

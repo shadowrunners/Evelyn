@@ -2,7 +2,7 @@ const {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
 } = require("discord.js");
-const importedWaifu = require("../../functions/waifuAPI.js");
+const importedWaifu = require("../../modules/APIs/waifuAPI.js");
 
 module.exports = {
   botPermissions: ["SendMessages", "EmbedLinks"],
