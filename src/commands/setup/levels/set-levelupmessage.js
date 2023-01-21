@@ -17,7 +17,7 @@ module.exports = {
             id: guildId,
         }, {
             $set: {
-                'level.message': providedMessage
+                'levels.message': providedMessage
             }
         })
 

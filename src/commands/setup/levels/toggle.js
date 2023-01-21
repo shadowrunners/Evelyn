@@ -22,12 +22,9 @@ module.exports = {
                     id: guildId,
                 }, {
                     $set: {
-                        levels: {
-                            enabled: true
-                        }
+                        'levels.enabled': true
                     }
                 })
-
 
                 return interaction.editReply({ embeds: [embed.setDescription("🔹 | The levelling system has been enabled.")] })
 
@@ -39,9 +36,7 @@ module.exports = {
                     id: guildId,
                 }, {
                     $set: {
-                        levels: {
-                            enabled: false
-                        }
+                        'levels.enabled': false
                     }
                 })
 
