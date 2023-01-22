@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ChannelType } = require('discord.js');
+const { SlashCommandBuilder, ChannelType, PermissionFlagsBits } = require('discord.js');
 const { Administrator } = PermissionFlagsBits;
 const { GuildText } = ChannelType;
 
