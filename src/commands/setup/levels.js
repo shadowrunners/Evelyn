@@ -1,4 +1,5 @@
-const { SlashCommandBuilder, ChannelType } = require('discord.js');
+const { SlashCommandBuilder, ChannelType, PermissionFlagsBits } = require('discord.js');
+const { Administrator } = PermissionFlagsBits;
 const { GuildText } = ChannelType;
 
 module.exports = {
@@ -6,6 +7,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('levels')
         .setDescription('Manage and configure levels.')
+        .setDefaultMemberPermissions(Administrator)
         .addSubcommand((options) =>
             options
                 .setName('toggle')

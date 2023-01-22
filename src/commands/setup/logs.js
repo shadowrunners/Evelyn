@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, ChannelType } = require('discord.js');
+const { Administrator } = PermissionFlagsBits;
 const { GuildText } = ChannelType;
 
 module.exports = {
@@ -6,6 +7,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('logs')
         .setDescription('Manage and configure logging.')
+        .setDefaultMemberPermissions(Administrator)
         .addSubcommand((options) =>
             options
                 .setName('toggle')
