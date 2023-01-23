@@ -17,7 +17,7 @@ module.exports = {
         const findRole = data.roles.roleArray.find((r) => r.roleId === role.id);
         if (!findRole) return interaction.editReply({ embeds: [embed.setDescription("🔹 | This role hasn't been added to the roles panel.")] });
 
-        await GDB.findOneAndUpdate({
+        await RDB.findOneAndUpdate({
             id: guildId
         }, {
             $pull: {

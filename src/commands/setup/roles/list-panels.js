@@ -16,7 +16,7 @@ module.exports = {
         if (!data) return;
 
         data.forEach((docs) => {
-            let roleArray = docs.roleArray.map(role => {
+            const roleArray = docs.roleArray.map(role => {
                 return `<@&${role.roleId}>`;
             }).join("\n");
 
