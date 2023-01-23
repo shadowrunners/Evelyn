@@ -11,7 +11,7 @@ module.exports = {
         const providedMessage = options.getString("message");
         const embed = new EmbedBuilder().setColor("Blurple");
 
-        await interaction.deferReply();
+        await interaction.deferReply({ ephemeral: true });
 
         await GDB.findOneAndUpdate({
             id: guildId,
@@ -19,7 +19,7 @@ module.exports = {
             $set: {
                 'levels.message': providedMessage
             }
-        })
+        });
 
         return interaction.editReply({
             embeds: [embed.setDescription('🔹 | Got it, the level up message you provided has been set.')]

@@ -11,14 +11,14 @@ module.exports = {
         const channel = options.getChannel("channel");
         const embed = new EmbedBuilder().setColor("Blurple");
 
-        await interaction.deferReply();
+        await interaction.deferReply({ ephemeral: true });
 
         await GDB.findOneAndUpdate({
             id: guildId
         }, {
             $set: {
                 'levels.channel': channel.id
-            }
+            },
         });
 
         return interaction.editReply({

@@ -11,36 +11,36 @@ module.exports = {
         const data = await GDB.findOne({ id: guildId });
         const embed = new EmbedBuilder().setColor("Blurple");
 
-        await interaction.deferReply();
+        await interaction.deferReply({ ephemeral: true });
 
         switch (options.getString("choice")) {
             case "enable":
                 if (data.levels.enabled === true)
-                    return interaction.editReply({ embeds: [embed.setDescription("🔹 | The levelling system is already enabled.")] })
+                    return interaction.editReply({ embeds: [embed.setDescription("🔹 | The levelling system is already enabled.")] });
 
                 await GDB.findOneAndUpdate({
                     id: guildId,
                 }, {
                     $set: {
                         'levels.enabled': true
-                    }
-                })
+                    },
+                });
 
-                return interaction.editReply({ embeds: [embed.setDescription("🔹 | The levelling system has been enabled.")] })
+                return interaction.editReply({ embeds: [embed.setDescription("🔹 | The levelling system has been enabled.")] });
 
             case "disable":
                 if (data.levels.enabled === false)
-                    return interaction.editReply({ embeds: [embed.setDescription("🔹 | The levelling system is already disabled.")] })
+                    return interaction.editReply({ embeds: [embed.setDescription("🔹 | The levelling system is already disabled.")] });
 
                 await GDB.findOneAndUpdate({
                     id: guildId,
                 }, {
                     $set: {
                         'levels.enabled': false
-                    }
-                })
+                    },
+                });
 
-                return interaction.editReply({ embeds: [embed.setDescription("🔹 | The levelling system has been disabled.")], ephemeral: true })
+                return interaction.editReply({ embeds: [embed.setDescription("🔹 | The levelling system has been disabled.")] });
         }
     }
 }

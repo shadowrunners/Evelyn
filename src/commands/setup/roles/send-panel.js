@@ -8,7 +8,6 @@ module.exports = {
      */
     async execute(interaction) {
         const { options, guildId, guild } = interaction;
-        const embed = new EmbedBuilder().setColor("Blurple");
 
         const panel = options.getString("panel");
         const channel = options.getChannel("channel");
@@ -19,8 +18,8 @@ module.exports = {
         if (!data.roleArray.length > 0)
             return interaction.editReply({ content: "This server does not have any data.", ephemeral: true });
 
-        if (panel !== data.panelName) return interaction.deferReply({ content: "Couldn't find any data regarding the panel name provided." })
-        console.log(data);
+        if (panel !== data.panelName)
+            return interaction.deferReply({ content: "Couldn't find any data regarding the panel name provided." })
 
         const panelEmbed = new EmbedBuilder()
             .setTitle(`${data.panelName}`)
@@ -44,12 +43,12 @@ module.exports = {
                 new StringSelectMenuBuilder()
                     .setCustomId("reaction")
                     .setPlaceholder(data.panelName)
+                    .setMinValues(0)
                     .setMaxValues(opts.length)
-                    .addOptions(opts),
+                    .addOptions(opts)
             )
 
-        channel.send({ embeds: [panelEmbed], components: [menuComponents] });
-
+        await channel.send({ embeds: [panelEmbed], components: [menuComponents] });
         return interaction.editReply({ content: "Succesfully sent your panel.", ephemeral: true });
     }
 }

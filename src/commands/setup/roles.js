@@ -76,5 +76,10 @@ module.exports = {
                         .addChannelTypes(GuildText)
                         .setRequired(true)
                 )
+        )
+        .addSubcommand((options) =>
+            options
+                .setName('list-panels')
+                .setDescription('Lists all of the panels and their roles.')
         ),
 };

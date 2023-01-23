@@ -17,17 +17,15 @@ module.exports = {
         const findRole = data.roles.roleArray.find((r) => r.roleId === role.id);
         if (!findRole) return interaction.editReply({ embeds: [embed.setDescription("🔹 | This role hasn't been added to the roles panel.")] });
 
-        if (!data)
-
-            await GDB.findOneAndUpdate({
-                id: guildId
-            }, {
-                $pull: {
-                    roleArray: {
-                        roleId: role.id,
-                    }
+        await GDB.findOneAndUpdate({
+            id: guildId
+        }, {
+            $pull: {
+                roleArray: {
+                    roleId: role.id,
                 }
-            });
+            }
+        });
 
         return interaction.editReply({ embeds: [embed.setDescription(`🔹 | ${role.name} has been removed from the roles panel.`)] })
     }
