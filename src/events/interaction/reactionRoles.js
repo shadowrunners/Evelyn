@@ -10,7 +10,7 @@ module.exports = {
 
         const { member, customId, values, component } = interaction;
 
-        if (customId == "reaction") {
+        if (customId === "reaction") {
             component.data.options.forEach(option => {
                 if (!values.includes(option.value) && member.roles.cache.has(option.value)) {
                     member.roles.remove(option.value);
