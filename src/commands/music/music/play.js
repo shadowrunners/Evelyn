@@ -72,6 +72,7 @@ module.exports = {
 							),
 					],
 				});
+
 			case "TRACK": case "SEARCH":
 				player.queue.add(res.tracks[0]);
 
@@ -101,7 +102,6 @@ module.exports = {
 					});
 				}
 				return interaction.editReply({ embeds: [embed] });
-				break;
 
 			case "default":
 				if (player) player?.destroy();
