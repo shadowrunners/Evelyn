@@ -12,12 +12,12 @@ module.exports = {
 		const { guildId, user } = interaction;
 
 		const player = client.manager.players.get(guildId);
-		const utils = new MusicUtils(interaction, player);
-		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-
-		if (utils.voiceCheck() || utils.checkQueue()) return;
+		const embed = new EmbedBuilder().setColor('Blurple');
+		const musicUtils = new MusicUtils(interaction, player);
 
 		await interaction.deferReply();
+
+		if (musicUtils.check(["voiceCheck", "checkQueue"])) return;
 
 		player.skip();
 

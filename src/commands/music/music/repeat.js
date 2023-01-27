@@ -14,7 +14,7 @@ module.exports = {
 		const musicUtils = new MusicUtils(interaction, player);
 		await interaction.deferReply();
 
-		if (musicUtils.voiceCheck()) return;
+		if (musicUtils.check(["voiceCheck"])) return;
 
 		switch (options.getString('type')) {
 			case 'queue':

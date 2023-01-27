@@ -16,8 +16,7 @@ module.exports = {
 
 		await interaction.deferReply();
 
-		if (musicUtils.voiceCheck()) return;
-		if (musicUtils.checkPlaying()) return;
+		if (musicUtils.check(["voiceCheck", "checkPlaying"])) return;
 
 		const time = options.getNumber('time');
 		return musicUtils.seek(time);

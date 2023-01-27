@@ -12,18 +12,17 @@ module.exports = {
 		const { guildId, user } = interaction;
 
 		const player = client.manager.players.get(guildId);
-		const utils = new MusicUtils(interaction, player);
+		const musicUtils = new MusicUtils(interaction, player);
 		const embed = new EmbedBuilder()
 			.setColor('Blurple')
-			.setTimestamp()
 			.setFooter({
 				text: `Action executed by ${user.username}.`,
 				iconURL: user.avatarURL({ dynamic: true }),
 			});
 
-		if (utils.check()) return;
-
 		await interaction.deferReply();
+
+		if (musicUtils.check(["voiceCheck"])) return;
 
 		if (!player.paused) {
 			player.pause(true);

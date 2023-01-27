@@ -13,7 +13,7 @@ module.exports = {
 		const usersConnected = oldState.guild.members.me.voice.channel?.members.size;
 		if (usersConnected === 1) {
 			setTimeout(() => {
-				player?.destroy();
+				if (player) player?.destroy();
 
 				const textChannel = oldState.guild.channels.cache.get(player?.textId);
 				textChannel?.send({
@@ -23,7 +23,7 @@ module.exports = {
 							.setDescription('I have left your VC due to it being empty to save resources.'),
 					],
 				});
-			});
+			}, 30000);
 		}
 	},
 };

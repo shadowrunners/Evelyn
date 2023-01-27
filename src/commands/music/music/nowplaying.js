@@ -13,16 +13,15 @@ module.exports = {
 	 * @param {Client} client
 	 */
 	async execute(interaction, client) {
-		const { member, guildId } = interaction;
+		const { user, guildId } = interaction;
 
 		const player = client.manager.players.get(guildId);
 		const musicUtils = new MusicUtils(interaction, player);
-		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		const embed = new EmbedBuilder().setColor('Blurple');
 
 		await interaction.deferReply();
 
-		if (musicUtils.voiceCheck()) return;
-		if (musicUtils.checkPlaying()) return;
+		if (musicUtils.check(["voiceCheck", "checkPlaying"])) return;
 		const track = player.queue.current;
 
 		return interaction.editReply({
@@ -30,7 +29,7 @@ module.exports = {
 				embed
 					.setAuthor({
 						name: 'Now Playing',
-						iconURL: member.user.avatarURL(),
+						iconURL: user.avatarURL(),
 					})
 					.setDescription(
 						`**[${track.title}](${track.uri})** [${track.requester}]`,

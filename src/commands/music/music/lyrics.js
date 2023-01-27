@@ -17,13 +17,12 @@ module.exports = {
 		const { guildId } = interaction;
 		const gClient = new genius.Client(client.config.API.geniusKey);
 
-		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		const embed = new EmbedBuilder().setColor('Blurple');
 		const player = client.manager.players.get(guildId);
 		const musicUtils = new MusicUtils(interaction, player);
 		await interaction.deferReply();
 
-		if (musicUtils.voiceCheck()) return;
-		if (musicUtils.checkPlaying()) return;
+		if (musicUtils.check(["voiceCheck", "checkPlaying"])) return;
 
 		const track = player.queue.current;
 

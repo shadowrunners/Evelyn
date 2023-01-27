@@ -20,8 +20,7 @@ module.exports = {
 		const musicUtils = new MusicUtils(interaction, player);
 		await interaction.deferReply();
 
-		if (musicUtils.voiceCheck()) return;
-		if (musicUtils.checkQueue()) return;
+		if (musicUtils.check(["voiceCheck", "checkPlaying"])) return;
 
 		const embeds = [];
 		const songs = [];
@@ -34,7 +33,7 @@ module.exports = {
 		}
 
 		for (let i = 0; i < songs.length; i += 10) {
-			const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+			const embed = new EmbedBuilder().setColor('Blurple');
 
 			embed
 				.setAuthor({ name: `Current queue for ${guild.name}` })

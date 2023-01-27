@@ -15,14 +15,13 @@ module.exports = {
 	async execute(interaction, client) {
 		const { guildId } = interaction;
 
-		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		const embed = new EmbedBuilder().setColor('Blurple');
 		const player = client.manager.players.get(guildId);
 		const musicUtils = new MusicUtils(interaction, player);
 
 		await interaction.deferReply();
 
-		if (musicUtils.voiceCheck()) return;
-		if (musicUtils.checkQueue()) return;
+		if (musicUtils.check(["voiceCheck", "checkPlaying"])) return;
 
 		await player.stop();
 

@@ -14,8 +14,7 @@ module.exports = {
 		const musicUtils = new MusicUtils(interaction, player);
 		await interaction.deferReply();
 
-		if (musicUtils.voiceCheck()) return;
-		if (musicUtils.checkPlaying()) return;
+		if (musicUtils.check(["voiceCheck", "checkPlaying"])) return;
 
 		switch (options.getString('type')) {
 			case '3d':

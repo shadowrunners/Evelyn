@@ -17,7 +17,7 @@ module.exports = {
 
 		await interaction.deferReply();
 
-		if (musicUtils.voiceCheck()) return;
+		if (musicUtils.check(["voiceCheck"])) return;
 
 		return musicUtils.setVolume(percent);
 	},

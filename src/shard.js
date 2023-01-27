@@ -10,8 +10,6 @@ const manager = new ClusterManager(`${__dirname}/structures/index.js`, {
 	token,
 });
 
-manager.spawn({ timeout: -1 });
-
 manager.on('clusterCreate', (cluster) =>
 	console.log(
 		`${magenta('Shard Manager')} ${white('·')} ${white(
@@ -19,3 +17,5 @@ manager.on('clusterCreate', (cluster) =>
 		)}`,
 	),
 );
+
+manager.spawn({ timeout: -1 });
