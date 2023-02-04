@@ -2,7 +2,7 @@
 	"name": "evelyn",
 	"version": "5.0.0-pre2",
 	"description": "A Discord Bot that puts you as its first priority with no paywalls to interrupt your supercharged experience.",
-	"main": "src/shard.js",
+	"main": "src/structures/index.js",
 	"scripts": {
 		"start": "node ./src/structures/index.js",
 		"dev": "nodemon ./src/structures/index.js"
@@ -20,7 +20,6 @@
 		"discord.js": "^14.7.1",
 		"express-session": "^1.17.3",
 		"genius-lyrics": "^4.4.2",
-		"genius-lyrics-api": "^3.2.0",
 		"glob": "^8.1.0",
 		"imdb-api": "^4.4.1",
 		"kazagumo": "^2.3.2",
