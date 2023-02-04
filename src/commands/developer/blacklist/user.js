@@ -12,15 +12,15 @@ module.exports = {
 		const userID = options.getString('userid');
 		const blacklist_reason = options.getString('reason');
 		const data = await UB.findOne({ userId: userID });
-		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		const embed = new EmbedBuilder().setColor('Blurple');
 
-		if (data) {
+		if (data)
 			return interaction.reply({
 				embeds: [
 					embed.setDescription('🔹 | This user is already blacklisted.'),
 				],
 			});
-		}
+
 
 		await UB.create({
 			userId: userID,

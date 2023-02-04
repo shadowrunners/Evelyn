@@ -1,16 +1,17 @@
 const { EmbedBuilder } = require("discord.js");
-const SB = require("../structures/schemas/serverBlacklist.js");
+const DB = require("../structures/schemas/guild.js");
 const UB = require("../structures/schemas/userBlacklist.js");
 
 async function isBlacklisted(interaction) {
-  const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+  const { user, guildId } = interaction;
+  const embed = new EmbedBuilder().setColor("Blurple");
 
   const userBlacklist = await UB.findOne({
-    userId: interaction.user.id,
+    userId: user.id,
   });
 
-  const guildBlacklist = await SB.findOne({
-    guildId: interaction.guild.id,
+  const guildData = await DB.findOne({
+    id: guildId,
   });
 
   if (userBlacklist)
@@ -36,7 +37,7 @@ async function isBlacklisted(interaction) {
       ],
     });
 
-  if (guildBlacklist)
+  if (guildData.blacklist.isBlacklisted === true)
     return interaction.reply({
       embeds: [
         embed
@@ -47,12 +48,12 @@ async function isBlacklisted(interaction) {
           .addFields(
             {
               name: "Reason",
-              value: `${guildBlacklist.reason}`,
+              value: `${guildData.blacklist.reason}`,
               inline: true,
             },
             {
               name: "Time",
-              value: `<t:${parseInt(guildBlacklist.time / 1000)}:R>`,
+              value: `<t:${parseInt(guildData.blacklist.time / 1000)}:R>`,
               inline: true,
             }
           ),
