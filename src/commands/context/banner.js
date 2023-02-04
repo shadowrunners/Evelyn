@@ -31,9 +31,9 @@ module.exports = {
         new EmbedBuilder()
           .setColor("Blurple")
           .setTitle(`${user.username}'s Banner`)
-          .setURL(user.bannerURL({ size: 4096, format: "png", size: 4096 }))
+          .setURL(user.bannerURL({ size: 4096, format: "png" }))
           .setImage(
-            user.bannerURL({ dynamic: true, format: "png", size: 4096 })
+            user.bannerURL({ dynamic: true })
           ),
       ],
       ephemeral: true,
