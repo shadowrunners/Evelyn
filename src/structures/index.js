@@ -4,7 +4,6 @@ const {
 	GatewayIntentBits,
 	Partials,
 } = require('discord.js');
-const { Cluster } = require('discord-hybrid-sharding');
 const Statcord = require('statcord.js');
 
 const Economy = require('discord-economy-super/mongodb');
@@ -40,8 +39,6 @@ const client = new Client({
 		MessageContent,
 	],
 	partials: [User, Message, Channel, GuildMember, ThreadMember],
-	shards: Cluster.shardList,
-	shardCount: Cluster.totalShards,
 });
 
 const { loadEco } = require('./handlers/economy.js');
