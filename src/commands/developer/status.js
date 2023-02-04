@@ -8,7 +8,7 @@ const {
 } = require('discord.js');
 const { connection } = require('mongoose');
 const Util = require('../../modules/Utils/utils.js');
-const os = require('os');
+const { cpus, platform } = require('os');
 
 module.exports = {
 	botPermissions: ['SendMessages'],
@@ -21,29 +21,27 @@ module.exports = {
 	 * @param {Client} client
 	 */
 	async execute(interaction, client) {
+		const { application, ws, user, guilds, readyAt } = client;
 		const util = new Util(interaction);
-		await interaction.deferReply();
 
-		const uptime = Math.floor(client.readyAt / 1000);
-		const model = os.cpus()[0].model;
-		const cores = os.cpus().length;
-		const platform = os
-			.platform()
+		const uptime = Math.floor(readyAt / 1000);
+		const model = cpus()[0].model;
+		const cores = cpus().length;
+		const platform = platform()
 			.replace('win32', 'Windows')
 			.replace('linux', 'Linux');
 
-		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		const embed = new EmbedBuilder().setColor('Blurple');
+		await application.fetch();
 
-		await client.application.fetch();
-
-		return interaction.editReply({
+		return interaction.reply({
 			embeds: [
 				embed
-					.setTitle(`${client.user.username} | Status`)
+					.setTitle(`${user.username} | Status`)
 					.addFields(
 						{
 							name: '**WebSocket Ping**',
-							value: `${client.ws.ping}ms`,
+							value: `${ws.ping}ms`,
 							inline: true,
 						},
 						{
@@ -58,17 +56,17 @@ module.exports = {
 						},
 						{
 							name: '**Connected to**',
-							value: `${client.guilds.cache.size} servers`,
+							value: `${guilds.cache.size} servers`,
 							inline: true,
 						},
 						{
 							name: '**Active since**',
-							value: `<t:${parseInt(client.user.createdTimestamp / 1000)}:R>`,
+							value: `<t:${parseInt(user.createdTimestamp / 1000)}:R>`,
 							inline: true,
 						},
 						{
 							name: '**Owner**',
-							value: `${client.application.owner || 'None'}`,
+							value: `${application.owner || 'None'}`,
 							inline: true,
 						},
 						{
@@ -83,7 +81,7 @@ module.exports = {
 						},
 					)
 					.setThumbnail(
-						client.user.avatarURL({ format: 'png', dynamic: true, size: 1024 }),
+						user.avatarURL({ dynamic: true }),
 					),
 			],
 		});
