@@ -19,8 +19,6 @@ module.exports = {
 		switch (options.getString('type')) {
 			case '3d':
 				return musicUtils.filters('3d');
-			case 'bass':
-				return musicUtils.filters('bass');
 			case 'bassboost':
 				return musicUtils.filters('bassboost');
 			case 'nightcore':

@@ -106,7 +106,6 @@ module.exports = {
 						.setRequired(true)
 						.addChoices(
 							{ name: '🔹 | 3D', value: '3d' },
-							{ name: '🔹 | Bass', value: 'bass' },
 							{ name: '🔹 | Bass Boost', value: 'bassboost' },
 							{ name: '🔹 | Nightcore', value: 'nightcore' },
 							{ name: '🔹 | Pop', value: 'pop' },
