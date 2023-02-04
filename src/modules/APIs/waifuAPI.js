@@ -72,7 +72,7 @@ module.exports = class WaifuEngine {
 
 		return this.interaction.editReply({
 			embeds: [
-				this.embed.setAuthor({ name: name, iconURL: iconURL }).setImage(image),
+				this.embed.setAuthor({ name: this.name, iconURL: this.iconURL }).setImage(image),
 			],
 		});
 	}

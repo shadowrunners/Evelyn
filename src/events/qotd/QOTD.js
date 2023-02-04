@@ -23,16 +23,10 @@ module.exports = {
 
                 schedule("0 23 * * *", async function () {
                     let questions = JSON.parse(readFileSync(resolve(__dirname, '../../utils/QOTD.json')));
-                    console.log(questions)
                     const question = questions[Math.floor(Math.random() * questions.length)];
-                    console.log(question)
-                    console.log("Fired scheduler!")
                     await client.channels.cache.get(QOTDChannel).send({ content: `${question.question}` })
                     questions = questions.filter(e => e.id !== question.id);
-                    console.log(questions)
                     writeFileSync(resolve(__dirname, '../../utils/QOTD.json'), JSON.stringify(questions));
-                    console.log("QOTD sent!")
-                    return;
                 })
             })
         })
