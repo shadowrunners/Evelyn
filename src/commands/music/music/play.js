@@ -49,7 +49,6 @@ module.exports = {
 				)
 					player.play();
 
-
 				return interaction.editReply({
 					embeds: [
 						embed

@@ -23,7 +23,7 @@ module.exports = {
 
 		if (musicUtils.check(["voiceCheck", "checkPlaying"])) return;
 
-		await player.stop();
+		await player.skip();
 
 		return interaction.editReply({
 			embeds: [embed.setDescription('🔹 | Skipped.')],
