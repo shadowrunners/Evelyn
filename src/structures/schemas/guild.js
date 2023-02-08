@@ -15,14 +15,12 @@ module.exports = model(
     welcome: {
       enabled: false,
       channel: String,
-      message: String,
-      json: Object,
+      embed: Object,
     },
     goodbye: {
       enabled: false,
       channel: String,
-      message: String,
-      json: Object,
+      embed: Object,
     },
     blacklist: {
       isBlacklisted: false,
