@@ -7,7 +7,6 @@ module.exports = model(
 
     logs: {
       enabled: false,
-      channel: String,
       webhook: {
         id: String,
         token: String,
