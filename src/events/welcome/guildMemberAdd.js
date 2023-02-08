@@ -1,7 +1,8 @@
-const { Client, GuildMember, EmbedBuilder } = require("discord.js");
+const { Client, GuildMember, EmbedBuilder, Constants } = require("discord.js");
 const {
   replacePlaceholders,
 } = require("../../functions/replacePlaceholders.js");
+const { checkHex } = require("../../functions/checkHex.js");
 const DB = require("../../structures/schemas/guild.js");
 
 module.exports = {
@@ -11,22 +12,28 @@ module.exports = {
    * @param {Client} client
    */
   async execute(member, client) {
+    const { guildId } = member;
+
     const data = await DB.findOne({
-      id: member.guild.id,
+      id: guildId,
     });
 
-    if (!data || !data.welcome.enabled || !data.welcome.channel) return;
+    if (!data || !data.welcome.enabled || !data.welcome.channel || !data.welcome.embed) return;
 
     const welcomeChannel = client.channels.cache.get(data.welcome?.channel);
     if (!welcomeChannel) return;
 
-    const { embed } = data.welcome.json.embed;
-    const content = data.welcome.json.content;
+    const embed = data.welcome.embed;
+    const content = data.welcome.embed.messagecontent;
 
     const welcomeMessage = replacePlaceholders(content, member);
     const welcomeEmbed = new EmbedBuilder();
 
-    if (embed.color) welcomeEmbed.setColor(embed.color);
+    if (embed.color) {
+      const hexCodeRegex = /^#[0-9A-Fa-f]{6}$/;
+      if (hexCodeRegex.test(color)) welcomeEmbed.setColor(color);
+    }
+
     if (embed.title) welcomeEmbed.setTitle(embed.title);
 
     if (embed.description) {
@@ -34,34 +41,36 @@ module.exports = {
       welcomeEmbed.setDescription(textEmbed);
     }
 
-    if (embed.author?.name) {
+    if (embed.author) {
       const authorName = replacePlaceholders(embed.author.name, member);
-      welcomeEmbed.setAuthor(authorName);
-    }
 
-    if (embed.author?.icon_url)
       welcomeEmbed.setAuthor({
-        name: embed.author.name,
-        iconURL: embed.author.icon_url,
+        name: authorName,
+        iconURL: embed.author.icon_url
       });
-
-    if (embed.footer?.text) {
-      const footerData = replacePlaceholders(embed.footer.text, member);
-      welcomeEmbed.setFooter({ text: footerData });
     }
 
-    if (embed.footer && embed.footer.icon_url)
+    if (embed.footer) {
+      const footerData = replacePlaceholders(embed.footer.text, member);
+
       welcomeEmbed.setFooter({
-        text: embed.footer,
+        text: embed.footer.text,
         iconURL: embed.footer.icon_url,
       });
+    };
 
     if (embed.image?.url) welcomeEmbed.setImage(embed.image?.url);
-    if (embed.thumbnail?.url) welcomeEmbed.setThumbnail(embed.thumbnail.url);
+    if (embed.thumbnail?.url) welcomeEmbed.setThumbnail(embed.thumbnail?.url);
 
-    welcomeChannel.send({
-      content: welcomeMessage,
-      embeds: [welcomeEmbed],
-    });
+    if (content) {
+      welcomeChannel.send({
+        content: welcomeMessage,
+        embeds: [welcomeEmbed],
+      });
+    } else {
+      welcomeChannel.send({
+        embeds: [welcomeEmbed],
+      });
+    }
   },
 };
