@@ -72,7 +72,7 @@ module.exports = {
                 .addChannelOption((option) =>
                     option
                         .setName("channel")
-                        .setDescription("Provide a channel")
+                        .setDescription("Provide a channel.")
                         .addChannelTypes(GuildText)
                         .setRequired(true)
                 )
