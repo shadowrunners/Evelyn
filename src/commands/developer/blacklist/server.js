@@ -14,8 +14,6 @@ module.exports = {
 		const data = await GDB.findOne({ id: guildID });
 		const embed = new EmbedBuilder().setColor('Blurple');
 
-		console.log(data);
-
 		if (data?.blacklist?.isBlacklisted === true)
 			return interaction.reply({
 				embeds: [
