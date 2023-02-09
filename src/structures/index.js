@@ -46,6 +46,7 @@ const { loadEvents } = require('./handlers/events.js');
 const { loadStats } = require('./handlers/statcord.js');
 const { loadButtons } = require('./handlers/buttons.js');
 const { loadShoukaku } = require('./handlers/shoukaku.js');
+const { loadModals } = require("./handlers/modals.js");
 
 client.config = require('./config.json');
 client.commands = new Collection();
@@ -107,10 +108,12 @@ module.exports = client;
 loadEco(client);
 loadStats(client);
 loadEvents(client);
+loadModals(client);
 loadButtons(client);
 loadShoukaku(client);
 
-process.on('unhandledRejection', (err) => crashReporter(client, err));
-process.on('unhandledException', (err) => crashReporter(client, err));
+//process.on('unhandledRejection', (err) => crashReporter(client, err));
+process.on('unhandledRejection', (err) => console.log(err));
+process.on('unhandledException', (err) => console.log(err));
 
 client.login(client.config.token);
