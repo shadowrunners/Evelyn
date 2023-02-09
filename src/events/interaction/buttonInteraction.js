@@ -8,9 +8,10 @@ module.exports = {
 	 * @param {Client} client
 	 */
 	async execute(interaction, client) {
+		const { user, member } = interaction;
 		if (!interaction.isButton()) return;
 
-		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		const embed = new EmbedBuilder().setColor('Blurple');
 		const button = client.buttons.get(interaction.customId);
 
 		if (!button || button === undefined) return;
@@ -18,26 +19,27 @@ module.exports = {
 
 		if (
 			button.permission &&
-			!interaction.member.permissions.has(button.permission)
-		) {
-			return interaction.reply({
-				embeds: [
-					embed.setDescription(
-						'🔹 | You don\'t have the required permissions to use this button.',
-					),
-				],
-			});
-		}
+			!member.permissions.has(button.permission)
+		) return interaction.reply({
+			embeds: [
+				embed.setDescription(
+					'🔹 | You don\'t have the required permissions to use this button.',
+				),
+			],
+			ephemeral: true,
+		});
 
-		if (button.developer && interaction.user.id !== client.config.ownerIDs) {
+
+		if (button.developer && user.id !== client.config.ownerIDs) {
 			return interaction.reply({
 				embeds: [
 					embed.setDescription(
 						'🔹 | This button is only available to developers.',
 					),
 				],
+				ephemeral: true,
 			});
-		}
+		};
 
 		button.execute(interaction, client);
 	},

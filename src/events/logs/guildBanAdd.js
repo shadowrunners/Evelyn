@@ -1,6 +1,7 @@
+const { GuildMember, EmbedBuilder, AuditLogEvent } = require("discord.js");
 const { webhookDelivery } = require("../../functions/webhookDelivery.js");
-const { GuildMember, EmbedBuilder } = require("discord.js");
 const DB = require("../../structures/schemas/guild.js");
+const { MemberBanAdd } = AuditLogEvent;
 
 module.exports = {
   name: "guildBanAdd",
@@ -14,28 +15,38 @@ module.exports = {
       id: guild.id,
     });
 
-    if (!data || !data.logs.enabled || !data.logs.channel || !data.logs.webhook)
-      return;
+    if (!data.logs.channel || !data.logs.webhook) return;
 
-    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+    const fetchLogs = await guild.fetchAuditLogs({
+      type: MemberBanAdd,
+      limit: 1,
+    });
+    const firstLog = fetchLogs.entries.first();
+
+    const embed = new EmbedBuilder().setColor("Blurple");
 
     return webhookDelivery(
       data,
       embed
-        .setAuthor({ name: guild.name, iconURL: guild.iconURL() })
+        .setAuthor({
+          name: guild.name,
+          iconURL: guild.iconURL()
+        })
         .setTitle("Member Banned")
         .addFields(
           {
             name: "🔹 | Member Name",
             value: `> ${user.username}`,
-            inline: true,
           },
           {
-            name: "🔹 | ID",
+            name: "🔹 | Member ID",
             value: `> ${user.id}`,
-            inline: true,
-          }
-        )
+          },
+          {
+            name: "🔹 | Banned by",
+            value: `> <@${firstLog.executor.id}>`
+          },
+        ),
     );
   },
 };

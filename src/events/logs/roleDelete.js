@@ -1,6 +1,7 @@
 const { webhookDelivery } = require("../../functions/webhookDelivery.js");
+const { Role, EmbedBuilder, AuditLogEvent } = require("discord.js");
 const DB = require("../../structures/schemas/guild.js");
-const { Role, EmbedBuilder } = require("discord.js");
+const { RoleDelete } = AuditLogEvent;
 
 module.exports = {
   name: "roleDelete",
@@ -11,10 +12,15 @@ module.exports = {
     const { guild, name, id } = role;
     const data = await DB.findOne({ id: guild.id });
 
-    if (!data || !data.logs.enabled || !data.logs.channel || !data.logs.webhook)
-      return;
+    if (!data.logs.enabled || !data.logs.webhook) return;
 
-    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+    const embed = new EmbedBuilder().setColor("Blurple");
+
+    const fetchLogs = await guild.fetchAuditLogs({
+      type: RoleDelete,
+      limit: 1,
+    });
+    const firstLog = fetchLogs.entries.first();
 
     return webhookDelivery(
       data,
@@ -29,8 +35,12 @@ module.exports = {
           {
             name: "🔹 | Role ID",
             value: `> ${id}`,
-          }
-        )
+          },
+          {
+            name: "🔹 | Role deleted by",
+            value: `> <@${firstLog.executor.id}>`
+          },
+        ),
     );
   },
 };

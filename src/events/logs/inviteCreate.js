@@ -1,6 +1,7 @@
 const { webhookDelivery } = require("../../functions/webhookDelivery.js");
+const { Invite, EmbedBuilder, AuditLogEvent } = require("discord.js");
 const DB = require("../../structures/schemas/guild.js");
-const { Invite, EmbedBuilder } = require("discord.js");
+
 
 module.exports = {
   name: "inviteCreate",
@@ -21,50 +22,44 @@ module.exports = {
       id: guild.id,
     });
 
-    if (!data || !data.logs.enabled || !data.logs.channel || !data.logs.webhook)
-      return;
+    if (!data.logs.enabled || !data.logs.webhook) return;
 
-    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+    const embed = new EmbedBuilder().setColor("Blurple");
 
     return webhookDelivery(
       data,
       embed
         .setAuthor({
           name: guild.name,
-          iconURL: guild.iconURL({ dynamic: true }),
+          iconURL: guild.iconURL(),
         })
         .setTitle("Invite Created")
         .addFields(
           {
             name: "🔹 | Invite Link",
-            value: `> ${code}`,
-            inline: true,
+            value: `> https://discord.gg/${code}`,
           },
           {
             name: "🔹 | Invite created at",
             value: `> <t:${parseInt(createdTimestamp / 1000)}:R>`,
-            inline: true,
           },
           {
             name: "🔹 | Invite expires at",
             value: `> <t:${parseInt(expiresTimestamp / 1000)}:R>`,
-            inline: true,
           },
           {
             name: "🔹 | Invite created by",
             value: `> <@${inviter.id}>`,
-            inline: true,
           },
           {
             name: "🔹 | Max Uses",
             value: `> ${maxUses.toString()}`,
-            inline: true,
           }
         )
         .setFooter({
           text: inviter.tag,
           iconURL: inviter.displayAvatarURL({ dynamic: true }),
-        })
+        }),
     );
   },
 };

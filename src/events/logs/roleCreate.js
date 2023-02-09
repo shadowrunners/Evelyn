@@ -1,6 +1,7 @@
 const { webhookDelivery } = require("../../functions/webhookDelivery.js");
+const { Role, EmbedBuilder, AuditLogEvent } = require("discord.js");
 const DB = require("../../structures/schemas/guild.js");
-const { Role, EmbedBuilder } = require("discord.js");
+const { RoleCreate } = AuditLogEvent;
 
 module.exports = {
   name: "roleCreate",
@@ -14,10 +15,15 @@ module.exports = {
       id: guild.id,
     });
 
-    if (!data || !data.logs.enabled || !data.logs.channel || !data.logs.webhook)
-      return;
+    if (!data.logs.enabled || !data.logs.webhook) return;
 
-    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+    const fetchLogs = await guild.fetchAuditLogs({
+      type: RoleCreate,
+      limit: 1,
+    });
+    const firstLog = fetchLogs.entries.first();
+
+    const embed = new EmbedBuilder().setColor("Blurple");
 
     return webhookDelivery(
       data,
@@ -43,8 +49,12 @@ module.exports = {
           {
             name: "🔹 | Role created at",
             value: `> <t:${parseInt(createdTimestamp / 1000)}:R>`,
-          }
-        )
+          },
+          {
+            name: "🔹 | Role created by",
+            value: `> <@${firstLog.executor.id}>`
+          },
+        ),
     );
   },
 };

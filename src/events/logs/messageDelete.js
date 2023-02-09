@@ -1,6 +1,7 @@
 const { webhookDelivery } = require("../../functions/webhookDelivery.js");
+const { Message, EmbedBuilder, AuditLogEvent } = require("discord.js");
 const DB = require("../../structures/schemas/guild.js");
-const { Message, EmbedBuilder } = require("discord.js");
+const { MessageDelete } = AuditLogEvent;
 
 module.exports = {
   name: "messageDelete",
@@ -8,22 +9,27 @@ module.exports = {
    * @param {Message} message
    */
   async execute(message) {
-    const { guild, author, content, createdTimestamp } = message;
+    const { guild, author, content, createdTimestamp, embeds } = message;
 
     const data = await DB.findOne({
       id: guild.id,
     });
 
     if (
-      !data ||
       !data.logs.enabled ||
-      !data.logs.channel ||
       !data.logs.webhook ||
-      author.bot
+      author?.bot ||
+      embeds.length > 0
     )
       return;
 
-    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+    const fetchLogs = await guild.fetchAuditLogs({
+      type: MessageDelete,
+      limit: 1,
+    });
+    const firstLog = fetchLogs.entries.first();
+
+    const embed = new EmbedBuilder().setColor("Blurple");
 
     return webhookDelivery(
       data,
@@ -33,28 +39,28 @@ module.exports = {
           iconURL: guild.iconURL(),
         })
         .setTitle("Message Deleted")
-        .addFields([
+        .addFields(
           {
             name: "🔹 | Message Content",
             value: `> ${content}`,
-            inline: true,
           },
           {
             name: "🔹 | ID",
             value: `> ${message.id}`,
-            inline: true,
           },
           {
             name: "🔹 | Message sent by",
             value: `> ${author}`,
-            inline: true,
           },
           {
             name: "🔹 | Deleted at",
             value: `> <t:${parseInt(createdTimestamp / 1000)}:R>`,
-            inline: true,
           },
-        ])
+          {
+            name: "🔹 | Deleted by",
+            value: `> <@${firstLog.executor.id}>`,
+          }
+        )
     );
   },
 };

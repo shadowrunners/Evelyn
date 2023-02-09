@@ -1,6 +1,7 @@
+const { GuildChannel, EmbedBuilder, AuditLogEvent } = require("discord.js");
 const { webhookDelivery } = require("../../functions/webhookDelivery.js");
-const { GuildChannel, EmbedBuilder } = require("discord.js");
 const DB = require("../../structures/schemas/guild.js");
+const { ChannelDelete } = AuditLogEvent;
 
 module.exports = {
   name: "channelDelete",
@@ -14,10 +15,15 @@ module.exports = {
       id: guild.id,
     });
 
-    if (!data || !data.logs.enabled || !data.logs.channel || !data.logs.webhook)
-      return;
+    if (!data.logs.enabled || !data.logs.webhook) return;
 
-    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+    const fetchLogs = await guild.fetchAuditLogs({
+      type: ChannelDelete,
+      limit: 1,
+    });
+    const firstLog = fetchLogs.entries.first();
+
+    const embed = new EmbedBuilder().setColor("Blurple");
 
     return webhookDelivery(
       data,
@@ -31,19 +37,20 @@ module.exports = {
           {
             name: "🔹 | Channel Name",
             value: `> ${name}`,
-            inline: true,
           },
           {
             name: "🔹 | ID",
             value: `> ${id}`,
-            inline: true,
           },
           {
             name: "🔹 | Deleted at",
             value: `> <t:${parseInt(createdTimestamp / 1000)}:R>`,
-            inline: true,
-          }
-        )
+          },
+          {
+            name: "🔹 | Deleted by",
+            value: `> <@${firstLog.executor.id}>`,
+          },
+        ),
     );
   },
 };

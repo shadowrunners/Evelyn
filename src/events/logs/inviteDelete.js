@@ -1,6 +1,7 @@
 const { webhookDelivery } = require("../../functions/webhookDelivery.js");
+const { Invite, EmbedBuilder, AuditLogEvent } = require("discord.js");
 const DB = require("../../structures/schemas/guild.js");
-const { Invite, EmbedBuilder } = require("discord.js");
+const { InviteDelete } = AuditLogEvent;
 
 module.exports = {
   name: "inviteDelete",
@@ -11,13 +12,18 @@ module.exports = {
     const { guild, code } = invite;
 
     const data = await DB.findOne({
-      id: invite.guild.id,
+      id: guild.id,
     });
 
-    if (!data || !data.logs.enabled || !data.logs.channel || !data.logs.webhook)
-      return;
+    if (!data.logs.enabled || !data.logs.webhook) return;
 
-    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+    const fetchLogs = await guild.fetchAuditLogs({
+      type: InviteDelete,
+      limit: 1,
+    });
+    const firstLog = fetchLogs.entries.first();
+
+    const embed = new EmbedBuilder().setColor("Blurple");
 
     return webhookDelivery(
       data,
@@ -27,11 +33,16 @@ module.exports = {
           iconURL: guild.iconURL({ dynamic: true }),
         })
         .setTitle("Invite Deleted")
-        .addFields({
-          name: "🔹 | Invite Link",
-          value: `> ${code}`,
-        })
-        .setTimestamp()
+        .addFields(
+          {
+            name: "🔹 | Invite Link",
+            value: `> https://discord.gg/${code}`,
+          },
+          {
+            name: "🔹 | Revoked by",
+            value: `> <@${firstLog.executor.id}>`,
+          },
+        )
     );
   },
 };

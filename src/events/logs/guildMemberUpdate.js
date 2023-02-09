@@ -1,6 +1,7 @@
+const { GuildMember, EmbedBuilder, AuditLogEvent } = require("discord.js");
 const { webhookDelivery } = require("../../functions/webhookDelivery.js");
-const { GuildMember, EmbedBuilder } = require("discord.js");
 const DB = require("../../structures/schemas/guild.js");
+const { MemberUpdate } = AuditLogEvent;
 
 module.exports = {
   name: "guildMemberUpdate",
@@ -15,13 +16,12 @@ module.exports = {
       id: oldMember.guild.id,
     });
 
-    if (!data || !data.logs.enabled || !data.logs.channel || !data.logs.webhook)
-      return;
+    if (!data.logs.enabled || !data.logs.webhook) return;
 
     const oldRoles = oldMember.roles.cache.map((r) => r.id);
     const newRoles = newMember.roles.cache.map((r) => r.id);
 
-    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+    const embed = new EmbedBuilder().setColor("Blurple");
 
     if (oldRoles.length > newRoles.length) {
       const uniqueRoles = await unique(oldRoles, newRoles);
@@ -37,21 +37,18 @@ module.exports = {
           .setTitle("Member Roles Updated")
           .addFields(
             {
-              name: "🔹 | Username",
+              name: "🔹 | Member Username",
               value: `> ${oldMember.user.username}`,
-              inline: true,
             },
             {
-              name: "🔹 | ID",
+              name: "🔹 | Member ID",
               value: `> ${oldMember.user.id}`,
-              inline: true,
             },
             {
               name: "🔹 | Removed Role",
               value: `> <@&${role.id}>`,
-              inline: true,
-            }
-          )
+            },
+          ),
       );
     }
 
@@ -69,21 +66,18 @@ module.exports = {
           .setTitle("Member Roles Updated")
           .addFields(
             {
-              name: "🔹 | Username",
+              name: "🔹 | Member Username",
               value: `> ${oldMember.user.username}`,
-              inline: true,
             },
             {
-              name: "🔹 | ID",
+              name: "🔹 | Member ID",
               value: `> ${oldMember.user.id}`,
-              inline: true,
             },
             {
               name: "🔹 | Added Role",
               value: `> <@&${role.id}>`,
-              inline: true,
-            }
-          )
+            },
+          ),
       );
     }
 
@@ -101,22 +95,20 @@ module.exports = {
           .setTitle("Member Timeout Applied")
           .addFields(
             {
-              name: "🔹 | Username",
+              name: "🔹 | Member Username",
               value: `> ${newMember.user.username}`,
-              inline: true,
             },
             {
-              name: "🔹 | ID",
+              name: "🔹 | Member ID",
               value: `> ${newMember.user.id}`,
-              inline: true,
             },
             {
               name: "🔹 | Timeout expires",
               value: `> <t:${Math.floor(
                 newMember.communicationDisabledUntilTimestamp / 1000
               )}:R>`,
-            }
-          )
+            },
+          ),
       );
 
     if (
@@ -133,21 +125,18 @@ module.exports = {
           .setTitle("Member Timeout Removed")
           .addFields(
             {
-              name: "🔹 | Username",
+              name: "🔹 | Member Username",
               value: `> ${newMember.user.username}`,
-              inline: true,
             },
             {
-              name: "🔹 | ID",
+              name: "🔹 | Member ID",
               value: `> ${newMember.user.id}`,
-              inline: true,
             },
             {
               name: "🔹 | Reason",
               value: `> Timeout expired!`,
-              inline: true,
-            }
-          )
+            },
+          ),
       );
 
     if (oldMember.nickname !== newMember.nickname)
@@ -163,24 +152,20 @@ module.exports = {
             {
               name: "🔹 | Username",
               value: `> ${newMember.user.username}`,
-              inline: true,
             },
             {
               name: "🔹 | ID",
               value: `> ${newMember.user.id}`,
-              inline: true,
             },
             {
               name: "🔹 | Old Nickname",
               value: `> ${oldMember.nickname}`,
-              inline: true,
             },
             {
               name: "🔹 | New Nickname",
               value: `> ${newMember.nickname}`,
-              inline: true,
-            }
-          )
+            },
+          ),
       );
   },
 };

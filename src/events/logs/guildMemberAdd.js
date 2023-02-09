@@ -1,5 +1,5 @@
+const { GuildMember, EmbedBuilder, AuditLogEvent } = require("discord.js");
 const { webhookDelivery } = require("../../functions/webhookDelivery.js");
-const { GuildMember, EmbedBuilder } = require("discord.js");
 const DB = require("../../structures/schemas/guild.js");
 
 module.exports = {
@@ -14,16 +14,9 @@ module.exports = {
       id: guild.id,
     });
 
-    if (
-      !data ||
-      !data.logs.enabled ||
-      !data.logs.channel ||
-      !data.logs.webhook ||
-      user.bot
-    )
-      return;
+    if (!data.logs.enabled || !data.logs.webhook || user.bot) return;
 
-    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+    const embed = new EmbedBuilder().setColor("Blurple");
 
     return webhookDelivery(
       data,
@@ -37,17 +30,14 @@ module.exports = {
           {
             name: "🔹 | Member Name",
             value: `> ${user.tag}`,
-            inline: true,
           },
           {
             name: "🔹 | Member ID",
             value: `> ${user.id}`,
-            inline: true,
           },
           {
             name: "🔹 | Account Age",
             value: `> <t:${parseInt(user.createdTimestamp / 1000)}:R>`,
-            inline: true,
           }
         )
         .setFooter({ text: `${guild.name}` })

@@ -1,6 +1,7 @@
 const { webhookDelivery } = require("../../functions/webhookDelivery.js");
-const { GuildEmoji, EmbedBuilder } = require("discord.js");
+const { GuildEmoji, EmbedBuilder, AuditLogEvent } = require("discord.js");
 const DB = require("../../structures/schemas/guild.js");
+const { EmojiCreate } = AuditLogEvent;
 
 module.exports = {
   name: "emojiCreate",
@@ -14,28 +15,38 @@ module.exports = {
       id: guild.id,
     });
 
-    if (!data || !data.logs.enabled || !data.logs.channel || !data.logs.webhook)
-      return;
+    if (!data.logs.enabled || !data.logs.webhook) return;
 
-    const embed = new EmbedBuilder().setColor("Blurple").setTimestamp();
+    const fetchLogs = await guild.fetchAuditLogs({
+      type: EmojiCreate,
+      limit: 1,
+    });
+    const firstLog = fetchLogs.entries.first();
+
+    const embed = new EmbedBuilder().setColor("Blurple")
 
     return webhookDelivery(
       data,
       embed
-        .setAuthor({ name: guild.name, iconURL: guild.iconURL() })
+        .setAuthor({
+          name: guild.name,
+          iconURL: guild.iconURL()
+        })
         .setTitle("Emoji Created")
         .addFields(
           {
             name: "🔹 | Name",
             value: `> ${name}`,
-            inline: true,
           },
           {
             name: "🔹 | ID",
             value: `> ${id}`,
-            inline: true,
-          }
-        )
+          },
+          {
+            name: "🔹 | Added by",
+            value: `> <@${firstLog.executor.id}>`,
+          },
+        ),
     );
   },
 };

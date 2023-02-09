@@ -28,9 +28,6 @@ module.exports = {
             embed
                 .setTitle("A wild confession has appeared!")
                 .setDescription(confession)
-                .setFooter({
-                    text: "Powered by Evelyn"
-                })
         );
     },
 };
