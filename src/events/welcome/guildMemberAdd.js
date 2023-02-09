@@ -31,7 +31,7 @@ module.exports = {
 
     if (embed.color) {
       const hexCodeRegex = /^#[0-9A-Fa-f]{6}$/;
-      if (hexCodeRegex.test(color)) welcomeEmbed.setColor(color);
+      if (hexCodeRegex.test(embed.color)) welcomeEmbed.setColor(embed.color);
     }
 
     if (embed.title) welcomeEmbed.setTitle(embed.title);
@@ -54,7 +54,7 @@ module.exports = {
       const footerData = replacePlaceholders(embed.footer.text, member);
 
       welcomeEmbed.setFooter({
-        text: embed.footer.text,
+        text: footerData,
         iconURL: embed.footer.icon_url,
       });
     };

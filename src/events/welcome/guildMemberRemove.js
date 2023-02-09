@@ -28,7 +28,7 @@ module.exports = {
 
     if (embed.color) {
       const hexCodeRegex = /^#[0-9A-Fa-f]{6}$/;
-      if (hexCodeRegex.test(color)) goodbyeEmbed.setColor(color);
+      if (hexCodeRegex.test(embed.color)) goodbyeEmbed.setColor(embed.color);
     };
 
     if (embed.title) goodbyeEmbed.setTitle(embed.title);
