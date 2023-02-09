@@ -2,7 +2,6 @@ const { Client, GuildMember, EmbedBuilder, Constants } = require("discord.js");
 const {
   replacePlaceholders,
 } = require("../../functions/replacePlaceholders.js");
-const { checkHex } = require("../../functions/checkHex.js");
 const DB = require("../../structures/schemas/guild.js");
 
 module.exports = {
