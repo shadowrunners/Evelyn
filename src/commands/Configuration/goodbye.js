@@ -89,5 +89,17 @@ module.exports = {
                         .addChannelTypes(GuildText)
                         .setRequired(true)
                 )
+        )
+        .addSubcommand((options) =>
+            options
+                .setName('set-channel')
+                .setDescription('Sets the channel where goodbye messages will be sent.')
+                .addChannelOption((option) =>
+                    option
+                        .setName('channel')
+                        .setDescription('Provide the channel.')
+                        .addChannelTypes(GuildText)
+                        .setRequired(true),
+                ),
         ),
 };

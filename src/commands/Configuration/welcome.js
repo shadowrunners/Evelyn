@@ -6,12 +6,12 @@ module.exports = {
     botPermissions: ['SendMessages'],
     data: new SlashCommandBuilder()
         .setName('welcome')
-        .setDescription('Manage and configure welcoming.')
+        .setDescription('Manage and configure welcome messages.')
         .setDefaultMemberPermissions(Administrator)
         .addSubcommand((options) =>
             options
                 .setName('toggle')
-                .setDescription('Gives you the ability to toggle welcoming on and off.')
+                .setDescription('Gives you the ability to toggle welcome messages on and off.')
                 .addStringOption((option) =>
                     option
                         .setName("choice")
@@ -89,5 +89,17 @@ module.exports = {
                         .addChannelTypes(GuildText)
                         .setRequired(true)
                 )
+        )
+        .addSubcommand((options) =>
+            options
+                .setName('set-channel')
+                .setDescription('Sets the channel where welcome messages will be sent.')
+                .addChannelOption((option) =>
+                    option
+                        .setName('channel')
+                        .setDescription('Provide the channel.')
+                        .addChannelTypes(GuildText)
+                        .setRequired(true),
+                ),
         ),
 };

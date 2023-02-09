@@ -11,8 +11,6 @@ module.exports = {
         const channel = options.getChannel("channel");
         const embed = new EmbedBuilder().setColor("Blurple");
 
-        await interaction.deferReply({ ephemeral: true });
-
         await GDB.findOneAndUpdate({
             id: guildId
         }, {
@@ -21,8 +19,9 @@ module.exports = {
             },
         });
 
-        return interaction.editReply({
-            embeds: [embed.setDescription(`🔹 | Got it, the level up messages will now be sent to: <#${channel.id}>.`)]
-        })
-    }
-}
+        return interaction.reply({
+            embeds: [embed.setDescription(`🔹 | Got it, the level up messages will now be sent to: <#${channel.id}>.`)],
+            ephemeral: true,
+        });
+    },
+};

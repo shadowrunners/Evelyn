@@ -11,12 +11,13 @@ module.exports = {
         const data = await GDB.findOne({ id: guildId });
         const embed = new EmbedBuilder().setColor("Blurple");
 
-        await interaction.deferReply({ ephemeral: true });
-
         switch (options.getString("choice")) {
             case "enable":
                 if (data.levels.enabled === true)
-                    return interaction.editReply({ embeds: [embed.setDescription("🔹 | The levelling system is already enabled.")] });
+                    return interaction.reply({
+                        embeds: [embed.setDescription("🔹 | The levelling system is already enabled.")],
+                        ephemeral: true
+                    });
 
                 await GDB.findOneAndUpdate({
                     id: guildId,
@@ -26,11 +27,17 @@ module.exports = {
                     },
                 });
 
-                return interaction.editReply({ embeds: [embed.setDescription("🔹 | The levelling system has been enabled.")] });
+                return interaction.reply({
+                    embeds: [embed.setDescription("🔹 | The levelling system has been enabled.")],
+                    ephemeral: true
+                });
 
             case "disable":
                 if (data.levels.enabled === false)
-                    return interaction.editReply({ embeds: [embed.setDescription("🔹 | The levelling system is already disabled.")] });
+                    return interaction.reply({
+                        embeds: [embed.setDescription("🔹 | The levelling system is already disabled.")],
+                        ephemeral: true
+                    });
 
                 await GDB.findOneAndUpdate({
                     id: guildId,
@@ -40,7 +47,10 @@ module.exports = {
                     },
                 });
 
-                return interaction.editReply({ embeds: [embed.setDescription("🔹 | The levelling system has been disabled.")] });
+                return interaction.reply({
+                    embeds: [embed.setDescription("🔹 | The levelling system has been disabled.")],
+                    ephemeral: true
+                });
         }
     }
 }
