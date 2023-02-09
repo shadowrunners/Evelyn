@@ -4,7 +4,6 @@ const { loadCommands } = require('../../structures/handlers/commands.js');
 const { check4Giveaways } = require('../../functions/check4Giveaways.js');
 const { check4Reminders } = require('../../functions/check4Reminders.js');
 const { check4Lockdowns } = require('../../functions/check4Lockdowns.js');
-const { dash } = require("../../dashboard/dashServer.js");
 const { set } = require('mongoose');
 const DXP = require('discord-xp');
 
@@ -52,7 +51,6 @@ module.exports = {
 				console.log(err);
 			});
 
-		dash(client);
 		check4Giveaways(client);
 		check4Reminders(client);
 		check4Lockdowns(client);
