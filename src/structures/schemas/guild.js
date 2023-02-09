@@ -44,5 +44,12 @@ module.exports = model(
       enabled: false,
       channel: String,
     },
+    confessions: {
+      enabled: false,
+      webhook: {
+        id: String,
+        token: String,
+      },
+    }
   })
 );
