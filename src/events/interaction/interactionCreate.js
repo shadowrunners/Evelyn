@@ -1,11 +1,10 @@
+/* eslint-disable no-unused-vars */
 const {
-	// eslint-disable-next-line no-unused-vars
 	Client,
-	// eslint-disable-next-line no-unused-vars
 	ChatInputCommandInteraction,
 	EmbedBuilder,
 } = require('discord.js');
-const importUtils = require('../../functions/utils.js');
+const importUtils = require('../../modules/Utils/utils.js');
 const { isBlacklisted } = require('../../functions/isBlacklisted.js');
 
 module.exports = {
@@ -15,19 +14,19 @@ module.exports = {
 	 * @param {Client} client
 	 */
 	async execute(interaction, client) {
+		const embed = new EmbedBuilder().setColor('Blurple');
 		if (!interaction.isChatInputCommand()) return;
 
 		const utils = new importUtils(interaction);
 		const command = client.commands.get(interaction.commandName);
-		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
 		if (await isBlacklisted(interaction)) return;
 
-		if (!command) {
+		if (!command)
 			return interaction.reply({
 				embeds: [embed.setDescription('This command is outdated.')],
+				ephemeral: true,
 			});
-		}
 
 		if (command.botPermissions) {
 			if (utils.check4Perms(command)) return;
@@ -39,12 +38,11 @@ module.exports = {
 				`${interaction.commandName}.${subCommand}`,
 			);
 
-			if (!subCommandFile) {
+			if (!subCommandFile)
 				return interaction.reply({
 					embeds: [embed.setDescription('This subcommand is outdated.')],
 					ephemeral: true,
 				});
-			}
 
 			subCommandFile.execute(interaction, client);
 		}
