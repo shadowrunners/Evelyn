@@ -5,7 +5,7 @@ const {
 	ChatInputCommandInteraction,
 	EmbedBuilder,
 } = require('discord.js');
-const importUtils = require('../../functions/utils.js');
+const importUtils = require('../../modules/Utils/utils.js');
 const { isBlacklisted } = require('../../functions/isBlacklisted.js');
 
 module.exports = {
