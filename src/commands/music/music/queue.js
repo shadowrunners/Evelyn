@@ -20,14 +20,15 @@ module.exports = {
 		const musicUtils = new MusicUtils(interaction, player);
 		await interaction.deferReply();
 
-		if (musicUtils.check(["voiceCheck", "checkPlaying"])) return;
+		if (musicUtils.check(['voiceCheck', 'checkPlaying', 'checkQueue'])) return;
 
 		const embeds = [];
 		const songs = [];
 
 		for (let i = 0; i < player.queue.length; i++) {
 			songs.push(
-				`${i + 1}. [${player.queue[i].title}](${player.queue[i].uri}) [${player.queue[i].requester
+				`${i + 1}. [${player.queue[i].title}](${player.queue[i].uri}) [${
+					player.queue[i].requester
 				}]`,
 			);
 		}

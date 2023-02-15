@@ -14,37 +14,37 @@ module.exports = {
 		const musicUtils = new MusicUtils(interaction, player);
 		await interaction.deferReply();
 
-		if (musicUtils.check(["voiceCheck", "checkPlaying"])) return;
+		if (musicUtils.check(['voiceCheck', 'checkPlaying'])) return;
 
-		switch (options.getString('type')) {
-			case '3d':
-				return musicUtils.filters('3d');
-			case 'bassboost':
-				return musicUtils.filters('bassboost');
-			case 'nightcore':
-				return musicUtils.filters('nightcore');
-			case 'pop':
-				return musicUtils.filters('pop');
-			case 'slowmo':
-				return musicUtils.filters('slowmo');
-			case 'soft':
-				return musicUtils.filters('soft');
-			case 'tv':
-				return musicUtils.filters('tv');
-			case 'treblebass':
-				return musicUtils.filters('treblebass');
-			case 'tremolo':
-				return musicUtils.filters('tremolo');
-			case 'vaporwave':
-				return musicUtils.filters('vaporwave');
-			case 'vibrate':
-				return musicUtils.filters('vibrate');
-			case 'vibrato':
-				return musicUtils.filters('vibrato');
-			case 'reset':
-				return musicUtils.filters('reset');
-			default:
-				break;
+		switch (options.getString('option')) {
+		case '3d':
+			return musicUtils.filters('3d');
+		case 'bassboost':
+			return musicUtils.filters('bassboost');
+		case 'nightcore':
+			return musicUtils.filters('nightcore');
+		case 'pop':
+			return musicUtils.filters('pop');
+		case 'slowmo':
+			return musicUtils.filters('slowmo');
+		case 'soft':
+			return musicUtils.filters('soft');
+		case 'tv':
+			return musicUtils.filters('tv');
+		case 'treblebass':
+			return musicUtils.filters('treblebass');
+		case 'tremolo':
+			return musicUtils.filters('tremolo');
+		case 'vaporwave':
+			return musicUtils.filters('vaporwave');
+		case 'vibrate':
+			return musicUtils.filters('vibrate');
+		case 'vibrato':
+			return musicUtils.filters('vibrato');
+		case 'reset':
+			return musicUtils.filters('reset');
+		default:
+			break;
 		}
 	},
 };

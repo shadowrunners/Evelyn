@@ -20,7 +20,7 @@ module.exports = {
 		const musicUtils = new MusicUtils(interaction, player);
 		await interaction.deferReply();
 
-		if (musicUtils.check(["voiceCheck", "checkPlaying"])) return;
+		if (musicUtils.check(['voiceCheck', 'checkPlaying'])) return;
 		await player.pause(true);
 
 		return interaction.editReply({

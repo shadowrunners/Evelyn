@@ -21,7 +21,7 @@ module.exports = {
 
 		await interaction.deferReply();
 
-		if (musicUtils.check(["voiceCheck"])) return;
+		if (musicUtils.check(['voiceCheck'])) return;
 
 		await player.destroy();
 

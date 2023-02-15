@@ -13,16 +13,14 @@ module.exports = {
 
 		const player = client.manager.players.get(guildId);
 		const musicUtils = new MusicUtils(interaction, player);
-		const embed = new EmbedBuilder()
-			.setColor('Blurple')
-			.setFooter({
-				text: `Action executed by ${user.username}.`,
-				iconURL: user.avatarURL({ dynamic: true }),
-			});
+		const embed = new EmbedBuilder().setColor('Blurple').setFooter({
+			text: `Action executed by ${user.username}.`,
+			iconURL: user.avatarURL({ dynamic: true }),
+		});
 
 		await interaction.deferReply();
 
-		if (musicUtils.check(["voiceCheck"])) return;
+		if (musicUtils.check(['voiceCheck'])) return;
 
 		if (!player.paused) {
 			player.pause(true);

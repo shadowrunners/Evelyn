@@ -7,10 +7,7 @@ const {
 const Statcord = require('statcord.js');
 
 const Economy = require('discord-economy-super/mongodb');
-const { Kazagumo } = require('kazagumo');
-const { Connectors } = require('shoukaku');
-const Spotify = require('kazagumo-spotify');
-const Deezer = require('kazagumo-deezer');
+const { Manager } = require('erela.js');
 const { crashReporter } = require('../functions/crashReport');
 
 const {
@@ -45,8 +42,8 @@ const { loadEco } = require('./handlers/economy.js');
 const { loadEvents } = require('./handlers/events.js');
 const { loadStats } = require('./handlers/statcord.js');
 const { loadButtons } = require('./handlers/buttons.js');
-const { loadShoukaku } = require('./handlers/shoukaku.js');
-const { loadModals } = require("./handlers/modals.js");
+const { loadMusic } = require('./handlers/erela.js');
+const { loadModals } = require('./handlers/modals.js');
 
 client.config = require('./config.json');
 client.commands = new Collection();
@@ -74,34 +71,17 @@ client.statcord = new Statcord.Client({
 	autopost: true,
 });
 
-client.manager = new Kazagumo(
-	{
-		plugins: [
-			new Spotify({
-				clientId: client.config.music.spotifyClientID,
-				clientSecret: client.config.music.spotifySecret,
-			}),
-			new Deezer({
-				playlistLimit: 20,
-			}),
-		],
-		defaultSearchEngine: 'youtube',
-		send: (id, payload) => {
-			const guild = client.guilds.cache.get(id);
-			if (guild) guild.shard.send(payload);
-		},
+client.manager = new Manager({
+	nodes: client.config.music.nodes,
+	defaultPlatform: 'deezer',
+	resumeKey: 'youshallresume',
+	resumeTimeout: 10000,
+	restTimeout: 10000,
+	send: (id, payload) => {
+		const guild = client.guilds.cache.get(id);
+		if (guild) guild.shard.send(payload);
 	},
-	new Connectors.DiscordJS(client),
-	client.config.music.nodes,
-	{
-		moveOnDisconnect: false,
-		resume: true,
-		resumeKey: 'playerKey',
-		reconnectTries: 5,
-		restTimeout: 10000,
-		resumeTimeout: 10000,
-	},
-);
+});
 
 module.exports = client;
 
@@ -110,9 +90,9 @@ loadStats(client);
 loadEvents(client);
 loadModals(client);
 loadButtons(client);
-loadShoukaku(client);
+loadMusic(client);
 
-//process.on('unhandledRejection', (err) => crashReporter(client, err));
+// process.on('unhandledRejection', (err) => crashReporter(client, err));
 process.on('unhandledRejection', (err) => console.log(err));
 process.on('unhandledException', (err) => console.log(err));
 

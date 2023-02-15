@@ -13,11 +13,11 @@ module.exports = {
 
 		const player = client.manager.players.get(guildId);
 		const musicUtils = new MusicUtils(interaction, player);
-		const volume = Number(player.volume * 100) + 10;
+		const volume = player.volume + 10;
 
 		await interaction.deferReply();
 
-		if (musicUtils.check(["voiceCheck"])) return;
+		if (musicUtils.check(['voiceCheck'])) return;
 
 		return musicUtils.setVolume(volume);
 	},

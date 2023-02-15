@@ -21,7 +21,7 @@ module.exports = {
 
 		await interaction.deferReply();
 
-		if (musicUtils.check(["voiceCheck", "checkPlaying"])) return;
+		if (musicUtils.check(['voiceCheck', 'checkPlaying'])) return;
 
 		await player.skip();
 

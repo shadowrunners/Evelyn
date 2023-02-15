@@ -14,17 +14,17 @@ module.exports = {
 		const musicUtils = new MusicUtils(interaction, player);
 		await interaction.deferReply();
 
-		if (musicUtils.check(["voiceCheck"])) return;
+		if (musicUtils.check(['voiceCheck'])) return;
 
 		switch (options.getString('type')) {
-			case 'queue':
-				return musicUtils.repeatMode('queue');
-			case 'song':
-				return musicUtils.repeatMode('song');
-			case 'off':
-				return musicUtils.repeatMode('off');
-			default:
-				break;
+		case 'queue':
+			return musicUtils.repeatMode('queue');
+		case 'song':
+			return musicUtils.repeatMode('song');
+		case 'off':
+			return musicUtils.repeatMode('off');
+		default:
+			break;
 		}
 	},
 };

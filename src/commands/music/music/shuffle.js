@@ -20,7 +20,7 @@ module.exports = {
 		const musicUtils = new MusicUtils(interaction, player);
 		await interaction.deferReply();
 
-		if (musicUtils.check(["voiceCheck", "checkQueue"])) return;
+		if (musicUtils.check(['voiceCheck', 'checkQueue'])) return;
 
 		await player.queue.shuffle();
 

@@ -22,7 +22,7 @@ module.exports = {
 
 		await interaction.deferReply();
 
-		if (musicUtils.check(["voiceCheck", "checkQueue"])) return;
+		if (musicUtils.check(['voiceCheck', 'checkQueue'])) return;
 		player.queue.clear();
 
 		return interaction.editReply({
