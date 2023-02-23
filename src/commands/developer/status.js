@@ -27,7 +27,7 @@ module.exports = {
 		const uptime = Math.floor(readyAt / 1000);
 		const model = cpus()[0].model;
 		const cores = cpus().length;
-		const platform = platform()
+		const systemPlatform = platform()
 			.replace('win32', 'Windows')
 			.replace('linux', 'Linux');
 
@@ -71,7 +71,7 @@ module.exports = {
 						},
 						{
 							name: '**OS**',
-							value: platform,
+							value: systemPlatform,
 							inline: true,
 						},
 						{
@@ -80,9 +80,7 @@ module.exports = {
 							inline: true,
 						},
 					)
-					.setThumbnail(
-						user.avatarURL({ dynamic: true }),
-					),
+					.setThumbnail(user.avatarURL({ dynamic: true })),
 			],
 		});
 	},
