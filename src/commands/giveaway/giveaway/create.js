@@ -1,11 +1,14 @@
 const {
+	// eslint-disable-next-line no-unused-vars
+	Client,
+	// eslint-disable-next-line no-unused-vars
 	ChatInputCommandInteraction,
 	ActionRowBuilder,
-	TextInputBuilder,
-	ModalBuilder,
-	TextInputStyle,
+	EmbedBuilder,
+	ButtonBuilder,
+	ButtonStyle,
 } = require('discord.js');
-const { Paragraph } = TextInputStyle;
+const { Primary } = ButtonStyle;
 const { endGiveaway } = require('../../../functions/giveawayUtils.js');
 const DB = require('../../../structures/schemas/giveaway.js');
 const ms = require('ms');
@@ -13,11 +16,11 @@ const ms = require('ms');
 module.exports = {
 	subCommand: 'giveaway.create',
 	/**
-	 * @param {ChatInputCommandInteraction} interaction,
+	 * @param {ChatInputCommandInteraction} interaction
 	 * @param {Client} client
 	 */
 	async execute(interaction, client) {
-		const { options, channelId } = interaction;
+		const { options, channelId, user, guild } = interaction;
 
 		const channel = options.getChannel('channel') || channelId;
 		const duration = options.getString('duration');
@@ -29,7 +32,7 @@ module.exports = {
 				.setCustomId('joinGiveaway')
 				.setLabel('Join')
 				.setEmoji('🎉')
-				.setStyle(ButtonStyle.Primary),
+				.setStyle(Primary),
 		);
 
 		const embed = new EmbedBuilder()
@@ -38,7 +41,7 @@ module.exports = {
 			.addFields(
 				{
 					name: 'Hosted by',
-					value: `<@${interaction.user.id}>`,
+					value: `${user}`,
 					inline: true,
 				},
 				{
@@ -47,9 +50,6 @@ module.exports = {
 					inline: true,
 				},
 			)
-			.setImage(
-				'https://cdn.discordapp.com/attachments/1040279387603484672/1040279448001462423/smpcollection.png',
-			)
 			.setFooter({ text: `${winnerCount} winner(s)` })
 			.setTimestamp();
 
@@ -57,10 +57,10 @@ module.exports = {
 			.get(channel)
 			.send({ embeds: [embed], components: [actionRow] });
 
-		interaction.reply({ content: 'Giveaway created.', ephemeral: true });
+		interaction.reply({ content: '🔹 | Giveaway created.', ephemeral: true });
 
 		await DB.create({
-			guildId: interaction.guild.id,
+			guildId: guild.id,
 			channelId: channel,
 			messageId: message.id,
 			winners: winnerCount,
@@ -68,7 +68,7 @@ module.exports = {
 			prize: prize,
 			isPaused: false,
 			hasEnded: false,
-			hoster: interaction.user.id,
+			hoster: user.id,
 		}).then((data) => {
 			setTimeout(async () => {
 				if (!data.hasEnded) await endGiveaway(message);

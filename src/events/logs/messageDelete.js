@@ -17,10 +17,10 @@ module.exports = {
 		});
 
 		if (
-			!data.logs.enabled ||
-			!data.logs.webhook ||
+			!data?.logs?.enabled ||
+			!data?.logs?.webhook ||
 			author?.bot ||
-			embeds.length > 0
+			embeds?.length > 0
 		)
 			return;
 
@@ -33,6 +33,7 @@ module.exports = {
 		const embed = new EmbedBuilder().setColor('Blurple');
 
 		return webhookDelivery(
+			'logs',
 			data,
 			embed
 				.setAuthor({

@@ -16,7 +16,7 @@ module.exports = {
 			id: oldMember.guild.id,
 		});
 
-		if (!data.logs.enabled || !data.logs.webhook) return;
+		if (!data?.logs?.enabled || !data?.logs?.webhook) return;
 
 		const oldRoles = oldMember.roles.cache.map((r) => r.id);
 		const newRoles = newMember.roles.cache.map((r) => r.id);
@@ -28,6 +28,7 @@ module.exports = {
 			const role = guild.roles.cache.get(uniqueRoles[0].toString());
 
 			return webhookDelivery(
+				'logs',
 				data,
 				embed
 					.setAuthor({
@@ -58,6 +59,7 @@ module.exports = {
 			const role = guild.roles.cache.get(uniqueRoles[0].toString());
 
 			return webhookDelivery(
+				'logs',
 				data,
 				embed
 					.setAuthor({
@@ -88,6 +90,7 @@ module.exports = {
 			newMember.isCommunicationDisabled()
 		)
 			return webhookDelivery(
+				'logs',
 				data,
 				embed
 					.setAuthor({
@@ -119,6 +122,7 @@ module.exports = {
 			!newMember.isCommunicationDisabled()
 		)
 			return webhookDelivery(
+				'logs',
 				data,
 				embed
 					.setAuthor({
@@ -145,6 +149,7 @@ module.exports = {
 
 		if (oldMember.nickname !== newMember.nickname)
 			return webhookDelivery(
+				'logs',
 				data,
 				embed
 					.setAuthor({

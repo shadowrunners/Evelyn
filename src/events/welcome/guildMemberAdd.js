@@ -74,10 +74,9 @@ module.exports = {
 				embeds: [welcomeEmbed],
 			});
 		}
-		else {
+		else
 			welcomeChannel.send({
 				embeds: [welcomeEmbed],
 			});
-		}
 	},
 };

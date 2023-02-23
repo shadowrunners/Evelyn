@@ -14,13 +14,14 @@ module.exports = {
 			id: oldMessage.guild.id,
 		});
 
-		if (!data.logs.enabled || !data.logs.webhook || oldMessage.author?.bot)
+		if (!data?.logs?.enabled || !data?.logs?.webhook || oldMessage.author?.bot)
 			return;
 
 		const embed = new EmbedBuilder().setColor('Blurple');
 
 		if (oldMessage.content !== newMessage.content)
 			return webhookDelivery(
+				'logs',
 				data,
 				embed
 					.setAuthor({

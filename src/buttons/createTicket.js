@@ -30,12 +30,11 @@ module.exports = {
 			creatorId: user.id,
 		});
 
-		if (ticketsData.creatorId && !ticketsData.closed) {
+		if (ticketsData?.creatorId && !ticketsData?.closed)
 			return interaction.reply({
 				embeds: [embed.setDescription('🔹 | You already have a ticket open.')],
 				ephemeral: true,
 			});
-		}
 
 		const channel = await guild.channels.create({
 			name: `${user.username}-ticket`,
@@ -53,19 +52,13 @@ module.exports = {
 			],
 		});
 
-		await ticketData.findOneAndUpdate(
-			{ id: guild.id },
-			{
-				$set: {
-					ticketId: channel.id,
-					claimed: false,
-					closed: false,
-					deleted: false,
-					creatorId: user.id,
-					claimer: null,
-				},
-			},
-		);
+		await ticketData.create({
+			id: guild.id,
+			ticketId: channel.id,
+			closed: false,
+			closer: null,
+			creatorId: user.id,
+		});
 
 		channel.setRateLimitPerUser(2);
 
@@ -73,17 +66,12 @@ module.exports = {
 			new ButtonBuilder()
 				.setCustomId('closeTicket')
 				.setLabel('Close')
-				.setStyle(ButtonStyle.Success)
+				.setStyle(ButtonStyle.Danger)
 				.setEmoji('⛔'),
-			new ButtonBuilder()
-				.setCustomId('claimTicket')
-				.setLabel('Claim')
-				.setStyle(ButtonStyle.Success)
-				.setEmoji('🛄'),
 		);
 
 		channel.send({
-			content: `<@&${data.tickets?.ticketHandlers}>`,
+			content: `<@${user.id}>, your ticket lives here.`,
 			embeds: [
 				embed
 					.setAuthor({
@@ -91,21 +79,11 @@ module.exports = {
 						iconURL: guild.iconURL({ dynamic: true }),
 					})
 					.setDescription(
-						`Hiya, <@${user.id}>! Please wait patiently while a staff member is coming to assist you with your issue. In the meantime, describe your issue as detailed as possible.`,
+						'Hiya! Please wait patiently while a staff member is coming to assist you with your issue. In the meantime, describe your issue as detailed as possible.',
 					),
 			],
 			components: [buttons],
 		});
-
-		await channel
-			.send({
-				content: `${member}, your ticket has been created: ${channel}`,
-			})
-			.then((m) => {
-				setTimeout(() => {
-					m.delete().catch();
-				}, 5 * 1000);
-			});
 
 		await interaction.reply({
 			content: `${member}, your ticket has been created: ${channel}`,

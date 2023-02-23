@@ -15,11 +15,12 @@ module.exports = {
 			id: guild.id,
 		});
 
-		if (!data.logs.enabled || !data.logs.webhook || user.bot) return;
+		if (!data?.logs?.enabled || !data?.logs?.webhook || user.bot) return;
 
 		const embed = new EmbedBuilder().setColor('Blurple');
 
 		return webhookDelivery(
+			'logs',
 			data,
 			embed
 				.setAuthor({

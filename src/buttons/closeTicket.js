@@ -11,14 +11,14 @@ module.exports = {
 	 */
 	async execute(interaction) {
 		const { guild, member, channel } = interaction;
-		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 		const gTicketData = await setupData.findOne({ id: guild.id });
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
 		if (
 			!member.roles.cache.find(
-				(r) => r.id === gTicketData.tickets.ticketHandlers,
+				(r) => r.id === gTicketData.tickets?.assistantRole,
 			)
-		) {
+		)
 			return interaction.reply({
 				embeds: [
 					embed.setDescription(
@@ -27,31 +27,29 @@ module.exports = {
 				],
 				ephemeral: true,
 			});
-		}
 
 		const ticketsData = await ticketData.findOne({
 			id: guild.id,
 			ticketId: channel.id,
 		});
 
-		if (ticketsData.closed === true) {
+		if (ticketsData?.closed === true)
 			return interaction.reply({
 				embeds: [embed.setDescription('🔹 | This ticket is already closed.')],
+				ephemeral: true,
 			});
-		}
 
-		if (!ticketsData.closer === member.id) {
+		if (!ticketsData?.closer === member.id)
 			return interaction.reply({
 				embeds: [
 					embed.setDescription(
-						'🔹 | You are not the user that closed this ticket!',
+						'🔹 | You are not the user that closed this ticket.',
 					),
 				],
 				ephemeral: true,
 			});
-		}
 
-		await ticketData.findOneAndUpdate(
+		await ticketData?.findOneAndUpdate(
 			{
 				ticketId: channel.id,
 			},
@@ -64,22 +62,24 @@ module.exports = {
 		const attachment = await createTranscript(channel, {
 			limit: -1,
 			returnType: 'attachment',
-			fileName: `Ticket - ${ticketsData.creatorId}.html`,
+			fileName: `Ticket - ${ticketsData?.creatorId}.html`,
 		});
 
 		const closedTime = Math.floor(new Date().getTime() / 1000);
 
 		const message = await guild.channels.cache
-			.get(gTicketData.tickets.transcriptChannel)
+			.get(gTicketData.tickets?.transcriptChannel)
 			.send({
 				embeds: [
 					embed.setTitle('Ticket Closed').addFields(
-						{ name: 'Opened by', value: `<@!${ticketsData.creatorId}>` },
 						{
-							name: 'Claimed by',
-							value: `<@${ticketsData.claimer}>` || 'No one.',
+							name: 'Opened by',
+							value: `<@!${ticketsData?.creatorId}>`,
 						},
-						{ name: 'Closed', value: `<t:${closedTime}:R>` },
+						{
+							name: 'Closed',
+							value: `<t:${closedTime}:R>`,
+						},
 					),
 				],
 				files: [attachment],
@@ -88,9 +88,10 @@ module.exports = {
 		interaction.reply({
 			embeds: [
 				embed.setDescription(
-					`🔹 | Transcript saved: [transcripthere](${message.url}).`,
+					`🔹 | The transcript of this ticket has been saved [here](${message.url}).`,
 				),
 			],
+			ephemeral: true,
 		});
 		setTimeout(() => {
 			channel.delete();

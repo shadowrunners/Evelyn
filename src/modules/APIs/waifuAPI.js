@@ -8,7 +8,7 @@ const { EmbedBuilder, ChatInputCommandInteraction } = require('discord.js');
 module.exports = class WaifuEngine {
 	/** Creates a new instance of the NekoAPI class.
 	 * @param {ChatInputCommandInteraction} interaction - Represents the Interaction object from Discord.js.
-	*/
+	 */
 	constructor(interaction) {
 		this.apiURL = 'https://api.waifu.pics/sfw/';
 		/** Base embed used to reduce repeated code. */
@@ -42,7 +42,7 @@ module.exports = class WaifuEngine {
 	checkTarget(target) {
 		this.target = target;
 
-		if (!this.target) {
+		if (!this.target)
 			return this.interaction.editReply({
 				embeds: [
 					new EmbedBuilder()
@@ -50,7 +50,6 @@ module.exports = class WaifuEngine {
 						.setDescription('🔹 | You forgot to provide a user.'),
 				],
 			});
-		}
 	}
 
 	/** Fetches the image and replies with it in an embed. */
@@ -72,7 +71,9 @@ module.exports = class WaifuEngine {
 
 		return this.interaction.editReply({
 			embeds: [
-				this.embed.setAuthor({ name: this.name, iconURL: this.iconURL }).setImage(image),
+				this.embed
+					.setAuthor({ name: this.name, iconURL: this.iconURL })
+					.setImage(image),
 			],
 		});
 	}

@@ -22,11 +22,12 @@ module.exports = {
 			id: guild.id,
 		});
 
-		if (!data.logs.enabled || !data.logs.webhook) return;
+		if (!data?.logs?.enabled || !data?.logs?.webhook) return;
 
 		const embed = new EmbedBuilder().setColor('Blurple');
 
 		return webhookDelivery(
+			'logs',
 			data,
 			embed
 				.setAuthor({

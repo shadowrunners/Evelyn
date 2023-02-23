@@ -25,20 +25,22 @@ module.exports = {
 		await GDB.findOneAndUpdate(
 			{
 				id: guildID,
-			}, {
-			$set: {
-				blacklist: {
-					isBlacklisted: true,
-					reason: blacklist_reason,
-					time: Date.now()
-				}
-			}
-		});
+			},
+			{
+				$set: {
+					blacklist: {
+						isBlacklisted: true,
+						reason: blacklist_reason,
+						time: Date.now(),
+					},
+				},
+			},
+		);
 
 		return interaction.reply({
 			embeds: [
 				embed.setDescription(
-					`🔹 | This guild has been successfully blacklisted for ``${blacklist_reason}```,
+					'🔹 | This guild has been successfully blacklisted for '`${blacklist_reason}```,
 				),
 			],
 			ephemeral: true,

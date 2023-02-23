@@ -17,7 +17,7 @@ module.exports = {
 			id: guild.id,
 		});
 
-		if (!data.logs.enabled || !data.logs.webhook) return;
+		if (!data?.logs?.enabled || !data?.logs?.webhook) return;
 
 		const fetchLogs = await guild.fetchAuditLogs({
 			type: EmojiUpdate,
@@ -29,6 +29,7 @@ module.exports = {
 
 		if (oldEmoji.name !== newEmoji.name)
 			return webhookDelivery(
+				'logs',
 				data,
 				embed
 					.setAuthor({

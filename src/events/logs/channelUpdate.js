@@ -17,7 +17,7 @@ module.exports = {
 			id: guild.id,
 		});
 
-		if (!data.logs.enabled || !data.logs.webhook) return;
+		if (!data?.logs?.enabled || !data?.logs?.webhook) return;
 
 		const fetchLogs = await guild.fetchAuditLogs({
 			type: ChannelUpdate,
@@ -29,6 +29,7 @@ module.exports = {
 
 		if (oldChannel.name !== newChannel.name)
 			return webhookDelivery(
+				'logs',
 				data,
 				embed
 					.setAuthor({
@@ -55,6 +56,7 @@ module.exports = {
 
 		if (oldChannel.topic !== newChannel.topic)
 			return webhookDelivery(
+				'logs',
 				data,
 				embed
 					.setAuthor({
@@ -81,6 +83,7 @@ module.exports = {
 
 		if (oldChannel.position !== newChannel.position)
 			return webhookDelivery(
+				'logs',
 				data,
 				embed
 					.setAuthor({
@@ -107,6 +110,7 @@ module.exports = {
 
 		if (oldChannel.type !== newChannel.type)
 			return webhookDelivery(
+				'logs',
 				data,
 				embed
 					.setAuthor({
