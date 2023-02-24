@@ -38,8 +38,9 @@ module.exports = {
 
 			embed
 				.setAuthor({ name: `Current queue for ${guild.name}` })
-				.setTitle(`▶️ | Currently playing: ${player.queue.current.title}`)
-				.setDescription(songs.slice(i, i + 10).join('\n'));
+				.setTitle(`▶️ | Currently playing: ${player.currentTrack.info.title}`)
+				.setDescription(songs.slice(i, i + 10).join('\n'))
+				.setTimestamp(),
 			embeds.push(embed);
 		}
 

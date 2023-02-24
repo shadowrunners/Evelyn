@@ -6,17 +6,17 @@ const {
 	ButtonStyle,
 } = require('discord.js');
 const { Primary } = ButtonStyle;
-const { Player } = require('erela.js');
+// eslint-disable-next-line no-unused-vars
+const { Player, AutomataTrack } = require('@lustlabs/automata');
 const pms = require('pretty-ms');
 
 module.exports = {
 	name: 'trackStart',
 	/**
 	 * @param {Player} player
+	 * @param {AutomataTrack} track
 	 */
-	async execute(player) {
-		const track = player.queue.current;
-
+	async execute(player, track) {
 		const buttonRow = new ActionRowBuilder().addComponents(
 			new ButtonBuilder().setCustomId('pause').setLabel('⏯️').setStyle(Primary),
 			new ButtonBuilder().setCustomId('skip').setLabel('⏭️').setStyle(Primary),
@@ -34,16 +34,16 @@ module.exports = {
 		const nowPlaying = new EmbedBuilder()
 			.setColor('Blurple')
 			.setTitle('🎧 Started Playing')
-			.setDescription(`**[${track.title}](${track.uri})**`)
+			.setDescription(`**[${track.info.title}](${track.info.uri})**`)
 			.addFields(
 				{
 					name: 'Queued by',
-					value: `<@${track.requester.id}>`,
+					value: `<@${track.info.requester.id}>`,
 					inline: true,
 				},
-				{ name: 'Duration', value: pms(track.duration), inline: true },
+				{ name: 'Duration', value: pms(track.info.length), inline: true },
 			)
-			.setThumbnail(track.thumbnail)
+			.setThumbnail(track.info.thumbnail)
 			.setTimestamp();
 
 		await client.channels.cache

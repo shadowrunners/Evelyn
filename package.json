@@ -1,6 +1,6 @@
 {
 	"name": "evelyn",
-	"version": "5.0.0-beta1",
+	"version": "5.0.0-beta2",
 	"description": "A Discord Bot that puts you as its first priority with no paywalls to interrupt your supercharged experience.",
 	"main": "src/structures/index.js",
 	"scripts": {
@@ -8,6 +8,7 @@
 		"dev": "nodemon ./src/structures/index.js"
 	},
 	"dependencies": {
+		"@lustlabs/automata": "github:notscrappie/automata",
 		"canvacord": "^5.4.8",
 		"chalk": "^4.1.2",
 		"discord-arts": "^0.4.0",

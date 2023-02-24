@@ -5,7 +5,7 @@
 
 /* eslint-disable no-unused-vars */
 const { EmbedBuilder, ChatInputCommandInteraction } = require('discord.js');
-const { Player } = require('erela.js');
+const { Player } = require('@lustlabs/automata');
 const pms = require('pretty-ms');
 
 module.exports = class MusicUtils {
@@ -63,7 +63,7 @@ module.exports = class MusicUtils {
 				break;
 
 			case 'checkPlaying':
-				if (!this.player?.playing)
+				if (!this.player?.isPlaying)
 					return this.interaction.editReply({
 						embeds: [
 							this.embed.setDescription('🔹 | I\'m not playing anything.'),
@@ -90,7 +90,7 @@ module.exports = class MusicUtils {
 
 	/** Handles a check regarding the player and if it's playing anything. */
 	checkPlaying() {
-		if (!this.player?.playing)
+		if (!this.player?.isPlaying)
 			return this.interaction.editReply({
 				embeds: [this.embed.setDescription('🔹 | I\'m not playing anything.')],
 			});
@@ -100,7 +100,7 @@ module.exports = class MusicUtils {
 	repeatMode(mode) {
 		switch (mode) {
 		case 'queue':
-			this.player.queueRepeat();
+			this.player.setLoop('QUEUE');
 
 			return this.interaction.editReply({
 				embeds: [
@@ -108,7 +108,7 @@ module.exports = class MusicUtils {
 				],
 			});
 		case 'song':
-			this.player.trackRepeat();
+			this.player.setLoop('TRACK');
 
 			return this.interaction.editReply({
 				embeds: [
@@ -116,8 +116,7 @@ module.exports = class MusicUtils {
 				],
 			});
 		case 'none':
-			this.player?.setTrackRepeat(false);
-			this.player?.setQueueRepeat(false);
+			this.player.setLoop('NONE');
 
 			return this.interaction.editReply({
 				embeds: [this.embed.setDescription('🔹 | Repeat mode is now off.')],
@@ -130,14 +129,14 @@ module.exports = class MusicUtils {
 	/** This function seeks to the time provided by you. */
 	seek(time) {
 		const duration = Number(time) * 1000;
-		const trackDuration = this.player.queue.current.length;
+		const trackDuration = this.player.currentTrack.info.length;
 
 		if (duration > trackDuration)
 			return this.interaction.editReply({
 				embeds: [this.embed.setDescription('🔹 | Invalid seek time.')],
 			});
 
-		this.player.seek(duration);
+		this.player.seekTo(duration);
 
 		return this.interaction.editReply({
 			embeds: [this.embed.setDescription(`🔹 | Seeked to ${pms(duration)}.`)],
@@ -173,7 +172,7 @@ module.exports = class MusicUtils {
 	}
 
 	/** Easily manage filters. */
-	async filters(mode) {
+	filters(mode) {
 		const embed = new EmbedBuilder()
 			.setTitle('🎧 Filter applied!')
 			.setDescription(
@@ -182,7 +181,7 @@ module.exports = class MusicUtils {
 
 		switch (mode) {
 		case '3d':
-			await this.player.node.send({
+			this.player.node.send({
 				op: 'filters',
 				guildId: this.interaction.guildId,
 				rotation: { rotationHz: 0.2 },
@@ -192,7 +191,7 @@ module.exports = class MusicUtils {
 				embeds: [embed],
 			});
 		case 'bassboost':
-			await this.player.node.send({
+			this.player.node.send({
 				op: 'filters',
 				guildId: this.interaction.guildId,
 				equalizer: [
@@ -217,7 +216,7 @@ module.exports = class MusicUtils {
 				embeds: [embed],
 			});
 		case 'nightcore':
-			await this.player.node.send({
+			this.player.node.send({
 				op: 'filters',
 				guildId: this.interaction.guildId,
 				timescale: {
@@ -231,7 +230,7 @@ module.exports = class MusicUtils {
 				embeds: [embed],
 			});
 		case 'pop':
-			await this.player.node.send({
+			this.player.node.send({
 				op: 'filters',
 				guildId: this.interaction.guildId,
 				equalizer: [
@@ -256,7 +255,7 @@ module.exports = class MusicUtils {
 				embeds: [embed],
 			});
 		case 'slowmo':
-			await this.player.node.send({
+			this.player.node.send({
 				op: 'filters',
 				guildId: this.interaction.guildId,
 				timescale: {
@@ -270,7 +269,7 @@ module.exports = class MusicUtils {
 				embeds: [embed],
 			});
 		case 'soft':
-			await this.player.node.send({
+			this.player.node.send({
 				op: 'filters',
 				guildId: this.interaction.guildId,
 				equalizer: [
@@ -295,7 +294,7 @@ module.exports = class MusicUtils {
 				embeds: [embed],
 			});
 		case 'tv':
-			await this.player.node.send({
+			this.player.node.send({
 				op: 'filters',
 				guildId: this.interaction.guildId,
 				equalizer: [
@@ -320,7 +319,7 @@ module.exports = class MusicUtils {
 				embeds: [embed],
 			});
 		case 'treblebass':
-			await this.player.node.send({
+			this.player.node.send({
 				op: 'filters',
 				guildId: this.interaction.guildId,
 				equalizer: [
@@ -345,7 +344,7 @@ module.exports = class MusicUtils {
 				embeds: [embed],
 			});
 		case 'tremolo':
-			await this.player.node.send({
+			this.player.node.send({
 				op: 'filters',
 				guildId: this.interaction.guildId,
 				tremolo: { frequency: 4.0, depth: 0.75 },
@@ -355,7 +354,7 @@ module.exports = class MusicUtils {
 				embeds: [embed],
 			});
 		case 'vaporwave':
-			await this.player.node.send({
+			this.player.node.send({
 				op: 'filters',
 				guildId: this.interaction.guildId,
 				equalizer: [
@@ -383,7 +382,7 @@ module.exports = class MusicUtils {
 				embeds: [embed],
 			});
 		case 'vibrate':
-			await this.player.send({
+			this.player.send({
 				op: 'filters',
 				guildId: this.interaction.guild.id,
 				vibrato: { frequency: 4.0, depth: 0.75 },
@@ -394,7 +393,7 @@ module.exports = class MusicUtils {
 				embeds: [embed],
 			});
 		case 'vibrato':
-			await this.player.send({
+			this.player.send({
 				op: 'filters',
 				guildId: this.interaction.guild.id,
 				vibrato: { frequency: 4.0, depth: 0.75 },
@@ -404,12 +403,14 @@ module.exports = class MusicUtils {
 				embeds: [embed],
 			});
 		case 'reset':
-			await this.player.node.send({
+			this.player.node.send({
 				op: 'filters',
 				guildId: this.interaction.guild.id,
 			});
 
 			this.setVolume(100);
+
+			this.player.filters.volume;
 
 			return this.interaction.editReply({
 				embeds: [embed],

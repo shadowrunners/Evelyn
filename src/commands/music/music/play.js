@@ -27,30 +27,31 @@ module.exports = {
 				],
 			});
 
+		const query = options.getString('query');
+		const res = await client.manager.resolve(query, 'dzsearch');
+
 		const player = await client.manager.create({
-			region: member.voice.channel?.rtcRegion || undefined,
-			guild: guild.id,
+			guildId: guild.id,
 			voiceChannel: member.voice.channelId,
 			textChannel: channelId,
 			selfDeafen: true,
+			noReplace: false,
 		});
 
 		const musicUtils = new MusicUtils(interaction, player);
-		const query = options.getString('query');
-
 		if (musicUtils.checkQuery(query)) return;
-
-		const res = await player.search(query, user);
 
 		switch (res.loadType) {
 		case 'PLAYLIST_LOADED':
-			player.connect();
-			player.queue.add(res.tracks);
+			// eslint-disable-next-line no-case-declarations
+			const tracks = res.tracks;
+			player.queue.add(tracks);
+			track.info.requester = user;
 
 			if (
-				!player.playing &&
-					!player.paused &&
-					player.queue.totalSize === res.tracks.length
+				!player.isPlaying &&
+					!player.isPaused &&
+					player.queue.size === res.tracks.length
 			)
 				player.play();
 
@@ -61,7 +62,7 @@ module.exports = {
 							name: 'Playlist added to the queue',
 							iconURL: user.avatarURL(),
 						})
-						.setDescription(`**[${res.playlistName}](${query})**`)
+						.setDescription(`**[${res.playlistInfo.name}](${query})**`)
 						.addFields(
 							{
 								name: 'Added',
@@ -79,27 +80,30 @@ module.exports = {
 
 		case 'SEARCH_RESULT':
 		case 'TRACK_LOADED':
-			player.connect();
-			player.queue.add(res.tracks[0]);
+			// eslint-disable-next-line no-case-declarations
+			const track = res.tracks[0];
+			track.info.requester = user;
+			player.queue.add(track);
 
-			if (!player.playing && !player.paused && !player.queue.size)
-				player.play();
+			if (!player.isPlaying && player.isConnected) player.play();
 
 			embed
 				.setAuthor({
 					name: 'Added to the queue',
 					iconURL: user.avatarURL(),
 				})
-				.setDescription(`**[${res.tracks[0].title}](${res.tracks[0].uri})** `)
+				.setDescription(
+					`**[${res.tracks[0].info.title}](${res.tracks[0].info.uri})** `,
+				)
 				.addFields({
 					name: 'Queued by',
 					value: `${member}`,
 					inline: true,
 				})
-				.setThumbnail(res.tracks[0].thumbnail);
+				.setThumbnail(res.tracks[0].info.thumbnail);
 			await interaction.editReply({ embeds: [embed] });
 
-			if (player.queue.totalSize > 1)
+			if (player.queue.size > 1)
 				embed.addFields({
 					name: 'Position in queue',
 					value: `${player.queue.size - 0}`,

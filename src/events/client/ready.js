@@ -37,7 +37,7 @@ module.exports = {
 		}
 
 		client.statcord.autopost();
-		client.manager.init(client.user.id);
+		client.manager.init(client);
 
 		set('strictQuery', true)
 			.connect(client.config.database)

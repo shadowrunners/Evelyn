@@ -22,14 +22,14 @@ module.exports = {
 
 		if (musicUtils.check(['voiceCheck'])) return;
 
-		if (!player.paused) {
+		if (!player.isPaused) {
 			player.pause(true);
 			return interaction.editReply({
 				embeds: [embed.setDescription('🔹 | Paused.')],
 			});
 		}
 
-		if (player.paused) {
+		if (player.isPaused) {
 			player.pause(false);
 
 			return interaction.editReply({

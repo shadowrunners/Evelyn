@@ -7,7 +7,7 @@ const {
 const Statcord = require('statcord.js');
 
 const Economy = require('discord-economy-super/mongodb');
-const { Manager } = require('erela.js');
+const { Manager } = require('@lustlabs/automata');
 const { crashReporter } = require('../functions/crashReport');
 
 const {
@@ -42,7 +42,7 @@ const { loadEco } = require('./handlers/economy.js');
 const { loadEvents } = require('./handlers/events.js');
 const { loadStats } = require('./handlers/statcord.js');
 const { loadButtons } = require('./handlers/buttons.js');
-const { loadMusic } = require('./handlers/erela.js');
+const { loadMusic } = require('./handlers/automata.js');
 const { loadModals } = require('./handlers/modals.js');
 
 client.config = require('./config.json');
@@ -71,16 +71,11 @@ client.statcord = new Statcord.Client({
 	autopost: true,
 });
 
-client.manager = new Manager({
-	nodes: client.config.music.nodes,
-	defaultPlatform: 'deezer',
+client.manager = new Manager(client, client.config.music.nodes, {
+	reconnectTime: 10000,
 	resumeKey: 'youshallresume',
-	resumeTimeout: 10000,
-	restTimeout: 10000,
-	send: (id, payload) => {
-		const guild = client.guilds.cache.get(id);
-		if (guild) guild.shard.send(payload);
-	},
+	resumeTimeout: 5000,
+	defaultPlaform: 'dzsearch',
 });
 
 module.exports = client;

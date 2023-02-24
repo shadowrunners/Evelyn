@@ -1,11 +1,11 @@
 const { magenta, white } = require('chalk');
 
 module.exports = {
-	name: 'nodeDisconnect',
-	execute(node) {
+	name: 'nodeError',
+	execute(node, error) {
 		console.log(
 			`${magenta('Lavalink')} ${white(
-				`· Lost connection to node ${node.options.identifier}.`,
+				`· Node "${node.name}" has encountered an error: ${error.message}.`,
 			)}`,
 		);
 	},
