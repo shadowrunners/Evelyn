@@ -1,13 +1,21 @@
-<img src="https://cdn.discordapp.com/avatars/832289090128969787/a6dbf8e910c7f3efbfef5dd83c56c69d.webp?size=2048" alt="Evelyn" height="155px" width="155px" align="left" style="float: left; margin: 0 10px 0 0;" alt="Jinx">
+<img src="https://i.imgur.com/Pv8ImxU.png" alt="Evelyn" align="center">
 
-# Evelyn
-[![](https://img.shields.io/badge/discord.js-v14.6.0-blue.svg?logo=npm)](https://github.com/discordjs)
-[![](https://img.shields.io/github/issues/notscrappie/Evelyn)](https://github.com/t3amedge/Evelyn/issues)
-[![](https://img.shields.io/github/stars/notscrappie/Evelyn)](https://github.com/t3amedge/Evelyn)
-[![](https://img.shields.io/discord/838499177243738172?color=5865F2&logo=discord&logoColor=white)](https://discord.gg/HwkDSs7X82)
-[![](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee)](https://buymeacoffee.com/scr3ppie)
+</div>
+  <h1 align=center>Evelyn</h1>
+  <h3 align=center>Unleash the full potential of your server.</h3>
+  
+  <div align=center>
+      <img src="https://forthebadge.com/images/badges/built-with-love.svg">
+  </a>
 
-> Unleash the full potential of your server.
+  <a href="#">
+  <img src="https://forthebadge.com/images/badges/contains-tasty-spaghetti-code.svg"
+  </a>
+
+  <a href="https://buymeacoffee.com/scr3ppie">
+  <img src="https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?style=for-the-badge"
+  </a>
+</div>
 
 ## About
 
@@ -26,8 +34,8 @@ Evelyn is an open-source Discord Bot made as a safe alternative to bots that are
 - [Lyxcode](https://youtube.com/c/Lyxcode) - command handler
 - [Cit999](https://github.com/cit999/djs-projects/tree/master/Giveaway%20System) - giveaway system
 
-If we used your code and forgot to add you to the credits, shoot me a message over on Discord at scrappie#5451.\
+If we used your code and forgot to add you to the credits, shoot me a message over on Discord at scrappie#5451.
 
-If you decide to use this source code, I kindly ask you to give credit to me and to the people/repos that helped me bring this project to life.\
+If you decide to use this source code, I kindly ask you to give credit to me and to the people/repos that helped me bring this project to life.
 
 Additionally, to avoid confusion with our hosted version of Evelyn, you are not allowed to publicly host another instance of Evelyn under the same name and use the same avatar.
