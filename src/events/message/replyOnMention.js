@@ -7,10 +7,12 @@ module.exports = {
 	 * @param {Client} client
 	 */
 	execute(message, client) {
+		const { author, content } = message;
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		const mention = new RegExp(`^<@!?${client.user.id}>( |)$`);
 
-		if (message.author.bot) return;
-		if (message.mentions.has(client.user.id) && !message.author.bot)
+		if (author?.bot) return;
+		if (content.match(mention) && !author?.bot)
 			return message.reply({
 				embeds: [
 					embed
