@@ -7,7 +7,7 @@ const {
 const Statcord = require('statcord.js');
 
 const Economy = require('discord-economy-super/mongodb');
-const { Manager } = require('@lustlabs/automata');
+const { Manager } = require('@shadowrunners/automata');
 const { crashReporter } = require('../functions/crashReport');
 
 const {
@@ -75,7 +75,7 @@ client.manager = new Manager(client, client.config.music.nodes, {
 	reconnectTime: 10000,
 	resumeKey: 'youshallresume',
 	resumeTimeout: 5000,
-	defaultPlaform: 'dzsearch',
+	defaultPlatform: 'dzsearch',
 });
 
 module.exports = client;

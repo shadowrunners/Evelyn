@@ -22,7 +22,7 @@ module.exports = {
 		await interaction.deferReply();
 
 		if (musicUtils.check(['voiceCheck', 'checkPlaying'])) return;
-		const track = player.currentTrack;
+		const track = player.currentTrack.info;
 
 		return interaction.editReply({
 			embeds: [
@@ -32,7 +32,7 @@ module.exports = {
 						iconURL: user.avatarURL(),
 					})
 					.setDescription(
-						`**[${track.info.title}](${track.info.uri})** [${track.info.requester}]`,
+						`**[${track.title}](${track.uri})** [${track.requester}]`,
 					),
 			],
 		});

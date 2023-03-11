@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const { ChatInputCommandInteraction, Client } = require('discord.js');
 const importEngine = require('../../../modules/Engines/playlistEngine.js');
 

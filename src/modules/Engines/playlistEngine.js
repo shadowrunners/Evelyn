@@ -5,6 +5,8 @@ const PDB = require('../../structures/schemas/playlist.js');
 const utils = require('../Utils/utils.js');
 const { EmbedBuilder } = require('discord.js');
 const pms = require('pretty-ms');
+// eslint-disable-next-line no-unused-vars
+const { Player } = require('@shadowrunners/automata');
 
 module.exports = class PlaylistEngine {
 	/** Creates a new instance of the Playlist Engine class. */
@@ -17,16 +19,19 @@ module.exports = class PlaylistEngine {
 		this.util = new utils(this.interaction);
 	}
 
-	/** Adds the current track to your playlist. */
+	/**
+	 * Adds the current track to your playlist.
+	 * @param {Player} player - The player object.
+	 * @param {String} pName - The playlist's name
+	 */
 	async addCurrentTrack(player, pName) {
-		const track = player.queue.current;
+		const track = player.currentTrack.info;
 
-		if (!track) {
+		if (!track)
 			return this.interaction.editReply({
 				embeds: [this.embed.setDescription('🔹 | Nothing is playing.')],
 				ephemeral: true,
 			});
-		}
 
 		await PDB.updateOne(
 			{
@@ -54,7 +59,10 @@ module.exports = class PlaylistEngine {
 		});
 	}
 
-	/** Creates a new playlist. */
+	/**
+	 * Creates a new playlist.
+	 * @param {String} pName - The playlist's name
+	 */
 	async create(pName) {
 		const userData = await PDB.findOne({
 			userID: this.interaction.user.id,
@@ -96,7 +104,10 @@ module.exports = class PlaylistEngine {
 		});
 	}
 
-	/** Deletes a playlist. */
+	/**
+	 * Deletes a playlist.
+	 * @param {String} pName - The playlist's name
+	 */
 	async delete(pName) {
 		const playlistData = await PDB.findOne({
 			userID: this.interaction.user.id,
@@ -125,7 +136,10 @@ module.exports = class PlaylistEngine {
 		});
 	}
 
-	/** Shows information about a specific playlist. */
+	/**
+	 * Shows information about a specific playlist.
+	 * @param {String} pName - The playlist's name
+	 */
 	async info(pName) {
 		const pData = await PDB.findOne({
 			playlistName: pName,
@@ -199,7 +213,11 @@ module.exports = class PlaylistEngine {
 		return this.util.embedPages(embeds);
 	}
 
-	/** Removes the song provided from the specified playlist. */
+	/**
+	 * Removes the song provided from the specified playlist.
+	 * @param {String} pName - The playlist's name
+	 * @param {Number} song - The song that you want to remove.
+	 */
 	async removeThisSong(pName, song) {
 		const pData = await PDB.findOne({
 			playlistName: pName,

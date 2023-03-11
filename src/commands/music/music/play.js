@@ -28,14 +28,13 @@ module.exports = {
 			});
 
 		const query = options.getString('query');
-		const res = await client.manager.resolve(query, 'dzsearch');
+		const res = await client.manager.resolve({ query, requester: member });
 
-		const player = await client.manager.create({
+		const player = client.manager.create({
 			guildId: guild.id,
 			voiceChannel: member.voice.channelId,
 			textChannel: channelId,
-			selfDeafen: true,
-			noReplace: false,
+			deaf: true,
 		});
 
 		const musicUtils = new MusicUtils(interaction, player);
@@ -43,10 +42,8 @@ module.exports = {
 
 		switch (res.loadType) {
 		case 'PLAYLIST_LOADED':
-			// eslint-disable-next-line no-case-declarations
-			const tracks = res.tracks;
-			player.queue.add(tracks);
-			track.info.requester = user;
+			player.connect();
+			for (const track of res.tracks) player.queue.add(track);
 
 			if (
 				!player.isPlaying &&
@@ -80,10 +77,8 @@ module.exports = {
 
 		case 'SEARCH_RESULT':
 		case 'TRACK_LOADED':
-			// eslint-disable-next-line no-case-declarations
-			const track = res.tracks[0];
-			track.info.requester = user;
-			player.queue.add(track);
+			player.connect();
+			player.queue.add(res.tracks[0]);
 
 			if (!player.isPlaying && player.isConnected) player.play();
 

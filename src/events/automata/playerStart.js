@@ -7,14 +7,14 @@ const {
 } = require('discord.js');
 const { Primary } = ButtonStyle;
 // eslint-disable-next-line no-unused-vars
-const { Player, AutomataTrack } = require('@lustlabs/automata');
+const { Player, Track } = require('@shadowrunners/automata');
 const pms = require('pretty-ms');
 
 module.exports = {
-	name: 'trackStart',
+	name: 'playerStart',
 	/**
 	 * @param {Player} player
-	 * @param {AutomataTrack} track
+	 * @param {Track} track
 	 */
 	async execute(player, track) {
 		const buttonRow = new ActionRowBuilder().addComponents(

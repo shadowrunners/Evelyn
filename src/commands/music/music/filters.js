@@ -21,10 +21,10 @@ module.exports = {
 			return musicUtils.filters('3d');
 		case 'bassboost':
 			return musicUtils.filters('bassboost');
+		case 'karaoke':
+			return musicUtils.filters('karaoke');
 		case 'nightcore':
 			return musicUtils.filters('nightcore');
-		case 'pop':
-			return musicUtils.filters('pop');
 		case 'slowmo':
 			return musicUtils.filters('slowmo');
 		case 'soft':
@@ -33,12 +33,8 @@ module.exports = {
 			return musicUtils.filters('tv');
 		case 'treblebass':
 			return musicUtils.filters('treblebass');
-		case 'tremolo':
-			return musicUtils.filters('tremolo');
 		case 'vaporwave':
 			return musicUtils.filters('vaporwave');
-		case 'vibrate':
-			return musicUtils.filters('vibrate');
 		case 'vibrato':
 			return musicUtils.filters('vibrato');
 		case 'reset':

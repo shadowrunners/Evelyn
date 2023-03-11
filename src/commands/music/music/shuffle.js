@@ -22,7 +22,7 @@ module.exports = {
 
 		if (musicUtils.check(['voiceCheck', 'checkQueue'])) return;
 
-		await player.queue.shuffle();
+		player.queue.shuffle();
 
 		return interaction.editReply({
 			embeds: [embed.setDescription('🔹 | Shuffled.')],

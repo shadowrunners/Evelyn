@@ -21,7 +21,7 @@ module.exports = {
 		await interaction.deferReply();
 
 		if (musicUtils.check(['voiceCheck'])) return;
-		await player.pause(false);
+		player.pause(false);
 
 		return interaction.editReply({
 			embeds: [embed.setDescription('🔹 | Resumed.')],

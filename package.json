@@ -1,6 +1,6 @@
 {
 	"name": "evelyn",
-	"version": "5.0.0-beta2",
+	"version": "5.0.0-beta3",
 	"description": "A Discord Bot that puts you as its first priority with no paywalls to interrupt your supercharged experience.",
 	"main": "src/structures/index.js",
 	"scripts": {
@@ -8,19 +8,18 @@
 		"dev": "nodemon ./src/structures/index.js"
 	},
 	"dependencies": {
-		"@lustlabs/automata": "github:notscrappie/automata",
+		"@shadowrunners/automata": "github:shadowrunners/Automata",
 		"canvacord": "^5.4.8",
 		"chalk": "^4.1.2",
 		"discord-arts": "^0.4.0",
-		"discord-economy-super": "^1.7.4",
+		"discord-economy-super": "^1.7.5",
 		"discord-html-transcripts": "^3.1.3",
 		"discord-xp": "^1.1.16",
 		"discord.js": "^14.7.1",
-		"erela.js": "github:notscrappie/erela.js",
 		"genius-lyrics": "^4.4.3",
 		"glob": "^8.1.0",
 		"imdb-api": "^4.4.1",
-		"mongoose": "^6.10.0",
+		"mongoose": "^6.10.1",
 		"ms": "^2.1.3",
 		"node-cron": "^3.0.2",
 		"node-kitsu": "^1.1.1",
@@ -31,17 +30,17 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/t3amedge/evelyn.git"
+		"url": "git+https://github.com/shadowrunners/evelyn.git"
 	},
-	"author": "notscrappie",
+	"author": "Shadowrunners",
 	"license": "GPL-v3",
 	"bugs": {
-		"url": "https://github.com//t3amedge/evelyn/issues"
+		"url": "https://github.com//shadowrunners/evelyn/issues"
 	},
-	"homepage": "https://github.com/t3amedge/evelyn#readme",
+	"homepage": "https://github.com/shadowrunners/evelyn#readme",
 	"devDependencies": {
-		"eslint": "^8.34.0",
-		"nodemon": "^2.0.20",
+		"eslint": "^8.36.0",
+		"nodemon": "^2.0.21",
 		"prettier": "^2.8.4"
 	}
 }
