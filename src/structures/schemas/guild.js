@@ -6,45 +6,45 @@ module.exports = model(
 		id: String,
 
 		logs: {
-			enabled: false,
+			enabled: Boolean,
 			webhook: {
 				id: String,
 				token: String,
 			},
 		},
 		welcome: {
-			enabled: false,
+			enabled: Boolean,
 			channel: String,
 			embed: Object,
 		},
 		goodbye: {
-			enabled: false,
+			enabled: Boolean,
 			channel: String,
 			embed: Object,
 		},
 		blacklist: {
-			isBlacklisted: false,
+			isBlacklisted: Boolean,
 			reason: String,
 			time: String,
 		},
 		tickets: {
-			enabled: false,
+			enabled: Boolean,
 			embed: Object,
 			category: String,
 			transcriptChannel: String,
 			assistantRole: String,
 		},
 		levels: {
-			enabled: false,
+			enabled: Boolean,
 			channel: String,
 			message: String,
 		},
 		qotd: {
-			enabled: false,
+			enabled: Boolean,
 			channel: String,
 		},
 		confessions: {
-			enabled: false,
+			enabled: Boolean,
 			webhook: {
 				id: String,
 				token: String,
