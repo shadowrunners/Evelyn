@@ -9,33 +9,30 @@ async function loadCommands(client) {
 	const developerArray = [];
 
 	const files = await fileLoad('commands');
-	files.forEach((file) => {
+	for (const file of files) {
 		const command = require(file);
+		const { subCommand, developer, data } = command;
 
-		if (command.subCommand) {
-			return client.subCommands.set(command.subCommand, command);
-		}
+		if (subCommand) return client.subCommands.set(subCommand, command);
+		client.commands.set(data.name, command);
 
-		client.commands.set(command.data.name, command);
-
-		if (command.developer) developerArray.push(command.data.toJSON());
-		else commandsArray.push(command.data.toJSON());
+		if (developer) developerArray.push(data.toJSON());
+		else commandsArray.push(data.toJSON());
 
 		console.log(
 			magenta('Commands') +
 				' ' +
 				white('· Loaded') +
 				' ' +
-				green(command.data.name + '.js'),
+				green(data.name + '.js'),
 		);
-	});
+	}
 
-	client.application.commands.set(commandsArray);
-
+	await client.application.commands.set(commandsArray);
 	const developerGuild = client.guilds.cache.get(client.config.debug.devGuild);
-	developerGuild.commands.set(developerArray);
+	await developerGuild.commands.set(developerArray);
 
-	return console.log(
+	return console.info(
 		magenta('Discord API') +
 			' ' +
 			white('· Refreshed application commands for public and developer guilds.'),
