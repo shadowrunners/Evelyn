@@ -5,7 +5,7 @@ import { ModalSubmitInteraction, EmbedBuilder } from "discord.js";
 
 export const event: Event = {
     name: "interactionCreate",
-    execute(client: Evelyn, interaction: ModalSubmitInteraction) {
+    execute(interaction: ModalSubmitInteraction, client: Evelyn) {
         const { user, member } = interaction;
         if (!interaction.isModalSubmit()) return;
 

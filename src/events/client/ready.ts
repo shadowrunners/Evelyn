@@ -13,7 +13,6 @@ export const event: Event = {
 	name: "ready",
 	once: true,
 	execute(client: Evelyn) {
-		console.log("Ready event fired.")
 		loadCommands(client);
 
 		console.log(

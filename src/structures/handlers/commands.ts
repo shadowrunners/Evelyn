@@ -13,19 +13,17 @@ export async function loadCommands(client: Evelyn) {
 	const files = await fileLoad('commands');
 	for (const file of files) {
 		const commandFile = require(file);
-		console.log(commandFile)
 		const { command, subCommand, developer } = commandFile;
 
-		// if (subCommand) return client.subCommands.set(subCommand, command);
+		//if (subCommand) return client.subCommands.set(subCommand, command);
 		client.commands.set(command.data.name, command);
 
 		if (developer) developerArray.push(command.data.toJSON());
 		else commandsArray.push(command.data.toJSON());
 
-		console.log(magenta('Commands') + ' ' + white('· Loaded') + ' ' + green(command.default.data.name + '.js'));
+		console.log(magenta('Commands') + ' ' + white('· Loaded') + ' ' + green(command.data.name + '.ts'));
 	};
 
-	console.log(client.commands);
 	client.application.commands.set(commandsArray);
 
 	const developerGuild = client.guilds.cache.get(client.config.debug.devGuild);

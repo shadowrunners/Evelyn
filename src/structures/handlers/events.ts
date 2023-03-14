@@ -9,9 +9,7 @@ export async function loadEvents(client) {
 	files.forEach((file) => {
 		const eventFile = require(file);
 		const { event } = eventFile;
-		const execute = (...args) => event.execute(...args, client);
-
-		console.log(event);
+		const execute = (...args: any[]) => event.execute(...args, client);
 
 		client.events.set(event.name, execute);
 

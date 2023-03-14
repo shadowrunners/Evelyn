@@ -4,7 +4,7 @@ import { Evelyn } from "../structures/Evelyn";
 export interface Command {
     botPermissions?: [];
     developer?: boolean;
-    data: SlashCommandBuilder
+    data: SlashCommandBuilder;
     execute: (interaction: ChatInputCommandInteraction, client: Evelyn) => void;
 }
 
@@ -15,8 +15,8 @@ export interface Subcommand {
 
 export interface Event {
     name: string
-    once?: boolean;
-    execute: (client?: Evelyn, ...args: any[]) => void;
+    once?: boolean | false;
+    execute: (...args) => void
 }
 
 export interface Buttons {

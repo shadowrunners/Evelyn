@@ -11,11 +11,8 @@ import { Event } from '../../interfaces/interfaces';
 
 export const event: Event = {
 	name: "interactionCreate",
-	execute(client: Evelyn, interaction: ChatInputCommandInteraction) {
-		console.log(interaction.command)
-		if(interaction instanceof ChatInputCommandInteraction) console.log("Interaction is an instace of ChatInput!")
-		else console.log("It's not an instance of ChatInput!")
-		if (!interaction?.isChatInputCommand()) return;
+	execute(interaction: ChatInputCommandInteraction, client: Evelyn) {
+		if (!interaction.isChatInputCommand()) return;
 		const { options, commandName } = interaction;
 
 		const embed = new EmbedBuilder().setColor('Blurple');
