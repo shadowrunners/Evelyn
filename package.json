@@ -28,6 +28,15 @@
 		"statcord.js": "^3.4.3",
 		"superagent": "^8.0.9"
 	},
+	"devDependencies": {
+		"@types/superagent": "^4.1.16",
+		"@typescript-eslint/eslint-plugin": "^5.55.0",
+		"@typescript-eslint/parser": "^5.55.0",
+		"eslint": "^8.36.0",
+		"nodemon": "^2.0.21",
+		"prettier": "^2.8.4",
+		"typescript": "^4.9.5"
+	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/shadowrunners/evelyn.git"
@@ -37,14 +46,5 @@
 	"bugs": {
 		"url": "https://github.com//shadowrunners/evelyn/issues"
 	},
-	"homepage": "https://github.com/shadowrunners/evelyn#readme",
-	"devDependencies": {
-		"@types/superagent": "^4.1.16",
-		"@typescript-eslint/eslint-plugin": "^5.55.0",
-		"@typescript-eslint/parser": "^5.55.0",
-		"eslint": "^8.36.0",
-		"nodemon": "^2.0.21",
-		"prettier": "^2.8.4",
-		"typescript": "^4.9.5"
-	}
+	"homepage": "https://github.com/shadowrunners/evelyn#readme"
 }
