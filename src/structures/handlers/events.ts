@@ -7,20 +7,19 @@ export async function loadEvents(client) {
 
 	const files = await fileLoad('events');
 	files.forEach((file) => {
-		const eventFile = require(file);
-		const { event } = eventFile;
-		const execute = (...args: any[]) => event.execute(...args, client);
+		const event = require(file);
+		const execute = (...args: any[]) => event.default.execute(...args, client);
 
-		client.events.set(event.name, execute);
+		client.events.set(event.default.name, execute);
 
 		if (event.rest) {
-			if (event.once) client.rest.once(event.name, execute);
-			else client.rest.on(event.name, execute);
+			if (event.once) client.rest.once(event.default.name, execute);
+			else client.rest.on(event.default.name, execute);
 		}
 		else {
 			// eslint-disable-next-line no-lonely-if
-			if (event.once) client.once(event.name, execute);
-			else client.on(event.name, execute);
+			if (event.once) client.once(event.default.name, execute);
+			else client.on(event.default.name, execute);
 		}
 
 		return console.log(
@@ -28,7 +27,7 @@ export async function loadEvents(client) {
 				' ' +
 				white('· Loaded') +
 				' ' +
-				green(event.name + '.ts'),
+				green(event.default.name + '.ts'),
 		);
 	});
 }

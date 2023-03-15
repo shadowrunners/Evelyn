@@ -9,10 +9,10 @@ import {
 import { connection } from 'mongoose';
 //import Util = require('../../modules/Utils/utils.js');
 import { cpus, platform } from 'os';
-import { Evelyn } from '../../structures/Evelyn';
 import { Command } from '../../interfaces/interfaces';
+import { Evelyn } from '../../structures/Evelyn';
 
-export const command: Command = {
+const command: Command = {
 	//botPermissions: [SendMessages],
 	developer: true,
 	data: new SlashCommandBuilder()
@@ -82,4 +82,6 @@ export const command: Command = {
 			],
 		});
 	},
-};
+}
+
+export default command;

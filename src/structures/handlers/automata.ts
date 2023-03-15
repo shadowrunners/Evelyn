@@ -4,13 +4,13 @@ import { fileLoad } from '../../functions/fileLoader';
 
 /** Loads music related events. */
 export async function loadMusic(client?: Evelyn) {
-	const files = await fileLoad('events/automata');
+	const files = await fileLoad('Events/Automata');
 	for (const file of files) {
 		const event = require(file);
-		const execute = (...args: any[]) => event.execute(...args, client);
+		const execute = (...args: any[]) => event.default.execute(...args, client);
 
-		client.manager.on(event.name, execute);
+		client.manager.on(event.default.name, execute);
 
-		return console.log(`${magenta('Music')} ${white('· Loaded')} ${green(`${event.name}.js`)}`);
+		return console.log(`${magenta('Music')} ${white('· Loaded')} ${green(`${event.default.name}.ts`)}`);
 	};
 }

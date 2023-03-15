@@ -30,13 +30,13 @@ export class Evelyn extends Client {
 	public config: botConfig;
 	public commands: Collection<string, Command>;
 	public subCommands: Collection<string, Subcommand>;
-	public events: Map<string, Event>;
+	public events: Collection<string, Event>;
 	public buttons: Collection<string, Buttons>;
 	public modals: Collection<string, Modals>;
 	public economy: Economy<boolean>;
 	public statcord: Statcord.Client;
 	public manager: Manager;
-	public client: any;
+	public client: Client;
 
 	constructor() {
 		super({

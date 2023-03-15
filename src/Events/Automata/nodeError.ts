@@ -3,10 +3,12 @@ import { Node } from '@shadowrunners/automata';
 import { magenta, white } from 'chalk';
 
 const event: Event = {
-	name: 'nodeConnect',
-	execute(node: Node) {
+	name: 'nodeError',
+	execute(node: Node, error: Error) {
 		console.log(
-			`${magenta('Lavalink')} ${white(`· Connected to node ${node.name}.`)}`,
+			`${magenta('Lavalink')} ${white(
+				`· Node "${node.name}" has encountered an error: ${error.message}.`,
+			)}`,
 		);
 	},
 };

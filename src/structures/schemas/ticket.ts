@@ -1,6 +1,6 @@
-const { Schema, model } = require('mongoose');
+import { model, Schema } from 'mongoose';
 
-module.exports = model(
+export const Tickets = model(
 	'Tickets',
 	new Schema({
 		id: String,
@@ -8,5 +8,5 @@ module.exports = model(
 		closed: Boolean,
 		closer: String,
 		creatorId: String,
-	}),
+	})
 );

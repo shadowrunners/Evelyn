@@ -4,25 +4,24 @@ import { fileLoad } from '../../functions/fileLoader';
 
 /** Loads the commands. */
 export async function loadCommands(client: Evelyn) {
-	client.commands.clear();
-	client.subCommands.clear();
-
 	const commandsArray = [];
 	const developerArray = [];
 
-	const files = await fileLoad('commands');
-	for (const file of files) {
-		const commandFile = require(file);
-		const { command, subCommand, developer } = commandFile;
+	const files = await fileLoad('Commands');
+	files.forEach((file) => {
+		const command = require(file);
 
-		//if (subCommand) return client.subCommands.set(subCommand, command);
-		client.commands.set(command.data.name, command);
+		if (command.default.subCommand) return client.subCommands.set(command.default.subCommand, command.default);
+		client.commands.set(command.default.data.name, command);
 
-		if (developer) developerArray.push(command.data.toJSON());
-		else commandsArray.push(command.data.toJSON());
+		if (command.developer) developerArray.push(command.default.data.toJSON());
+		else commandsArray.push(command.default.data.toJSON());
 
-		console.log(magenta('Commands') + ' ' + white('· Loaded') + ' ' + green(command.data.name + '.ts'));
-	};
+		console.log(magenta('Commands') + ' ' + white('· Loaded') + ' ' + green(command.default.data.name + '.ts'));
+	});
+
+	console.log(client.subCommands)
+
 
 	client.application.commands.set(commandsArray);
 

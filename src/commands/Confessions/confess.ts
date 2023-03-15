@@ -9,11 +9,11 @@ import {
 import { Command } from '../../interfaces/interfaces';
 const { Paragraph } = TextInputStyle;
 
-export const command: Command = {
+const command: Command = {
 	data: new SlashCommandBuilder()
 	.setName('confess')
 	.setDescription('Send a confession.'),
-	async execute(interaction, client) {
+	async execute(interaction: ChatInputCommandInteraction) {
 		const modal = new ModalBuilder()
 			.setCustomId('confessionModal')
 			.setTitle('Send a confession')
@@ -30,5 +30,7 @@ export const command: Command = {
 		await interaction.showModal(modal);
 	},
 }
+
+export default command;
 
 

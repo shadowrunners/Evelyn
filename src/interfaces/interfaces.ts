@@ -1,16 +1,19 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder, ModalSubmitInteraction, PermissionFlags } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder, ModalSubmitInteraction, PermissionFlags, SlashCommandSubcommandsOnlyBuilder } from "discord.js";
 import { Evelyn } from "../structures/Evelyn";
 
 export interface Command {
-    botPermissions?: [];
+    botPermissions?: [PermissionFlags];
     developer?: boolean;
-    data: SlashCommandBuilder;
-    execute: (interaction: ChatInputCommandInteraction, client: Evelyn) => void;
+    data: 	
+        | SlashCommandBuilder
+        | SlashCommandSubcommandsOnlyBuilder
+        | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
+    execute?: (interaction: ChatInputCommandInteraction, client: Evelyn) => void;
 }
 
 export interface Subcommand {
     subCommand: string;
-    execute: () => void;
+    execute?: (...args: any) => void;
 }
 
 export interface Event {

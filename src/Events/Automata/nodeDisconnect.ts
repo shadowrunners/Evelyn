@@ -3,10 +3,12 @@ import { Node } from '@shadowrunners/automata';
 import { magenta, white } from 'chalk';
 
 const event: Event = {
-	name: 'nodeConnect',
+	name: 'nodeDisconnect',
 	execute(node: Node) {
 		console.log(
-			`${magenta('Lavalink')} ${white(`· Connected to node ${node.name}.`)}`,
+			`${magenta('Lavalink')} ${white(
+				`· Lost connection to node ${node.name}.`,
+			)}`,
 		);
 	},
 };
