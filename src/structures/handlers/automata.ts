@@ -1,16 +1,21 @@
-import { Evelyn } from "../Evelyn";
-import { magenta, white, green } from 'chalk';
-import { fileLoad } from '../../functions/fileLoader';
+import { Evelyn } from '../Evelyn.js';
+import { magenta, white, green } from '@colors/colors';
+import { fileLoad } from '../../functions/fileLoader.js';
 
 /** Loads music related events. */
 export async function loadMusic(client?: Evelyn) {
 	const files = await fileLoad('Events/Automata');
 	for (const file of files) {
+		// eslint-disable-next-line @typescript-eslint/no-var-requires
 		const event = require(file);
 		const execute = (...args: any[]) => event.default.execute(...args, client);
 
 		client.manager.on(event.default.name, execute);
 
-		return console.log(`${magenta('Music')} ${white('· Loaded')} ${green(`${event.default.name}.ts`)}`);
-	};
+		return console.log(
+			`${magenta('Music')} ${white('· Loaded')} ${green(
+				`${event.default.name}.ts`,
+			)}`,
+		);
+	}
 }

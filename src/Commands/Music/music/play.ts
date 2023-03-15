@@ -1,9 +1,14 @@
-import { EmbedBuilder, ChatInputCommandInteraction, GuildMember } from 'discord.js';
-import { Evelyn } from '../../../structures/Evelyn';
-import { Subcommand } from '../../../interfaces/interfaces';
+import {
+	EmbedBuilder,
+	ChatInputCommandInteraction,
+	GuildMember,
+} from 'discord.js';
+import { Evelyn } from '../../../structures/Evelyn.js';
+import { Subcommand } from '../../../interfaces/interfaces.js';
+import { MusicUtils } from '../../../Modules/Utils/musicUtils.js';
 
 const subCommand: Subcommand = {
-	subCommand: "music.play",
+	subCommand: 'music.play',
 	execute: async (interaction: ChatInputCommandInteraction, client: Evelyn) => {
 		const { guild, options, channelId, user } = interaction;
 		const member = interaction.member as GuildMember;
@@ -30,8 +35,8 @@ const subCommand: Subcommand = {
 			deaf: true,
 		});
 
-		//const musicUtils = new MusicUtils(interaction, player);
-		//if (musicUtils.checkQuery(query)) return;
+		const musicUtils = new MusicUtils(interaction, player);
+		if (musicUtils.checkQuery(query)) return;
 
 		switch (res.loadType) {
 		case 'PLAYLIST_LOADED':

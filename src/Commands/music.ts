@@ -1,9 +1,9 @@
 import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
-import { Command } from '../interfaces/interfaces';
+import { Command } from '../interfaces/interfaces.js';
 const { SendMessages, EmbedLinks, Connect, Speak } = PermissionFlagsBits;
 
 const command: Command = {
-	//botPermissions: [SendMessages, EmbedLinks, Connect, Speak],
+	// botPermissions: [SendMessages, EmbedLinks, Connect, Speak],
 	data: new SlashCommandBuilder()
 		.setName('music')
 		.setDescription('A complete music system.')
@@ -15,8 +15,8 @@ const command: Command = {
 					option
 						.setName('query')
 						.setDescription('Provide the name of the song or URL.')
-						.setRequired(true)
-				)
+						.setRequired(true),
+				),
 		)
 		.addSubcommand((options) =>
 			options
@@ -26,8 +26,8 @@ const command: Command = {
 					option
 						.setName('percent')
 						.setDescription('Provide the volume.')
-						.setRequired(true)
-				)
+						.setRequired(true),
+				),
 		)
 		.addSubcommand((options) =>
 			options
@@ -37,8 +37,8 @@ const command: Command = {
 					option
 						.setName('time')
 						.setDescription('Provide the timestamp.')
-						.setRequired(true)
-				)
+						.setRequired(true),
+				),
 		)
 		.addSubcommand((options) =>
 			options
@@ -52,50 +52,50 @@ const command: Command = {
 						.addChoices(
 							{ name: '🔹 | Queue', value: 'queue' },
 							{ name: '🔹 | Song', value: 'song' },
-							{ name: '🔹 | Off', value: 'off' }
-						)
-				)
+							{ name: '🔹 | Off', value: 'off' },
+						),
+				),
 		)
 		.addSubcommand((options) =>
 			options
 				.setName('skip')
-				.setDescription('Skips the currently playing song.')
+				.setDescription('Skips the currently playing song.'),
 		)
 		.addSubcommand((options) =>
 			options
 				.setName('pause')
-				.setDescription('Pauses the currently playing song.')
+				.setDescription('Pauses the currently playing song.'),
 		)
 		.addSubcommand((options) =>
 			options
 				.setName('resume')
-				.setDescription('Resumes the currently playing song.')
+				.setDescription('Resumes the currently playing song.'),
 		)
 		.addSubcommand((options) =>
 			options
 				.setName('stop')
 				.setDescription(
-					'Stops the currently playing songs and destroys the player.'
-				)
+					'Stops the currently playing songs and destroys the player.',
+				),
 		)
 		.addSubcommand((options) =>
 			options
 				.setName('lyrics')
-				.setDescription('Shows you the lyrics of the currently playing song.')
+				.setDescription('Shows you the lyrics of the currently playing song.'),
 		)
 		.addSubcommand((options) =>
-			options.setName('shuffle').setDescription('Shuffles the queue.')
+			options.setName('shuffle').setDescription('Shuffles the queue.'),
 		)
 		.addSubcommand((options) =>
 			options
 				.setName('nowplaying')
-				.setDescription('Shows you the currently playing song.')
+				.setDescription('Shows you the currently playing song.'),
 		)
 		.addSubcommand((options) =>
-			options.setName('queue').setDescription('Shows you the queue.')
+			options.setName('queue').setDescription('Shows you the queue.'),
 		)
 		.addSubcommand((options) =>
-			options.setName('clear').setDescription('Clears the queue.')
+			options.setName('clear').setDescription('Clears the queue.'),
 		)
 		.addSubcommand((options) =>
 			options
@@ -117,9 +117,9 @@ const command: Command = {
 							{ name: '🔹 | Treble Bass', value: 'treblebass' },
 							{ name: '🔹 | Vaporwave', value: 'vaporwave' },
 							{ name: '🔹 | Vibrato', value: 'vibrato' },
-							{ name: '🔹 | Reset', value: 'reset' }
-						)
-				)
+							{ name: '🔹 | Reset', value: 'reset' },
+						),
+				),
 		),
 };
 

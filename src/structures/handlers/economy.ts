@@ -1,11 +1,12 @@
-import { Evelyn } from '../Evelyn';
-import { magenta, green, white } from 'chalk';
-import { fileLoad } from '../../functions/fileLoader';
+import { Evelyn } from '../Evelyn.js';
+import { magenta, green, white } from '@colors/colors';
+import { fileLoad } from '../../functions/fileLoader.js';
 
 /** Loads economy events. */
 export async function loadEco(client: Evelyn) {
 	const files = await fileLoad('events/economy');
 	for (const file of files) {
+		// eslint-disable-next-line @typescript-eslint/no-var-requires
 		const event = require(file);
 		const execute = (...args: any[]) => event.execute(...args, client);
 
@@ -16,7 +17,7 @@ export async function loadEco(client: Evelyn) {
 				' ' +
 				white('· Loaded') +
 				' ' +
-				green(event.name + '.js')
+				green(event.name + '.js'),
 		);
-	};
+	}
 }

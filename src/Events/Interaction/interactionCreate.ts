@@ -1,11 +1,11 @@
-import { Event } from '../../interfaces/interfaces';
+import { Event } from '../../interfaces/interfaces.js';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import { Evelyn } from '../../structures/Evelyn';
-//import importUtils from '../../modules/Utils/utils.js';
-//import { isBlacklisted } from '../../functions/isBlacklisted.js';
+import { Evelyn } from '../../structures/Evelyn.js';
+// import importUtils from '../../modules/Utils/utils.js';
+// import { isBlacklisted } from '../../functions/isBlacklisted.js';
 
 const event: Event = {
-	name: "interactionCreate",
+	name: 'interactionCreate',
 	execute(interaction: ChatInputCommandInteraction, client: Evelyn) {
 		if (!interaction.isChatInputCommand()) return;
 		const { options, commandName } = interaction;
@@ -23,27 +23,30 @@ const event: Event = {
 				ephemeral: true,
 			});
 
-		//if (command.botPermissions) {
-			//if (utils.check4Perms(command)) return;
-		//}
+		// if (command.botPermissions) {
+		// if (utils.check4Perms(command)) return;
+		// }
 
-		const subCommand = options.getSubcommand(false); 
+		const subCommand = options.getSubcommand(false);
 		console.log(subCommand);
 		if (subCommand) {
-			const subCommandFile = client.subCommands.get(`${commandName}.${subCommand}`);
+			const subCommandFile = client.subCommands.get(
+				`${commandName}.${subCommand}`,
+			);
 
 			console.log(subCommandFile);
 			console.log(commandName);
 			console.log(subCommand);
 
-			//if (!subCommandFile)
+			// if (!subCommandFile)
 			//	return interaction.reply({
 			//		embeds: [embed.setDescription('This subcommand is outdated.')],
 			//		ephemeral: true,
 			//	});
 
 			subCommandFile.execute(interaction, client);
-		} else command.execute(interaction, client);
+		}
+		else command.execute(interaction, client);
 	},
 };
 

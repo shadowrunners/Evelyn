@@ -6,13 +6,13 @@ import {
 	TextInputStyle,
 	ChatInputCommandInteraction,
 } from 'discord.js';
-import { Command } from '../../interfaces/interfaces';
+import { Command } from '../../interfaces/interfaces.js';
 const { Paragraph } = TextInputStyle;
 
 const command: Command = {
 	data: new SlashCommandBuilder()
-	.setName('confess')
-	.setDescription('Send a confession.'),
+		.setName('confess')
+		.setDescription('Send a confession.'),
 	async execute(interaction: ChatInputCommandInteraction) {
 		const modal = new ModalBuilder()
 			.setCustomId('confessionModal')
@@ -29,8 +29,6 @@ const command: Command = {
 			);
 		await interaction.showModal(modal);
 	},
-}
+};
 
 export default command;
-
-

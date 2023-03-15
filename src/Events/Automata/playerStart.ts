@@ -6,15 +6,16 @@ import {
 	TextChannel,
 } from 'discord.js';
 import { Player, Track } from '@shadowrunners/automata';
-import pms from 'pretty-ms';
-import { Evelyn } from '../../structures/Evelyn';
-import { Event } from '../../interfaces/interfaces';
+import { Util } from '../../Modules/Utils/utils.js';
+import { Evelyn } from '../../structures/Evelyn.js';
+import { Event } from '../../interfaces/interfaces.js';
 
 const { Primary } = ButtonStyle;
 
 const event: Event = {
 	name: 'playerStart',
 	async execute(player: Player, track: Track, client: Evelyn) {
+		const utils = new Util();
 		const buttonRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
 			new ButtonBuilder().setCustomId('pause').setLabel('⏯️').setStyle(Primary),
 			new ButtonBuilder().setCustomId('skip').setLabel('⏭️').setStyle(Primary),
@@ -39,12 +40,18 @@ const event: Event = {
 					value: `${track.info.requester}`,
 					inline: true,
 				},
-				{ name: 'Duration', value: pms(track.info.length), inline: true },
+				{
+					name: 'Duration',
+					value: utils.formatTime(track.info.length),
+					inline: true,
+				},
 			)
 			.setThumbnail(track.info.image)
 			.setTimestamp();
 
-		const channel = client.channels.cache.get(player?.textChannel) as TextChannel;
+		const channel = client.channels.cache.get(
+			player?.textChannel,
+		) as TextChannel;
 		await channel.send({ embeds: [nowPlaying], components: [buttonRow] });
 	},
 };

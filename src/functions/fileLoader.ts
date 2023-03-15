@@ -2,7 +2,7 @@ import { glob } from 'glob';
 import { join, resolve, extname } from 'path';
 
 /** Deletes the cached file. */
-async function deleteCachedFile(file) {
+function deleteCachedFile(file: string) {
 	const filePath = resolve(file);
 	if (require.cache[filePath]) delete require.cache[filePath];
 }

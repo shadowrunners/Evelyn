@@ -1,9 +1,15 @@
 {
-	"extends": "eslint:recommended",
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:@typescript-eslint/eslint-recommended"
+	],
 	"env": {
 		"node": true,
 		"es6": true
 	},
+	"parser": "@typescript-eslint/parser",
+	"plugins": ["@typescript-eslint/eslint-plugin"],
 	"parserOptions": {
 		"ecmaVersion": 2021
 	},

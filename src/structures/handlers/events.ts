@@ -1,5 +1,5 @@
-import { magenta, green, white } from 'chalk';
-import { fileLoad } from '../../functions/fileLoader';
+import { magenta, green, white } from '@colors/colors';
+import { fileLoad } from '../../functions/fileLoader.js';
 
 /** Loads all of the events. */
 export async function loadEvents(client) {
@@ -7,6 +7,7 @@ export async function loadEvents(client) {
 
 	const files = await fileLoad('events');
 	files.forEach((file) => {
+		// eslint-disable-next-line @typescript-eslint/no-var-requires
 		const event = require(file);
 		const execute = (...args: any[]) => event.default.execute(...args, client);
 

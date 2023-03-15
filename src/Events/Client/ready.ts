@@ -1,16 +1,16 @@
 import { ActivityType } from 'discord.js';
-import { magenta, white, green, red } from 'chalk';
+import { magenta, white, green, red } from '@colors/colors';
 import { loadCommands } from '../../structures/handlers/commands.js';
-//import { check4Giveaways } from '../../functions/check4Giveaways.js';
-///import { check4Reminders } from '../../functions/check4Reminders.js';
-//import { check4Lockdowns } from '../../functions/check4Lockdowns.js';
+// import { check4Giveaways } from '../../functions/check4Giveaways.js';
+// /import { check4Reminders } from '../../functions/check4Reminders.js';
+// import { check4Lockdowns } from '../../functions/check4Lockdowns.js';
 import { set } from 'mongoose';
 import DXP from 'discord-xp';
-import { Evelyn } from '../../structures/Evelyn';
-import { Event } from '../../interfaces/interfaces';
+import { Evelyn } from '../../structures/Evelyn.js';
+import { Event } from '../../interfaces/interfaces.js';
 
 const event: Event = {
-	name: "ready",
+	name: 'ready',
 	once: true,
 	execute(client: Evelyn) {
 		loadCommands(client);
@@ -54,11 +54,11 @@ const event: Event = {
 				console.log(err);
 			});
 
-		//check4Giveaways(client);
-		//check4Reminders(client);
-		//check4Lockdowns(client);
-		DXP.setURL(client.config.database);
-	}
-}
+		// check4Giveaways(client);
+		// check4Reminders(client);
+		// check4Lockdowns(client);
+		// DXP.setURL(client.config.database);
+	},
+};
 
 export default event;

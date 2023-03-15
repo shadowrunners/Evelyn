@@ -1,9 +1,16 @@
 import { Client, Collection, GatewayIntentBits, Partials } from 'discord.js';
 import Statcord from 'statcord.js';
-import Economy from 'discord-economy-super/mongodb';
+import Economy from 'discord-economy-super/mongodb/index.js';
 import { Manager } from '@shadowrunners/automata';
 
-import { botConfig, Command, Subcommand, Event, Buttons, Modals } from "../interfaces/interfaces"
+import {
+	botConfig,
+	Command,
+	Subcommand,
+	Event,
+	Buttons,
+	Modals,
+} from '../interfaces/interfaces.js';
 
 import { loadEco } from './handlers/economy.js';
 import { loadEvents } from './handlers/events.js';
@@ -11,7 +18,7 @@ import { loadStats } from './handlers/statcord.js';
 import { loadButtons } from './handlers/buttons.js';
 import { loadMusic } from './handlers/automata.js';
 import { loadModals } from './handlers/modals.js';
-//import { crashReporter } from '../functions/crashReport';
+// import { crashReporter } from '../functions/crashReport';
 
 const {
 	Guilds,

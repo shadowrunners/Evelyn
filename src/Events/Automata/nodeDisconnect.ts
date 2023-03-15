@@ -1,6 +1,6 @@
-import { Event } from '../../interfaces/interfaces';
+import { Event } from '../../interfaces/interfaces.js';
 import { Node } from '@shadowrunners/automata';
-import { magenta, white } from 'chalk';
+import { magenta, white } from '@colors/colors';
 
 const event: Event = {
 	name: 'nodeDisconnect',
