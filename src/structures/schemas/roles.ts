@@ -1,10 +1,10 @@
 import { model, Schema } from 'mongoose';
 
 export const RRoles = model(
-	'Tickets',
+	'Roles',
 	new Schema({
 		panelName: String,
 		id: String,
 		roleArray: Array,
-	})
+	}),
 );

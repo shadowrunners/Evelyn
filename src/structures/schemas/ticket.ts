@@ -8,5 +8,5 @@ export const Tickets = model(
 		closed: Boolean,
 		closer: String,
 		creatorId: String,
-	})
+	}),
 );

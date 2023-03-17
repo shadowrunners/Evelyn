@@ -10,5 +10,5 @@ export const Reminders = model(
 		reminder: String,
 		scheduledTime: String,
 		hasBeenReminded: Boolean,
-	})
+	}),
 );

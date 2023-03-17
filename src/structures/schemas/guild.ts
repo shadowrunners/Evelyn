@@ -50,5 +50,5 @@ export const GuildDB = model(
 				token: String,
 			},
 		},
-	})
+	}),
 );

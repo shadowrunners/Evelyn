@@ -6,5 +6,5 @@ export const LockdownDB = model(
 		guildId: String,
 		channelId: String,
 		timeLocked: String,
-	})
+	}),
 );

@@ -8,5 +8,5 @@ export const Playlists = model(
 		name: String,
 		userID: String,
 		created: Number,
-	})
+	}),
 );
