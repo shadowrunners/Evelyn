@@ -30,7 +30,7 @@ export class MusicUtils {
 	}
 
 	/** Handles all checks regarding voice, queues and currently playing songs. */
-	public check(checkTypes: []) {
+	public check(checkTypes: string[]) {
 		const { member, guild } = this.interaction;
 		const serverMember = member as GuildMember;
 		const yourVC = serverMember.voice.channel as VoiceChannel;

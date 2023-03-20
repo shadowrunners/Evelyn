@@ -15,13 +15,15 @@ const event: Event = {
 	execute(client: Evelyn) {
 		loadCommands(client);
 
-		console.log(
+		const { user, config, statcord, manager } = client;
+
+		console.info(
 			`${magenta('Discord API')} ${white('· Logged in as')} ${green(
 				`${client.user.tag}`,
 			)}`,
 		);
 
-		client.user.setPresence({
+		user.setPresence({
 			activities: [
 				{
 					name: 'Floating in the Cyberspace | @me for info',
@@ -30,7 +32,7 @@ const event: Event = {
 			],
 		});
 
-		if (!client.config.database) {
+		if (!config.database) {
 			return console.error(
 				`${magenta('Evelyn Notification')} ${white('·')} ${red(
 					'Couldn\'t connect to database, please check your config.json file.',
@@ -38,13 +40,13 @@ const event: Event = {
 			);
 		}
 
-		client.statcord.autopost();
-		client.manager.init(client);
+		statcord.autopost();
+		manager.init(client);
 
 		set('strictQuery', true)
-			.connect(client.config.database)
+			.connect(config.database)
 			.then(() => {
-				console.log(
+				console.info(
 					`${magenta('Database')} ${white('·')} ${green(
 						`${client.user.username}`,
 					)} ${white('has successfully connected to the database.')}`,
@@ -57,7 +59,7 @@ const event: Event = {
 		// check4Giveaways(client);
 		// check4Reminders(client);
 		// check4Lockdowns(client);
-		// DXP.setURL(client.config.database);
+		DXP.setURL(client.config.database);
 	},
 };
 
