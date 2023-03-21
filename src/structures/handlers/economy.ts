@@ -7,7 +7,7 @@ export async function loadEco(client: Evelyn) {
 	const files = await fileLoad('events/economy');
 	for (const file of files) {
 		// eslint-disable-next-line @typescript-eslint/no-var-requires
-		const event = require(file);
+		const event = require(file).default;
 		const execute = (...args: any[]) => event.execute(...args, client);
 
 		client.economy.on(event.name, execute);

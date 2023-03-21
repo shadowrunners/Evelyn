@@ -1,34 +1,33 @@
 import { magenta, green, white } from '@colors/colors';
 import { fileLoad } from '../../functions/fileLoader.js';
+import { Event } from '../../interfaces/interfaces.js';
+import { Evelyn } from '../Evelyn.js';
 
 /** Loads all of the events. */
-export async function loadEvents(client) {
-	await client.events.clear();
-
+export async function loadEvents(client: Evelyn) {
 	const files = await fileLoad('events');
-	files.forEach((file) => {
+	for (const file of files) {
 		// eslint-disable-next-line @typescript-eslint/no-var-requires
-		const event = require(file);
-		const execute = (...args: any[]) => event.default.execute(...args, client);
-
-		client.events.set(event.default.name, execute);
+		const event: Event = require(file).default;
+		console.log(event);
+		const execute = (...args: any[]) => event.execute(...args, client);
 
 		if (event.rest) {
-			if (event.once) client.rest.once(event.default.name, execute);
-			else client.rest.on(event.default.name, execute);
+			if (event.once) client.rest.once(event.name, execute);
+			else client.rest.on(event.name, execute);
 		}
 		else {
 			// eslint-disable-next-line no-lonely-if
-			if (event.once) client.once(event.default.name, execute);
-			else client.on(event.default.name, execute);
+			if (event.once) client.once(event.name, execute);
+			else client.on(event.name, execute);
 		}
 
-		return console.log(
+		console.log(
 			magenta('Events') +
 				' ' +
 				white('· Loaded') +
 				' ' +
-				green(event.default.name + '.ts'),
+				green(event.name + '.ts'),
 		);
-	});
+	}
 }

@@ -7,15 +7,13 @@ export async function loadMusic(client?: Evelyn) {
 	const files = await fileLoad('Events/Automata');
 	for (const file of files) {
 		// eslint-disable-next-line @typescript-eslint/no-var-requires
-		const event = require(file);
-		const execute = (...args: any[]) => event.default.execute(...args, client);
+		const event = require(file).default;
+		const execute = (...args: any[]) => event.execute(...args, client);
 
-		client.manager.on(event.default.name, execute);
+		client.manager.on(event.name, execute);
 
 		return console.log(
-			`${magenta('Music')} ${white('· Loaded')} ${green(
-				`${event.default.name}.ts`,
-			)}`,
+			`${magenta('Music')} ${white('· Loaded')} ${green(`${event.name}.ts`)}`,
 		);
 	}
 }

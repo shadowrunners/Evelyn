@@ -7,7 +7,7 @@ export async function loadButtons(client: Evelyn) {
 	const files = await fileLoad('buttons');
 	for (const file of files) {
 		// eslint-disable-next-line @typescript-eslint/no-var-requires
-		const button = require(file);
+		const button = require(file).default;
 		if (!button.id) return;
 
 		client.buttons.set(button.id, button);
