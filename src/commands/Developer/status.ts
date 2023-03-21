@@ -1,16 +1,13 @@
 import {
-	// eslint-disable-next-line no-unused-vars
-	Client,
 	SlashCommandBuilder,
-	// eslint-disable-next-line no-unused-vars
 	ChatInputCommandInteraction,
 	EmbedBuilder,
 } from 'discord.js';
 import { connection } from 'mongoose';
-// import Util = require('../../modules/Utils/utils.js');
+import { Util } from '../../Modules/Utils/utils.js';
 import { cpus, platform } from 'os';
-import { Command } from '../../interfaces/interfaces.js';
-import { Evelyn } from '../../structures/Evelyn.js';
+import { Command } from '../../Interfaces/interfaces.js';
+import { Evelyn } from '../../Structures/Evelyn.js';
 
 const command: Command = {
 	// botPermissions: [SendMessages],
@@ -20,7 +17,7 @@ const command: Command = {
 		.setDescription('Shows the bot\'s status.'),
 	async execute(interaction: ChatInputCommandInteraction, client: Evelyn) {
 		const { application, ws, user, guilds, readyAt } = client;
-		// const util = new Util(interaction);
+		const util = new Util(interaction);
 
 		// const uptime = Math.floor(readyAt / 1000);
 		const model = cpus()[0].model;
@@ -47,21 +44,21 @@ const command: Command = {
 						//	value: `<t:${uptime}:R>`,
 						//	inline: true,
 						// },
-						// {
-						//	name: '**Database**',
-						//	value: `${util.switchTo(connection.readyState)}`,
-						//	inline: true,
-						// },
+						{
+							name: '**Database**',
+							value: `${util.switchTo(connection.readyState)}`,
+							inline: true,
+						},
 						{
 							name: '**Connected to**',
 							value: `${guilds.cache.size} servers`,
 							inline: true,
 						},
-						// {
-						//	name: '**Active since**',
-						//	value: `<t:${parseInt(user.createdTimestamp / 1000)}:R>`,
-						//	inline: true,
-						// },
+						{
+							name: '**Active since**',
+							value: `<t:${user.createdTimestamp / 1000}:R>`,
+							inline: true,
+						},
 						{
 							name: '**Owner**',
 							value: `${application.owner || 'None'}`,
