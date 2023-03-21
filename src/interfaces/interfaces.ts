@@ -2,14 +2,14 @@ import {
 	ChatInputCommandInteraction,
 	SlashCommandBuilder,
 	ModalSubmitInteraction,
-	PermissionFlags,
+	PermissionFlagsBits,
 	SlashCommandSubcommandsOnlyBuilder,
 } from 'discord.js';
 import { Evelyn } from '../structures/Evelyn.js';
 
 export interface Command {
-	botPermissions?: [PermissionFlags];
-	developer?: boolean;
+	// botPermissions?: [typeof PermissionFlagsBits];
+	developer?: boolean | false;
 	data:
 		| SlashCommandBuilder
 		| SlashCommandSubcommandsOnlyBuilder
@@ -25,7 +25,11 @@ export interface Subcommand {
 export interface Event {
 	name: string;
 	once?: boolean | false;
-	execute: (...args: any) => void;
+	rest?: {
+		once?: boolean | false;
+		rest?: boolean | false;
+	};
+	execute: (...args: any[]) => void;
 }
 
 export interface Buttons {
@@ -35,7 +39,7 @@ export interface Buttons {
 
 export interface Modals {
 	id: string;
-	permission?: PermissionFlags;
+	// permission?: PermissionFlags;
 	developer?: string;
 	execute: (interaction: ModalSubmitInteraction, client: Evelyn) => void;
 }
