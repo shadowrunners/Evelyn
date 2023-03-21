@@ -7,6 +7,7 @@ export const GuildDB = model(
 
 		logs: {
 			enabled: Boolean,
+			channel: String,
 			webhook: {
 				id: String,
 				token: String,
@@ -25,7 +26,7 @@ export const GuildDB = model(
 		blacklist: {
 			isBlacklisted: Boolean,
 			reason: String,
-			time: String,
+			time: Number,
 		},
 		tickets: {
 			enabled: Boolean,
@@ -45,6 +46,7 @@ export const GuildDB = model(
 		},
 		confessions: {
 			enabled: Boolean,
+			channel: String,
 			webhook: {
 				id: String,
 				token: String,

@@ -8,7 +8,7 @@ export const Reminders = model(
 		messageId: String,
 		userId: String,
 		reminder: String,
-		scheduledTime: String,
+		scheduledTime: Number,
 		hasBeenReminded: Boolean,
 	}),
 );

@@ -5,7 +5,7 @@ export const Playlists = model(
 	new Schema({
 		playlistName: String,
 		playlistData: Array,
-		name: String,
+		createdBy: String,
 		userID: String,
 		created: Number,
 	}),

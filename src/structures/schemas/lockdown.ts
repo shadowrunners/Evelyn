@@ -5,6 +5,6 @@ export const LockdownDB = model(
 	new Schema({
 		guildId: String,
 		channelId: String,
-		timeLocked: String,
+		timeLocked: Number,
 	}),
 );
