@@ -5,9 +5,6 @@ import { GuildDB as DB } from '../../structures/schemas/guild.js';
 
 const event: Event = {
 	name: 'guildMemberRemove',
-	/**
-	 * @param {} member
-	 */
 	async execute(member: GuildMember) {
 		const { guild, user } = member;
 
