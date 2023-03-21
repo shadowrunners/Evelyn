@@ -34,10 +34,6 @@ const event: Event = {
 				`${commandName}.${subCommand}`,
 			);
 
-			console.log(subCommandFile);
-			console.log(commandName);
-			console.log(subCommand);
-
 			// if (!subCommandFile)
 			//	return interaction.reply({
 			//		embeds: [embed.setDescription('This subcommand is outdated.')],
