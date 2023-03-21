@@ -7,7 +7,6 @@ import {
 	botConfig,
 	Command,
 	Subcommand,
-	Event,
 	Buttons,
 	Modals,
 } from '../interfaces/interfaces.js';
@@ -23,7 +22,6 @@ import { loadModals } from './handlers/modals.js';
 const {
 	Guilds,
 	GuildMessages,
-	GuildBans,
 	GuildMembers,
 	GuildEmojisAndStickers,
 	GuildMessageReactions,
@@ -37,19 +35,17 @@ export class Evelyn extends Client {
 	public config: botConfig;
 	public commands: Collection<string, Command>;
 	public subCommands: Collection<string, Subcommand>;
-	public events: Collection<string, Event>;
 	public buttons: Collection<string, Buttons>;
 	public modals: Collection<string, Modals>;
 	public economy: Economy<boolean>;
 	public statcord: Statcord.Client;
 	public manager: Manager;
-	public client: Client;
+	private client: Client;
 
 	constructor() {
 		super({
 			intents: [
 				Guilds,
-				GuildBans,
 				GuildInvites,
 				GuildMembers,
 				GuildMessages,
@@ -64,7 +60,6 @@ export class Evelyn extends Client {
 		this.config = require('./config.json');
 		this.commands = new Collection();
 		this.subCommands = new Collection();
-		this.events = new Collection();
 		this.buttons = new Collection();
 		this.modals = new Collection();
 		this.economy = new Economy({
