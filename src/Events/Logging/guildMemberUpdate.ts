@@ -20,7 +20,7 @@ const event: Event = {
 		const embed = new EmbedBuilder().setColor('Blurple');
 
 		if (oldRoles.length > newRoles.length) {
-			const uniqueRoles = await unique(oldRoles, newRoles);
+			const uniqueRoles = unique(oldRoles, newRoles);
 			const role = guild.roles.cache.get(uniqueRoles[0].toString());
 
 			return webhookDelivery(
