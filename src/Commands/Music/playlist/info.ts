@@ -4,7 +4,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 
 const subCommand: Subcommand = {
 	subCommand: 'playlist.info',
-	async execute(interaction: ChatInputCommandInteraction) {
+	execute(interaction: ChatInputCommandInteraction) {
 		const { options } = interaction;
 		const pName = options.getString('name');
 		const utils = new PlaylistUtils(interaction);
