@@ -9,7 +9,6 @@ import { Util } from '../../Modules/Utils/utils.js';
 import { cpus, platform } from 'os';
 import { Command } from '../../Interfaces/interfaces.js';
 import { Evelyn } from '../../Structures/Evelyn.js';
-import { convertToUnixTimestamp } from '../../Functions/convert2Unix.js';
 
 const { SendMessages } = PermissionFlagsBits;
 
@@ -21,7 +20,7 @@ const command: Command = {
 		.setDescription('Shows the bot\'s status.'),
 	async execute(interaction: ChatInputCommandInteraction, client: Evelyn) {
 		const { application, ws, user, guilds, readyAt } = client;
-		const util = new Util(interaction);
+		const { switchTo, convertToUnixTimestamp } = new Util();
 
 		const uptime = Math.floor(readyAt.getTime() / 1000);
 		const model = cpus()[0].model;
@@ -51,7 +50,7 @@ const command: Command = {
 						},
 						{
 							name: '**Database**',
-							value: `${util.switchTo(connection.readyState)}`,
+							value: `${switchTo(connection.readyState)}`,
 							inline: true,
 						},
 						{
