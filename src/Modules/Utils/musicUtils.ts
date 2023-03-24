@@ -8,18 +8,22 @@ import {
 	ChatInputCommandInteraction,
 	VoiceChannel,
 	GuildMember,
+	ButtonInteraction,
 } from 'discord.js';
 import { Player } from '@shadowrunners/automata';
 import { Util } from './utils.js';
 
 export class MusicUtils {
-	private interaction: ChatInputCommandInteraction;
+	private interaction: ChatInputCommandInteraction | ButtonInteraction;
 	private embed: EmbedBuilder;
 	private player: Player;
 	private util: Util;
 
 	/** Creates a new instance of the Music Utils Engine class. */
-	constructor(interaction: ChatInputCommandInteraction, player: Player) {
+	constructor(
+		interaction: ChatInputCommandInteraction | ButtonInteraction,
+		player: Player,
+	) {
 		this.interaction = interaction;
 		this.embed = new EmbedBuilder().setColor('Blurple');
 		this.player = player;
