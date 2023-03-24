@@ -12,7 +12,7 @@ export async function loadButtons(client: Evelyn) {
 
 		client.buttons.set(button.id, button);
 
-		return console.log(
+		console.log(
 			`${magenta('Buttons')} ${white('· Loaded')} ${green(button.id + '.ts')}`,
 		);
 	}
