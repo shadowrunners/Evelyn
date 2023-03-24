@@ -2,24 +2,34 @@ import {
 	ChatInputCommandInteraction,
 	SlashCommandBuilder,
 	ModalSubmitInteraction,
-	PermissionFlagsBits,
 	SlashCommandSubcommandsOnlyBuilder,
+	PermissionResolvable,
+	ButtonInteraction,
+	ContextMenuCommandBuilder,
+	ContextMenuCommandInteraction,
+	UserContextMenuCommandInteraction,
 } from 'discord.js';
 import { Evelyn } from '../structures/Evelyn.js';
 
 export interface Command {
-	// botPermissions?: [typeof PermissionFlagsBits];
+	botPermissions?: Array<PermissionResolvable>;
 	developer?: boolean | false;
 	data:
 		| SlashCommandBuilder
 		| SlashCommandSubcommandsOnlyBuilder
 		| Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>;
-	execute?: (interaction: ChatInputCommandInteraction, client: Evelyn) => void;
+	execute?: (
+		interaction:
+			| ChatInputCommandInteraction
+			| UserContextMenuCommandInteraction,
+		client: Evelyn
+	) => void;
 }
 
 export interface Subcommand {
 	subCommand: string;
-	execute?: (...args: any) => void;
+	botPermissions?: Array<PermissionResolvable>;
+	execute?: (...args: any[]) => void;
 }
 
 export interface Event {
@@ -33,14 +43,25 @@ export interface Event {
 }
 
 export interface Buttons {
+	botPermissions?: Array<PermissionResolvable>;
 	id: string;
-	execute: (...args: any) => void;
+	developer?: boolean | false;
+	execute: (interaction: ButtonInteraction, client: Evelyn) => void;
+}
+
+export interface ContextMenu {
+	botPermissions?: Array<PermissionResolvable>;
+	data: ContextMenuCommandBuilder;
+	execute?: (
+		interaction: ContextMenuCommandInteraction,
+		client: Evelyn
+	) => void;
 }
 
 export interface Modals {
 	id: string;
-	// permission?: PermissionFlags;
 	developer?: string;
+	botPermissions?: Array<PermissionResolvable>;
 	execute: (interaction: ModalSubmitInteraction, client: Evelyn) => void;
 }
 
