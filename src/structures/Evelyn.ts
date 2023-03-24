@@ -27,6 +27,7 @@ const {
 	GuildMessageReactions,
 	GuildInvites,
 	GuildVoiceStates,
+	GuildPresences,
 	MessageContent,
 } = GatewayIntentBits;
 const { User, Message, Channel, GuildMember, ThreadMember } = Partials;
@@ -49,6 +50,7 @@ export class Evelyn extends Client {
 				GuildInvites,
 				GuildMembers,
 				GuildMessages,
+				GuildPresences,
 				GuildVoiceStates,
 				GuildMessageReactions,
 				GuildEmojisAndStickers,
