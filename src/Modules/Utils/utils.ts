@@ -6,36 +6,33 @@ import {
 	PermissionsBitField,
 	EmbedBuilder,
 	ChatInputCommandInteraction,
-	InteractionEditReplyOptions,
 } from 'discord.js';
 
 export class Util {
-	private interaction: ChatInputCommandInteraction;
+	private interaction: ChatInputCommandInteraction | undefined;
 
 	/** Creates a new instance of the Util class. */
 	constructor(interaction?: ChatInputCommandInteraction) {
 		/** The interaction object. */
-		this.interaction = interaction;
+		this.interaction = interaction ?? undefined;
 	}
 
 	/** Turns several embeds into pages. */
 	public async embedPages(embeds: EmbedBuilder[]) {
 		const pages = {};
 		const getRow = (id: string) => {
-			const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+			return new ActionRowBuilder<ButtonBuilder>().addComponents(
 				new ButtonBuilder()
 					.setLabel('◀')
 					.setCustomId('prev_embed')
 					.setStyle(ButtonStyle.Primary)
 					.setDisabled(pages[id] === 0),
-
 				new ButtonBuilder()
 					.setLabel('▶')
 					.setCustomId('next_embed')
 					.setStyle(ButtonStyle.Primary)
 					.setDisabled(pages[id] === embeds.length - 1),
 			);
-			return row;
 		};
 
 		const id = this.interaction.user.id;
@@ -43,6 +40,7 @@ export class Util {
 		const Pagemax = embeds.length;
 
 		const embed = embeds[pages[id]];
+
 		embeds[pages[id]].setFooter({
 			text: `Page ${pages[id] + 1} from ${Pagemax}`,
 		});
@@ -50,12 +48,14 @@ export class Util {
 		const replyEmbed = await this.interaction.editReply({
 			embeds: [embed],
 			components: [getRow(id)],
-			fetchReply: true,
-		} as InteractionEditReplyOptions);
+		});
+
+		const filter = (i) => i.user.id === this.interaction.user.id;
+		const time = 1000 * 60 * 5;
 
 		const collector = replyEmbed.createMessageComponentCollector({
-			filter: (i) => i.user.id === this.interaction.user.id,
-			time: 1000 * 60 * 5,
+			filter,
+			time,
 		});
 
 		collector.on('collect', async (b) => {
@@ -64,9 +64,12 @@ export class Util {
 
 			b.deferUpdate();
 
-			if (b.customId === 'prev_embed' && pages[id] > 0) --pages[id];
-			else if (b.customId === 'next_embed' && pages[id] < embeds.length - 1)
+			if (b.customId === 'prev_embed' && pages[id] > 0) {
+				--pages[id];
+			}
+			else if (b.customId === 'next_embed' && pages[id] < embeds.length - 1) {
 				++pages[id];
+			}
 
 			embeds[pages[id]].setFooter({
 				text: `Page ${pages[id] + 1} of ${Pagemax}`,
@@ -75,8 +78,7 @@ export class Util {
 			await this.interaction.editReply({
 				embeds: [embeds[pages[id]]],
 				components: [getRow(id)],
-				fetchReply: true,
-			} as InteractionEditReplyOptions);
+			});
 		});
 	}
 
@@ -142,5 +144,27 @@ export class Util {
 		if (mins > 0) formatted += mins + 'm ';
 		if (secs > 0) formatted += secs + 's ';
 		return formatted.trim();
+	}
+
+	/** Converts a string of numbers into a unix timestamp. */
+	public convertToUnixTimestamp(num: number): number {
+		const timestamp = Math.floor(num / 1000);
+		return timestamp;
+	}
+
+	/** What is my purpose? To capitalize the first letter of the status. */
+	public capitalizePresence(presence: string) {
+		switch (presence) {
+		case 'online':
+			return 'Online';
+		case 'dnd':
+			return 'Do Not Disturb';
+		case 'idle':
+			return 'Idle';
+		case 'offline':
+			return 'Offline';
+		default:
+			return presence;
+		}
 	}
 }
