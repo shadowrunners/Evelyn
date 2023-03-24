@@ -5,11 +5,12 @@ import {
 	ChannelType,
 } from 'discord.js';
 import { Subcommand } from '../../../Interfaces/interfaces.js';
-import { convertToUnixTimestamp } from '../../../Functions/convert2Unix.js';
+import { Util } from '../../../Modules/Utils/utils.js';
 
 const subCommand: Subcommand = {
 	subCommand: 'server.roles',
 	execute(interaction: ChatInputCommandInteraction) {
+		const { convertToUnixTimestamp } = new Util();
 		const { guild } = interaction;
 		const definedGuild = guild as Guild;
 		const {
