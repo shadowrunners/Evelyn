@@ -21,47 +21,27 @@ const subCommand: Subcommand = {
 				data.confessions?.webhook?.token,
 			);
 			await fetchWebhook.delete();
-
-			channel
-				.createWebhook({
-					name: `${client.user.username} · Confessions`,
-					avatar: client.user.avatarURL(),
-				})
-				.then(async (webhook) => {
-					await DB.findOneAndUpdate(
-						{
-							id: guildId,
-						},
-						{
-							$set: {
-								'confessions.channel': channel.id,
-								'confessions.webhook.id': webhook.id,
-								'confessions.webhook.token': webhook.token,
-							},
-						},
-					);
-				});
 		}
-		else
-			channel
-				.createWebhook({
-					name: `${client.user.username} · Confessions`,
-					avatar: client.user.avatarURL(),
-				})
-				.then(async (webhook) => {
-					await DB.findOneAndUpdate(
-						{
-							id: guildId,
+
+		channel
+			.createWebhook({
+				name: `${client.user.username} · Confessions`,
+				avatar: client.user.avatarURL(),
+			})
+			.then(async (webhook) => {
+				await DB.findOneAndUpdate(
+					{
+						id: guildId,
+					},
+					{
+						$set: {
+							'confessions.channel': channel.id,
+							'confessions.webhook.id': webhook.id,
+							'confessions.webhook.token': webhook.token,
 						},
-						{
-							$set: {
-								'confessions.channel': channel.id,
-								'confessions.webhook.id': webhook.id,
-								'confessions.webhook.token': webhook.token,
-							},
-						},
-					);
-				});
+					},
+				);
+			});
 
 		return interaction.reply({
 			embeds: [
