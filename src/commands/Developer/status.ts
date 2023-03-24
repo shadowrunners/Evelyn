@@ -2,15 +2,19 @@ import {
 	SlashCommandBuilder,
 	ChatInputCommandInteraction,
 	EmbedBuilder,
+	PermissionFlagsBits,
 } from 'discord.js';
 import { connection } from 'mongoose';
 import { Util } from '../../Modules/Utils/utils.js';
 import { cpus, platform } from 'os';
 import { Command } from '../../Interfaces/interfaces.js';
 import { Evelyn } from '../../Structures/Evelyn.js';
+import { convertToUnixTimestamp } from '../../Functions/convert2Unix.js';
+
+const { SendMessages } = PermissionFlagsBits;
 
 const command: Command = {
-	// botPermissions: [SendMessages],
+	botPermissions: [SendMessages],
 	developer: true,
 	data: new SlashCommandBuilder()
 		.setName('status')
@@ -19,12 +23,13 @@ const command: Command = {
 		const { application, ws, user, guilds, readyAt } = client;
 		const util = new Util(interaction);
 
-		// const uptime = Math.floor(readyAt / 1000);
+		const uptime = Math.floor(readyAt.getTime() / 1000);
 		const model = cpus()[0].model;
 		const cores = cpus().length;
 		const systemPlatform = platform()
 			.replace('win32', 'Windows')
 			.replace('linux', 'Linux');
+		const createdTime = convertToUnixTimestamp(user.createdTimestamp);
 
 		const embed = new EmbedBuilder().setColor('Blurple');
 		await application.fetch();
@@ -39,11 +44,11 @@ const command: Command = {
 							value: `${ws.ping}ms`,
 							inline: true,
 						},
-						// {
-						//	name: '**Uptime**',
-						//	value: `<t:${uptime}:R>`,
-						//	inline: true,
-						// },
+						{
+							name: '**Uptime**',
+							value: `<t:${uptime}:R>`,
+							inline: true,
+						},
 						{
 							name: '**Database**',
 							value: `${util.switchTo(connection.readyState)}`,
@@ -56,7 +61,7 @@ const command: Command = {
 						},
 						{
 							name: '**Active since**',
-							value: `<t:${user.createdTimestamp / 1000}:R>`,
+							value: `<t:${createdTime}:R>`,
 							inline: true,
 						},
 						{
