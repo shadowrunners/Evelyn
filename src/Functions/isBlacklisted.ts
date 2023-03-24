@@ -1,9 +1,23 @@
-import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
+import {
+	ChatInputCommandInteraction,
+	ModalSubmitInteraction,
+	EmbedBuilder,
+	ButtonInteraction,
+	UserContextMenuCommandInteraction,
+	MessageContextMenuCommandInteraction,
+} from 'discord.js';
 import { GuildDB as DB } from '../structures/schemas/guild.js';
 import { UserBlacklist as UB } from '../structures/schemas/userBlacklist.js';
 
 /** Checks to see if the user or guild who / where this command was executed is blacklisted. */
-export async function isBlacklisted(interaction: ChatInputCommandInteraction) {
+export async function isBlacklisted(
+	interaction:
+		| ChatInputCommandInteraction
+		| ModalSubmitInteraction
+		| ButtonInteraction
+		| UserContextMenuCommandInteraction
+		| MessageContextMenuCommandInteraction,
+) {
 	const { user, guildId } = interaction;
 	const embed = new EmbedBuilder().setColor('Blurple');
 
@@ -14,9 +28,6 @@ export async function isBlacklisted(interaction: ChatInputCommandInteraction) {
 	const guildData = await DB.findOne({
 		id: guildId,
 	});
-
-	const { blacklist } = guildData;
-	const { reason, time } = userBlacklist;
 
 	if (userBlacklist)
 		return interaction.reply({
@@ -29,19 +40,19 @@ export async function isBlacklisted(interaction: ChatInputCommandInteraction) {
 					.addFields(
 						{
 							name: 'Reason',
-							value: `> ${reason}`,
+							value: `> ${userBlacklist.reason}`,
 							inline: true,
 						},
 						{
 							name: 'Time',
-							value: `> <t:${time / 1000}:R>`,
+							value: `> <t:${userBlacklist.time / 1000}:R>`,
 							inline: true,
 						},
 					),
 			],
 		});
 
-	if (blacklist?.isBlacklisted === true)
+	if (guildData.blacklist?.isBlacklisted === true)
 		return interaction.reply({
 			embeds: [
 				embed
@@ -52,12 +63,12 @@ export async function isBlacklisted(interaction: ChatInputCommandInteraction) {
 					.addFields(
 						{
 							name: 'Reason',
-							value: `> ${blacklist.reason}`,
+							value: `> ${guildData.blacklist.reason}`,
 							inline: true,
 						},
 						{
 							name: 'Time',
-							value: `<t:${blacklist.time / 1000}:R>`,
+							value: `<t:${guildData.blacklist.time / 1000}:R>`,
 							inline: true,
 						},
 					),
