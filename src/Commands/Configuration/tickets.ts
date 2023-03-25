@@ -5,11 +5,11 @@ import {
 } from 'discord.js';
 import { Command } from '../../interfaces/interfaces.js';
 
-const { Administrator } = PermissionFlagsBits;
-const { GuildText, GuildCategory } = ChannelType;
+const { Administrator, SendMessages } = PermissionFlagsBits;
+const { GuildText } = ChannelType;
 
 const command: Command = {
-	// botPermissions: ['SendMessages'],
+	botPermissions: [SendMessages],
 	data: new SlashCommandBuilder()
 		.setName('tickets')
 		.setDescription('Manage and configure tickets system.')
@@ -35,15 +35,6 @@ const command: Command = {
 			options
 				.setName('configure')
 				.setDescription('Configures the tickets system.')
-				.addChannelOption((option) =>
-					option
-						.setName('category')
-						.setDescription(
-							'Select the category where tickets will be created under.',
-						)
-						.addChannelTypes(GuildCategory)
-						.setRequired(true),
-				)
 				.addChannelOption((option) =>
 					option
 						.setName('transcripts')

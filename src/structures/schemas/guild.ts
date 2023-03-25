@@ -31,7 +31,6 @@ export const GuildDB = model(
 		tickets: {
 			enabled: Boolean,
 			embed: Object,
-			category: String,
 			transcriptChannel: String,
 			assistantRole: String,
 		},

@@ -6,7 +6,6 @@ const subCommand: Subcommand = {
 	subCommand: 'tickets.configure',
 	async execute(interaction: ChatInputCommandInteraction) {
 		const { options, guildId } = interaction;
-		const category = options.getChannel('category');
 		const transcripts = options.getChannel('transcripts');
 		const assistantRole = options.getRole('assistant-role');
 		const embed = new EmbedBuilder().setColor('Blurple');
@@ -17,7 +16,6 @@ const subCommand: Subcommand = {
 			},
 			{
 				$set: {
-					'tickets.category': category.id,
 					'tickets.transcripts': transcripts.id,
 					'tickets.assistantRole': assistantRole.id,
 				},
@@ -27,10 +25,6 @@ const subCommand: Subcommand = {
 		return interaction.reply({
 			embeds: [
 				embed.setTitle('Configuration Updated').addFields(
-					{
-						name: '🔹 | Category',
-						value: `> ${category.name}`,
-					},
 					{
 						name: '🔹 | Transcripts Channel',
 						value: `> <#${transcripts.id}>`,
