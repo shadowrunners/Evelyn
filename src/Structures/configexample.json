@@ -1,0 +1,39 @@
+{
+  "token": "",
+  "database": "",
+  "ownerIDs": [""],
+
+  "clientID": "",
+  "clientSecret": "",
+
+  "cattoKey": "",
+  "imdbAPIKey": "",
+
+  "debug": {
+    "devGuild": "",
+    "overwatchChannel": "",
+    "statKey": "",
+    "watcherHook": ""
+  },
+  "API": {
+    "cattoKey": "",
+    "imdbAPIKey": ""
+  },
+  "dash": {
+    "DBDLicense": "",
+    "redirectUri": "http://localhost/discord/callback",
+    "domain": "http://localhost"
+  },
+  "music": {
+    "spotifyClientID": "",
+    "spotifySecret": "",
+    "nodes": [
+      {
+        "name": "",
+        "url": "",
+        "auth": "",
+        "secure": false
+      }
+    ]
+  }
+}
