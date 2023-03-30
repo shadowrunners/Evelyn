@@ -13,7 +13,7 @@ export async function loadModals(client: Evelyn) {
 		client.modals.set(modal.id, modal);
 
 		return console.log(
-			`${magenta('Modals')} ${white('· Loaded')} ${green(modal.id + '.js')}}`,
+			`${magenta('Modals')} ${white('· Loaded')} ${green(modal.id + '.js')}`,
 		);
 	}
 }
