@@ -8,54 +8,45 @@ const subCommand: Subcommand = {
 		const { options, guildId } = interaction;
 		const data = await DB.findOne({ id: guildId });
 		const embed = new EmbedBuilder().setColor('Blurple');
+		const choice = options.getString('choice');
 
-		switch (options.getString('choice')) {
-		case 'enable':
-			if (data.welcome.enabled === true)
-				return interaction.reply({
-					embeds: [
-						embed.setDescription(
-							'🔹 | The welcome system is already enabled.',
-						),
-					],
-					ephemeral: true,
-				});
-
-			await DB.findOneAndUpdate(
-				{ id: guildId },
-				{ $set: { 'welcome.enabled': true } },
-			);
-
+		if (choice === 'enable' && data.welcome.enabled === true)
 			return interaction.reply({
 				embeds: [
-					embed.setDescription('🔹 | The welcome system has been enabled.'),
+					embed.setDescription('🔹 | The welcome system is already enabled.'),
 				],
 				ephemeral: true,
 			});
 
-		case 'disable':
-			if (data.welcome.enabled === false)
-				return interaction.reply({
-					embeds: [
-						embed.setDescription(
-							'🔹 | The welcome system is already disabled.',
-						),
-					],
-					ephemeral: true,
-				});
-
-			await DB.findOneAndUpdate(
-				{ id: guildId },
-				{ $set: { 'welcome.enabled': false } },
-			);
-
+		if (choice === 'disable' && data.welcome.enabled === false)
 			return interaction.reply({
 				embeds: [
-					embed.setDescription('🔹 | The welcome system has been disabled.'),
+					embed.setDescription('🔹 | The welcome system is already disabled.'),
 				],
 				ephemeral: true,
 			});
-		}
+
+		await DB.findOneAndUpdate(
+			{
+				id: guildId,
+			},
+			{
+				$set: {
+					'welcome.enabled': choice === 'enable' ?? choice === 'false',
+				},
+			},
+		);
+
+		return interaction.reply({
+			embeds: [
+				embed.setDescription(
+					`🔹 | The welcome system has been ${
+						choice === 'enable' ? 'enabled' : 'disabled'
+					}.`,
+				),
+			],
+			ephemeral: true,
+		});
 	},
 };
 

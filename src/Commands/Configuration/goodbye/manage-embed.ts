@@ -4,11 +4,10 @@ import { Subcommand } from '../../../Interfaces/interfaces.js';
 
 const subCommand: Subcommand = {
 	subCommand: 'goodbye.manage-embed',
-	async execute(interaction: ChatInputCommandInteraction) {
+	execute(interaction: ChatInputCommandInteraction) {
 		const { options, guildId } = interaction;
-		const embed = new EmbedBuilder().setColor('Blurple');
 
-		await DB.findOneAndUpdate(
+		DB.findOneAndUpdate(
 			{ id: guildId },
 			{
 				$set: {
@@ -28,9 +27,11 @@ const subCommand: Subcommand = {
 
 		return interaction.reply({
 			embeds: [
-				embed.setDescription(
-					'🔹 | Embed has been updated. Run /goodbye preview-embed to see a preview or wait for someone to join.',
-				),
+				new EmbedBuilder()
+					.setColor('Blurple')
+					.setDescription(
+						'🔹 | Embed has been updated. Run /goodbye preview-embed to see a preview or wait for someone to join.',
+					),
 			],
 			ephemeral: true,
 		});

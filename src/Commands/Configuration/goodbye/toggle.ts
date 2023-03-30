@@ -8,54 +8,39 @@ const subCommand: Subcommand = {
 		const { options, guildId } = interaction;
 		const data = await DB.findOne({ id: guildId });
 		const embed = new EmbedBuilder().setColor('Blurple');
+		const choice = options.getString('choice');
 
-		switch (options.getString('choice')) {
-		case 'enable':
-			if (data.goodbye.enabled === true)
-				return interaction.reply({
-					embeds: [
-						embed.setDescription(
-							'🔹 | The goodbye system is already enabled.',
-						),
-					],
-					ephemeral: true,
-				});
-
-			await DB.findOneAndUpdate(
-				{ id: guildId },
-				{ $set: { 'goodbye.enabled': true } },
-			);
-
+		if (choice === 'enable' && data.goodbye.enabled === true)
 			return interaction.reply({
 				embeds: [
-					embed.setDescription('🔹 | The goodbye system has been enabled.'),
+					embed.setDescription('🔹 | The goodbye system is already enabled.'),
 				],
 				ephemeral: true,
 			});
 
-		case 'disable':
-			if (data.goodbye.enabled === false)
-				return interaction.reply({
-					embeds: [
-						embed.setDescription(
-							'🔹 | The goodbye system is already disabled.',
-						),
-					],
-					ephemeral: true,
-				});
-
-			await DB.findOneAndUpdate(
-				{ id: guildId },
-				{ $set: { 'goodbye.enabled': false } },
-			);
-
+		if (choice === 'disable' && data.goodbye.enabled === false)
 			return interaction.reply({
 				embeds: [
-					embed.setDescription('🔹 | The goodbye system has been disabled.'),
+					embed.setDescription('🔹 | The goodbye system is already disabled.'),
 				],
 				ephemeral: true,
 			});
-		}
+
+		await DB.findOneAndUpdate(
+			{ id: guildId },
+			{ $set: { 'goodbye.enabled': choice === 'enable' ?? choice === 'false' } },
+		);
+
+		return interaction.reply({
+			embeds: [
+				embed.setDescription(
+					`🔹 | The goodbye system has been ${
+						choice === 'enable' ? 'enabled' : 'disabled'
+					}.`,
+				),
+			],
+			ephemeral: true,
+		});
 	},
 };
 

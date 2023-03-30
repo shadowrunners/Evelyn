@@ -8,70 +8,49 @@ const subCommand: Subcommand = {
 		const { options, guildId } = interaction;
 		const data = await DB.findOne({ id: guildId });
 		const embed = new EmbedBuilder().setColor('Blurple');
+		const choice = options.getString('choice');
 
-		switch (options.getString('choice')) {
-		case 'enable':
-			if (data.confessions.enabled === true)
-				return interaction.reply({
-					embeds: [
-						embed.setDescription(
-							'🔹 | The confessions system is already enabled.',
-						),
-					],
-					ephemeral: true,
-				});
-
-			await DB.findOneAndUpdate(
-				{
-					id: guildId,
-				},
-				{
-					$set: {
-						'confessions.enabled': true,
-					},
-				},
-			);
-
+		if (choice === 'enable' && data.confessions.enabled === true)
 			return interaction.reply({
 				embeds: [
 					embed.setDescription(
-						'🔹 | The confessions system has been enabled.',
+						'🔹 | The confessions system is already enabled.',
 					),
 				],
 				ephemeral: true,
 			});
 
-		case 'disable':
-			if (data.confessions.enabled === false)
-				return interaction.reply({
-					embeds: [
-						embed.setDescription(
-							'🔹 | The confessions system is already disabled.',
-						),
-					],
-					ephemeral: true,
-				});
-
-			await DB.findOneAndUpdate(
-				{
-					id: guildId,
-				},
-				{
-					$set: {
-						'confessions.enabled': false,
-					},
-				},
-			);
-
+		if (choice === 'disable' && data.confessions.enabled === false)
 			return interaction.reply({
 				embeds: [
 					embed.setDescription(
-						'🔹 | The confessions system has been disabled.',
+						'🔹 | The confessions system is already disabled.',
 					),
 				],
 				ephemeral: true,
 			});
-		}
+
+		await DB.findOneAndUpdate(
+			{
+				id: guildId,
+			},
+			{
+				$set: {
+					'confessions.enabled': choice === 'enable' ?? choice === 'false',
+				},
+			},
+		);
+
+		return interaction.reply({
+			embeds: [
+				embed.setDescription(
+					`🔹 | The confessions system has been ${
+						choice === 'enable' ? 'enabled' : 'disabled'
+					}.`,
+				),
+			],
+			ephemeral: true,
+		});
 	},
 };
 
