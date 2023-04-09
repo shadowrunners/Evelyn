@@ -21,7 +21,7 @@
     "express-session": "^1.17.3",
     "gamecord-extended": "github:notscrappie/gamecord-extended",
     "genius-lyrics": "^4.4.2",
-    "glob": "^8.0.3",
+    "glob": "^10.0.0",
     "imdb-api": "^4.4.1",
     "kazagumo": "^2.3.1",
     "kazagumo-deezer": "^1.2.1",
