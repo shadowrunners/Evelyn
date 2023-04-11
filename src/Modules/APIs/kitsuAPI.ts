@@ -17,12 +17,12 @@ export class KitsuAPI {
 		this.apiURL = 'https://kitsu.io/api/edge';
 		/** Base embed used to reduce repeated code. */
 		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-		/** The interaction object used for replying and fetching usernames. */
+		/** The interaction object used for replying. */
 		this.interaction = interaction;
 	}
 
 	/** Retrieves the information for the provided anime. */
-	fetchAnime(anime: string): Promise<KitsuInterface> {
+	public fetchAnime(anime: string): Promise<KitsuInterface> {
 		return new Promise((resolve, reject) => {
 			get(`${this.apiURL}/anime?filter[text]=${anime}`)
 				.then(async (res) => {
@@ -99,7 +99,7 @@ export class KitsuAPI {
 	}
 
 	/** Retrieves the information for the provided manga. */
-	fetchManga(manga: string): Promise<KitsuInterface> {
+	public fetchManga(manga: string): Promise<KitsuInterface> {
 		return new Promise((resolve, reject) => {
 			get(`${this.apiURL}/manga?filter[text]=${manga}`)
 				.then(async (res) => {

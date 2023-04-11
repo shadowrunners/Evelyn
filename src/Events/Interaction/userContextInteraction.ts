@@ -16,11 +16,10 @@ const event: Event = {
 
 		if (await isBlacklisted(interaction)) return;
 
-		if (!command) {
+		if (!command)
 			return interaction.reply({
 				embeds: [embed.setDescription('This command is outdated.')],
 			});
-		}
 		else return command.execute(interaction, client);
 	},
 };

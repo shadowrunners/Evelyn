@@ -13,16 +13,16 @@ const command: Command = {
 		.addStringOption((option) =>
 			option
 				.setName('title')
-				.setDescription('Provide the name of the anime')
+				.setDescription('Provide the name of the anime.')
 				.setRequired(true),
 		),
 	async execute(interaction: ChatInputCommandInteraction) {
 		const { options } = interaction;
 		const title = options.getString('title');
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-		const { fetchAnime } = new KitsuAPI(interaction);
+		const kitsu = new KitsuAPI(interaction);
 
-		const anime = await fetchAnime(title);
+		const anime = await kitsu.fetchAnime(title);
 		return interaction.reply({
 			embeds: [
 				embed
@@ -31,8 +31,17 @@ const command: Command = {
 					.setDescription(anime.synopsis)
 					.addFields(
 						{
+							name: 'Genres',
+							value: anime.genres,
+						},
+						{
 							name: 'Premiered on',
-							value: anime.startDate,
+							value: `<t:${anime.startDateUnix}>`,
+							inline: true,
+						},
+						{
+							name: 'Ended on',
+							value: `<t:${anime.endDateUnix}>`,
 							inline: true,
 						},
 						{

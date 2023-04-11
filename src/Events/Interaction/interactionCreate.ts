@@ -1,21 +1,21 @@
 import { Event } from '../../interfaces/interfaces.js';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { Evelyn } from '../../structures/Evelyn.js';
-// import importUtils from '../../modules/Utils/utils.js';
-// import { isBlacklisted } from '../../functions/isBlacklisted.js';
+import { Util } from '../../modules/Utils/utils.js';
+import { isBlacklisted } from '../../functions/isBlacklisted.js';
 
 const event: Event = {
 	name: 'interactionCreate',
-	execute(interaction: ChatInputCommandInteraction, client: Evelyn) {
+	async execute(interaction: ChatInputCommandInteraction, client: Evelyn) {
 		if (!interaction.isChatInputCommand()) return;
 		const { options, commandName } = interaction;
 
 		const embed = new EmbedBuilder().setColor('Blurple');
 
-		// const utils = new importUtils(interaction);
+		const utils = new Util(interaction);
 		const command = client.commands.get(commandName);
 
-		// if (await isBlacklisted(interaction)) return;
+		if (await isBlacklisted(interaction)) return;
 
 		if (!command)
 			return interaction.reply({
@@ -23,12 +23,11 @@ const event: Event = {
 				ephemeral: true,
 			});
 
-		// if (command.botPermissions) {
-		// if (utils.check4Perms(command)) return;
-		// }
+		if (command.botPermissions) {
+			if (utils.checkPermissions(command)) return;
+		}
 
 		const subCommand = options.getSubcommand(false);
-		console.log(subCommand);
 		if (subCommand) {
 			const subCommandFile = client.subCommands.get(
 				`${commandName}.${subCommand}`,

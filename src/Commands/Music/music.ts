@@ -3,7 +3,7 @@ import { Command } from '../../interfaces/interfaces.js';
 const { SendMessages, EmbedLinks, Connect, Speak } = PermissionFlagsBits;
 
 const command: Command = {
-	// botPermissions: [SendMessages, EmbedLinks, Connect, Speak],
+	botPermissions: [SendMessages, EmbedLinks, Connect, Speak],
 	data: new SlashCommandBuilder()
 		.setName('music')
 		.setDescription('A complete music system.')

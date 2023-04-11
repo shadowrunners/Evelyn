@@ -3,7 +3,7 @@ import { Command } from '../../interfaces/interfaces.js';
 const { SendMessages, EmbedLinks } = PermissionFlagsBits;
 
 const command: Command = {
-	// botPermissions: [SendMessages, 'EmbedLinks'],
+	botPermissions: [SendMessages, EmbedLinks],
 	data: new SlashCommandBuilder()
 		.setName('playlist')
 		.setDescription('Curate your own playlist(s).')
