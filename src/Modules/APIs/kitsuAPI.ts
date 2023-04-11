@@ -25,13 +25,28 @@ export class KitsuAPI {
 	fetchAnime(anime: string): Promise<KitsuInterface> {
 		return new Promise((resolve, reject) => {
 			get(`${this.apiURL}/anime?filter[text]=${anime}`)
-				.then((res) => {
+				.then(async (res) => {
 					const animeData = res.body.data[0];
 					const animeAttributes = animeData.attributes;
 					const newStatus = animeAttributes?.status
 						.replace('finished', 'Finished')
 						.replace('ongoing', 'Ongoing')
 						.replace('current', 'Currently Airing');
+
+					const genres = await get(
+						`${this.apiURL}/anime/${animeData.id}/genres`,
+					);
+					const genreMap = genres?.body?.data
+						?.map(
+							(genre: { attributes: { name: string } }) => genre.attributes.name,
+						)
+						.join(', ');
+
+					const startDate = new Date(animeData?.attributes?.startDate);
+					const endDate = new Date(animeData?.attributes?.endDate);
+
+					const startDateUnixed = Math.floor(startDate?.getTime() / 1000);
+					const endDateUnixed = Math.floor(endDate?.getTime() / 1000);
 
 					const animeInfo: KitsuInterface = {
 						description: animeAttributes?.description,
@@ -42,10 +57,13 @@ export class KitsuAPI {
 								animeAttributes?.titles?.en_us,
 							ja_JP: animeAttributes?.titles?.ja_jp,
 						},
+						genres: genreMap,
 						status: newStatus,
 						averageRating: animeAttributes?.averageRating,
 						startDate: animeAttributes?.startDate,
+						startDateUnix: startDateUnixed,
 						endDate: animeAttributes?.endDate,
+						endDateUnix: endDateUnixed,
 						ageRating: animeAttributes?.ageRating ?? 'No ratings yet.',
 						ageRatingGuide: animeAttributes?.ageRatingGuide,
 						posterImage: {
@@ -69,7 +87,74 @@ export class KitsuAPI {
 				.catch((err: Error) => {
 					reject(err);
 
-					return this.interaction.editReply({
+					return this.interaction.reply({
+						embeds: [
+							this.embed.setDescription(
+								'🔹 | There was an error while fetching the information from the API.',
+							),
+						],
+					});
+				});
+		});
+	}
+
+	/** Retrieves the information for the provided manga. */
+	fetchManga(manga: string): Promise<KitsuInterface> {
+		return new Promise((resolve, reject) => {
+			get(`${this.apiURL}/manga?filter[text]=${manga}`)
+				.then(async (res) => {
+					const mangaData = res.body.data[0];
+					const mangaAttributes = mangaData.attributes;
+					const newStatus = mangaAttributes?.status
+						.replace('finished', 'Finished')
+						.replace('ongoing', 'Ongoing')
+						.replace('current', 'Currently Airing');
+
+					const startDate = new Date(mangaData?.attributes?.startDate);
+					const endDate = new Date(mangaData?.attributes?.endDate);
+
+					const startDateUnixed = Math.floor(startDate?.getTime() / 1000);
+					const endDateUnixed = Math.floor(endDate?.getTime() / 1000);
+
+					const mangaInfo: KitsuInterface = {
+						description: mangaAttributes?.description,
+						synopsis: mangaAttributes?.synopsis,
+						titles: {
+							en_us:
+								mangaAttributes?.titles?.en_jp ??
+								mangaAttributes?.titles?.en_us,
+							ja_JP: mangaAttributes?.titles?.ja_jp,
+						},
+						status: newStatus,
+						averageRating: mangaAttributes?.averageRating,
+						startDate: mangaAttributes?.startDate,
+						startDateUnix: startDateUnixed,
+						endDate: mangaAttributes?.endDate,
+						endDateUnix: endDateUnixed,
+						ageRating: mangaAttributes?.ageRating ?? 'No ratings yet.',
+						ageRatingGuide: mangaAttributes?.ageRatingGuide,
+						posterImage: {
+							tiny: mangaAttributes?.posterImage?.tiny,
+							large: mangaAttributes?.posterImage?.large,
+							small: mangaAttributes?.posterImage?.small,
+							medium: mangaAttributes?.posterImage?.medium,
+							original: mangaAttributes?.posterImage?.original,
+						},
+						coverImage: {
+							tiny: mangaAttributes?.coverImage?.tiny,
+							large: mangaAttributes?.coverImage?.large,
+							small: mangaAttributes?.coverImage?.small,
+							original: mangaAttributes?.coverImage?.original,
+						},
+						episodeCount: mangaAttributes?.episodeCount,
+					};
+
+					resolve(mangaInfo);
+				})
+				.catch((err: Error) => {
+					reject(err);
+
+					return this.interaction.reply({
 						embeds: [
 							this.embed.setDescription(
 								'🔹 | There was an error while fetching the information from the API.',

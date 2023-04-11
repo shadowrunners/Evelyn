@@ -10,14 +10,21 @@ export interface KitsuInterface {
 		/** The japanese title of the anime. */
 		ja_JP: string;
 	};
+	/** The genres the anime is under. */
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	genres?: any;
 	/** The status of the anime. Can be finished, ongoing or current.*/
 	status: string;
 	/** The average rating of the anime. */
 	averageRating: string;
 	/** The date when the anime started airing. */
 	startDate: string;
+	/** The date when the anime started airing but in a unix format. */
+	startDateUnix: number;
 	/** The date when the anime ended. */
 	endDate: string;
+	/** The date when the anime ended.*/
+	endDateUnix: number;
 	/** The age rating of the anime. */
 	ageRating: string;
 	/** The rating guide of the anime. */
