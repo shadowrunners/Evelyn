@@ -1,13 +1,15 @@
 import {
+	EmbedBuilder,
 	SlashCommandBuilder,
 	ChatInputCommandInteraction,
-	EmbedBuilder,
+	PermissionFlagsBits,
 } from 'discord.js';
 import { GBooksAPI } from '../../Modules/APIs/gBooksAPI';
 import { Command } from '../../interfaces/interfaces';
+const { SendMessages } = PermissionFlagsBits;
 
 const command: Command = {
-	botPermissions: ['SendMessages'],
+	botPermissions: [SendMessages],
 	data: new SlashCommandBuilder()
 		.setName('book')
 		.setDescription('Get info about a book using Google Books.')
