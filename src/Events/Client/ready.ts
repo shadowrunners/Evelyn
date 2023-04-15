@@ -2,7 +2,7 @@ import { ActivityType } from 'discord.js';
 import { magenta, white, green, red } from '@colors/colors';
 import { loadCommands } from '../../structures/handlers/commands.js';
 // import { check4Giveaways } from '../../functions/check4Giveaways.js';
-// /import { check4Reminders } from '../../functions/check4Reminders.js';
+import { check4Reminders } from '../../functions/check4Reminders.js';
 // import { check4Lockdowns } from '../../functions/check4Lockdowns.js';
 import { set } from 'mongoose';
 import DXP from 'discord-xp';
@@ -57,7 +57,7 @@ const event: Event = {
 			});
 
 		// check4Giveaways(client);
-		// check4Reminders(client);
+		check4Reminders(client);
 		// check4Lockdowns(client);
 		DXP.setURL(client.config.database);
 	},
