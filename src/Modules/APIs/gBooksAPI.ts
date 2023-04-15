@@ -25,10 +25,10 @@ export class GBooksAPI {
 			get(`${this.apiURL}?q=${book}`)
 				.then((res) => {
 					const bookData = res.body.items[0];
-					const mappedAuthors = bookData?.authors
+					const mappedAuthors = bookData?.volumeInfo?.authors
 						?.map((author: string) => author)
 						.join(', ');
-					const mappedCategories = bookData?.categories
+					const mappedCategories = bookData?.volumeInfo?.categories
 						?.map((category: string) => category)
 						.join(', ');
 
@@ -38,17 +38,17 @@ export class GBooksAPI {
 					);
 
 					const bookInfo: GBooksInterface = {
-						title: bookData.volumeInfo.title,
-						description: bookData.volumeInfo.description,
+						title: bookData?.volumeInfo?.title,
+						description: bookData?.volumeInfo?.description,
 						authors: mappedAuthors,
-						publisher: bookData.volumeInfo.publisher,
-						pageCount: bookData.pageCount,
-						publishedDate: bookData.publishedDate,
+						publisher: bookData?.volumeInfo.publisher,
+						pageCount: bookData?.volumeInfo.pageCount,
+						publishedDate: bookData?.publishedDate,
 						publishedDateUnix: publishedDateUnixed,
 						categories: mappedCategories,
 						coverImage: {
-							smallThumbnail: bookData.imageLinks.smallThumbnail,
-							thumbnail: bookData.imageLinks.thumbnail,
+							smallThumbnail: bookData?.volumeInfo?.imageLinks?.smallThumbnail,
+							thumbnail: bookData?.volumeInfo?.imageLinks?.thumbnail,
 						},
 					};
 
@@ -63,6 +63,7 @@ export class GBooksAPI {
 								'🔹 | There was an error while fetching the information from the API.',
 							),
 						],
+						ephemeral: true,
 					});
 				});
 		});
