@@ -167,4 +167,21 @@ export class Util {
 			return presence;
 		}
 	}
+
+	/** Converts time to milliseconds. */
+	public msToTime(time: string): number {
+		const units: Record<string, number> = {
+			ms: 1,
+			s: 1000,
+			m: 60 * 1000,
+			h: 60 * 60 * 1000,
+			d: 24 * 60 * 60 * 1000,
+		};
+
+		const [, valueStr, unitStr] = /^(\d+)(\w+)$/.exec(time) || [];
+		const value = parseInt(valueStr, 10);
+		const unitValue = units[unitStr];
+
+		return value * unitValue;
+	}
 }
