@@ -13,7 +13,7 @@ export async function loadMusic(client?: Evelyn) {
 		client.manager.on(event.name, execute);
 
 		return console.log(
-			`${magenta('Music')} ${white('· Loaded')} ${green(`${event.name}.ts`)}`,
+			`${magenta('Music')} ${white('· Loaded')} ${green(event.name + '.ts')}`,
 		);
 	}
 }
