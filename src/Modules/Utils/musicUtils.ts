@@ -258,13 +258,10 @@ export class MusicUtils {
 
 	/** Checks the query to see if it contains YouTube or YouTube Music. */
 	public checkQuery(query: string) {
-		const YTRegex = new RegExp(
-			'(http(s)?://)?(www.)?(m.)?(youtube.com|youtu.be)/[a-zA-Z0-9-_]+',
-		);
-
-		const YTMRegex = new RegExp(
-			'(http(s)?://)?(music.)?(m.)?(youtube.com|youtu.be)/[a-zA-Z0-9-_]+',
-		);
+		const YTRegex =
+			/(http(s)?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.be)\/[a-zA-Z0-9-_]+/;
+		const YTMRegex =
+			/(http(s)?:\/\/)?(music\.)?(m\.)?(youtube\.com|youtu\.be)\/[a-zA-Z0-9-_]+/;
 
 		if (YTRegex.test(query) || YTMRegex.test(query))
 			return this.interaction.editReply({

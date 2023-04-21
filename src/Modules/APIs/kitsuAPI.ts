@@ -8,9 +8,9 @@ import { KitsuInterface } from '../../Interfaces/KitsuInterface';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 
 export class KitsuAPI {
-	private apiURL: string;
-	private interaction: ChatInputCommandInteraction;
-	private embed: EmbedBuilder;
+	private readonly apiURL: string;
+	private readonly interaction: ChatInputCommandInteraction;
+	private readonly embed: EmbedBuilder;
 
 	/** Creates a new instance of the KitsuAPI class. */
 	constructor(interaction: ChatInputCommandInteraction) {

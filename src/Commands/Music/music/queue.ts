@@ -33,7 +33,7 @@ const subCommand: Subcommand = {
 				.setAuthor({ name: `Current queue for ${guild.name}` })
 				.setTitle(`▶️ | Currently playing: ${player.currentTrack.info.title}`)
 				.setDescription(songs.slice(i, i + 10).join('\n'))
-				.setTimestamp(),
+				.setTimestamp();
 			embeds.push(embed);
 		}
 
