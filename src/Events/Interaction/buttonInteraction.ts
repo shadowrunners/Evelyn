@@ -7,7 +7,7 @@ import { isBlacklisted } from '../../functions/isBlacklisted.js';
 const event: Event = {
 	name: 'interactionCreate',
 	async execute(interaction: ButtonInteraction, client: Evelyn) {
-		const { user, member, customId } = interaction;
+		const { user, customId } = interaction;
 		if (!interaction.isButton()) return;
 
 		const embed = new EmbedBuilder().setColor('Blurple');
@@ -16,26 +16,15 @@ const event: Event = {
 		if (!button || button === undefined) return;
 		if (await isBlacklisted(interaction)) return;
 
-		// if (button.permission && !member.permissions.has(button.permission))
-		//	return interaction.reply({
-		//		embeds: [
-		//			embed.setDescription(
-		//				'🔹 | You don\'t have the required permissions to use this button.',
-		//			),
-		//		],
-		//		ephemeral: true,
-		//	});
-
-		// if (button.developer && !user.id === client.config.ownerIDs) {
-		// 	return interaction.reply({
-		//		embeds: [
-		//			embed.setDescription(
-		//				'🔹 | This button is only available to developers.',
-		//			),
-		//		],
-		//		ephemeral: true,
-		//	});
-		// }
+		if (button.developer)
+			return interaction.reply({
+				embeds: [
+					embed.setDescription(
+						'🔹 | This button is only available to developers.',
+					),
+				],
+				ephemeral: true,
+			});
 
 		button.execute(interaction, client);
 	},

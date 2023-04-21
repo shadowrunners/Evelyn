@@ -178,8 +178,7 @@ const event: Event = {
 
 export default event;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function unique(arr1: any[], arr2: any[]) {
+function unique(arr1: string[], arr2: string[]) {
 	const unique1 = arr1.filter((z) => arr2.indexOf(z) === -1);
 	const unique2 = arr2.filter((z) => arr1.indexOf(z) === -1);
 

@@ -3,7 +3,7 @@ import { magenta, green, white } from '@colors/colors';
 import { fileLoad } from '../../functions/fileLoader.js';
 
 /** Loads Statcord events. */
-export async function loadStats(client: Evelyn) {
+export async function loadStats(client: Evelyn): Promise<void> {
 	const files = await fileLoad('events/statcord');
 	for (const file of files) {
 		// eslint-disable-next-line @typescript-eslint/no-var-requires
