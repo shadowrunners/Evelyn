@@ -1,32 +1,39 @@
 {
 	"name": "evelyn",
-	"version": "5.0.0-beta3",
+	"version": "5.0.0-beta4",
 	"description": "A Discord Bot that puts you as its first priority with no paywalls to interrupt your supercharged experience.",
-	"main": "src/structures/index.js",
+	"main": "dist/index.js",
 	"scripts": {
-		"start": "node ./src/structures/index.js",
-		"dev": "nodemon ./src/structures/index.js"
+		"build": "tsc && node ./dist/index.js",
+		"start": "node ./dist/index.js",
+		"dev": "nodemon ./dist/index.js"
 	},
 	"dependencies": {
+		"@colors/colors": "^1.5.0",
 		"@shadowrunners/automata": "github:shadowrunners/Automata",
 		"canvacord": "^5.4.8",
-		"chalk": "^4.1.2",
 		"discord-arts": "^0.4.0",
-		"discord-economy-super": "^1.7.5",
+		"discord-economy-super": "^1.7.6",
+		"discord-gamecord": "^4.4.0",
 		"discord-html-transcripts": "^3.1.3",
 		"discord-xp": "^1.1.16",
-		"discord.js": "^14.7.1",
+		"discord.js": "^14.9.0",
 		"genius-lyrics": "^4.4.3",
-		"glob": "^9.2.1",
+		"glob": "^9.3.0",
 		"imdb-api": "^4.4.1",
 		"mongoose": "^7.0.1",
 		"ms": "^2.1.3",
-		"node-cron": "^3.0.2",
-		"node-kitsu": "^1.1.1",
-		"popcat-wrapper": "^1.5.4",
-		"pretty-ms": "^7.0.1",
 		"statcord.js": "^3.4.3",
 		"superagent": "^8.0.9"
+	},
+	"devDependencies": {
+		"@types/superagent": "^4.1.16",
+		"@typescript-eslint/eslint-plugin": "^5.55.0",
+		"@typescript-eslint/parser": "^5.55.0",
+		"eslint": "^8.36.0",
+		"nodemon": "^2.0.21",
+		"prettier": "^2.8.4",
+		"typescript": "^4.9.5"
 	},
 	"repository": {
 		"type": "git",
@@ -35,12 +42,7 @@
 	"author": "Shadowrunners",
 	"license": "GPL-v3",
 	"bugs": {
-		"url": "https://github.com//shadowrunners/evelyn/issues"
+		"url": "https://github.com/shadowrunners/evelyn/issues"
 	},
-	"homepage": "https://github.com/shadowrunners/evelyn#readme",
-	"devDependencies": {
-		"eslint": "^8.36.0",
-		"nodemon": "^2.0.21",
-		"prettier": "^2.8.4"
-	}
+	"homepage": "https://github.com/shadowrunners/evelyn#readme"
 }
