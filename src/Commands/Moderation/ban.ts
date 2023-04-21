@@ -24,7 +24,7 @@ const command: Command = {
 		.addStringOption((option) =>
 			option.setName('reason').setDescription('Provide a reason.'),
 		),
-	async execute(interaction: ChatInputCommandInteraction, client: Evelyn) {
+	execute(interaction: ChatInputCommandInteraction, client: Evelyn) {
 		const { options, guild, member } = interaction;
 		const defMember = member as GuildMember;
 		const target = options.getMember('target') as GuildMember;

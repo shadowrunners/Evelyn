@@ -17,7 +17,7 @@ const command: Command = {
 				.setDescription('Provide the name of the movie.')
 				.setRequired(true),
 		),
-	async execute(interaction: ChatInputCommandInteraction, client: Evelyn) {
+	execute(interaction: ChatInputCommandInteraction, client: Evelyn) {
 		const { options } = interaction;
 		const title = options.getString('title');
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();

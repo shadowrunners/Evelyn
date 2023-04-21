@@ -102,7 +102,7 @@ export class KitsuAPI {
 	public fetchManga(manga: string): Promise<KitsuInterface> {
 		return new Promise((resolve, reject) => {
 			get(`${this.apiURL}/manga?filter[text]=${manga}`)
-				.then(async (res) => {
+				.then((res) => {
 					const mangaData = res.body.data[0];
 					const mangaAttributes = mangaData.attributes;
 					const newStatus = mangaAttributes?.status
