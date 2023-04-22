@@ -1,3 +1,4 @@
+import Economy from 'discord-economy-super/mongodb';
 import { Evelyn } from '../../structures/Evelyn.js';
 import { ChatInputCommandInteraction, EmbedBuilder, User } from 'discord.js';
 
@@ -5,6 +6,9 @@ export class EcoUtils {
 	private client: Evelyn;
 	private interaction: ChatInputCommandInteraction;
 	private embed: EmbedBuilder;
+	private economy: Economy<boolean>;
+
+	private userId: string;
 
 	/** Creates a new instance of the Economy Engine class. */
 	constructor(interaction: ChatInputCommandInteraction, client: Evelyn) {
@@ -14,13 +18,18 @@ export class EcoUtils {
 		this.interaction = interaction;
 		/** The base embed used for keeping away from repeated code. */
 		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		/** The economy object. */
+		this.economy = this.client.economy;
+
+		/** The user's id. */
+		this.userId = this.interaction.user.id;
 	}
 
 	/** Fetches the user. */
 	private fetchUser() {
-		const user = this.client.economy.cache.users.get({
-			memberID: this.interaction.user.id,
-			guildID: this.interaction.guildId,
+		const user = this.economy.cache.users.get({
+			memberID: this.userId,
+			guildID: 'global',
 		});
 
 		return user;
@@ -28,9 +37,11 @@ export class EcoUtils {
 
 	/** Fetches the provided user. */
 	fetchTarget(target: User) {
-		const fetchedTarget = this.client.economy.cache.users.get({
-			memberID: target.id,
-			guildID: this.interaction.guildId,
+		const { id } = target;
+
+		const fetchedTarget = this.economy.cache.users.get({
+			memberID: id,
+			guildID: 'global',
 		});
 
 		return fetchedTarget;
@@ -43,42 +54,42 @@ export class EcoUtils {
 	}
 
 	/** Fetches the guild cache. */
-	private async getGuild() {
-		const fetchGuild = await this.client.economy.cache.guilds.get({
-			guildID: this.interaction.guildId,
+	private getGuild() {
+		const fetchGuild = this.economy.cache.guilds.get({
+			guildID: 'global',
 		});
 
 		return fetchGuild;
 	}
 
 	/** Fetches your purchase history. */
-	private async getHistory() {
+	private getHistory() {
 		const ecoHistory =
-			(await this.client.economy.cache.history.get({
-				memberID: this.interaction.user.id,
-				guildID: this.interaction.guildId,
-			})) || [];
+			this.economy.cache.history.get({
+				memberID: this.userId,
+				guildID: 'global',
+			}) || [];
 
 		return ecoHistory;
 	}
 
-	/** Fetches the server's shop. */
-	private async getShop() {
+	/** Fetches the global shop. */
+	private getShop() {
 		const ecoHistory =
-			(await this.client.economy.cache.shop.get({
-				guildID: this.interaction.guildId,
-			})) || [];
+			this.economy.cache.shop.get({
+				guildID: 'global',
+			}) || [];
 
 		return ecoHistory;
 	}
 
 	/** Fetches your inventory. */
-	private async getInventory() {
+	private getInventory() {
 		const ecoHistory =
-			(await this.client.economy.cache.inventory.get({
-				memberID: this.interaction.user.id,
-				guildID: this.interaction.guildId,
-			})) || [];
+			this.economy.cache.inventory.get({
+				memberID: this.userId,
+				guildID: 'global',
+			}) || [];
 
 		return ecoHistory;
 	}
@@ -177,8 +188,8 @@ export class EcoUtils {
 	}
 
 	/** Shows your purchase history. */
-	public async history() {
-		const ecoHistory = await this.getHistory();
+	public history() {
+		const ecoHistory = this.getHistory();
 		const userHistory = ecoHistory.filter((item) => !item.custom.hidden);
 
 		if (!userHistory.length) {
@@ -208,7 +219,7 @@ export class EcoUtils {
 
 	/** Shows the richest users of a specific server. */
 	public async leaderboard() {
-		const ecoGuild = await this.getGuild();
+		const ecoGuild = this.getGuild();
 		const rawLB = await ecoGuild.leaderboards.money();
 		const leaderboard = rawLB
 			.filter((lb) => !this.getUser(lb.userID)?.bot)
@@ -241,10 +252,10 @@ export class EcoUtils {
 	}
 
 	/** Shows your inventory. */
-	public async inventory() {
-		const userInventory = await this.getInventory();
+	public inventory() {
+		const userInventory = this.getInventory();
 		const filterInventory = userInventory.filter((item) => !item.custom.hidden);
-		const serverShop = await this.getShop();
+		const globalShop = this.getShop();
 
 		if (filterInventory.length)
 			return this.interaction.editReply({
@@ -255,7 +266,7 @@ export class EcoUtils {
 			...new Set(filterInventory.map((item) => item.name)),
 		]
 			.map((itemName) =>
-				serverShop.find((shopItem) => shopItem.name == itemName),
+				globalShop.find((shopItem) => shopItem.name == itemName),
 			)
 			.map((item) => {
 				const quantity = filterInventory.filter(
