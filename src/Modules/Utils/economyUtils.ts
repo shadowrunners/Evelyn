@@ -94,41 +94,43 @@ export class EcoUtils {
 		return ecoHistory;
 	}
 
+	/** Converts a timestring to Unix. (thanks ChatGPT) */
+	private time2Unix(time: Time) {
+		const secondsInDays = time.days * 86400;
+		const secondsInHours = time.hours * 3600;
+		const secondsInMinutes = time.minutes * 60;
+		const seconds = time.seconds;
+		const totalSeconds =
+			secondsInDays + secondsInHours + secondsInMinutes + seconds;
+
+		const currentDay = new Date();
+		currentDay.setHours(0, 0, 0, 0);
+		const midnightTimestamp = Math.floor(currentDay.getTime() / 1000);
+
+		const unixTimestamp = midnightTimestamp + totalSeconds;
+		return unixTimestamp;
+	}
+
 	/** Collects the daily reward. */
 	public async collectDaily() {
 		const ecoUser = this.fetchUser();
-		const dailyResult = await ecoUser.rewards.getDaily<false>();
+		const { claimed, cooldown, reward } =
+			await ecoUser.rewards.getDaily<false>();
+		const time = this.time2Unix(cooldown.time);
 
-		if (!dailyResult.claimed) {
-			const cooldownTime = dailyResult.cooldown.time;
-
-			const cooldownTimeString =
-				`${cooldownTime.days ? `**${cooldownTime.days}** days, ` : ''}` +
-				`${
-					cooldownTime.days || cooldownTime.hours
-						? `**${cooldownTime.hours}** hours, `
-						: ''
-				}` +
-				`${
-					cooldownTime.hours || cooldownTime.minutes
-						? `**${cooldownTime.minutes}** minutes, `
-						: ''
-				}` +
-				`**${cooldownTime.seconds}** seconds`;
-
-			return this.interaction.editReply({
+		if (!claimed)
+			return this.interaction.reply({
 				embeds: [
 					this.embed.setDescription(
-						`🔹 | ${ecoUser}, you can claim your daily reward in ${cooldownTimeString}!`,
+						`🔹 | <@${ecoUser.id}>, you can claim your next daily reward <t:${time}:R>!`,
 					),
 				],
 			});
-		}
 
-		return this.interaction.editReply({
+		return this.interaction.reply({
 			embeds: [
 				this.embed.setDescription(
-					`🔹 | ${dailyResult.reward} SC have been added to your account!`,
+					`🔹 | ${reward} SC have been added to your account!`,
 				),
 			],
 		});
@@ -136,23 +138,22 @@ export class EcoUtils {
 
 	/** Pulls the balance and shows it to the user in an embed. */
 	public async balance(target: User) {
-		console.log(target);
 		const fetchTarget = this.fetchTarget(target);
-		const member = target || this.getUser(target.id);
-		const economyUser = member ? fetchTarget : null;
+		const member = target ?? this.getUser(target.id);
+		const { id } = member ? fetchTarget : null;
 
 		const [balance, bank] = [
 			await fetchTarget.balance.get(),
 			await fetchTarget.bank.get(),
 		];
 
-		const userName = this.getUser(economyUser.id);
+		const user = this.getUser(id);
 
-		return this.interaction.editReply({
+		return this.interaction.reply({
 			embeds: [
 				this.embed.setDescription(
-					`**${userName}'s Wallet**\n
-            **Runner Coins:** ${balance || 0}\n**Stored Runner Coins:** ${
+					`**${user}'s Wallet**\n
+            > **Runner Coins:** ${balance || 0}\n> **Stored Runner Coins:** ${
 	bank || 0
 }`,
 				),
@@ -160,28 +161,27 @@ export class EcoUtils {
 		});
 	}
 
-	/** Deposits coins to your EdgeBank account. */
+	/** Deposits coins to your ShadowBank account. */
 	public async deposit(amount: number) {
 		const ecoUser = this.fetchUser();
 		const userBalance = await ecoUser.balance.get();
 
-		if (userBalance < amount ?? !userBalance) {
-			return this.interaction.editReply({
+		if (userBalance < amount ?? !userBalance)
+			return this.interaction.reply({
 				embeds: [
 					this.embed.setDescription(
-						'🔹 | The amount you provided exceeds or is below the amount of coins you have.',
+						'🔹 | The amount you provided exceeds or is below the amount of ShadowCoins you have.',
 					),
 				],
 			});
-		}
 
 		await ecoUser.balance.subtract(amount, `deposited ${amount} SC.`);
 		await ecoUser.bank.add(amount, `deposited ${amount} SC.`);
 
-		return this.interaction.editReply({
+		return this.interaction.reply({
 			embeds: [
 				this.embed.setDescription(
-					`🔹 | ${amount} SC has been deposited to your EdgeBank account!`,
+					`🔹 | ${amount} SC has been deposited to your ShadowBank account!`,
 				),
 			],
 		});
@@ -219,13 +219,14 @@ export class EcoUtils {
 
 	/** Shows the richest users of a specific server. */
 	public async leaderboard() {
+		const { guild } = this.interaction;
 		const ecoGuild = this.getGuild();
 		const rawLB = await ecoGuild.leaderboards.money();
 		const leaderboard = rawLB
 			.filter((lb) => !this.getUser(lb.userID)?.bot)
 			.filter((lb) => !!lb.money);
 
-		if (!leaderboard.length) {
+		if (!leaderboard.length)
 			return this.interaction.editReply({
 				embeds: [
 					this.embed.setDescription(
@@ -233,12 +234,11 @@ export class EcoUtils {
 					),
 				],
 			});
-		}
 
 		return this.interaction.editReply({
 			embeds: [
 				this.embed
-					.setTitle(`${this.interaction.guild.name} | Money Leaderboard`)
+					.setTitle(`${guild.name} | Money Leaderboard`)
 					.setDescription(
 						`${leaderboard
 							.map(
@@ -303,75 +303,24 @@ export class EcoUtils {
 	/** Adds the weekly amount to your account. */
 	public async weekly() {
 		const ecoUser = this.fetchUser();
-		const weeklyResult = await ecoUser.rewards.getWeekly();
+		const { user } = this.interaction;
+		const { claimed, cooldown, reward } =
+			await ecoUser.rewards.getWeekly<true>();
+		const time = this.time2Unix(cooldown.time);
 
-		if (weeklyResult.cooldown) {
-			const cooldownTime = weeklyResult.cooldown.time;
-			let cooldownTimeString = '';
-
-			if (cooldownTime.days) {
-				cooldownTimeString += `**${cooldownTime.days}** days,`;
-			}
-			if (cooldownTime.days || cooldownTime.hours) {
-				cooldownTimeString += `**${cooldownTime.hours}** hours, `;
-			}
-
-			if (cooldownTime.hours || cooldownTime.minutes) {
-				cooldownTimeString += `**${cooldownTime.minutes}** minutes, `;
-			}
-
-			cooldownTimeString += `**${cooldownTime.seconds}** seconds`;
-
+		if (!claimed)
 			return this.interaction.editReply({
 				embeds: [
 					this.embed.setDescription(
-						`🔹 | ${this.interaction.user}, you can claim your daily reward in ${cooldownTimeString}!`,
+						`🔹 | ${user}, you can claim your next weekly reward <t:${time}:R>!`,
 					),
 				],
 			});
-		}
 
 		return this.interaction.editReply({
 			embeds: [
 				this.embed.setDescription(
-					`🔹 | ${weeklyResult.reward} RC has been added to your account!`,
-				),
-			],
-		});
-	}
-
-	/** Transfers money to another user. */
-	public async transfer(target: User, amount: number) {
-		const ecoUser = this.fetchUser();
-		const providedTarget = this.fetchTarget(target);
-
-		const senderBalance = await ecoUser.balance.get();
-
-		if (senderBalance < amount) {
-			return this.interaction.editReply({
-				embeds: [
-					this.embed.setDescription(
-						'🔹 | The amount you provided exceeds the amount of coins you have.',
-					),
-				],
-			});
-		}
-
-		const transferringResult = await providedTarget.balance.transfer({
-			amount: amount,
-			senderMemberID: this.interaction.user.id,
-			sendingReason: `Transfered ${amount} RC to ${
-				this.getUser(providedTarget.id).tag
-			}.`,
-			receivingReason: `Received ${amount} RC from ${this.interaction.user.tag}.`,
-		});
-
-		return this.interaction.editReply({
-			embeds: [
-				this.embed.setDescription(
-					`🔹 | Transaction completed. You have successfully transferred **${
-						transferringResult.amount
-					}** RC to ${await this.getUser(providedTarget.id)}.`,
+					`🔹 | ${reward} RC has been added to your account!`,
 				),
 			],
 		});
@@ -382,7 +331,7 @@ export class EcoUtils {
 		const ecoUser = this.fetchUser();
 		const userBalance = await ecoUser.bank.get();
 
-		if (userBalance < amount || !userBalance) {
+		if (userBalance < amount || !userBalance)
 			return this.interaction.editReply({
 				embeds: [
 					this.embed.setDescription(
@@ -390,7 +339,6 @@ export class EcoUtils {
 					),
 				],
 			});
-		}
 
 		await ecoUser.balance.subtract(amount, `deposited ${amount} RC.`);
 		await ecoUser.bank.add(amount, `deposited ${amount} RC.`);
@@ -407,40 +355,33 @@ export class EcoUtils {
 	/** Works and puts a nice amount of SC into your wallet. */
 	public async work() {
 		const ecoUser = this.fetchUser();
-		const workResult = await ecoUser.rewards.getWork();
+		const { user } = this.interaction;
+		const { reward, cooldown, claimed } = await ecoUser.rewards.getWork<true>();
+		const time = this.time2Unix(cooldown.time);
 
-		if (workResult.cooldown) {
-			const cooldownTime = workResult.cooldown.time;
-			let cooldownTimeString = '';
-
-			if (cooldownTime.days) {
-				cooldownTimeString += `**${cooldownTime.days}** days,`;
-			}
-			if (cooldownTime.days || cooldownTime.hours) {
-				cooldownTimeString += `**${cooldownTime.hours}** hours, `;
-			}
-
-			if (cooldownTime.hours || cooldownTime.minutes) {
-				cooldownTimeString += `**${cooldownTime.minutes}** minutes, `;
-			}
-
-			cooldownTimeString += `**${cooldownTime.seconds}** seconds`;
-
+		if (!claimed)
 			return this.interaction.editReply({
 				embeds: [
 					this.embed.setDescription(
-						`🔹 | ${this.interaction.user}, you can work again in ${cooldownTimeString}!`,
+						`🔹 | ${user}, you can work again in <t:${time}>!`,
 					),
 				],
 			});
-		}
 
 		return this.interaction.editReply({
 			embeds: [
 				this.embed.setDescription(
-					`🔹 | You ran a Time Trial in Edge City and not only did you get 1st place but you also got paid ${workResult.reward} RC for your amazing performance.`,
+					`🔹 | You ran a Time Trial in Edge City and not only did you get 1st place but you also got paid ${reward} RC for your amazing performance.`,
 				),
 			],
 		});
 	}
+}
+
+interface Time {
+	days?: number;
+	hours: number;
+	minutes: number;
+	seconds: number;
+	milliseconds: number;
 }
