@@ -4,7 +4,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { Evelyn } from '../../../structures/Evelyn';
 
 const subCommand: Subcommand = {
-	subCommand: 'eco.weekly',
+	subCommand: 'economy.weekly',
 	execute(interaction: ChatInputCommandInteraction, client: Evelyn) {
 		const utils = new EcoUtils(interaction, client);
 		return utils.weekly();

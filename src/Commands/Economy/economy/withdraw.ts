@@ -4,7 +4,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { Evelyn } from '../../../structures/Evelyn';
 
 const subCommand: Subcommand = {
-	subCommand: 'eco.withdraw',
+	subCommand: 'economy.withdraw',
 	execute(interaction: ChatInputCommandInteraction, client: Evelyn) {
 		const { options } = interaction;
 		const amount = options.getNumber('amount');
