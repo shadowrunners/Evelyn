@@ -309,7 +309,7 @@ export class EcoUtils {
 		const time = this.time2Unix(cooldown.time);
 
 		if (!claimed)
-			return this.interaction.editReply({
+			return this.interaction.reply({
 				embeds: [
 					this.embed.setDescription(
 						`🔹 | ${user}, you can claim your next weekly reward <t:${time}:R>!`,
@@ -317,7 +317,7 @@ export class EcoUtils {
 				],
 			});
 
-		return this.interaction.editReply({
+		return this.interaction.reply({
 			embeds: [
 				this.embed.setDescription(
 					`🔹 | ${reward} RC has been added to your account!`,
@@ -332,7 +332,7 @@ export class EcoUtils {
 		const userBalance = await ecoUser.bank.get();
 
 		if (userBalance < amount || !userBalance)
-			return this.interaction.editReply({
+			return this.interaction.reply({
 				embeds: [
 					this.embed.setDescription(
 						'🔹 | The amount you provided exceeds or is below the amount of coins you have.',
@@ -343,7 +343,7 @@ export class EcoUtils {
 		await ecoUser.balance.subtract(amount, `deposited ${amount} RC.`);
 		await ecoUser.bank.add(amount, `deposited ${amount} RC.`);
 
-		return this.interaction.editReply({
+		return this.interaction.reply({
 			embeds: [
 				this.embed.setDescription(
 					`🔹 | ${amount} RC has been withdrawn from your EdgeBank account!`,
@@ -360,7 +360,7 @@ export class EcoUtils {
 		const time = this.time2Unix(cooldown.time);
 
 		if (!claimed)
-			return this.interaction.editReply({
+			return this.interaction.reply({
 				embeds: [
 					this.embed.setDescription(
 						`🔹 | ${user}, you can work again in <t:${time}>!`,
@@ -368,7 +368,7 @@ export class EcoUtils {
 				],
 			});
 
-		return this.interaction.editReply({
+		return this.interaction.reply({
 			embeds: [
 				this.embed.setDescription(
 					`🔹 | You ran a Time Trial in Edge City and not only did you get 1st place but you also got paid ${reward} RC for your amazing performance.`,
