@@ -1,10 +1,6 @@
 import { Evelyn } from '../../Structures/Evelyn';
 import { Event } from '../../Interfaces/interfaces';
-import {
-	ModalSubmitInteraction,
-	EmbedBuilder,
-	PermissionsBitField,
-} from 'discord.js';
+import { ModalSubmitInteraction, EmbedBuilder } from 'discord.js';
 import { isBlacklisted } from '../../functions/isBlacklisted';
 
 const event: Event = {
