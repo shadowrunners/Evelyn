@@ -12,8 +12,8 @@ const { KickMembers } = PermissionFlagsBits;
 
 const command: Command = {
 	data: new SlashCommandBuilder()
-		.setName('lock')
-		.setDescription('Locks a channel.')
+		.setName('kick')
+		.setDescription('Kicks a user.')
 		.setDefaultMemberPermissions(KickMembers)
 		.addUserOption((options) =>
 			options
