@@ -33,7 +33,7 @@ const command: Command = {
 				)
 				.addNumberOption((option) =>
 					option
-						.setName('number')
+						.setName('amount')
 						.setDescription('Provide the amount you\'d like to deposit.')
 						.setRequired(true),
 				),
@@ -44,23 +44,37 @@ const command: Command = {
 				.setDescription('Shows you your purchase history.'),
 		)
 		.addSubcommand((options) =>
+			options.setName('inventory').setDescription('Shows you your inventory.'),
+		)
+		.addSubcommand((options) =>
 			options
-				.setName('user')
-				.setDescription('Blacklist a user.')
-				.addStringOption((option) =>
-					option
-						.setName('userid')
-						.setDescription(
-							'Provide the ID of the user you would like to blacklist.',
-						)
-						.setRequired(true),
+				.setName('leaderboard')
+				.setDescription('Shows you the global leaderboard.'),
+		)
+		.addSubcommand((options) =>
+			options
+				.setName('weekly')
+				.setDescription(
+					'Injects some coins into your wallet on a weekly basis.',
+				),
+		)
+		.addSubcommand((options) =>
+			options
+				.setName('withdraw')
+				.setDescription(
+					'Withdraws an amount of SC from your ShadowBank wallet.',
 				)
-				.addStringOption((option) =>
+				.addNumberOption((option) =>
 					option
-						.setName('reason')
-						.setDescription('Provide the reason of the blacklist.')
+						.setName('amount')
+						.setDescription('Provide the amount you\'d like to withdraw.')
 						.setRequired(true),
 				),
+		)
+		.addSubcommand((options) =>
+			options
+				.setName('work')
+				.setDescription('Take a side gig to charge up your wallet.'),
 		),
 };
 

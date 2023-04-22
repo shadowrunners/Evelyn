@@ -6,8 +6,9 @@ import { Evelyn } from '../../../structures/Evelyn';
 const subCommand: Subcommand = {
 	subCommand: 'economy.history',
 	async execute(interaction: ChatInputCommandInteraction, client: Evelyn) {
-		await interaction.deferReply();
 		const utils = new EcoUtils(interaction, client);
+		await interaction.deferReply();
+
 		return utils.history();
 	},
 };
