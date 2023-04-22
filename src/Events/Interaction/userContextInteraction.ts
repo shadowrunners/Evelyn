@@ -20,7 +20,8 @@ const event: Event = {
 			return interaction.reply({
 				embeds: [embed.setDescription('This command is outdated.')],
 			});
-		else return command.execute(interaction, client);
+
+		return command.execute(interaction, client);
 	},
 };
 

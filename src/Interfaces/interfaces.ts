@@ -1,5 +1,4 @@
 import {
-	ChatInputCommandInteraction,
 	SlashCommandBuilder,
 	ModalSubmitInteraction,
 	SlashCommandSubcommandsOnlyBuilder,
@@ -7,7 +6,7 @@ import {
 	ButtonInteraction,
 	ContextMenuCommandBuilder,
 	ContextMenuCommandInteraction,
-	UserContextMenuCommandInteraction,
+	CommandInteraction,
 } from 'discord.js';
 import { Evelyn } from '../structures/Evelyn.js';
 
@@ -18,12 +17,7 @@ export interface Command {
 		| SlashCommandBuilder
 		| SlashCommandSubcommandsOnlyBuilder
 		| Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>;
-	execute?: (
-		interaction:
-			| ChatInputCommandInteraction
-			| UserContextMenuCommandInteraction,
-		client: Evelyn
-	) => void;
+	execute?: (interaction: CommandInteraction, client: Evelyn) => void;
 }
 
 export interface Subcommand {
@@ -43,9 +37,10 @@ export interface Event {
 }
 
 export interface Buttons {
-	botPermissions?: Array<PermissionResolvable>;
 	id: string;
 	developer?: boolean | false;
+	botPermissions?: Array<PermissionResolvable>;
+	userPermissions?: Array<PermissionResolvable>;
 	execute: (interaction: ButtonInteraction, client: Evelyn) => void;
 }
 
@@ -71,7 +66,7 @@ export interface botConfig {
 	/** The MongoDB database URI. */
 	database: string;
 	/** The array of IDs for the owners / developers of the bot. */
-	ownerIDs: [];
+	ownerIDs: Array<string>;
 	debug: {
 		devGuild: string;
 		overwatchChannel: string;

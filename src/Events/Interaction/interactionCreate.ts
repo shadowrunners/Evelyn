@@ -39,9 +39,9 @@ const event: Event = {
 			//		ephemeral: true,
 			//	});
 
-			subCommandFile.execute(interaction, client);
+			return subCommandFile.execute(interaction, client);
 		}
-		else command.execute(interaction, client);
+		else return command.execute(interaction, client);
 	},
 };
 

@@ -1,34 +1,34 @@
-import { Evelyn } from '../../structures/Evelyn.js';
-import { Event } from '../../interfaces/interfaces.js';
-import { ModalSubmitInteraction, EmbedBuilder } from 'discord.js';
-import { isBlacklisted } from '../../functions/isBlacklisted.js';
+import { Evelyn } from '../../Structures/Evelyn';
+import { Event } from '../../Interfaces/interfaces';
+import {
+	ModalSubmitInteraction,
+	EmbedBuilder,
+	PermissionsBitField,
+} from 'discord.js';
+import { isBlacklisted } from '../../functions/isBlacklisted';
 
 const event: Event = {
 	name: 'interactionCreate',
 	async execute(interaction: ModalSubmitInteraction, client: Evelyn) {
+		const { user, customId } = interaction;
 		if (!interaction.isModalSubmit()) return;
 
-		const { guild } = interaction;
 		const embed = new EmbedBuilder().setColor('Blurple');
-		const modal = client.modals.get(interaction.customId);
+		const modal = client.modals.get(customId);
 		if (await isBlacklisted(interaction)) return;
 
-		if (!modal || modal === undefined) return;
+		if (!modal ?? modal === undefined) return;
 
-		if (
-			modal.botPermissions &&
-			!guild.members.me.permissions.has(modal.botPermissions)
-		)
+		if (modal.developer && !client.config.ownerIDs.includes(user.id))
 			return interaction.reply({
 				embeds: [
 					embed.setDescription(
-						'🔹 | You don\'t have the required permissions to use this button.',
+						'🔹 | This modal is only available to developers.',
 					),
 				],
-				ephemeral: true,
 			});
 
-		modal.execute(interaction, client);
+		return modal.execute(interaction, client);
 	},
 };
 
