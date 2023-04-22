@@ -18,17 +18,17 @@ const command: Command = {
 		.setDefaultMemberPermissions(ManageChannels)
 		.addStringOption((options) =>
 			options
+				.setName('reason')
+				.setDescription('Provide a reason for the lockdown.')
+				.setRequired(true),
+		)
+		.addStringOption((options) =>
+			options
 				.setName('time')
 				.setDescription(
 					'How long would you like the channel to stay locked for?',
 				)
 				.setRequired(false),
-		)
-		.addStringOption((options) =>
-			options
-				.setName('reason')
-				.setDescription('Provide a reason for the lockdown.')
-				.setRequired(true),
 		),
 	execute(interaction: ChatInputCommandInteraction) {
 		const { msToTime } = new Util();
