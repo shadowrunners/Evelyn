@@ -1,12 +1,14 @@
-import { Event } from '../../interfaces/interfaces.js';
+import { Event } from '../../interfaces/interfaces';
 import { Node } from '@shadowrunners/automata';
-import { magenta, white } from '@colors/colors';
+import colors from '@colors/colors';
 
 const event: Event = {
 	name: 'nodeConnect',
 	execute(node: Node) {
 		console.log(
-			`${magenta('Lavalink')} ${white(`· Connected to node ${node.name}.`)}`,
+			`${colors.magenta('Lavalink')} ${colors.white(
+				`· Connected to node ${node.options.name}.`,
+			)}`,
 		);
 	},
 };

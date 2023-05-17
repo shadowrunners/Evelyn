@@ -1,13 +1,13 @@
-import { Event } from '../../interfaces/interfaces.js';
+import { Event } from '../../interfaces/interfaces';
 import { Node } from '@shadowrunners/automata';
-import { magenta, white } from '@colors/colors';
+import colors from '@colors/colors';
 
 const event: Event = {
 	name: 'nodeError',
 	execute(node: Node, error: Error) {
 		console.log(
-			`${magenta('Lavalink')} ${white(
-				`· Node "${node.name}" has encountered an error: ${error.message}.`,
+			`${colors.magenta('Lavalink')} ${colors.white(
+				`· Node "${node.options.name}" has encountered an error: ${error.message}.`,
 			)}`,
 		);
 	},

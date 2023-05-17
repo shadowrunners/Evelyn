@@ -14,7 +14,10 @@ import { Player } from '@shadowrunners/automata';
 import { Util } from './utils.js';
 
 export class MusicUtils {
-	private interaction: ChatInputCommandInteraction | ButtonInteraction;
+	private interaction:
+		| ChatInputCommandInteraction
+		| ButtonInteraction
+		| undefined;
 	private embed: EmbedBuilder;
 	private player: Player;
 	private util: Util;
@@ -124,7 +127,7 @@ export class MusicUtils {
 	/** This function seeks to the time provided by you. */
 	public seek(time: number) {
 		const duration = Number(time) * 1000;
-		const trackDuration = this.player.currentTrack.info.length;
+		const trackDuration = this.player.queue.current.length;
 
 		if (duration > trackDuration)
 			return this.interaction.editReply({
@@ -197,12 +200,6 @@ export class MusicUtils {
 			return this.interaction.editReply({
 				embeds: [embed],
 			});
-		case 'karaoke':
-			// this.player.filters.karaoke();
-
-			return this.interaction.editReply({
-				embeds: [embed],
-			});
 		case 'nightcore':
 			this.player.filters.nightcore();
 
@@ -235,12 +232,6 @@ export class MusicUtils {
 			});
 		case 'vaporwave':
 			this.player.filters.vaporwave();
-
-			return this.interaction.editReply({
-				embeds: [embed],
-			});
-		case 'vibrato':
-			// this.player.filters.vibrato();
 
 			return this.interaction.editReply({
 				embeds: [embed],
