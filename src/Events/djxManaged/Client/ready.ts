@@ -1,19 +1,19 @@
-import { ActivityType } from 'discord.js';
-import { magenta, white, green, red } from '@colors/colors';
-import { loadCommands } from '../../structures/handlers/commands.js';
-import { check4Reminders } from '../../functions/check4Reminders.js';
-import { check4Lockdowns } from '../../functions/check4Lockdowns.js';
-import { set } from 'mongoose';
 import DXP from 'discord-xp';
-import { Evelyn } from '../../structures/Evelyn.js';
-import { Event } from '../../interfaces/interfaces.js';
+import { set } from 'mongoose';
+import { Discord, Once } from 'discordx';
+import { ActivityType } from 'discord.js';
+import { Evelyn } from '../../../Evelyn.js';
+import colors from '@colors/colors';
+import { check4Reminders } from '../../../functions/check4Reminders.js';
+import { check4Lockdowns } from '../../../functions/check4Lockdowns.js';
 
-const event: Event = {
-	name: 'ready',
-	once: true,
-	execute(client: Evelyn) {
-		loadCommands(client);
-
+@Discord()
+export class onReady {
+	@Once({
+		event: 'ready',
+	})
+	async ready([client]: [Evelyn]) {
+		const { magenta, white, green, red } = colors;
 		const { user, config, statcord, manager } = client;
 
 		console.info(
@@ -25,7 +25,7 @@ const event: Event = {
 		user.setPresence({
 			activities: [
 				{
-					name: 'Floating in the Cyberspace | @me for info',
+					name: 'it\'s morbin time baby :)',
 					type: ActivityType.Streaming,
 				},
 			],
@@ -39,6 +39,7 @@ const event: Event = {
 			);
 		}
 
+		client.initApplicationCommands();
 		statcord.autopost();
 		manager.init(client);
 
@@ -58,7 +59,5 @@ const event: Event = {
 		check4Reminders(client);
 		check4Lockdowns(client);
 		DXP.setURL(client.config.database);
-	},
-};
-
-export default event;
+	}
+}
