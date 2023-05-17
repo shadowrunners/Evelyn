@@ -1,19 +1,27 @@
 import {
-	SlashCommandBuilder,
-	ActionRowBuilder,
-	TextInputBuilder,
+	EmbedBuilder,
 	ModalBuilder,
 	TextInputStyle,
+	ActionRowBuilder,
+	TextInputBuilder,
 	ChatInputCommandInteraction,
+	ModalSubmitInteraction,
 } from 'discord.js';
-import { Command } from '../../interfaces/interfaces.js';
 const { Paragraph } = TextInputStyle;
+import { GuildDB as DB } from '../../Schemas/guild.js';
+import { Discord, Slash, ModalComponent } from 'discordx';
+import { webhookDelivery } from '../../Functions/webhookDelivery.js';
 
-const command: Command = {
-	data: new SlashCommandBuilder()
-		.setName('confess')
-		.setDescription('Send a confession.'),
-	async execute(interaction: ChatInputCommandInteraction) {
+@Discord()
+export class Confess {
+	private embed: EmbedBuilder;
+
+	constructor() {
+		this.embed = new EmbedBuilder().setColor('Blurple');
+	}
+
+	@Slash({ description: 'Send a confession', name: 'confess' })
+	async confess(interaction: ChatInputCommandInteraction): Promise<void> {
 		const modal = new ModalBuilder()
 			.setCustomId('confessionModal')
 			.setTitle('Send a confession')
@@ -28,7 +36,45 @@ const command: Command = {
 				),
 			);
 		await interaction.showModal(modal);
-	},
-};
+	}
 
-export default command;
+	@ModalComponent()
+	async confessionModal(interaction: ModalSubmitInteraction) {
+		const { fields, guildId } = interaction;
+
+		const [confession] = ['confession'].map((id) =>
+			fields.getTextInputValue(id),
+		);
+
+		const data = await DB.findOne({
+			id: guildId,
+		});
+
+		if (!data?.confessions?.enabled || !data?.confessions.webhook.id)
+			return interaction.reply({
+				embeds: [
+					this.embed.setDescription(
+						'🔹 | Confessions are not enabled on this server or a channel for them hasn\'t been set yet.',
+					),
+				],
+				ephemeral: true,
+			});
+
+		interaction.reply({
+			embeds: [
+				this.embed.setDescription(
+					'🔹 | Your confession will be delivered shortly.',
+				),
+			],
+			ephemeral: true,
+		});
+
+		return webhookDelivery(
+			'confessions',
+			data,
+			this.embed
+				.setTitle('A wild confession has appeared!')
+				.setDescription(confession),
+		);
+	}
+}

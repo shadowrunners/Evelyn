@@ -1,48 +1,147 @@
+import { Discord, Slash, SlashGroup, SlashOption, SlashChoice } from 'discordx';
 import {
-	SlashCommandBuilder,
-	PermissionFlagsBits,
 	ChannelType,
+	TextChannel,
+	EmbedBuilder,
+	PermissionFlagsBits,
+	ChatInputCommandInteraction,
+	ApplicationCommandOptionType,
 } from 'discord.js';
-import { Command } from '../../interfaces/interfaces.js';
-
+import { GuildDB as DB } from '../../Schemas/guild.js';
+import { Evelyn } from '../../Evelyn.js';
 const { Administrator } = PermissionFlagsBits;
-const { GuildText } = ChannelType;
 
-const command: Command = {
-	// botPermissions: ['SendMessages'],
-	data: new SlashCommandBuilder()
-		.setName('confessions')
-		.setDescription('Manage and configure confessions.')
-		.setDefaultMemberPermissions(Administrator)
-		.addSubcommand((options) =>
-			options
-				.setName('toggle')
-				.setDescription(
-					'Gives you the ability to toggle confessions on and off.',
-				)
-				.addStringOption((option) =>
-					option
-						.setName('choice')
-						.setDescription('Select one of the choices.')
-						.setRequired(true)
-						.addChoices(
-							{ name: 'Enable', value: 'enable' },
-							{ name: 'Disable', value: 'disable' },
-						),
-				),
-		)
-		.addSubcommand((options) =>
-			options
-				.setName('set-channel')
-				.setDescription('Sets the channel where logs will be sent.')
-				.addChannelOption((option) =>
-					option
-						.setName('channel')
-						.setDescription('Provide the channel.')
-						.addChannelTypes(GuildText)
-						.setRequired(true),
-				),
-		),
-};
+@Discord()
+@SlashGroup({
+	description: 'Manage and configure confessions.',
+	name: 'confessions',
+})
+@SlashGroup('confessions')
+export class Confessions {
+	private embed: EmbedBuilder;
 
-export default command;
+	constructor() {
+		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+	}
+
+	@Slash({
+		description: 'Gives you the ability to toggle anti-phishing on and off.',
+		defaultMemberPermissions: [Administrator],
+		name: 'toggle',
+	})
+	async toggle(
+		@SlashChoice({ name: 'Enable', value: 'enable' })
+		@SlashChoice({ name: 'Disable', value: 'disable' })
+		@SlashOption({
+			description: 'Select one of the choices.',
+			name: 'choice',
+			required: true,
+			type: ApplicationCommandOptionType.String,
+		})
+			choice: string,
+			interaction: ChatInputCommandInteraction,
+	) {
+		const { guildId } = interaction;
+		const data = await DB.findOne({ id: guildId });
+
+		if (choice === 'enable' && data.confessions.enabled === true)
+			return interaction.reply({
+				embeds: [
+					this.embed.setDescription(
+						'🔹 | The confessions system is already enabled.',
+					),
+				],
+				ephemeral: true,
+			});
+
+		if (choice === 'disable' && data.confessions.enabled === false)
+			return interaction.reply({
+				embeds: [
+					this.embed.setDescription(
+						'🔹 | The confessions system is already disabled.',
+					),
+				],
+				ephemeral: true,
+			});
+
+		await DB.findOneAndUpdate(
+			{
+				id: guildId,
+			},
+			{
+				$set: {
+					'confessions.enabled': choice === 'enable' ?? choice === 'false',
+				},
+			},
+		);
+
+		return interaction.reply({
+			embeds: [
+				this.embed.setDescription(
+					`🔹 | The confessions system has been ${
+						choice === 'enable' ? 'enabled' : 'disabled'
+					}.`,
+				),
+			],
+			ephemeral: true,
+		});
+	}
+
+	@Slash({
+		description: 'Sets the channel where logs will be sent.',
+		defaultMemberPermissions: [Administrator],
+		name: 'setchannel',
+	})
+	async setchannel(
+		@SlashOption({
+			description: 'Provide the channel.',
+			name: 'channel',
+			required: true,
+			type: ApplicationCommandOptionType.Channel,
+			channelTypes: [ChannelType.GuildText],
+		})
+			channel: TextChannel,
+			interaction: ChatInputCommandInteraction,
+			client: Evelyn,
+	) {
+		const { guildId } = interaction;
+		const data = await DB.findOne({ id: guildId });
+
+		if (data.confessions?.channel) {
+			const fetchWebhook = await client.fetchWebhook(
+				data.confessions?.webhook?.id,
+				data.confessions?.webhook?.token,
+			);
+			await fetchWebhook.delete();
+		}
+
+		channel
+			.createWebhook({
+				name: `${client.user.username} · Confessions`,
+				avatar: client.user.avatarURL(),
+			})
+			.then(async (webhook) => {
+				await DB.findOneAndUpdate(
+					{
+						id: guildId,
+					},
+					{
+						$set: {
+							'confessions.channel': channel.id,
+							'confessions.webhook.id': webhook.id,
+							'confessions.webhook.token': webhook.token,
+						},
+					},
+				);
+			});
+
+		return interaction.reply({
+			embeds: [
+				this.embed.setDescription(
+					`🔹 | Got it, confessions will now be sent to: <#${channel.id}>.`,
+				),
+			],
+			ephemeral: true,
+		});
+	}
+}
