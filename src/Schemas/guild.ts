@@ -51,5 +51,8 @@ export const GuildDB = model(
 				token: String,
 			},
 		},
+		antiphishing: {
+			enabled: Boolean,
+		},
 	}),
 );
