@@ -10,6 +10,7 @@
 		"watcherHook": ""
 	},
 	"API": {
+		"rawgKey": "",
 		"geniusKey": "",
 		"cattoKey": "",
 		"imdbAPIKey": ""
