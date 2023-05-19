@@ -1,25 +1,12 @@
-import {
-	ChatInputCommandInteraction,
-	ModalSubmitInteraction,
-	EmbedBuilder,
-	ButtonInteraction,
-	UserContextMenuCommandInteraction,
-	MessageContextMenuCommandInteraction,
-} from 'discord.js';
-import { GuildDB as DB } from '../structures/schemas/guild.js';
-import { UserBlacklist as UB } from '../structures/schemas/userBlacklist.js';
+import { UserBlacklist as UB } from '../Schemas/userBlacklist.js';
+import { GuildDB as DB } from '../Schemas/guild.js';
+import { ArgsOf } from 'discordx';
 
 /** Checks to see if the user or guild who / where this command was executed is blacklisted. */
 export async function isBlacklisted(
-	interaction:
-		| ChatInputCommandInteraction
-		| ModalSubmitInteraction
-		| ButtonInteraction
-		| UserContextMenuCommandInteraction
-		| MessageContextMenuCommandInteraction,
-) {
+	interaction: ArgsOf<'interactionCreate'>[0],
+): Promise<void> {
 	const { user, guildId } = interaction;
-	const embed = new EmbedBuilder().setColor('Blurple');
 
 	const userBlacklist = await UB.findOne({
 		userId: user.id,
@@ -27,51 +14,11 @@ export async function isBlacklisted(
 
 	const guildData = await DB.findOne({
 		id: guildId,
+		blacklist: {
+			isBlacklisted: true,
+		},
 	});
 
-	if (userBlacklist)
-		return interaction.reply({
-			embeds: [
-				embed
-					.setTitle('Blacklisted')
-					.setDescription(
-						'You have been blacklisted from using Evelyn, the reason behind this decision and the time this has occured is attached below. ',
-					)
-					.addFields(
-						{
-							name: 'Reason',
-							value: `> ${userBlacklist.reason}`,
-							inline: true,
-						},
-						{
-							name: 'Time',
-							value: `> <t:${userBlacklist.time / 1000}:R>`,
-							inline: true,
-						},
-					),
-			],
-		});
-
-	if (guildData.blacklist?.isBlacklisted === true)
-		return interaction.reply({
-			embeds: [
-				embed
-					.setTitle('Server Blacklisted')
-					.setDescription(
-						'This server has been blacklisted from using Evelyn, the reason behind this decision and the time this has occured is attached below. ',
-					)
-					.addFields(
-						{
-							name: 'Reason',
-							value: `> ${guildData.blacklist.reason}`,
-							inline: true,
-						},
-						{
-							name: 'Time',
-							value: `<t:${guildData.blacklist.time / 1000}:R>`,
-							inline: true,
-						},
-					),
-			],
-		});
+	if (userBlacklist?.isBlacklisted === true) return;
+	if (guildData?.blacklist?.isBlacklisted === true) return;
 }

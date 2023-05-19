@@ -1,10 +1,6 @@
-import { Discord, On, ArgsOf } from 'discordx';
-
-import { Event } from '../../../interfaces/interfaces.js';
-import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import { Evelyn } from '../../../Evelyn.js';
-import { Util } from '../../../modules/Utils/utils.js';
 import { isBlacklisted } from '../../../functions/isBlacklisted.js';
+import { Discord, On, ArgsOf } from 'discordx';
+import { Evelyn } from '../../../Evelyn.js';
 
 @Discord()
 export class onInteraction {
@@ -14,8 +10,7 @@ export class onInteraction {
 		client: Evelyn,
 	) {
 		try {
-			// if (await isBlacklisted(interaction)) return;
-
+			await isBlacklisted(interaction);
 			await client.executeInteraction(interaction);
 		}
 		catch (err) {
