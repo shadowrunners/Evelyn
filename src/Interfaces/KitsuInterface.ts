@@ -11,8 +11,7 @@ export interface KitsuInterface {
 		ja_JP: string;
 	};
 	/** The genres the anime is under. */
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	genres?: any;
+	genres?: string[];
 	/** The status of the anime. Can be finished, ongoing or current.*/
 	status: string;
 	/** The average rating of the anime. */
