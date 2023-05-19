@@ -30,12 +30,19 @@ Evelyn is an open-source Discord Bot made as a safe alternative to bots that are
 - 📷 **Fun**: `cat`, `game (2048, 8ball, connect4, findemoji, guessthatpokemon, hangman, minesweeper, rps, snake, tictactoe, trivia, wordle, wouldyourather)`, `image (awooify, baguette, blurpify, captcha, changemymind, deepfry, kannagen, phcomment, threats, trash, trumptweet, tweet)`.
 
 ## Credits
+> DISCLAIMER: Evelyn uses various APIs but is not endorsed nor certified by the respective teams that actively maintain these APIs.
+  
+Evelyn is powered by the following APIs:
+- [TheMovieDatabase](https://www.themoviedb.org) - used for the movie / show info system
+- [RAWG](https://rawg.io) - used for the game info system
+- [Google Books](https://books.google.com/) - used for the book info system
+- [Kitsu](https://kitsu.io) - used for the anime / manga info system
+- [TheCatAPI](https://thecatapi.com) - used for the cat image system
+- [waifu.pics](https://waifu.pics) - used for the actions system
+- [NekoBot](https://nekobot.xyz) - used for the image system
+  
 
-- [Lyxcode](https://youtube.com/c/Lyxcode) - command handler
-- [Cit999](https://github.com/cit999/djs-projects/tree/master/Giveaway%20System) - giveaway system
 
 If we used your code and forgot to add you to the credits, shoot me a message over on Discord at scrappie#5451.
 
-If you decide to use this source code, I kindly ask you to give credit to me and to the people/repos that helped me bring this project to life.
-
-Additionally, to avoid confusion with our hosted version of Evelyn, you are not allowed to publicly host another instance of Evelyn under the same name and use the same avatar.
+To avoid confusion with our hosted version of Evelyn, you are not allowed to publicly host another instance of Evelyn under the same name and use the same avatar.
