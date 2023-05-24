@@ -30,7 +30,7 @@ export class MusicUtils {
 		this.util = new Util();
 
 		/** Returns if the player isn't defined. */
-		if (this.player) return;
+		if (!this.player) return;
 	}
 
 	/** Handles all checks regarding voice, queues and currently playing songs. */
