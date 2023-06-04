@@ -17,11 +17,11 @@ const { Administrator } = PermissionFlagsBits;
 
 @Discord()
 @SlashGroup({
-	description: 'Manage and configure confessions.',
-	name: 'confessions',
+	description: 'Manage and configure moderation logging.',
+	name: 'logs',
 })
-@SlashGroup('confessions')
-export class Confessions {
+@SlashGroup('logs')
+export class Logs {
 	private embed: EmbedBuilder;
 
 	constructor() {
@@ -29,7 +29,7 @@ export class Confessions {
 	}
 
 	@Slash({
-		description: 'Gives you the ability to toggle anti-phishing on and off.',
+		description: 'Gives you the ability to toggle logging on and off.',
 		defaultMemberPermissions: [Administrator],
 		name: 'toggle',
 	})
@@ -48,21 +48,21 @@ export class Confessions {
 		const { guildId } = interaction;
 		const data = await DB.findOne({ id: guildId });
 
-		if (choice === 'enable' && data.confessions.enabled === true)
+		if (choice === 'enable' && data.logs.enabled === true)
 			return interaction.reply({
 				embeds: [
 					this.embed.setDescription(
-						'🔹 | The confessions system is already enabled.',
+						'🔹 | The logging system is already enabled.',
 					),
 				],
 				ephemeral: true,
 			});
 
-		if (choice === 'disable' && data.confessions.enabled === false)
+		if (choice === 'disable' && data.logs.enabled === false)
 			return interaction.reply({
 				embeds: [
 					this.embed.setDescription(
-						'🔹 | The confessions system is already disabled.',
+						'🔹 | The logging system is already disabled.',
 					),
 				],
 				ephemeral: true,
@@ -74,7 +74,7 @@ export class Confessions {
 			},
 			{
 				$set: {
-					'confessions.enabled': choice === 'enable' ?? choice === 'false',
+					'logs.enabled': choice === 'enable' ?? choice === 'false',
 				},
 			},
 		);
@@ -82,7 +82,7 @@ export class Confessions {
 		return interaction.reply({
 			embeds: [
 				this.embed.setDescription(
-					`🔹 | The confessions system has been ${
+					`🔹 | The logging system has been ${
 						choice === 'enable' ? 'enabled' : 'disabled'
 					}.`,
 				),
@@ -92,7 +92,7 @@ export class Confessions {
 	}
 
 	@Slash({
-		description: 'Sets the channel where confessions will be sent.',
+		description: 'Sets the channel where logs will be sent.',
 		defaultMemberPermissions: [Administrator],
 		name: 'setchannel',
 	})
@@ -111,14 +111,14 @@ export class Confessions {
 		const { guildId } = interaction;
 		const data = await DB.findOne({ id: guildId });
 
-		if (data.confessions?.channel) {
+		if (data.logs?.channel) {
 			const decryptedToken = pleaseDecryptMyData(
-				data.confessions?.webhook?.token,
+				data.logs?.webhook?.token,
 				client,
 			);
 
 			const fetchWebhook = await client.fetchWebhook(
-				data.confessions?.webhook?.id,
+				data.logs?.webhook?.id,
 				decryptedToken,
 			);
 			await fetchWebhook.delete();
@@ -126,7 +126,7 @@ export class Confessions {
 
 		channel
 			.createWebhook({
-				name: `${client.user.username} · Confessions`,
+				name: `${client.user.username} · Logs`,
 				avatar: client.user.avatarURL(),
 			})
 			.then(async (webhook) => {
@@ -138,9 +138,9 @@ export class Confessions {
 					},
 					{
 						$set: {
-							'confessions.channel': channel.id,
-							'confessions.webhook.id': webhook.id,
-							'confessions.webhook.token': encryptedToken,
+							'logs.channel': channel.id,
+							'logs.webhook.id': webhook.id,
+							'logs.webhook.token': encryptedToken,
 						},
 					},
 				);
@@ -149,7 +149,7 @@ export class Confessions {
 		return interaction.reply({
 			embeds: [
 				this.embed.setDescription(
-					`🔹 | Got it, confessions will now be sent to: <#${channel.id}>.`,
+					`🔹 | Got it, logs will now be sent to: <#${channel.id}>.`,
 				),
 			],
 			ephemeral: true,
