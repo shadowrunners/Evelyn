@@ -39,10 +39,6 @@ export const GuildDB = model(
 			channel: String,
 			message: String,
 		},
-		qotd: {
-			enabled: Boolean,
-			channel: String,
-		},
 		confessions: {
 			enabled: Boolean,
 			channel: String,
