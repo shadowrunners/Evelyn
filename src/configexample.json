@@ -2,6 +2,7 @@
 	"token": "",
 	"database": "",
 	"ownerIDs": [""],
+	"encryptionKey": "",
 
 	"debug": {
 		"devGuild": "",
