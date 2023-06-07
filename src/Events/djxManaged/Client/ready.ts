@@ -1,11 +1,11 @@
 import DXP from 'discord-xp';
-import { set } from 'mongoose';
+import { connect, set } from 'mongoose';
 import { Discord, Once } from 'discordx';
 import { ActivityType } from 'discord.js';
 import { Evelyn } from '../../../Evelyn.js';
 import colors from '@colors/colors';
-import { check4Reminders } from '../../../functions/check4Reminders.js';
-import { check4Lockdowns } from '../../../functions/check4Lockdowns.js';
+import { check4Reminders } from '../../../Utils/Checks/check4Reminders.js';
+import { check4Lockdowns } from '../../../Utils/Checks/check4Lockdowns.js';
 
 @Discord()
 export class onReady {
@@ -43,8 +43,8 @@ export class onReady {
 		statcord.autopost();
 		manager.init(client);
 
-		set('strictQuery', true)
-			.connect(config.database)
+		set('strictQuery', false);
+		await connect(config.database)
 			.then(() => {
 				console.info(
 					`${magenta('Database')} ${white('·')} ${green(

@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import config from '../../config.json' assert { type: 'json' };
-import { Util } from '../../Modules/Utils/utils.js';
+import { Util } from '../../Utils/Utils/util.js';
 import { Discord, Slash, Guild } from 'discordx';
 import { Evelyn } from '../../Evelyn.js';
 import { cpus, platform } from 'os';

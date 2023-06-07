@@ -10,7 +10,7 @@ import {
 	MessageContextMenuCommandInteraction,
 	ButtonInteraction,
 } from 'discord.js';
-import { Util } from '../../Modules/Utils/utils.js';
+import { Util } from '../../Utils/Utils/Util.js';
 
 const { User, Message } = ApplicationCommandType;
 

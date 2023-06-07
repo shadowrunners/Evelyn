@@ -10,7 +10,7 @@ import {
 const { Paragraph } = TextInputStyle;
 import { GuildDB as DB } from '../../Schemas/guild.js';
 import { Discord, Slash, ModalComponent } from 'discordx';
-import { webhookDelivery } from '../../Functions/webhookDelivery.js';
+import { webhookDelivery } from '../../Utils/Utils/webhookDelivery.js';
 import { Evelyn } from '../../Evelyn.js';
 
 @Discord()
