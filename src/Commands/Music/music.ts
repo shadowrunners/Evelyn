@@ -13,8 +13,8 @@ import {
 	SlashChoice,
 	ButtonComponent,
 } from 'discordx';
-import { MusicUtils } from '../../Modules/Utils/musicUtils.js';
-import { Util } from '../../Modules/Utils/utils.js';
+import { check, checkQuery } from '../../Utils/Music/check.js';
+import { Util } from '../../Utils/Utils/Util.js';
 import { Player } from '@shadowrunners/automata';
 import { Evelyn } from '../../Evelyn.js';
 import { Client } from 'genius-lyrics';
@@ -27,13 +27,7 @@ import { Client } from 'genius-lyrics';
 @SlashGroup('music')
 export class Music {
 	private player: Player | undefined;
-	private musicUtils: MusicUtils;
-	private embed: EmbedBuilder;
 	private util: Util;
-
-	constructor() {
-		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-	}
 
 	@Slash({
 		description: 'Plays a song.',
@@ -52,19 +46,11 @@ export class Music {
 	) {
 		const { guild, channelId, user } = interaction;
 		const member = interaction.member as GuildMember;
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
-		await interaction.deferReply();
+		if (check(['voiceCheck'], interaction)) return;
 
-		if (!member.voice.channel)
-			return interaction.editReply({
-				embeds: [
-					this.embed.setDescription(
-						'🔹 | You need to be in a voice channel to use this command.',
-					),
-				],
-			});
-
-		const res = await client.manager.resolve({ query, requester: member });
+		const res = await client.manager.resolve({ query, requester: member.user });
 
 		this.player = client.manager.create({
 			guildId: guild.id,
@@ -73,8 +59,9 @@ export class Music {
 			deaf: true,
 		});
 
-		this.musicUtils = new MusicUtils(interaction, this.player);
-		if (this.musicUtils.checkQuery(query)) return;
+		if (await checkQuery(query, interaction)) return;
+
+		await interaction.deferReply();
 
 		switch (res.loadType) {
 		case 'PLAYLIST_LOADED':
@@ -90,7 +77,7 @@ export class Music {
 
 			return interaction.editReply({
 				embeds: [
-					this.embed
+					embed
 						.setAuthor({
 							name: 'Playlist added to the queue',
 							iconURL: user.avatarURL(),
@@ -119,33 +106,38 @@ export class Music {
 			if (!this.player.isPlaying && this.player.isConnected)
 				this.player.play();
 
-			this.embed
-				.setAuthor({
-					name: 'Added to the queue',
-					iconURL: user.avatarURL(),
-				})
-				.setDescription(`**[${res.tracks[0].title}](${res.tracks[0].uri})** `)
-				.addFields({
-					name: 'Queued by',
-					value: `${member}`,
-					inline: true,
-				});
-			await interaction.editReply({ embeds: [this.embed] });
+			await interaction.editReply({
+				embeds: [
+					embed
+						.setAuthor({
+							name: 'Added to the queue',
+							iconURL: user.avatarURL(),
+						})
+						.setDescription(
+							`**[${res.tracks[0].title}](${res.tracks[0].uri})** `,
+						)
+						.addFields({
+							name: 'Queued by',
+							value: `${member}`,
+							inline: true,
+						}),
+				],
+			});
 
 			if (this.player.queue.size > 1)
-				this.embed.addFields({
+				embed.addFields({
 					name: 'Position in queue',
 					value: `${this.player.queue.size - 0}`,
 					inline: true,
 				});
-			return interaction.editReply({ embeds: [this.embed] });
+			return interaction.editReply({ embeds: [embed] });
 
 		case 'NO_MATCHES':
 		case 'LOAD_FAILED':
 			if (this.player) this.player?.destroy();
 
 			return interaction.editReply({
-				embeds: [this.embed.setDescription('🔹 | No matches found.')],
+				embeds: [embed.setDescription('🔹 | No matches found.')],
 			});
 
 		default:
@@ -165,9 +157,30 @@ export class Music {
 			type: ApplicationCommandOptionType.Number,
 		})
 			percent: number,
+			interaction: ChatInputCommandInteraction,
 	) {
-		if (this.musicUtils.check(['voiceCheck'])) return;
-		return this.musicUtils.setVolume(percent);
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		if (check(['voiceCheck', 'checkPlaying'], interaction)) return;
+
+		if (percent > 100 || percent < 0)
+			return interaction.reply({
+				embeds: [
+					embed.setDescription(
+						'🔹| You can only set the volume from 0 to 100.',
+					),
+				],
+				ephemeral: true,
+			});
+
+		this.player.setVolume(percent);
+
+		return interaction.reply({
+			embeds: [
+				embed.setDescription(
+					`🔹 | Volume has been set to **${this.player.volume}%**.`,
+				),
+			],
+		});
 	}
 
 	@Slash({
@@ -182,9 +195,29 @@ export class Music {
 			type: ApplicationCommandOptionType.Number,
 		})
 			time: number,
+			interaction: ChatInputCommandInteraction,
 	) {
-		if (this.musicUtils.check(['voiceCheck', 'checkPlaying'])) return;
-		return this.musicUtils.seek(time);
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		if (check(['voiceCheck', 'checkPlaying'], interaction)) return;
+
+		const duration = Number(time) * 1000;
+		const trackDuration = this.player.queue.current.length;
+
+		if (duration > trackDuration)
+			return interaction.reply({
+				embeds: [embed.setDescription('🔹 | Invalid seek time.')],
+				ephemeral: true,
+			});
+
+		this.player.seekTo(duration);
+
+		return interaction.reply({
+			embeds: [
+				embed.setDescription(
+					`🔹 | Seeked to ${this.util.formatTime(duration)}.`,
+				),
+			],
+		});
 	}
 
 	@Slash({
@@ -202,16 +235,30 @@ export class Music {
 			type: ApplicationCommandOptionType.String,
 		})
 			type: string,
+			interaction: ChatInputCommandInteraction,
 	) {
-		if (this.musicUtils.check(['voiceCheck'])) return;
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		if (check(['voiceCheck', 'checkPlaying'], interaction)) return;
 
 		switch (type) {
 		case 'queue':
-			return this.musicUtils.repeatMode('queue');
-		case 'song':
-			return this.musicUtils.repeatMode('song');
-		case 'off':
-			return this.musicUtils.repeatMode('off');
+			this.player.setLoop('QUEUE');
+
+			return interaction.reply({
+				embeds: [embed.setDescription('🔹 | Repeat mode is now on. (Queue)')],
+			});
+		case 'track':
+			this.player.setLoop('TRACK');
+
+			return interaction.reply({
+				embeds: [embed.setDescription('🔹 | Repeat mode is now on. (Song)')],
+			});
+		case 'none':
+			this.player.setLoop('NONE');
+
+			return interaction.reply({
+				embeds: [embed.setDescription('🔹 | Repeat mode is now off.')],
+			});
 		default:
 			break;
 		}
@@ -222,12 +269,13 @@ export class Music {
 		name: 'skip',
 	})
 	async skip(interaction: ChatInputCommandInteraction) {
-		if (this.musicUtils.check(['voiceCheck', 'checkPlaying'])) return;
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		if (check(['voiceCheck', 'checkPlaying'], interaction)) return;
 
 		this.player.stop();
 
 		return interaction.reply({
-			embeds: [this.embed.setDescription('🔹 | Skipped.')],
+			embeds: [embed.setDescription('🔹 | Skipped.')],
 		});
 	}
 
@@ -236,12 +284,13 @@ export class Music {
 		name: 'pause',
 	})
 	async pause(interaction: ChatInputCommandInteraction) {
-		if (this.musicUtils.check(['voiceCheck', 'checkPlaying'])) return;
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		if (check(['voiceCheck', 'checkPlaying'], interaction)) return;
 
 		this.player.pause(true);
 
 		return interaction.reply({
-			embeds: [this.embed.setDescription('🔹 | Paused.')],
+			embeds: [embed.setDescription('🔹 | Paused.')],
 		});
 	}
 
@@ -250,12 +299,13 @@ export class Music {
 		name: 'resume',
 	})
 	async resume(interaction: ChatInputCommandInteraction) {
-		if (this.musicUtils.check(['voiceCheck'])) return;
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		if (check(['voiceCheck'], interaction)) return;
 
 		this.player.pause(false);
 
 		return interaction.reply({
-			embeds: [this.embed.setDescription('🔹 | Resumed.')],
+			embeds: [embed.setDescription('🔹 | Resumed.')],
 		});
 	}
 
@@ -264,12 +314,13 @@ export class Music {
 		name: 'stop',
 	})
 	async stop(interaction: ChatInputCommandInteraction) {
-		if (this.musicUtils.check(['voiceCheck'])) return;
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		if (check(['voiceCheck'], interaction)) return;
 
 		this.player.destroy();
 
 		return interaction.reply({
-			embeds: [this.embed.setDescription('🔹 | Disconnected.')],
+			embeds: [embed.setDescription('🔹 | Disconnected.')],
 		});
 	}
 
@@ -279,9 +330,11 @@ export class Music {
 	})
 	async lyrics(interaction: ChatInputCommandInteraction, client: Evelyn) {
 		const gClient = new Client(client.config.APIs.geniusKey);
-		await interaction.deferReply();
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
-		if (this.musicUtils.check(['voiceCheck', 'checkPlaying'])) return;
+		if (check(['voiceCheck', 'checkPlaying'], interaction)) return;
+
+		await interaction.deferReply();
 
 		const track = this.player.queue.current;
 		const trackTitle = track.title.replace(
@@ -294,7 +347,7 @@ export class Music {
 
 		return interaction.editReply({
 			embeds: [
-				this.embed
+				embed
 					.setAuthor({
 						name: `🔹 | Lyrics for ${trackTitle}`,
 						url: searches.url,
@@ -310,12 +363,13 @@ export class Music {
 		name: 'shuffle',
 	})
 	async shuffle(interaction: ChatInputCommandInteraction) {
-		if (this.musicUtils.check(['voiceCheck', 'checkQueue'])) return;
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		if (check(['voiceCheck', 'checkQueue'], interaction)) return;
 
 		this.player.queue.shuffle();
 
-		return interaction.editReply({
-			embeds: [this.embed.setDescription('🔹 | Shuffled.')],
+		return interaction.reply({
+			embeds: [embed.setDescription('🔹 | Shuffled.')],
 		});
 	}
 
@@ -324,12 +378,14 @@ export class Music {
 		name: 'nowplaying',
 	})
 	async nowplaying(interaction: ChatInputCommandInteraction) {
-		if (this.musicUtils.check(['voiceCheck', 'checkPlaying'])) return;
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		if (check(['voiceCheck', 'checkPlaying'], interaction)) return;
+
 		const track = this.player.queue.current;
 
 		return interaction.reply({
 			embeds: [
-				this.embed
+				embed
 					.setAuthor({
 						name: 'Now Playing',
 						iconURL: interaction.user.avatarURL(),
@@ -348,10 +404,11 @@ export class Music {
 	async queue(interaction: ChatInputCommandInteraction) {
 		this.util = new Util(interaction);
 		const { guild } = interaction;
-		await interaction.deferReply();
 
-		if (this.musicUtils.check(['voiceCheck', 'checkPlaying', 'checkQueue']))
+		if (check(['voiceCheck', 'checkPlaying', 'checkQueue'], interaction))
 			return;
+
+		await interaction.deferReply();
 
 		const embeds = [];
 		const songs = [];
@@ -401,32 +458,71 @@ export class Music {
 			type: ApplicationCommandOptionType.String,
 		})
 			option: string,
+			interaction: ChatInputCommandInteraction,
 	) {
-		if (this.musicUtils.check(['voiceCheck', 'checkPlaying'])) return;
+		if (check(['voiceCheck', 'checkPlaying'], interaction)) return;
+
+		const embed = new EmbedBuilder()
+			.setTitle('🎧 Filter applied!')
+			.setDescription(
+				'The filter you requested will be applied. It may take a few seconds for it to propagate.',
+			);
 
 		switch (option) {
-		case '3d':
-			return this.musicUtils.filters('3d');
+		case '8d':
+			this.player.filters.eightD();
+
+			return interaction.reply({
+				embeds: [embed],
+			});
 		case 'bassboost':
-			return this.musicUtils.filters('bassboost');
-		case 'karaoke':
-			return this.musicUtils.filters('karaoke');
+			this.player.filters.bassBoost();
+
+			return interaction.reply({
+				embeds: [embed],
+			});
 		case 'nightcore':
-			return this.musicUtils.filters('nightcore');
+			this.player.filters.nightcore();
+
+			return interaction.reply({
+				embeds: [embed],
+			});
 		case 'slowmo':
-			return this.musicUtils.filters('slowmo');
+			this.player.filters.slowmo();
+
+			return interaction.reply({
+				embeds: [embed],
+			});
 		case 'soft':
-			return this.musicUtils.filters('soft');
+			this.player.filters.soft();
+
+			return interaction.reply({
+				embeds: [embed],
+			});
 		case 'tv':
-			return this.musicUtils.filters('tv');
+			this.player.filters.tv();
+
+			return interaction.reply({
+				embeds: [embed],
+			});
 		case 'treblebass':
-			return this.musicUtils.filters('treblebass');
+			this.player.filters.trebleBass();
+
+			return interaction.reply({
+				embeds: [embed],
+			});
 		case 'vaporwave':
-			return this.musicUtils.filters('vaporwave');
-		case 'vibrato':
-			return this.musicUtils.filters('vibrato');
+			this.player.filters.vaporwave();
+
+			return interaction.reply({
+				embeds: [embed],
+			});
 		case 'reset':
-			return this.musicUtils.filters('reset');
+			this.player.filters.clearFilters();
+
+			return interaction.reply({
+				embeds: [embed],
+			});
 		default:
 			break;
 		}
@@ -439,106 +535,148 @@ export class Music {
 	@ButtonComponent({
 		id: 'pause',
 	})
-	async pauseButton(interaction: ButtonInteraction): Promise<void> {
+	async pauseButton(interaction: ButtonInteraction) {
 		const { user } = interaction;
 
-		if (this.musicUtils.check(['voiceCheck'])) return;
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		if (check(['voiceCheck'], interaction)) return;
 
 		if (this.player.isPaused) {
 			this.player.pause(false);
 
-			interaction.editReply({
+			return interaction.reply({
 				embeds: [
-					this.embed.setDescription('🔹 | Resumed.').setFooter({
+					embed.setDescription('🔹 | Resumed.').setFooter({
 						text: `Action executed by ${user.username}.`,
 						iconURL: user.avatarURL(),
 					}),
 				],
 			});
-
-			return;
 		}
 		else {
 			this.player.pause(true);
 
-			interaction.editReply({
+			return interaction.reply({
 				embeds: [
-					this.embed.setDescription('🔹 | Paused.').setFooter({
+					embed.setDescription('🔹 | Paused.').setFooter({
 						text: `Action executed by ${user.username}.`,
 						iconURL: user.avatarURL(),
 					}),
 				],
 			});
-
-			return;
 		}
 	}
 
 	@ButtonComponent({
 		id: 'shuffle',
 	})
-	async shuffleButton(interaction: ButtonInteraction): Promise<void> {
+	async shuffleButton(interaction: ButtonInteraction) {
 		const { user } = interaction;
 
-		if (this.musicUtils.check(['voiceCheck'])) return;
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		if (check(['voiceCheck', 'checkQueue'], interaction)) return;
 
 		this.player.queue.shuffle();
 
-		interaction.reply({
+		return interaction.reply({
 			embeds: [
-				this.embed.setDescription('🔹 | Shuffled the queue.').setFooter({
+				embed.setDescription('🔹 | Shuffled the queue.').setFooter({
 					text: `Action executed by ${user.username}.`,
 					iconURL: user.avatarURL(),
 				}),
 			],
 		});
-
-		return;
 	}
 
 	@ButtonComponent({
 		id: 'skip',
 	})
-	async skipButton(interaction: ButtonInteraction): Promise<void> {
+	async skipButton(interaction: ButtonInteraction) {
 		const { user } = interaction;
 
-		if (this.musicUtils.check(['voiceCheck', 'checkQueue'])) return;
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		if (check(['voiceCheck', 'checkQueue'], interaction)) return;
 
 		this.player.stop();
 
-		interaction.editReply({
+		return interaction.reply({
 			embeds: [
-				this.embed.setDescription('🔹 | Skipped.').setFooter({
+				embed.setDescription('🔹 | Skipped.').setFooter({
 					text: `Action executed by ${user.username}.`,
 					iconURL: user.avatarURL(),
 				}),
 			],
 		});
-
-		return;
 	}
 
 	@ButtonComponent({
 		id: 'voldown',
 	})
-	async volDownButton(): Promise<void> {
+	async volDownButton(interaction: ButtonInteraction) {
+		const { user } = interaction;
 		const volume = this.player.volume - 10;
-		if (this.musicUtils.check(['voiceCheck'])) return;
 
-		this.musicUtils.setVolume(volume);
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		if (check(['voiceCheck', 'checkPlaying'], interaction)) return;
 
-		return;
+		if (volume < 0)
+			return interaction.reply({
+				embeds: [
+					embed.setDescription(
+						'🔹| You can only set the volume from 0 to 100.',
+					),
+				],
+				ephemeral: true,
+			});
+
+		this.player.setVolume(volume);
+
+		return interaction.reply({
+			embeds: [
+				embed
+					.setDescription(
+						`🔹 | Volume has been set to **${this.player.volume}%**.`,
+					)
+					.setFooter({
+						text: `Action executed by ${user.username}.`,
+						iconURL: user.avatarURL(),
+					}),
+			],
+		});
 	}
 
 	@ButtonComponent({
 		id: 'volup',
 	})
-	async volUpButton(): Promise<void> {
+	async volUpButton(interaction: ButtonInteraction) {
+		const { user } = interaction;
 		const volume = this.player.volume + 10;
-		if (this.musicUtils.check(['voiceCheck'])) return;
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		if (check(['voiceCheck', 'checkPlaying'], interaction)) return;
 
-		this.musicUtils.setVolume(volume);
+		if (volume > 100)
+			return interaction.reply({
+				embeds: [
+					embed.setDescription(
+						'🔹| You can only set the volume from 0 to 100.',
+					),
+				],
+				ephemeral: true,
+			});
 
-		return;
+		this.player.setVolume(volume);
+
+		return interaction.reply({
+			embeds: [
+				embed
+					.setDescription(
+						`🔹 | Volume has been set to **${this.player.volume}%**.`,
+					)
+					.setFooter({
+						text: `Action executed by ${user.username}.`,
+						iconURL: user.avatarURL(),
+					}),
+			],
+		});
 	}
 }

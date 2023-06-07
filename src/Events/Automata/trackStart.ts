@@ -15,7 +15,6 @@ const { Primary } = ButtonStyle;
 const event: Event = {
 	name: 'trackStart',
 	async execute(player: Player, track: AutomataTrack, client: Evelyn) {
-		console.log('Event fired!');
 		const utils = new Util();
 		const buttonRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
 			new ButtonBuilder().setCustomId('pause').setLabel('⏯️').setStyle(Primary),
@@ -30,8 +29,6 @@ const event: Event = {
 				.setLabel('🔀')
 				.setStyle(Primary),
 		);
-
-		console.log(track);
 
 		const nowPlaying = new EmbedBuilder()
 			.setColor('Blurple')
@@ -53,10 +50,12 @@ const event: Event = {
 			.setTimestamp();
 
 		const channel = client.channels.cache.get(
-			player?.textChannel,
+			player.textChannel,
 		) as TextChannel;
-		console.log(`Channel: ${channel.name}`);
-		await channel.send({ embeds: [nowPlaying], components: [buttonRow] });
+
+		await channel
+			.send({ embeds: [nowPlaying], components: [buttonRow] })
+			.then((message) => player.setNowPlayingMessage(message));
 	},
 };
 
