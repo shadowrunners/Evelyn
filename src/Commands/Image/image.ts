@@ -3,8 +3,9 @@ import {
 	ApplicationCommandOptionType,
 	User,
 } from 'discord.js';
-import { Discord, Slash, SlashOption, SlashChoice } from 'discordx';
-import { NekoAPI } from '../../Modules/APIs/nekoAPI.js';
+import { Discord, Slash, SlashOption, SlashChoice, Guard } from 'discordx';
+import { RateLimit, TIME_UNIT } from '@discordx/utilities';
+import { NekoAPI } from '../../Utils/APIs/nekoAPI.js';
 
 @Discord()
 export class Image {
@@ -12,6 +13,11 @@ export class Image {
 		description: 'Generate various images.',
 		name: 'image',
 	})
+	@Guard(
+		RateLimit(TIME_UNIT.seconds, 30, {
+			message: '🔹 | Please wait 30 seconds before re-running this command.',
+		}),
+	)
 	async image(
 		@SlashChoice({ name: '🔹 | Awooify', value: 'awooify' })
 		@SlashChoice({ name: '🔹 | Baguette', value: 'baguette' })
@@ -56,6 +62,7 @@ export class Image {
 			interaction: ChatInputCommandInteraction,
 	) {
 		const API = new NekoAPI(interaction);
+		await interaction.deferReply();
 
 		switch (type) {
 		case 'awooify':

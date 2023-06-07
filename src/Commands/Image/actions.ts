@@ -1,10 +1,11 @@
 import {
 	ChatInputCommandInteraction,
 	ApplicationCommandOptionType,
-	User,
+	GuildMember,
 } from 'discord.js';
-import { Discord, Slash, SlashOption, SlashChoice } from 'discordx';
-import { WaifuEngine } from '../../Modules/APIs/waifuAPI.js';
+import { Discord, Slash, SlashOption, SlashChoice, Guard } from 'discordx';
+import { RateLimit, TIME_UNIT } from '@discordx/utilities';
+import { WaifuEngine } from '../../Utils/APIs/waifuAPI.js';
 
 @Discord()
 export class Actions {
@@ -12,6 +13,11 @@ export class Actions {
 		description: 'Express your emotions to someone with actions!',
 		name: 'actions',
 	})
+	@Guard(
+		RateLimit(TIME_UNIT.seconds, 30, {
+			message: '🔹 | Please wait 30 seconds before re-running this command.',
+		}),
+	)
 	async actions(
 		@SlashChoice({ name: '🔹 | Bite', value: 'bite' })
 		@SlashChoice({ name: '🔹 | Blush', value: 'blush' })
@@ -39,10 +45,11 @@ export class Actions {
 			type: ApplicationCommandOptionType.User,
 		})
 			action: string,
-			target: User,
+			target: GuildMember,
 			interaction: ChatInputCommandInteraction,
 	) {
 		const waifuAPI = new WaifuEngine(interaction);
+		await interaction.deferReply();
 
 		switch (action) {
 		case 'bite':

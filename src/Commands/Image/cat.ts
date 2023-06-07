@@ -1,30 +1,34 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import { Discord, Slash } from 'discordx';
+import { RateLimit, TIME_UNIT } from '@discordx/utilities';
+import { Discord, Slash, Guard } from 'discordx';
 import { Evelyn } from '../../Evelyn.js';
-import { get } from 'superagent';
+import superagent from 'superagent';
 
 @Discord()
 export class Catto {
-	private embed: EmbedBuilder;
-
-	constructor() {
-		this.embed = new EmbedBuilder()
-			.setColor('Blurple')
-			.setFooter({ text: 'Powered by TheCatAPI' })
-			.setTimestamp();
-	}
-
 	@Slash({
 		description: 'Shows you a random cat picture.',
 		name: 'cat',
 	})
+	@Guard(
+		RateLimit(TIME_UNIT.seconds, 30, {
+			message: '🔹 | Please wait 30 seconds before re-running this command.',
+			ephemeral: true,
+		}),
+	)
 	async cat(interaction: ChatInputCommandInteraction, client: Evelyn) {
-		const { body } = await get(
-			'https://api.thecatapi.com/v1/images/search',
-		).set('x-api-key', client.config.APIs.cattoKey);
+		const { body } = await superagent
+			.get('https://api.thecatapi.com/v1/images/search')
+			.set('x-api-key', client.config.APIs.cattoKey);
+
+		const embed = new EmbedBuilder()
+			.setColor('Blurple')
+			.setImage(body[0].url)
+			.setFooter({ text: 'Powered by TheCatAPI' })
+			.setTimestamp();
 
 		return interaction.reply({
-			embeds: [this.embed.setImage(body[0].url)],
+			embeds: [embed],
 		});
 	}
 }
