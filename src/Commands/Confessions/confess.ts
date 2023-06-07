@@ -15,7 +15,7 @@ import { Evelyn } from '../../Evelyn.js';
 
 @Discord()
 export class Confess {
-	@Slash({ description: 'Send a confession', name: 'confess' })
+	@Slash({ name: 'confess', description: 'Send a confession' })
 	async confess(interaction: ChatInputCommandInteraction): Promise<void> {
 		const modal = new ModalBuilder()
 			.setCustomId('confessionModal')
@@ -36,17 +36,11 @@ export class Confess {
 	@ModalComponent()
 	async confessionModal(interaction: ModalSubmitInteraction, client: Evelyn) {
 		const { fields, guildId } = interaction;
+		const data = await DB.findOne({ id: guildId });
 		const embed = new EmbedBuilder().setColor('Blurple');
+		const confession = fields.getTextInputValue('confession');
 
-		const [confession] = ['confession'].map((id) =>
-			fields.getTextInputValue(id),
-		);
-
-		const data = await DB.findOne({
-			id: guildId,
-		});
-
-		if (!data?.confessions?.enabled || !data?.confessions.webhook.id)
+		if (!(data?.confessions?.enabled && data?.confessions.webhook.id))
 			return interaction.reply({
 				embeds: [
 					embed.setDescription(
