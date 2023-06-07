@@ -1,4 +1,4 @@
-import { dropOffLogs, validate } from '../../../Functions/dropOffLogs.js';
+import { dropOffLogs, validate } from '../../../Utils/Utils/dropOffLogs.js';
 import { Role, EmbedBuilder, AuditLogEvent } from 'discord.js';
 import { Evelyn } from '../../../Evelyn.js';
 import { Discord, On } from 'discordx';

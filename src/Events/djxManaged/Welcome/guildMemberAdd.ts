@@ -1,4 +1,4 @@
-import { replacePlaceholders } from '../../../Functions/replacePlaceholders.js';
+import { replacePlaceholders } from '../../../Utils/Utils/replacePlaceholders.js';
 import { GuildMember, EmbedBuilder, TextChannel } from 'discord.js';
 import { GuildDB as DB } from '../../../Schemas/guild.js';
 import { Evelyn } from '../../../Evelyn.js';

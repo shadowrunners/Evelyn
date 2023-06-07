@@ -1,4 +1,4 @@
-import { isBlacklisted } from '../../../functions/isBlacklisted.js';
+import { isBlacklisted } from '../../../Utils/Utils/isBlacklisted.js';
 import { Discord, On, ArgsOf } from 'discordx';
 import { Evelyn } from '../../../Evelyn.js';
 
