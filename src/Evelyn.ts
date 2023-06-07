@@ -2,7 +2,7 @@ import { Client } from 'discordx';
 import Statcord from 'statcord.js';
 import colors from '@colors/colors';
 import { Manager } from '@shadowrunners/automata';
-import { fileLoad } from './Functions/fileLoader.js';
+import { fileLoad } from './Utils/Utils/fileLoader.js';
 import { dirname, importx } from '@discordx/importer';
 import { IntentsBitField, Partials } from 'discord.js';
 import { botConfig } from './interfaces/interfaces.js';
@@ -14,6 +14,7 @@ const {
 	Guilds,
 	GuildMessages,
 	GuildMembers,
+	GuildModeration,
 	GuildEmojisAndStickers,
 	GuildMessageReactions,
 	GuildInvites,
@@ -38,6 +39,7 @@ export class Evelyn extends Client {
 				GuildMembers,
 				GuildMessages,
 				GuildPresences,
+				GuildModeration,
 				GuildVoiceStates,
 				GuildMessageReactions,
 				GuildEmojisAndStickers,

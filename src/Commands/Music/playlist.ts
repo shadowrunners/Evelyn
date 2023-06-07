@@ -5,7 +5,7 @@ import {
 } from 'discord.js';
 import { Discord, Slash, SlashGroup, SlashOption } from 'discordx';
 import { Playlists as DB } from '../../Schemas/playlist.js';
-import { Util } from '../../Modules/Utils/utils.js';
+import { Util } from '../../Utils/Utils/Util.js';
 import { Evelyn } from '../../Evelyn.js';
 
 @Discord()
