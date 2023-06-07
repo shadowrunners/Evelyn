@@ -1,5 +1,5 @@
 import { EmbedBuilder, Message } from 'discord.js';
-import { Reminders as DB } from '../Structures/Schemas/reminders.js';
+import { Reminders as DB } from '../Schemas/reminders.js';
 
 export async function reminded(message: Message) {
 	const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
