@@ -5,9 +5,9 @@ import {
 	ActionRowBuilder,
 	ButtonBuilder,
 } from 'discord.js';
-import { GuildDB as DB } from '../Schemas/guild.js';
-import { webhookDelivery } from './webhookDelivery.js';
-import { Evelyn } from '../Evelyn.js';
+import { GuildDB as DB } from '../../Schemas/guild.js';
+import { webhookDelivery } from '../../Functions/webhookDelivery.js';
+import { Evelyn } from '../../Evelyn.js';
 
 /**
  * Does a look-up to see if the guild has logging enabled.

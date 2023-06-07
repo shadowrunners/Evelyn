@@ -1,9 +1,9 @@
 /**
  * This class contains our own custom version of a wrapper for the Google Books API.
  */
-import { get } from 'superagent';
+import superagent from 'superagent';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import { GBooksInterface } from '../../Interfaces/GBooksInterface';
+import { GBooksInterface } from '../../Interfaces/GBooksInterface.js';
 
 export class GBooksAPI {
 	private apiURL: string;
@@ -22,7 +22,8 @@ export class GBooksAPI {
 	/** Retrieves a book using the provided query. */
 	public fetchBook(book: string): Promise<GBooksInterface> {
 		return new Promise((resolve, reject) => {
-			get(`${this.apiURL}?q=${book}`)
+			superagent
+				.get(`${this.apiURL}?q=${book}`)
 				.then((res) => {
 					const bookData = res.body.items[0];
 					const mappedAuthors = bookData?.volumeInfo?.authors

@@ -3,8 +3,8 @@
  * This is based on the other API wrappers for waifu.pics and NekoBot API.
  */
 
-import { get } from 'superagent';
-import { KitsuInterface } from '../../Interfaces/KitsuInterface';
+import superagent from 'superagent';
+import { KitsuInterface } from '../../Interfaces/KitsuInterface.js';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 
 export class KitsuAPI {
@@ -24,7 +24,8 @@ export class KitsuAPI {
 	/** Retrieves the information for the provided anime. */
 	public fetchAnime(anime: string): Promise<KitsuInterface> {
 		return new Promise((resolve, reject) => {
-			get(`${this.apiURL}/anime?filter[text]=${anime}`)
+			superagent
+				.get(`${this.apiURL}/anime?filter[text]=${anime}`)
 				.then(async (res) => {
 					const animeData = res.body.data[0];
 					const animeAttributes = animeData.attributes;
@@ -33,14 +34,12 @@ export class KitsuAPI {
 						.replace('ongoing', 'Ongoing')
 						.replace('current', 'Currently Airing');
 
-					const genres = await get(
+					const genres = await superagent.get(
 						`${this.apiURL}/anime/${animeData.id}/genres`,
 					);
-					const genreMap = genres?.body?.data
-						?.map(
-							(genre: { attributes: { name: string } }) => genre.attributes.name,
-						)
-						.join(', ');
+					const genreMap = genres?.body?.data?.map(
+						(genre: { attributes: { name: string } }) => genre.attributes.name,
+					);
 
 					const startDate = new Date(animeData?.attributes?.startDate);
 					const endDate = new Date(animeData?.attributes?.endDate);
@@ -101,7 +100,8 @@ export class KitsuAPI {
 	/** Retrieves the information for the provided manga. */
 	public fetchManga(manga: string): Promise<KitsuInterface> {
 		return new Promise((resolve, reject) => {
-			get(`${this.apiURL}/manga?filter[text]=${manga}`)
+			superagent
+				.get(`${this.apiURL}/manga?filter[text]=${manga}`)
 				.then((res) => {
 					const mangaData = res.body.data[0];
 					const mangaAttributes = mangaData.attributes;

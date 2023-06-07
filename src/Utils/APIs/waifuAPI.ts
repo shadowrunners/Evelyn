@@ -1,6 +1,11 @@
 /** This class contains our own custom version of a wrapper for the waifu.pics API to reduce the amount of packages we're using. */
-import { get } from 'superagent';
-import { EmbedBuilder, ChatInputCommandInteraction, User } from 'discord.js';
+import superagent from 'superagent';
+import {
+	EmbedBuilder,
+	ChatInputCommandInteraction,
+	User,
+	GuildMember,
+} from 'discord.js';
 
 export class WaifuEngine {
 	private apiURL: string;
@@ -30,7 +35,8 @@ export class WaifuEngine {
 	/** Retrieves the image from the endpoint provided. */
 	private fetchImage(endpoint: string) {
 		return new Promise((resolve, reject) => {
-			get(`${this.apiURL}${endpoint}`)
+			superagent
+				.get(`${this.apiURL}${endpoint}`)
 				.then((res: { body: { url: unknown } }) => {
 					resolve(res.body.url);
 				})
@@ -41,10 +47,8 @@ export class WaifuEngine {
 	}
 
 	/** Checks for a target user to display in the embed whenever a person needs to be mentioned. */
-	private checkTarget(target: User) {
-		this.target = target;
-
-		if (!this.target)
+	private checkTarget(target: GuildMember) {
+		if (!target)
 			return this.interaction.editReply({
 				embeds: [
 					new EmbedBuilder()
@@ -55,7 +59,7 @@ export class WaifuEngine {
 	}
 
 	/** Fetches the image and replies with it in an embed. */
-	private async reply(action: string, text: string, target?: User) {
+	private async reply(action: string, text: string, target?: GuildMember) {
 		if (target) {
 			if (this.checkTarget(target)) return;
 		}
@@ -63,7 +67,7 @@ export class WaifuEngine {
 		const image = (await this.fetchImage(action)) as string;
 
 		if (target) {
-			this.name = `${this.interaction.user.username} ${text} ${target}`;
+			this.name = `${this.interaction.user.username} ${text} ${target.user.username}`;
 			this.iconURL = `${this.interaction.user.avatarURL()}`;
 		}
 		else {
@@ -81,7 +85,7 @@ export class WaifuEngine {
 	}
 
 	/** Fetches the biting images from the API and replies with an embed of it. */
-	public bite(target: User) {
+	public bite(target: GuildMember) {
 		return this.reply('bite', 'bites', target);
 	}
 
@@ -91,12 +95,12 @@ export class WaifuEngine {
 	}
 
 	/** Fetches bonk images from the API and replies with an embed of it. */
-	public bonk(target: User) {
+	public bonk(target: GuildMember) {
 		return this.reply('bonk', 'bonks', target);
 	}
 
 	/** Fetches bully images from the API and replies with an embed of it. */
-	public bully(target: User) {
+	public bully(target: GuildMember) {
 		return this.reply('bully', 'bullies', target);
 	}
 
@@ -111,47 +115,47 @@ export class WaifuEngine {
 	}
 
 	/** Fetches cuddling images from the API and replies with an embed of it. */
-	public cuddle(target: User) {
+	public cuddle(target: GuildMember) {
 		return this.reply('cuddle', 'cuddles', target);
 	}
 
 	/** Fetches handholding images from the API and replies with an embed of it. */
-	public handhold(target: User) {
+	public handhold(target: GuildMember) {
 		return this.reply('handhold', 'is holding hands with', target);
 	}
 
 	/** Fetches highfive images from the API and replies with an embed of it. */
-	public highfive(target: User) {
+	public highfive(target: GuildMember) {
 		return this.reply('highfive', 'highfives', target);
 	}
 
 	/** Fetches hugging images from the API and replies with an embed of it. */
-	public hug(target: User) {
+	public hug(target: GuildMember) {
 		return this.reply('hug', 'hugs', target);
 	}
 
 	/** Fetches kissing images from the API and replies with an embed of it. */
-	public kiss(target: User) {
+	public kiss(target: GuildMember) {
 		return this.reply('kiss', 'kisses', target);
 	}
 
 	/** Fetches patting images from the API and replies with an embed of it. */
-	public pat(target: User) {
+	public pat(target: GuildMember) {
 		return this.reply('pat', 'pats', target);
 	}
 
 	/** Fetches poking images from the API and replies with an embed of it. */
-	public poke(target: User) {
+	public poke(target: GuildMember) {
 		return this.reply('poke', 'pokes', target);
 	}
 
 	/** Fetches slapping images from the API and replies with an embed of it. */
-	public slap(target: User) {
+	public slap(target: GuildMember) {
 		return this.reply('slap', 'slaps', target);
 	}
 
 	/** Fetches waving images from the API and replies with an embed of it. */
-	public wave(target: User) {
+	public wave(target: GuildMember) {
 		return this.reply('waves', 'is waving at', target);
 	}
 }

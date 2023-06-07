@@ -1,5 +1,5 @@
-import { UserBlacklist as UB } from '../Schemas/userBlacklist.js';
-import { GuildDB as DB } from '../Schemas/guild.js';
+import { UserBlacklist as UB } from '../../Schemas/userBlacklist.js';
+import { GuildDB as DB } from '../../Schemas/guild.js';
 import { ArgsOf } from 'discordx';
 
 /** Checks to see if the user or guild who / where this command was executed is blacklisted. */

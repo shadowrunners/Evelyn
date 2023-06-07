@@ -1,5 +1,5 @@
 import Economy from 'discord-economy-super/mongodb';
-import { Evelyn } from '../../structures/Evelyn.js';
+import { Evelyn } from '../../Evelyn';
 import { ChatInputCommandInteraction, EmbedBuilder, User } from 'discord.js';
 
 export class EcoUtils {

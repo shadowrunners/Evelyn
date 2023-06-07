@@ -2,7 +2,7 @@
  * This class contains our own custom version of a wrapper for the NekoBot API to reduce the amount of packages we're using.
  * This bares a lot of resemblence to the waifu.pics API wrapper we use in our /actions system but this one is tailored to the API we mentioned earlier.
  */
-import { get } from 'superagent';
+import superagent from 'superagent';
 import { EmbedBuilder, ChatInputCommandInteraction, User } from 'discord.js';
 
 export class NekoAPI {
@@ -41,7 +41,8 @@ export class NekoAPI {
 	/** Retrieves the image from the endpoint provided. */
 	fetchImage(endpoint: string) {
 		return new Promise((resolve, reject) => {
-			get(`${this.apiURL}${endpoint}`)
+			superagent
+				.get(`${this.apiURL}${endpoint}`)
 				.then((res) => {
 					resolve(res.body.message);
 				})
