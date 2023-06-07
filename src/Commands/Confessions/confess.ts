@@ -11,15 +11,10 @@ const { Paragraph } = TextInputStyle;
 import { GuildDB as DB } from '../../Schemas/guild.js';
 import { Discord, Slash, ModalComponent } from 'discordx';
 import { webhookDelivery } from '../../Functions/webhookDelivery.js';
+import { Evelyn } from '../../Evelyn.js';
 
 @Discord()
 export class Confess {
-	private embed: EmbedBuilder;
-
-	constructor() {
-		this.embed = new EmbedBuilder().setColor('Blurple');
-	}
-
 	@Slash({ description: 'Send a confession', name: 'confess' })
 	async confess(interaction: ChatInputCommandInteraction): Promise<void> {
 		const modal = new ModalBuilder()
@@ -39,8 +34,9 @@ export class Confess {
 	}
 
 	@ModalComponent()
-	async confessionModal(interaction: ModalSubmitInteraction) {
+	async confessionModal(interaction: ModalSubmitInteraction, client: Evelyn) {
 		const { fields, guildId } = interaction;
+		const embed = new EmbedBuilder().setColor('Blurple');
 
 		const [confession] = ['confession'].map((id) =>
 			fields.getTextInputValue(id),
@@ -53,7 +49,7 @@ export class Confess {
 		if (!data?.confessions?.enabled || !data?.confessions.webhook.id)
 			return interaction.reply({
 				embeds: [
-					this.embed.setDescription(
+					embed.setDescription(
 						'🔹 | Confessions are not enabled on this server or a channel for them hasn\'t been set yet.',
 					),
 				],
@@ -62,9 +58,7 @@ export class Confess {
 
 		interaction.reply({
 			embeds: [
-				this.embed.setDescription(
-					'🔹 | Your confession will be delivered shortly.',
-				),
+				embed.setDescription('🔹 | Your confession will be delivered shortly.'),
 			],
 			ephemeral: true,
 		});
@@ -72,9 +66,11 @@ export class Confess {
 		return webhookDelivery(
 			'confessions',
 			data,
-			this.embed
+			client,
+			embed
 				.setTitle('A wild confession has appeared!')
-				.setDescription(confession),
+				.setDescription(confession)
+				.setTimestamp(),
 		);
 	}
 }
