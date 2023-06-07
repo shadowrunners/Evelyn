@@ -38,7 +38,6 @@ export class RAWGAPI {
 				.get(`${this.apiURL}/${game}?key=${this.config.APIs.rawgKey}`)
 				.then(async (res) => {
 					const gameData = res.body;
-					console.log(res.body);
 
 					const mappedPlatforms = gameData?.platforms
 						?.map(({ platform }: Platform) => platform.name)
