@@ -7,19 +7,22 @@
 	"scripts": {
 		"build": "tsc && node ./dist/index.js",
 		"start": "node ./dist/index.js",
-		"dev": "ts-node-esm src/launch.ts"
+		"dev": "nodemon"
 	},
 	"dependencies": {
 		"@colors/colors": "^1.5.0",
 		"@discordx/importer": "^1.2.2",
 		"@discordx/pagination": "^3.4.1",
-		"@shadowrunners/automata": "github:shadowrunners/Automata#v2.2",
+		"@discordx/utilities": "^5.2.1",
+		"@shadowrunners/automata": "^2.3.0",
+		"axios": "^1.4.0",
 		"canvacord": "^5.4.8",
+		"cryptr": "^6.2.0",
 		"discord-arts": "^0.4.0",
 		"discord-economy-super": "^1.7.6",
 		"discord-gamecord": "^4.4.0",
 		"discord-html-transcripts": "^3.1.3",
-		"discord-xp": "^1.1.16",
+		"discord-xp": "github:MrAugu/discord-xp",
 		"discord.js": "^14.9.0",
 		"discordx": "^11.7.6",
 		"genius-lyrics": "^4.4.3",
@@ -27,6 +30,7 @@
 		"imdb-api": "^4.4.1",
 		"mongoose": "^7.0.1",
 		"ms": "^2.1.3",
+		"node-replicate": "^2.0.0",
 		"statcord.js": "^3.4.3",
 		"superagent": "^8.0.9"
 	},
@@ -35,7 +39,7 @@
 		"@typescript-eslint/eslint-plugin": "^5.55.0",
 		"@typescript-eslint/parser": "^5.55.0",
 		"eslint": "^8.36.0",
-		"nodemon": "^2.0.21",
+		"nodemon": "^2.0.22",
 		"prettier": "^2.8.4",
 		"ts-node": "^10.9.1",
 		"typescript": "^4.9.5"
