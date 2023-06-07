@@ -16,7 +16,7 @@ export class MessageDelete {
 			!author?.bot &&
 			embeds?.length > 0 &&
 			!systemStatus &&
-			!validate(guild) &&
+			!(await validate(guild)) &&
 			content === null
 		)
 			return;

@@ -9,7 +9,7 @@ export class GuildBanAdd {
 	async guildBanAdd([ban]: [GuildBan], client: Evelyn) {
 		const { guild, user } = ban;
 
-		if (!validate(guild)) return;
+		if (!(await validate(guild))) return;
 
 		const fetchLogs = await guild.fetchAuditLogs<AuditLogEvent.MemberBanAdd>({
 			limit: 1,

@@ -9,7 +9,7 @@ export class ChannelCreate {
 	async channelCreate([channel]: [GuildChannel], client: Evelyn) {
 		const { guild, name, id } = channel;
 
-		if (!validate(guild)) return;
+		if (!(await validate(guild))) return;
 
 		const fetchLogs = await guild.fetchAuditLogs<AuditLogEvent.ChannelCreate>({
 			limit: 1,

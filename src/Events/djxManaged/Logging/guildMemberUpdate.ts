@@ -7,13 +7,12 @@ import { Discord, On } from 'discordx';
 export class GuildMemberUpdate {
 	@On({ event: 'guildMemberUpdate' })
 	async guildMemberUpdate([members]: [GuildMember], client: Evelyn) {
-		console.log(members);
 		const oldMember = members[0] as GuildMember;
 		const newMember = members[1] as GuildMember;
 
 		const { guild } = newMember;
 
-		if (!validate(guild)) return;
+		if (!(await validate(guild))) return;
 
 		const oldRoles = oldMember.roles.cache.map((r) => r.id);
 		const newRoles = newMember.roles.cache.map((r) => r.id);

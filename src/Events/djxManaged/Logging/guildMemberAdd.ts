@@ -9,7 +9,7 @@ export class GuildMemberAdd {
 	async guildMemberAdd([member]: [GuildMember], client: Evelyn) {
 		const { guild, user } = member;
 
-		if (!validate(guild)) return;
+		if (!(await validate(guild))) return;
 
 		const embed = new EmbedBuilder()
 			.setColor('Blurple')

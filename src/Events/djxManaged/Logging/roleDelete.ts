@@ -9,7 +9,7 @@ export class RoleCreate {
 	async roleCreate(role: Role, client: Evelyn) {
 		const { guild, name, id } = role;
 
-		if (!validate(guild)) return;
+		if (!(await validate(guild))) return;
 
 		const fetchLogs = await guild.fetchAuditLogs<AuditLogEvent.RoleDelete>({
 			limit: 1,

@@ -9,7 +9,7 @@ export class EmojiDelete {
 	async emojiDelete([emoji]: [GuildEmoji], client: Evelyn) {
 		const { guild, name, id } = emoji;
 
-		if (!validate(guild)) return;
+		if (!(await validate(guild))) return;
 
 		const fetchLogs = await guild.fetchAuditLogs<AuditLogEvent.EmojiDelete>({
 			limit: 1,

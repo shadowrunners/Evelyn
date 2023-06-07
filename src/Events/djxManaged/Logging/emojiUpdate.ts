@@ -10,7 +10,7 @@ export class EmojiUpdate {
 		const oldEmoji = emojis[0] as GuildEmoji;
 		const newEmoji = emojis[1] as GuildEmoji;
 
-		if (!validate(oldEmoji.guild)) return;
+		if (!(await validate(oldEmoji.guild))) return;
 
 		const fetchLogs =
 			await oldEmoji.guild.fetchAuditLogs<AuditLogEvent.EmojiUpdate>({

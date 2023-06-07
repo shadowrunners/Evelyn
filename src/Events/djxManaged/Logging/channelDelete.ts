@@ -9,7 +9,7 @@ export class ChannelDelete {
 	async channelDelete([channel]: [GuildChannel], client: Evelyn) {
 		const { guild, name, id } = channel;
 
-		if (!validate(guild)) return;
+		if (!(await validate(guild))) return;
 
 		const fetchLogs = await guild.fetchAuditLogs<AuditLogEvent.ChannelDelete>({
 			limit: 1,

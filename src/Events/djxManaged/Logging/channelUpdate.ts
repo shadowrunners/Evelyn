@@ -10,7 +10,7 @@ export class ChannelUpdate {
 		const oldChannel = channels[0];
 		const newChannel = channels[1];
 
-		if (!validate(oldChannel.guild)) return;
+		if (!(await validate(oldChannel.guild))) return;
 
 		const fetchLogs =
 			await oldChannel.guild.fetchAuditLogs<AuditLogEvent.ChannelUpdate>({

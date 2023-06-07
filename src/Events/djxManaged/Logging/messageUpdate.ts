@@ -16,7 +16,7 @@ export class MessageUpdate {
 		const oldMessage = message[0] as Message;
 		const newMessage = message[1] as Message;
 
-		if (oldMessage.author?.bot && !validate(oldMessage.guild)) return;
+		if (oldMessage.author?.bot && !(await validate(oldMessage.guild))) return;
 
 		const embed = new EmbedBuilder().setColor('Blurple');
 		const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
