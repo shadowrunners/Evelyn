@@ -1,5 +1,5 @@
 import cryptr from 'cryptr';
-import { Evelyn } from '../Evelyn.js';
+import { Evelyn } from '../../Evelyn.js';
 
 export function encryptMyData(value: string, client: Evelyn) {
 	const keepMyDataSecure = new cryptr(client.config.decryptionKey, {

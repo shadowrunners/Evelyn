@@ -12,7 +12,7 @@ import { Evelyn } from '../../Evelyn.js';
 import {
 	encryptMyData,
 	pleaseDecryptMyData,
-} from '../../Functions/secureStorage.js';
+} from '../../Utils/Utils/secureStorage.js';
 const { Administrator } = PermissionFlagsBits;
 
 @Discord()

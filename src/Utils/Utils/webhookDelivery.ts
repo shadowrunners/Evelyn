@@ -6,8 +6,8 @@ import {
 	ButtonBuilder,
 } from 'discord.js';
 import { pleaseDecryptMyData } from './secureStorage.js';
-import { Evelyn } from '../Evelyn.js';
-import { GuildInterface } from '../Schemas/guild.js';
+import { Evelyn } from '../../Evelyn.js';
+import { GuildInterface } from '../../Schemas/guild.js';
 
 /** This function delivers the logs using Discord Webhooks. It exists as a separate dedicated function to avoid repeating code. */
 export function webhookDelivery(

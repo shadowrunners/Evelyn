@@ -27,5 +27,3 @@ export function crashReporter(client: Evelyn, err: Error) {
 		content: `<@${client.config.ownerIDs}>`,
 	});
 }
-
-module.exports = { crashReporter };

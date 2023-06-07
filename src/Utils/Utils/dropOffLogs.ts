@@ -6,7 +6,7 @@ import {
 	ButtonBuilder,
 } from 'discord.js';
 import { GuildDB as DB } from '../../Schemas/guild.js';
-import { webhookDelivery } from '../../Functions/webhookDelivery.js';
+import { webhookDelivery } from './webhookDelivery.js';
 import { Evelyn } from '../../Evelyn.js';
 
 /**

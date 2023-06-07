@@ -6,9 +6,9 @@ import {
 	TextChannel,
 } from 'discord.js';
 import { Player, AutomataTrack } from '@shadowrunners/automata';
-import { Util } from '../../Modules/Utils/utils.js';
+import { Util } from '../../Utils/Utils/Util.js';
 import { Evelyn } from '../../Evelyn.js';
-import { Event } from '../../interfaces/interfaces.js';
+import { Event } from '../../Interfaces/Interfaces.js';
 
 const { Primary } = ButtonStyle;
 

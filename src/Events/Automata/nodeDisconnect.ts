@@ -1,4 +1,4 @@
-import { Event } from '../../interfaces/interfaces';
+import { Event } from '../../Interfaces/Interfaces';
 import { Node } from '@shadowrunners/automata';
 import colors from '@colors/colors';
 
