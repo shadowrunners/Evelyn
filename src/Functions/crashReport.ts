@@ -1,5 +1,5 @@
 import { WebhookClient, EmbedBuilder, codeBlock } from 'discord.js';
-import { Evelyn } from '../structures/Evelyn';
+import { Evelyn } from '../Evelyn.js';
 import { inspect } from 'util';
 
 /** This function manages Evelyn's Crash Report function which will send any errors to your Overwatch channel. */

@@ -1,6 +1,6 @@
-import { Reminders as DB } from '../Structures/Schemas/reminders.js';
+import { Reminders as DB } from '../Schemas/reminders.js';
 import { reminded } from '../Functions/reminderUtils.js';
-import { Evelyn } from '../structures/Evelyn.js';
+import { Evelyn } from '../Evelyn.js';
 import { TextChannel } from 'discord.js';
 
 /** Checks to see if all users have been reminded. */
