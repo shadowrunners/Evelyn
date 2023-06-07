@@ -1,4 +1,10 @@
-import { WebhookClient, EmbedBuilder, APIMessage } from 'discord.js';
+import {
+	WebhookClient,
+	EmbedBuilder,
+	APIMessage,
+	ActionRowBuilder,
+	ButtonBuilder,
+} from 'discord.js';
 import { pleaseDecryptMyData } from './secureStorage.js';
 import { Evelyn } from '../Evelyn.js';
 import { GuildInterface } from '../Schemas/guild.js';
@@ -7,8 +13,9 @@ import { GuildInterface } from '../Schemas/guild.js';
 export function webhookDelivery(
 	type: string,
 	data: Partial<GuildInterface>,
-	embed: EmbedBuilder,
 	client: Evelyn,
+	embed: EmbedBuilder,
+	components?: ActionRowBuilder<ButtonBuilder>,
 ): Promise<APIMessage> {
 	const handleWebhooks = () => {
 		if (type === 'logs') {
@@ -22,9 +29,15 @@ export function webhookDelivery(
 				token: decryptedToken,
 			});
 
-			return logsDropOff.send({
-				embeds: [embed],
-			});
+			if (components?.components[0]?.data?.label === 'Jump to Message')
+				return logsDropOff.send({
+					embeds: [embed],
+					components: [components],
+				});
+			else
+				return logsDropOff.send({
+					embeds: [embed],
+				});
 		}
 
 		if (type === 'confessions') {
