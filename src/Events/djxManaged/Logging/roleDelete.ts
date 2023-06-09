@@ -4,9 +4,9 @@ import { Evelyn } from '../../../Evelyn.js';
 import { Discord, On } from 'discordx';
 
 @Discord()
-export class RoleCreate {
-	@On({ event: 'roleCreate' })
-	async roleCreate(role: Role, client: Evelyn) {
+export class RoleDelete {
+	@On({ event: 'roleDelete' })
+	async roleDelete(role: Role, client: Evelyn) {
 		const { guild, name, id } = role;
 
 		if (!(await validate(guild))) return;
