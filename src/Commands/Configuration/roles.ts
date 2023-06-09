@@ -313,12 +313,4 @@ export class Roles {
 			return interaction.editReply({ embeds: [embed] });
 		});
 	}
-
-	// Reaction Panel Handling
-	@On({
-		event: 'interactionCreate',
-	})
-	reactionPanels() {
-		console.log('Debug fire. It fired.');
-	}
 }
