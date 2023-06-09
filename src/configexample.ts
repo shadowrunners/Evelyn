@@ -24,7 +24,7 @@ export const config: botConfig = {
 				name: 'Evelyn - Node 03',
 				host: 'localhost',
 				port: 7734,
-				password: 'youshallnotpass',
+				password: '',
 				secure: false,
 			},
 		],
