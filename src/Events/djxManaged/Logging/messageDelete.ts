@@ -10,14 +10,12 @@ export class MessageDelete {
 		const { guild, author, content, embeds, id } = message;
 		const systemStatus = message.system === true || message.system === null;
 
-		console.log(message);
-		console.log(systemStatus);
 		if (
-			!author?.bot &&
-			embeds?.length > 0 &&
-			!systemStatus &&
-			!(await validate(guild)) &&
-			content === null
+			author?.bot ||
+			embeds?.length > 0 ||
+			systemStatus ||
+			content === null ||
+			!(await validate(guild))
 		)
 			return;
 
