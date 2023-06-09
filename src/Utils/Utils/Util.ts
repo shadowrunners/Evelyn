@@ -3,7 +3,6 @@ import {
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
-	PermissionsBitField,
 	EmbedBuilder,
 	ChatInputCommandInteraction,
 } from 'discord.js';
@@ -146,7 +145,8 @@ export class Util {
 			d: 24 * 60 * 60 * 1000,
 		};
 
-		const [, valueStr, unitStr] = /^(\d+)(\w+)$/.exec(time) || [];
+		const [, valueStr, unitStr] =
+			/^(\d+)(\w+)$/.exec(time && time.slice(0, 50)) || [];
 		const value = parseInt(valueStr, 10);
 		const unitValue = units[unitStr];
 
