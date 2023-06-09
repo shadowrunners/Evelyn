@@ -1,6 +1,8 @@
+import { Player } from '@shadowrunners/automata';
 import {
 	ButtonInteraction,
 	ChatInputCommandInteraction,
+	EmbedBuilder,
 	GuildMember,
 	InteractionResponse,
 	VoiceChannel,
@@ -10,16 +12,19 @@ import {
  * Handles all checks regarding voice, queues and currently playing songs.
  * @param {string} checkType The type of check.
  * @param {ChatInputCommandInteraction} interaction The interaction object.
+ * @param {Player} player The player.
  * @returns {Promise<InteractionResponse<boolean>>}
  */
 export function check(
 	checkType: string[],
 	interaction: ChatInputCommandInteraction | ButtonInteraction,
+	player?: Player,
 ): Promise<InteractionResponse<boolean>> {
 	const { member, guild } = interaction;
 	const serverMember = member as GuildMember;
 	const yourVC = serverMember.voice.channel as VoiceChannel;
 	const herVC = guild.members.me.voice.channelId;
+	const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
 	for (const providedCheck of checkType) {
 		switch (providedCheck) {
@@ -27,7 +32,7 @@ export function check(
 			if (!yourVC)
 				return interaction.reply({
 					embeds: [
-						this.embed.setDescription(
+						embed.setDescription(
 							'🔹 | You need to be in a voice channel to use this command.',
 						),
 					],
@@ -35,9 +40,9 @@ export function check(
 				});
 
 			if (herVC && yourVC.id !== herVC)
-				return this.interaction.reply({
+				return interaction.reply({
 					embeds: [
-						this.embed.setDescription(
+						embed.setDescription(
 							`🔹 | Sorry but I'm already playing music in <#${herVC}>.`,
 						),
 					],
@@ -47,10 +52,10 @@ export function check(
 			break;
 
 		case 'checkQueue':
-			if (this.player?.queue.size === 0)
-				return this.interaction.reply({
+			if (player?.queue.size === 0)
+				return interaction.reply({
 					embeds: [
-						this.embed.setDescription('🔹 | There is nothing in the queue.'),
+						embed.setDescription('🔹 | There is nothing in the queue.'),
 					],
 					ephemeral: true,
 				});
@@ -58,11 +63,9 @@ export function check(
 			break;
 
 		case 'checkPlaying':
-			if (!this.player?.isPlaying)
-				return this.interaction.reply({
-					embeds: [
-						this.embed.setDescription('🔹 | I\'m not playing anything.'),
-					],
+			if (!player?.isPlaying)
+				return interaction.reply({
+					embeds: [embed.setDescription('🔹 | I\'m not playing anything.')],
 					ephemeral: true,
 				});
 

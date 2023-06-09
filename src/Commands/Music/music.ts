@@ -160,7 +160,7 @@ export class Music {
 			interaction: ChatInputCommandInteraction,
 	) {
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-		if (check(['voiceCheck', 'checkPlaying'], interaction)) return;
+		if (check(['voiceCheck', 'checkPlaying'], interaction, this.player)) return;
 
 		if (percent > 100 || percent < 0)
 			return interaction.reply({
@@ -198,7 +198,7 @@ export class Music {
 			interaction: ChatInputCommandInteraction,
 	) {
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-		if (check(['voiceCheck', 'checkPlaying'], interaction)) return;
+		if (check(['voiceCheck', 'checkPlaying'], interaction, this.player)) return;
 
 		const duration = Number(time) * 1000;
 		const trackDuration = this.player.queue.current.length;
@@ -238,7 +238,7 @@ export class Music {
 			interaction: ChatInputCommandInteraction,
 	) {
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-		if (check(['voiceCheck', 'checkPlaying'], interaction)) return;
+		if (check(['voiceCheck', 'checkPlaying'], interaction, this.player)) return;
 
 		switch (type) {
 		case 'queue':
@@ -270,7 +270,7 @@ export class Music {
 	})
 	async skip(interaction: ChatInputCommandInteraction) {
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-		if (check(['voiceCheck', 'checkPlaying'], interaction)) return;
+		if (check(['voiceCheck', 'checkPlaying'], interaction, this.player)) return;
 
 		this.player.stop();
 
@@ -285,7 +285,7 @@ export class Music {
 	})
 	async pause(interaction: ChatInputCommandInteraction) {
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-		if (check(['voiceCheck', 'checkPlaying'], interaction)) return;
+		if (check(['voiceCheck', 'checkPlaying'], interaction, this.player)) return;
 
 		this.player.pause(true);
 
@@ -332,7 +332,7 @@ export class Music {
 		const gClient = new Client(client.config.APIs.geniusKey);
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
-		if (check(['voiceCheck', 'checkPlaying'], interaction)) return;
+		if (check(['voiceCheck', 'checkPlaying'], interaction, this.player)) return;
 
 		await interaction.deferReply();
 
@@ -364,7 +364,7 @@ export class Music {
 	})
 	async shuffle(interaction: ChatInputCommandInteraction) {
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-		if (check(['voiceCheck', 'checkQueue'], interaction)) return;
+		if (check(['voiceCheck', 'checkQueue'], interaction, this.player)) return;
 
 		this.player.queue.shuffle();
 
@@ -379,7 +379,7 @@ export class Music {
 	})
 	async nowplaying(interaction: ChatInputCommandInteraction) {
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-		if (check(['voiceCheck', 'checkPlaying'], interaction)) return;
+		if (check(['voiceCheck', 'checkPlaying'], interaction, this.player)) return;
 
 		const track = this.player.queue.current;
 
@@ -405,7 +405,13 @@ export class Music {
 		this.util = new Util(interaction);
 		const { guild } = interaction;
 
-		if (check(['voiceCheck', 'checkPlaying', 'checkQueue'], interaction))
+		if (
+			check(
+				['voiceCheck', 'checkPlaying', 'checkQueue'],
+				interaction,
+				this.player,
+			)
+		)
 			return;
 
 		await interaction.deferReply();
@@ -460,7 +466,7 @@ export class Music {
 			option: string,
 			interaction: ChatInputCommandInteraction,
 	) {
-		if (check(['voiceCheck', 'checkPlaying'], interaction)) return;
+		if (check(['voiceCheck', 'checkPlaying'], interaction, this.player)) return;
 
 		const embed = new EmbedBuilder()
 			.setTitle('🎧 Filter applied!')
@@ -574,7 +580,7 @@ export class Music {
 		const { user } = interaction;
 
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-		if (check(['voiceCheck', 'checkQueue'], interaction)) return;
+		if (check(['voiceCheck', 'checkQueue'], interaction, this.player)) return;
 
 		this.player.queue.shuffle();
 
@@ -595,7 +601,7 @@ export class Music {
 		const { user } = interaction;
 
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-		if (check(['voiceCheck', 'checkQueue'], interaction)) return;
+		if (check(['voiceCheck', 'checkQueue'], interaction, this.player)) return;
 
 		this.player.stop();
 
@@ -617,7 +623,7 @@ export class Music {
 		const volume = this.player.volume - 10;
 
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-		if (check(['voiceCheck', 'checkPlaying'], interaction)) return;
+		if (check(['voiceCheck', 'checkPlaying'], interaction, this.player)) return;
 
 		if (volume < 0)
 			return interaction.reply({
@@ -652,7 +658,7 @@ export class Music {
 		const { user } = interaction;
 		const volume = this.player.volume + 10;
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-		if (check(['voiceCheck', 'checkPlaying'], interaction)) return;
+		if (check(['voiceCheck', 'checkPlaying'], interaction, this.player)) return;
 
 		if (volume > 100)
 			return interaction.reply({
