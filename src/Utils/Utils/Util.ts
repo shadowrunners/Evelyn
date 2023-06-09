@@ -84,50 +84,18 @@ export class Util {
 
 	/** Determines the value of the current database connection status. */
 	public switchTo(val: number) {
-		let status: string;
 		switch (val) {
 		case 0:
-			return (status = '🟥 Disconnected');
+			return '🟥 Disconnected';
 		case 1:
-			return (status = '🔷 Connected');
+			return '🔷 Connected';
 		case 2:
-			return (status = '🟨 Connecting');
+			return '🟨 Connecting';
 		case 3:
-			return (status = '🟨 Disconnecting');
+			return '🟨 Disconnecting';
 		default:
 			break;
 		}
-		return status;
-	}
-
-	/** Checks to see if the bot has a certain permission. */
-	public checkPermissions(command) {
-		const { guild } = this.interaction;
-
-		if (
-			guild.members.me.permissions.has(
-				PermissionsBitField.resolve(command.botPermissions),
-			)
-		)
-			return;
-
-		const permission = PermissionsBitField.resolve(command.botPermissions);
-
-		return this.interaction.reply({
-			embeds: [
-				new EmbedBuilder()
-					.setColor('Blurple')
-					.setTitle('Missing Permissions')
-					.setDescription(
-						'🔹 | I\'m missing several permissions, might wanna have a look at that.',
-					)
-					.addFields({
-						name: 'Permissions Missing',
-						value: `${permission}`,
-					}),
-			],
-			ephemeral: true,
-		});
 	}
 
 	/** Converts time from ms to a readable format. */
