@@ -5,8 +5,8 @@ import {
 } from 'discord.js';
 import { Discord, Slash, SlashOption, SlashGroup, Guild } from 'discordx';
 import { UserBlacklist as UB } from '../../Schemas/userBlacklist.js';
-import config from '../../config.json' assert { type: 'json' };
 import { GuildDB as DB } from '../../Schemas/guild.js';
+import { config } from '../../config.js';
 
 @Discord()
 @Guild(config.debug.devGuild)
