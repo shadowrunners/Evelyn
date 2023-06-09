@@ -6,7 +6,7 @@ import { Discord, On } from 'discordx';
 @Discord()
 export class GuildMemberUpdate {
 	@On({ event: 'guildMemberUpdate' })
-	async guildMemberUpdate([members]: [GuildMember], client: Evelyn) {
+	async guildMemberUpdate(members: GuildMember, client: Evelyn) {
 		const oldMember = members[0] as GuildMember;
 		const newMember = members[1] as GuildMember;
 
