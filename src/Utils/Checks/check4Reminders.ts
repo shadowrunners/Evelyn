@@ -23,7 +23,7 @@ export async function check4Reminders(client: Evelyn) {
 			const message = await channel.messages.fetch(newData.messageId);
 			if (!message) return;
 
-			if (newData.scheduledTime * 1000 < Date.now()) reminded(message);
+			if (newData.scheduledTime * 1000 < Date.now()) await reminded(message);
 			else
 				setTimeout(
 					() => reminded(message),

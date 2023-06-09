@@ -1,11 +1,11 @@
-import DXP from 'discord-xp';
-import { connect, set } from 'mongoose';
-import { Discord, Once } from 'discordx';
-import { ActivityType } from 'discord.js';
-import { Evelyn } from '../../../Evelyn.js';
-import colors from '@colors/colors';
 import { check4Reminders } from '../../../Utils/Checks/check4Reminders.js';
 import { check4Lockdowns } from '../../../Utils/Checks/check4Lockdowns.js';
+import { Evelyn } from '../../../Evelyn.js';
+import { ActivityType } from 'discord.js';
+import { Discord, Once } from 'discordx';
+import colors from '@colors/colors';
+import { set } from 'mongoose';
+import DXP from 'discord-xp';
 
 @Discord()
 export class onReady {
@@ -34,7 +34,7 @@ export class onReady {
 		if (!config.database) {
 			return console.error(
 				`${magenta('Evelyn Notification')} ${white('·')} ${red(
-					'Couldn\'t connect to database, please check your config.json file.',
+					'Couldn\'t connect to database, please check your config.ts file.',
 				)}`,
 			);
 		}
@@ -43,8 +43,8 @@ export class onReady {
 		statcord.autopost();
 		manager.init(client);
 
-		set('strictQuery', false);
-		await connect(config.database)
+		set('strictQuery', false)
+			.connect(config.database)
 			.then(() => {
 				console.info(
 					`${magenta('Database')} ${white('·')} ${green(
@@ -56,8 +56,8 @@ export class onReady {
 				console.log(err);
 			});
 
-		check4Reminders(client);
-		check4Lockdowns(client);
-		DXP.setURL(client.config.database);
+		await check4Reminders(client);
+		await check4Lockdowns(client);
+		await DXP.setURL(client.config.database);
 	}
 }
