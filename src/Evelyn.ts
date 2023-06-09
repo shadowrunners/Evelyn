@@ -6,9 +6,9 @@ import { fileLoad } from './Utils/Utils/fileLoader.js';
 import { dirname, importx } from '@discordx/importer';
 import { IntentsBitField, Partials } from 'discord.js';
 import { botConfig } from './Interfaces/Interfaces.js';
-import config from './config.json' assert { type: 'json' };
 // import { crashReporter } from './functions/crashReport.js';
 import Economy from 'discord-economy-super/mongodb/src/index.js';
+import { config } from './config.js';
 
 const {
 	Guilds,
