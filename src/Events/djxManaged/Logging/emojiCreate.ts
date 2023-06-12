@@ -1,6 +1,6 @@
-import { dropOffLogs, validate } from '../../../Utils/Utils/dropOffLogs.js';
-import { EmbedBuilder, AuditLogEvent, GuildEmoji } from 'discord.js';
+import { OWLogs, validate } from '../../../Utils/Utils/OWLogs.js';
 import { Evelyn } from '../../../Evelyn.js';
+import { GuildEmoji } from 'discord.js';
 import { Discord, On } from 'discordx';
 
 @Discord()
@@ -18,24 +18,7 @@ export class EmojiCreate {
 
 		const embed = new EmbedBuilder()
 			.setColor('Blurple')
-			.setAuthor({
-				name: guild.name,
-				iconURL: guild.iconURL(),
-			})
-			.setTitle('Emoji Created')
-			.addFields(
-				{
-					name: '🔹 | Emoji Name',
-					value: `> ${name}`,
-				},
-				{
-					name: '🔹 | Emoji ID',
-					value: `> ${id}`,
-				},
-				{
-					name: '🔹 | Added by',
-					value: `> <@${firstLog.executor.id}>`,
-				},
+			
 			)
 			.setTimestamp();
 
