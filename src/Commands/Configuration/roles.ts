@@ -9,8 +9,17 @@ import {
 	ChannelType,
 	Emoji,
 	Role,
+	StringSelectMenuInteraction,
+	GuildMemberRoleManager,
+	StringSelectMenuComponent,
 } from 'discord.js';
-import { Discord, On, Slash, SlashGroup, SlashOption } from 'discordx';
+import {
+	Discord,
+	SelectMenuComponent,
+	Slash,
+	SlashGroup,
+	SlashOption,
+} from 'discordx';
 import { RRoles as DB } from '../../Schemas/roles.js';
 
 const { Administrator } = PermissionFlagsBits;
@@ -246,10 +255,9 @@ export class Roles {
 	) {
 		const { guildId, guild } = interaction;
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-
 		const data = await DB.findOne({ id: guildId, panelName: panel });
 
-		if (panel !== data.panelName || data.roleArray.length > 0)
+		if (panel !== data.panelName || data.roleArray.length < 0)
 			return interaction.reply({
 				embeds: [
 					embed.setDescription('🔹 | The panel you specified does not exist.'),
@@ -284,7 +292,7 @@ export class Roles {
 
 		await channel.send({ embeds: [panelEmbed], components: [menuComponents] });
 		return interaction.reply({
-			content: '🔹 | Succesfully sent your panel.',
+			embeds: [embed.setDescription('🔹 | Succesfully sent your panel.')],
 			ephemeral: true,
 		});
 	}
@@ -294,23 +302,58 @@ export class Roles {
 		description: 'Lists all of the panels and their roles.',
 	})
 	async listpanels(interaction: ChatInputCommandInteraction) {
-		const { guildId } = interaction;
 		const embed = new EmbedBuilder().setColor('Blurple');
-		const data = await DB.find({ id: guildId });
+		const { guild, guildId } = interaction;
+		const data = await DB.find({
+			id: guildId,
+		});
 
 		await interaction.deferReply();
 
 		if (!data) return;
 
 		data.forEach((docs) => {
+			console.log(data, docs.panelName);
 			const roleArray = docs.roleArray
 				.map((role) => {
 					return `<@&${role.roleId}>`;
 				})
 				.join('\n');
 
-			embed.addFields({ name: docs.panelName, value: roleArray });
-			return interaction.editReply({ embeds: [embed] });
+			return interaction.editReply({
+				embeds: [
+					embed.setTitle(`Role Panels for ${guild.name}`).addFields({
+						name: docs.panelName,
+						value: roleArray || 'This panel doesn\'t have any roles yet.',
+					}),
+				],
+			});
+		});
+	}
+
+	// Reaction Menu Handling
+	@SelectMenuComponent({
+		id: 'reaction',
+	})
+	async reaction(interaction: StringSelectMenuInteraction) {
+		const { values, member, component } = interaction;
+		const roles = member.roles as GuildMemberRoleManager;
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		const actualComponent = component as StringSelectMenuComponent;
+
+		if (values.length <= 0) {
+			actualComponent.data.options.forEach((option) => {
+				if (roles.cache.has(option.value)) roles.remove(option.value);
+			});
+		}
+		else
+			values.forEach((id) => {
+				if (!roles.cache.has(id)) roles.add(id);
+			});
+
+		return interaction.reply({
+			embeds: [embed.setDescription('🔹 | Your roles have been updated.')],
+			ephemeral: true,
 		});
 	}
 }
