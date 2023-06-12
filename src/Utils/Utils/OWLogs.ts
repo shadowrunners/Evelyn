@@ -234,9 +234,9 @@ export class OWLogs {
 		);
 	}
 
-	public async emojiCreate(emoji: GuildEmoji) {
+	public async emojiDelete(emoji: GuildEmoji) {
 		const { name, id } = emoji;
-		const firstLog = await this.findAuditLog(AuditLogEvent.EmojiCreate);
+		const firstLog = await this.findAuditLog(AuditLogEvent.EmojiDelete);
 
 		return await this.airDrop(
 			this.embed
@@ -244,7 +244,7 @@ export class OWLogs {
 					name: this.guild.name,
 					iconURL: this.guild.iconURL(),
 				})
-				.setTitle('Emoji Created')
+				.setTitle('Emoji Deleted')
 				.addFields(
 					{
 						name: '🔹 | Emoji Name',
@@ -255,7 +255,7 @@ export class OWLogs {
 						value: `> ${id}`,
 					},
 					{
-						name: '🔹 | Added by',
+						name: '🔹 | Removed by',
 						value: `> <@${firstLog.executor.id}>`,
 					},
 				),
