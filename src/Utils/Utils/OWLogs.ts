@@ -12,6 +12,7 @@ import {
 	ButtonBuilder,
 	EmbedBuilder,
 	Guild,
+	GuildBan,
 	GuildChannel,
 	GuildEmoji,
 	WebhookClient,
@@ -263,7 +264,7 @@ export class OWLogs {
 	}
 
 	public async emojiUpdate(oldEmoji: GuildEmoji, newEmoji: GuildEmoji) {
-		const firstLog = await this.findAuditLog(AuditLogEvent.ChannelUpdate);
+		const firstLog = await this.findAuditLog(AuditLogEvent.EmojiUpdate);
 
 		if (oldEmoji.name !== newEmoji.name)
 			return await this.airDrop(
@@ -288,5 +289,33 @@ export class OWLogs {
 						},
 					),
 			);
+	}
+
+	public async guildBanAdd(ban: GuildBan) {
+		const firstLog = await this.findAuditLog(AuditLogEvent.MemberBanAdd);
+		const { user } = ban;
+
+		return await this.airDrop(
+			this.embed
+				.setAuthor({
+					name: this.guild.name,
+					iconURL: this.guild.iconURL(),
+				})
+				.setTitle('Member Banned')
+				.addFields(
+					{
+						name: '🔹 | Member Name',
+						value: `> ${user.username}`,
+					},
+					{
+						name: '🔹 | Member ID',
+						value: `> ${user.id}`,
+					},
+					{
+						name: '🔹 | Banned by',
+						value: `> <@${firstLog.executor.id}>`,
+					},
+				),
+		);
 	}
 }
