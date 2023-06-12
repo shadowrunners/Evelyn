@@ -112,13 +112,18 @@ export interface GuildInterface {
 		/** Indicates if the anti-phishing system is enabled or not. */
 		enabled: boolean;
 	};
+	verification: {
+		/** Indicates if the verification system is enabled or not. */
+		enabled: boolean;
+		/** The role that will be assigned to users upon verification. */
+		role: string;
+	};
 }
 
 export const GuildDB = model<GuildInterface>(
 	'GuildDB',
-	new Schema({
+	new Schema<GuildInterface>({
 		id: String,
-
 		logs: {
 			enabled: Boolean,
 			channel: String,
@@ -163,6 +168,10 @@ export const GuildDB = model<GuildInterface>(
 		},
 		antiphishing: {
 			enabled: Boolean,
+		},
+		verification: {
+			enabled: Boolean,
+			role: String,
 		},
 	}),
 );
