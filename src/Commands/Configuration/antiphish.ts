@@ -1,12 +1,11 @@
 import { Discord, Slash, SlashGroup, SlashOption, SlashChoice } from 'discordx';
 import {
-	EmbedBuilder,
-	PermissionFlagsBits,
 	ApplicationCommandOptionType,
 	ChatInputCommandInteraction,
+	PermissionFlagsBits,
+	EmbedBuilder,
 } from 'discord.js';
 import { GuildDB as DB } from '../../Schemas/guild.js';
-const { Administrator } = PermissionFlagsBits;
 
 @Discord()
 @SlashGroup({
@@ -15,16 +14,10 @@ const { Administrator } = PermissionFlagsBits;
 })
 @SlashGroup('antiphish')
 export class AntiPhish {
-	private embed: EmbedBuilder;
-
-	constructor() {
-		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-	}
-
 	@Slash({
-		description: 'Gives you the ability to toggle anti-phishing on and off.',
-		defaultMemberPermissions: [Administrator],
 		name: 'toggle',
+		description: 'Gives you the ability to toggle anti-phishing on and off.',
+		defaultMemberPermissions: [PermissionFlagsBits.Administrator],
 	})
 	async toggle(
 		@SlashChoice({ name: 'Enable', value: 'enable' })
@@ -40,11 +33,12 @@ export class AntiPhish {
 	) {
 		const { guildId } = interaction;
 		const data = await DB.findOne({ id: guildId });
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
 		if (choice === 'enable' && data.antiphishing.enabled === true)
 			return interaction.reply({
 				embeds: [
-					this.embed.setDescription(
+					embed.setDescription(
 						'🔹 | The anti-phishing system is already enabled.',
 					),
 				],
@@ -54,7 +48,7 @@ export class AntiPhish {
 		if (choice === 'disable' && data.antiphishing.enabled === false)
 			return interaction.reply({
 				embeds: [
-					this.embed.setDescription(
+					embed.setDescription(
 						'🔹 | The anti-phishing system is already disabled.',
 					),
 				],
@@ -74,9 +68,7 @@ export class AntiPhish {
 
 		return interaction.reply({
 			embeds: [
-				this.embed.setDescription(
-					'🔹 | The anti-phishing system has been enabled.',
-				),
+				embed.setDescription('🔹 | The anti-phishing system has been enabled.'),
 			],
 			ephemeral: true,
 		});
