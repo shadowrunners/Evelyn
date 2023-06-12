@@ -261,4 +261,32 @@ export class OWLogs {
 				),
 		);
 	}
+
+	public async emojiUpdate(oldEmoji: GuildEmoji, newEmoji: GuildEmoji) {
+		const firstLog = await this.findAuditLog(AuditLogEvent.ChannelUpdate);
+
+		if (oldEmoji.name !== newEmoji.name)
+			return await this.airDrop(
+				this.embed
+					.setAuthor({
+						name: this.guild.name,
+						iconURL: this.guild.iconURL(),
+					})
+					.setTitle('Emoji Updated')
+					.addFields(
+						{
+							name: '🔹 | Old Name',
+							value: `> ${oldEmoji.name}`,
+						},
+						{
+							name: '🔹 | New Name',
+							value: `> ${newEmoji.name}`,
+						},
+						{
+							name: '🔹 | Updated by',
+							value: `> <@${firstLog.executor.id}>`,
+						},
+					),
+			);
+	}
 }
