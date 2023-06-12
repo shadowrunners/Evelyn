@@ -7,21 +7,11 @@ import { Discord, On } from 'discordx';
 export class EmojiCreate {
 	@On({ event: 'emojiCreate' })
 	async emojiCreate([emoji]: [GuildEmoji], client: Evelyn) {
-		const { guild, name, id } = emoji;
+		const { guild } = emoji;
 
 		if (!(await validate(guild))) return;
+		const logs = new OWLogs(guild, client);
 
-		const fetchLogs = await guild.fetchAuditLogs<AuditLogEvent.EmojiCreate>({
-			limit: 1,
-		});
-		const firstLog = fetchLogs.entries.first();
-
-		const embed = new EmbedBuilder()
-			.setColor('Blurple')
-			
-			)
-			.setTimestamp();
-
-		return dropOffLogs(guild, client, embed);
+		return await logs.emojiCreate(emoji);
 	}
 }
