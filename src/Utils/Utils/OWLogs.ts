@@ -606,7 +606,7 @@ export class OWLogs {
 		);
 
 		if (oldMessage.content !== newMessage.content)
-			return this.airDrop(
+			return await this.airDrop(
 				embed.setTitle('Message Updated').addFields(
 					{
 						name: '🔹 | Old Content',
@@ -638,7 +638,7 @@ export class OWLogs {
 		const { name, hexColor, id } = role;
 		const firstLog = await this.findAuditLog(AuditLogEvent.RoleCreate);
 
-		return this.airDrop(
+		return await this.airDrop(
 			this.embed.setTitle('Role Created').addFields(
 				{
 					name: '🔹 | Role Name',
@@ -669,7 +669,7 @@ export class OWLogs {
 		const { name, id } = role;
 		const firstLog = await this.findAuditLog(AuditLogEvent.RoleDelete);
 
-		return this.airDrop(
+		return await this.airDrop(
 			this.embed.setTitle('Role Deleted').addFields(
 				{
 					name: '🔹 | Role Name',
