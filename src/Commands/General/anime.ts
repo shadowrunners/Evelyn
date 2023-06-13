@@ -35,11 +35,6 @@ export class Anime {
 		const anime = await kitsu.fetchAnime(title);
 		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
-		if (!anime)
-			return interaction.reply({
-				embeds: [this.embed.setDescription('🔹 | Couldn\'t find a result.')],
-			});
-
 		return interaction.reply({
 			embeds: [
 				this.embed
