@@ -5,6 +5,7 @@ export const config: botConfig = {
 	database: '',
 	ownerIDs: [],
 	decryptionKey: '',
+	userAgent: 'examplebot@example (https://github.com/shadowrunners/Evelyn)',
 
 	debug: {
 		devGuild: '',
