@@ -4,10 +4,10 @@ import colors from '@colors/colors';
 import { Manager } from '@shadowrunners/automata';
 import { fileLoad } from './Utils/Utils/fileLoader.js';
 import { dirname, importx } from '@discordx/importer';
-import { IntentsBitField, Partials } from 'discord.js';
+import { IntentsBitField, Options } from 'discord.js';
 import { botConfig } from './Interfaces/Interfaces.js';
 // import { crashReporter } from './functions/crashReport.js';
-import Economy from 'discord-economy-super/mongodb/src/index.js';
+// import Economy from 'discord-economy-super/mongodb/src/index.js';
 import { config } from './config.js';
 
 const {
@@ -17,16 +17,16 @@ const {
 	GuildModeration,
 	GuildEmojisAndStickers,
 	GuildMessageReactions,
-	GuildInvites,
 	GuildVoiceStates,
 	GuildPresences,
 	MessageContent,
+	DirectMessages,
 } = IntentsBitField.Flags;
-const { User, Message, Channel, GuildMember, ThreadMember } = Partials;
 
 export class Evelyn extends Client {
 	public config: botConfig;
-	public economy: Economy<boolean>;
+	// To implement later. This shit takes too much time.
+	// public economy: Economy<boolean>;
 	public statcord: Statcord.Client;
 	public manager: Manager;
 	private client: Client;
@@ -35,7 +35,6 @@ export class Evelyn extends Client {
 		super({
 			intents: [
 				Guilds,
-				GuildInvites,
 				GuildMembers,
 				GuildMessages,
 				GuildPresences,
@@ -44,22 +43,18 @@ export class Evelyn extends Client {
 				GuildMessageReactions,
 				GuildEmojisAndStickers,
 				MessageContent,
+				DirectMessages,
 			],
-			partials: [User, Message, Channel, GuildMember, ThreadMember],
 			silent: false,
+			makeCache: Options.cacheWithLimits({
+				...Options.DefaultMakeCacheSettings,
+				ReactionManager: 0,
+				GuildInviteManager: 0,
+			}),
+			sweepers: Options.DefaultSweeperSettings,
 		});
 
 		this.config = config;
-		this.economy = new Economy<true>({
-			connection: {
-				connectionURI: this.config.database,
-				collectionName: 'economy',
-				dbName: 'test',
-			},
-			dailyAmount: 80,
-			workAmount: [60, 100],
-			weeklyAmount: 300,
-		});
 
 		this.statcord = new Statcord.Client({
 			client: this,
@@ -129,33 +124,12 @@ export class Evelyn extends Client {
 		}
 	}
 
-	/** Loads Statcord events.
-	 * @param {Evelyn} client - The client object.
-	 * @returns {Promise<void>}
-	 */
-	async loadEco(client: Evelyn): Promise<void> {
-		const files = await fileLoad('Events/Economy');
-		for (const file of files) {
-			const event = await import(`file://${file}`);
-			const execute = (...args: string[]) => event.execute(...args, client);
-
-			client.economy.on(event.name, execute);
-
-			console.log(
-				`${colors.magenta('Statcord')} ${colors.white(
-					'· Loaded',
-				)} ${colors.green(event.name + '.ts')}`,
-			);
-		}
-	}
-
 	/** Imports all commands and events then launches a new instance of the bot. */
 	public async launch() {
 		await importx(
 			`${dirname(import.meta.url)}/{events/djxManaged,commands}/**/*.{ts,js}`,
 		);
 
-		await this.loadEco(this);
 		await this.loadStats(this);
 		await this.loadMusic(this);
 
