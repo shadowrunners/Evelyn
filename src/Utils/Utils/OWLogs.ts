@@ -33,7 +33,7 @@ export async function validate(guild: Guild): Promise<boolean> {
 		id: guild.id,
 	});
 
-	if (!data?.logs?.enabled && !data?.logs?.webhook) return false;
+	if (!data?.logs?.enabled && !data?.logs?.webhook) return;
 
 	return true;
 }
