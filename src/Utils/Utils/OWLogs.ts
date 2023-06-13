@@ -95,7 +95,7 @@ export class OWLogs {
 	 * @param components The components object used for Buttons and stuff.
 	 * @returns The message that was sent via the webhook.
 	 */
-	private async airDrop(
+	public async airDrop(
 		embed: EmbedBuilder,
 		components?: ActionRowBuilder<ButtonBuilder>,
 	) {
