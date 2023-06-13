@@ -6,7 +6,6 @@
 import { pleaseDecryptMyData } from './secureStorage.js';
 import { GuildDB as DB } from '../../Schemas/guild.js';
 import {
-	APIMessage,
 	ActionRowBuilder,
 	AuditLogEvent,
 	ButtonBuilder,
@@ -94,12 +93,12 @@ export class OWLogs {
 	 * Delivers mod logs via Discord Webhooks.
 	 * @param embed The embed object.
 	 * @param components The components object used for Buttons and stuff.
-	 * @returns {Promise<APIMessage>} The message that was sent via the webhook.
+	 * @returns The message that was sent via the webhook.
 	 */
 	private async airDrop(
 		embed: EmbedBuilder,
 		components?: ActionRowBuilder<ButtonBuilder>,
-	): Promise<APIMessage> {
+	) {
 		const data = await DB.findOne({
 			id: this.guild.id,
 		});
@@ -128,11 +127,11 @@ export class OWLogs {
 	}
 
 	/**
-	 * Handles the channelCreate event.
+	 * Handles the `channelCreate` event.
 	 * @param channel The channel that was created.
-	 * @returns {Promise<APIMessage>} The message that was sent via the webhook.
+	 * @returns The message that was sent via the webhook.
 	 */
-	public async channelCreate(channel: GuildChannel): Promise<APIMessage> {
+	public async channelCreate(channel: GuildChannel) {
 		const { name, id } = channel;
 		const firstLog = await this.findAuditLog(AuditLogEvent.ChannelCreate);
 
@@ -155,11 +154,11 @@ export class OWLogs {
 	}
 
 	/**
-	 * Handles the channelCreate event.
-	 * @param channel The channel that was created.
-	 * @returns {Promise<APIMessage>} The message that was sent via the webhook.
+	 * Handles the `channelDelete` event.
+	 * @param channel The channel that was deleted.
+	 * @returns The message that was sent via the webhook.
 	 */
-	public async channelDelete(channel: GuildChannel): Promise<APIMessage> {
+	public async channelDelete(channel: GuildChannel) {
 		const { name, id } = channel;
 		const firstLog = await this.findAuditLog(AuditLogEvent.ChannelDelete);
 
@@ -182,15 +181,15 @@ export class OWLogs {
 	}
 
 	/**
-	 * Handles the channelUpdate event.
+	 * Handles the `channelUpdate` event.
 	 * @param oldChannel The old channel.
 	 * @param newChannel The new channel.
-	 * @returns {Promise<APIMessage>} The message that was sent via the webhook.
+	 * @returns The message that was sent via the webhook.
 	 */
 	public async channelUpdate(
 		oldChannel: GuildChannel,
 		newChannel: GuildChannel,
-	): Promise<APIMessage> {
+	) {
 		const firstLog = await this.findAuditLog(AuditLogEvent.ChannelUpdate);
 
 		if (oldChannel.name !== newChannel.name)
@@ -231,11 +230,11 @@ export class OWLogs {
 	}
 
 	/**
-	 * Handles the emojiCreate event.
+	 * Handles the `emojiCreate` event.
 	 * @param emoji The emoji that was created.
-	 * @returns {Promise<APIMessage>} The message that was sent via the webhook.
+	 * @returns The message that was sent via the webhook.
 	 */
-	public async emojiCreate(emoji: GuildEmoji): Promise<APIMessage> {
+	public async emojiCreate(emoji: GuildEmoji) {
 		const { name, id } = emoji;
 		const firstLog = await this.findAuditLog(AuditLogEvent.EmojiCreate);
 
@@ -258,11 +257,11 @@ export class OWLogs {
 	}
 
 	/**
-	 * Handles the emojiDelete event.
+	 * Handles the `emojiDelete` event.
 	 * @param emoji The emoji that was deleted.
-	 * @returns {Promise<APIMessage>} The message that was sent via the webhook.
+	 * @returns The message that was sent via the webhook.
 	 */
-	public async emojiDelete(emoji: GuildEmoji): Promise<APIMessage> {
+	public async emojiDelete(emoji: GuildEmoji) {
 		const { name, id } = emoji;
 		const firstLog = await this.findAuditLog(AuditLogEvent.EmojiDelete);
 
@@ -285,15 +284,12 @@ export class OWLogs {
 	}
 
 	/**
-	 * Handles the emojiUpdate event.
+	 * Handles the `emojiUpdate` event.
 	 * @param oldEmoji The old emoji.
 	 * @param newEmoji The new emoji.
-	 * @returns {Promise<APIMessage>} The message that was sent via the webhook.
+	 * @returns The message that was sent via the webhook.
 	 */
-	public async emojiUpdate(
-		oldEmoji: GuildEmoji,
-		newEmoji: GuildEmoji,
-	): Promise<APIMessage> {
+	public async emojiUpdate(oldEmoji: GuildEmoji, newEmoji: GuildEmoji) {
 		const firstLog = await this.findAuditLog(AuditLogEvent.EmojiUpdate);
 
 		if (oldEmoji.name !== newEmoji.name)
@@ -316,11 +312,11 @@ export class OWLogs {
 	}
 
 	/**
-	 * Handles the guildBanAdd event.
+	 * Handles the `guildBanAdd` event.
 	 * @param ban The ban object.
-	 * @returns {Promise<APIMessage>} The message that was sent via the webhook.
+	 * @returns The message that was sent via the webhook.
 	 */
-	public async guildBanAdd(ban: GuildBan): Promise<APIMessage> {
+	public async guildBanAdd(ban: GuildBan) {
 		const firstLog = await this.findAuditLog(AuditLogEvent.MemberBanAdd);
 		const { user } = ban;
 
@@ -343,11 +339,11 @@ export class OWLogs {
 	}
 
 	/**
-	 * Handles the guildBanRemove event.
+	 * Handles the `guildBanRemove` event.
 	 * @param ban The ban object.
-	 * @returns {Promise<APIMessage>} The message that was sent via the webhook.
+	 * @returns The message that was sent via the webhook.
 	 */
-	public async guildBanRemove(ban: GuildBan): Promise<APIMessage> {
+	public async guildBanRemove(ban: GuildBan) {
 		const firstLog = await this.findAuditLog(AuditLogEvent.MemberBanRemove);
 		const { user } = ban;
 
@@ -370,11 +366,11 @@ export class OWLogs {
 	}
 
 	/**
-	 * Handles the guildMemberAdd event
+	 * Handles the `guildMemberAdd` event.
 	 * @param member The member object.
-	 * @returns {Promise<APIMessage>} The message that was sent via the webhook.
+	 * @returns The message that was sent via the webhook.
 	 */
-	public async guildMemberAdd(member: GuildMember): Promise<APIMessage> {
+	public async guildMemberAdd(member: GuildMember) {
 		const { user } = member;
 
 		return await this.airDrop(
@@ -400,9 +396,9 @@ export class OWLogs {
 	/**
 	 * Handles the `guildMemberRemove` event.
 	 * @param member The member object.
-	 * @returns {Promise<APIMessage>} The message that was sent via the webhook.
+	 * @returns The message that was sent via the webhook.
 	 */
-	public async guildMemberRemove(member: GuildMember): Promise<APIMessage> {
+	public async guildMemberRemove(member: GuildMember) {
 		const { user } = member;
 
 		return await this.airDrop(
@@ -429,23 +425,21 @@ export class OWLogs {
 	 * Handles the `guildMemberUpdate` event.
 	 * @param oldMember The old member.
 	 * @param newMember The new member.
-	 * @returns {Promise<APIMessage>} The message that was sent via the webhook.
+	 * @returns The message that was sent via the webhook.
 	 */
 	public async guildMemberUpdate(
 		oldMember: GuildMember,
 		newMember: GuildMember,
-	): Promise<APIMessage> {
+	) {
 		const oldRoles = oldMember.roles.cache.map((r) => r.id);
 		const newRoles = newMember.roles.cache.map((r) => r.id);
-
-		const embed = new EmbedBuilder().setColor('Blurple');
 
 		if (oldRoles.length > newRoles.length) {
 			const uniqueRoles = unique(oldRoles, newRoles);
 			const role = this.guild.roles.cache.get(uniqueRoles[0].toString());
 
 			return await this.airDrop(
-				embed.setTitle('Member Roles Updated').addFields(
+				this.embed.setTitle('Member Roles Updated').addFields(
 					{
 						name: '🔹 | Member Username',
 						value: `> ${oldMember.user.username}`,
@@ -467,7 +461,7 @@ export class OWLogs {
 			const role = this.guild.roles.cache.get(uniqueRoles[0].toString());
 
 			return await this.airDrop(
-				embed.setTitle('Member Roles Updated').addFields(
+				this.embed.setTitle('Member Roles Updated').addFields(
 					{
 						name: '🔹 | Member Username',
 						value: `> ${oldMember.user.username}`,
@@ -489,7 +483,7 @@ export class OWLogs {
 			newMember.isCommunicationDisabled()
 		)
 			return await this.airDrop(
-				embed.setTitle('Member Timeout Applied').addFields(
+				this.embed.setTitle('Member Timeout Applied').addFields(
 					{
 						name: '🔹 | Member Username',
 						value: `> ${newMember.user.username}`,
@@ -512,7 +506,7 @@ export class OWLogs {
 			!newMember.isCommunicationDisabled()
 		)
 			return await this.airDrop(
-				embed.setTitle('Member Timeout Removed').addFields(
+				this.embed.setTitle('Member Timeout Removed').addFields(
 					{
 						name: '🔹 | Member Username',
 						value: `> ${oldMember.user.username}`,
@@ -530,7 +524,7 @@ export class OWLogs {
 
 		if (oldMember.nickname !== newMember.nickname)
 			return await this.airDrop(
-				embed.setTitle('Member Nickname Changed').addFields(
+				this.embed.setTitle('Member Nickname Changed').addFields(
 					{
 						name: '🔹 | Username',
 						value: `> ${newMember.user.username}`,
@@ -554,9 +548,9 @@ export class OWLogs {
 	/**
 	 * Handles the `messageCreate` event.
 	 * @param message The message that was deleted.
-	 * @returns {Promise<APIMessage>} The message that was sent via the webhook.
+	 * @returns The message that was sent via the webhook.
 	 */
-	public async messageDelete(message: Message): Promise<APIMessage> {
+	public async messageDelete(message: Message) {
 		const { author, content, embeds, id } = message;
 		const systemStatus = message.system === true || message.system === null;
 
@@ -591,13 +585,9 @@ export class OWLogs {
 	 * Handles the `messageUpdate` event.
 	 * @param oldMessage The old message.
 	 * @param newMessage The new message.
-	 * @returns {Promise<APIMessage>} The message that was sent via the webhook.
+	 * @returns The message that was sent via the webhook.
 	 */
-	public async messageUpdate(
-		oldMessage: Message,
-		newMessage: Message,
-	): Promise<APIMessage> {
-		const embed = new EmbedBuilder().setColor('Blurple');
+	public async messageUpdate(oldMessage: Message, newMessage: Message) {
 		const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
 			new ButtonBuilder()
 				.setLabel('Jump to Message')
@@ -607,7 +597,7 @@ export class OWLogs {
 
 		if (oldMessage.content !== newMessage.content)
 			return await this.airDrop(
-				embed.setTitle('Message Updated').addFields(
+				this.embed.setTitle('Message Updated').addFields(
 					{
 						name: '🔹 | Old Content',
 						value: `> ${oldMessage.content}`,
@@ -632,9 +622,9 @@ export class OWLogs {
 	/**
 	 * Handles the `roleCreate` event.
 	 * @param role The role that was created.
-	 * @returns {Promise<APIMessage>} The message that was sent via the webhook.
+	 * @returns The message that was sent via the webhook.
 	 */
-	public async roleCreate(role: Role): Promise<APIMessage> {
+	public async roleCreate(role: Role) {
 		const { name, hexColor, id } = role;
 		const firstLog = await this.findAuditLog(AuditLogEvent.RoleCreate);
 
@@ -663,9 +653,9 @@ export class OWLogs {
 	/**
 	 * Handles the `roleDelete` event.
 	 * @param role The role that was deleted.
-	 * @returns {Promise<APIMessage>} The message that was sent via the webhook.
+	 * @returns The message that was sent via the webhook.
 	 */
-	public async roleDelete(role: Role): Promise<APIMessage> {
+	public async roleDelete(role: Role) {
 		const { name, id } = role;
 		const firstLog = await this.findAuditLog(AuditLogEvent.RoleDelete);
 
