@@ -43,7 +43,7 @@ export class onReady {
 		statcord.autopost();
 		manager.init(client);
 
-		set('strictQuery', false)
+		await set('strictQuery', false)
 			.connect(config.database)
 			.then(() => {
 				console.info(
