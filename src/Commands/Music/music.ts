@@ -539,6 +539,63 @@ export class Music {
 		}
 	}
 
+	@Slash({
+		name: 'join',
+		description: 'Pairs the bot to your channel.',
+	})
+	async join(interaction: ChatInputCommandInteraction, client: Evelyn) {
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		const { guild, channelId, member } = interaction;
+		const defMember = member as GuildMember;
+
+		if (await check(['voiceCheck'], interaction)) return;
+
+		if (!this.player) {
+			this.player = client.manager.create({
+				guildId: guild.id,
+				voiceChannel: defMember.voice.channelId,
+				textChannel: channelId,
+				deaf: true,
+			});
+		}
+
+		this.player.connect();
+
+		return interaction.reply({
+			embeds: [
+				embed.setDescription(`🔹 | Paired to ${defMember.voice.channel}.`),
+			],
+		});
+	}
+
+	@Slash({
+		name: 'previous',
+		description: 'Plays the previous track.',
+	})
+	async previous(interaction: ChatInputCommandInteraction) {
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+
+		if (await check(['voiceCheck'], interaction)) return;
+
+		if (!this.player?.queue?.previous)
+			return interaction.reply({
+				embeds: [
+					embed.setDescription('🔹 | Couldn\'t find the previous track.'),
+				],
+				ephemeral: true,
+			});
+
+		if (this.player.queue.current)
+			this.player.queue.unshift(this.player.queue.previous);
+
+		this.player.play();
+		this.player.queue.previous = null;
+
+		return interaction.reply({
+			embeds: [embed.setDescription('🔹 | Playing the previous track.')],
+		});
+	}
+
 	/**
 	 * The components below handle the logic
 	 * for the buttons when the 'trackStart' event gets emitted.
