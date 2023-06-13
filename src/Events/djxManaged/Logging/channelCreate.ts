@@ -1,44 +1,17 @@
-import { dropOffLogs, validate } from '../../../Utils/Utils/dropOffLogs.js';
-import { GuildChannel, EmbedBuilder, AuditLogEvent } from 'discord.js';
+import { OWLogs, validate } from '../../../Utils/Utils/OWLogs.js';
 import { Evelyn } from '../../../Evelyn.js';
+import { GuildChannel } from 'discord.js';
 import { Discord, On } from 'discordx';
 
 @Discord()
 export class ChannelCreate {
 	@On({ event: 'channelCreate' })
 	async channelCreate([channel]: [GuildChannel], client: Evelyn) {
-		const { guild, name, id } = channel;
+		const { guild } = channel;
 
 		if (!(await validate(guild))) return;
+		const logs = new OWLogs(guild, client);
 
-		const fetchLogs = await guild.fetchAuditLogs<AuditLogEvent.ChannelCreate>({
-			limit: 1,
-		});
-		const firstLog = fetchLogs.entries.first();
-
-		const embed = new EmbedBuilder()
-			.setColor('Blurple')
-			.setAuthor({
-				name: guild.name,
-				iconURL: guild.iconURL(),
-			})
-			.setTitle('Channel Created')
-			.addFields(
-				{
-					name: '🔹 | Channel Name',
-					value: `> ${name}`,
-				},
-				{
-					name: '🔹 | ID',
-					value: `> ${id}`,
-				},
-				{
-					name: '🔹 | Created by',
-					value: `> <@${firstLog.executor.id}>`,
-				},
-			)
-			.setTimestamp();
-
-		return dropOffLogs(guild, client, embed);
+		return await logs.channelCreate(channel);
 	}
 }

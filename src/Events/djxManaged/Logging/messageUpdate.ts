@@ -1,11 +1,5 @@
-import { dropOffLogs, validate } from '../../../Utils/Utils/dropOffLogs.js';
-import {
-	Message,
-	EmbedBuilder,
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonStyle,
-} from 'discord.js';
+import { OWLogs, validate } from '../../../Utils/Utils/OWLogs.js';
+import { Message } from 'discord.js';
 import { Evelyn } from '../../../Evelyn.js';
 import { Discord, On } from 'discordx';
 
@@ -13,49 +7,12 @@ import { Discord, On } from 'discordx';
 export class MessageUpdate {
 	@On({ event: 'messageUpdate' })
 	async messageUpdate(message: Message, client: Evelyn) {
-		const oldMessage = message[0] as Message;
-		const newMessage = message[1] as Message;
+		const oldMessage = message[0];
+		const newMessage = message[1];
 
 		if (oldMessage.author?.bot && !(await validate(oldMessage.guild))) return;
+		const logs = new OWLogs(oldMessage.guild, client);
 
-		const embed = new EmbedBuilder().setColor('Blurple');
-		const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
-			new ButtonBuilder()
-				.setLabel('Jump to Message')
-				.setStyle(ButtonStyle.Link)
-				.setURL(oldMessage?.url),
-		);
-
-		if (oldMessage.content !== newMessage.content)
-			return dropOffLogs(
-				oldMessage.guild,
-				client,
-				embed
-					.setAuthor({
-						name: oldMessage.guild.name,
-						iconURL: oldMessage.guild.iconURL(),
-					})
-					.setTitle('Message Updated')
-					.addFields(
-						{
-							name: '🔹 | Old Content',
-							value: `> ${oldMessage.content}`,
-						},
-						{
-							name: '🔹 | New Content',
-							value: `> ${newMessage.content}`,
-						},
-						{
-							name: '🔹 | Message ID',
-							value: `> ${oldMessage.id}`,
-						},
-						{
-							name: '🔹 | Message updated by',
-							value: `> ${newMessage.author}`,
-						},
-					)
-					.setTimestamp(),
-				actionRow,
-			);
+		return await logs.messageUpdate(oldMessage, newMessage);
 	}
 }

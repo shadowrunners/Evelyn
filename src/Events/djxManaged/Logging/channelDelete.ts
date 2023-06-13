@@ -1,44 +1,20 @@
-import { dropOffLogs, validate } from '../../../Utils/Utils/dropOffLogs.js';
-import { GuildChannel, EmbedBuilder, AuditLogEvent } from 'discord.js';
+import { OWLogs, validate } from '../../../Utils/Utils/OWLogs.js';
 import { Evelyn } from '../../../Evelyn.js';
+import { APIMessage, GuildChannel } from 'discord.js';
 import { Discord, On } from 'discordx';
 
 @Discord()
 export class ChannelDelete {
 	@On({ event: 'channelDelete' })
-	async channelDelete([channel]: [GuildChannel], client: Evelyn) {
-		const { guild, name, id } = channel;
+	async channelDelete(
+		[channel]: [GuildChannel],
+		client: Evelyn,
+	): Promise<APIMessage> {
+		const { guild } = channel;
 
 		if (!(await validate(guild))) return;
+		const logs = new OWLogs(guild, client);
 
-		const fetchLogs = await guild.fetchAuditLogs<AuditLogEvent.ChannelDelete>({
-			limit: 1,
-		});
-		const firstLog = fetchLogs.entries.first();
-
-		const embed = new EmbedBuilder()
-			.setColor('Blurple')
-			.setAuthor({
-				name: guild.name,
-				iconURL: guild.iconURL(),
-			})
-			.setTitle('Channel Deleted')
-			.addFields(
-				{
-					name: '🔹 | Channel Name',
-					value: `> ${name}`,
-				},
-				{
-					name: '🔹 | ID',
-					value: `> ${id}`,
-				},
-				{
-					name: '🔹 | Deleted by',
-					value: `> <@${firstLog.executor.id}>`,
-				},
-			)
-			.setTimestamp();
-
-		return await dropOffLogs(guild, client, embed);
+		return await logs.channelDelete(channel);
 	}
 }

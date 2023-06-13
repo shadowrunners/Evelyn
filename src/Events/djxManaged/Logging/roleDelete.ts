@@ -1,5 +1,5 @@
-import { dropOffLogs, validate } from '../../../Utils/Utils/dropOffLogs.js';
-import { Role, EmbedBuilder, AuditLogEvent } from 'discord.js';
+import { OWLogs, validate } from '../../../Utils/Utils/OWLogs.js';
+import { Role } from 'discord.js';
 import { Evelyn } from '../../../Evelyn.js';
 import { Discord, On } from 'discordx';
 
@@ -7,35 +7,11 @@ import { Discord, On } from 'discordx';
 export class RoleDelete {
 	@On({ event: 'roleDelete' })
 	async roleDelete(role: Role, client: Evelyn) {
-		const { guild, name, id } = role;
+		const { guild } = role;
 
 		if (!(await validate(guild))) return;
 
-		const fetchLogs = await guild.fetchAuditLogs<AuditLogEvent.RoleDelete>({
-			limit: 1,
-		});
-		const firstLog = fetchLogs.entries.first();
-
-		const embed = new EmbedBuilder()
-			.setColor('Blurple')
-			.setAuthor({ name: guild.name, iconURL: guild.iconURL() })
-			.setTitle('Role Deleted')
-			.addFields(
-				{
-					name: '🔹 | Role Name',
-					value: `> ${name}`,
-				},
-				{
-					name: '🔹 | Role ID',
-					value: `> ${id}`,
-				},
-				{
-					name: '🔹 | Role deleted by',
-					value: `> <@${firstLog.executor.id}>`,
-				},
-			)
-			.setTimestamp();
-
-		return dropOffLogs(guild, client, embed);
+		const logs = new OWLogs(guild, client);
+		return await logs.roleCreate(role);
 	}
 }
