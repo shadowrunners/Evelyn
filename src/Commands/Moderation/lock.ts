@@ -1,44 +1,44 @@
 import {
+	ApplicationCommandOptionType,
 	ChatInputCommandInteraction,
-	EmbedBuilder,
 	PermissionFlagsBits,
-	SlashCommandBuilder,
+	EmbedBuilder,
 	TextChannel,
 } from 'discord.js';
-import { Command } from '../../interfaces/interfaces';
-import { Util } from '../../Modules/Utils/utils';
-import { LockdownDB as DB } from '../../Structures/Schemas/lockdown';
+import { Discord, Slash, SlashOption } from 'discordx';
+import { Util } from '../../Utils/Utils/Util.js';
+import { LockdownDB as DB } from '../../Schemas/lockdown.js';
 
-const { ManageChannels, SendMessages } = PermissionFlagsBits;
-
-const command: Command = {
-	data: new SlashCommandBuilder()
-		.setName('lock')
-		.setDescription('Locks a channel.')
-		.setDefaultMemberPermissions(ManageChannels)
-		.addStringOption((options) =>
-			options
-				.setName('reason')
-				.setDescription('Provide a reason for the lockdown.')
-				.setRequired(true),
-		)
-		.addStringOption((options) =>
-			options
-				.setName('time')
-				.setDescription(
-					'How long would you like the channel to stay locked for?',
-				)
-				.setRequired(false),
-		),
-	execute(interaction: ChatInputCommandInteraction) {
+@Discord()
+export class Lock {
+	@Slash({
+		name: 'lock',
+		description: 'Locks a channel.',
+		defaultMemberPermissions: PermissionFlagsBits.ManageChannels,
+	})
+	async lock(
+		@SlashOption({
+			name: 'reason',
+			description: 'Provide a reason for the lockdown.',
+			type: ApplicationCommandOptionType.String,
+			required: true,
+		})
+		@SlashOption({
+			name: 'time',
+			description: 'How long would you like the channel to stay locked for?',
+			type: ApplicationCommandOptionType.String,
+			required: false,
+		})
+			reason: string,
+			time: string,
+			interaction: ChatInputCommandInteraction,
+	) {
 		const { msToTime } = new Util();
-		const { guild, channel, options } = interaction;
+		const { guild, channel } = interaction;
 		const lockedChannel = channel as TextChannel;
-		const reason = options.getString('reason') || 'Unknown';
-		const time = options.getString('time');
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
-		if (!channel.permissionsFor(guild.id).has(SendMessages))
+		if (!channel.permissionsFor(guild.id).has(PermissionFlagsBits.SendMessages))
 			return interaction.reply({
 				embeds: [embed.setDescription('🔹 | This channel is already locked.')],
 				ephemeral: true,
@@ -50,7 +50,9 @@ const command: Command = {
 
 		interaction.reply({
 			embeds: [
-				embed.setDescription(`🔹 | This channel is now locked for: ${reason}`),
+				embed.setDescription(
+					`🔹 | This channel is now locked for: ${reason || 'Unknown'}`,
+				),
 			],
 		});
 
@@ -72,7 +74,5 @@ const command: Command = {
 			});
 			await DB.deleteOne({ channelId: channel.id }).catch();
 		}, msToTime(time));
-	},
-};
-
-export default command;
+	}
+}

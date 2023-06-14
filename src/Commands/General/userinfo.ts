@@ -1,31 +1,35 @@
 import {
-	SlashCommandBuilder,
+	ApplicationCommandOptionType,
 	ChatInputCommandInteraction,
 	EmbedBuilder,
-	GuildMember,
 	ActivityType,
+	GuildMember,
 } from 'discord.js';
-import { Command } from '../../Interfaces/interfaces.js';
-import { Util } from '../../Modules/Utils/utils.js';
+import { Discord, Slash, SlashOption } from 'discordx';
+import { Util } from '../../Utils/Utils/Util.js';
 
-const command: Command = {
-	botPermissions: ['SendMessages'],
-	data: new SlashCommandBuilder()
-		.setName('userinfo')
-		.setDescription('Shows information about a user.')
-		.addUserOption((options) =>
-			options
-				.setName('target')
-				.setDescription('Provide a target.')
-				.setRequired(false),
-		),
-	execute(interaction: ChatInputCommandInteraction) {
+@Discord()
+export class UserInfo {
+	@Slash({
+		name: 'userinfo',
+		description: 'Shows information about a user.',
+	})
+	userinfo(
+		@SlashOption({
+			name: 'target',
+			description: 'Provide a target.',
+			type: ApplicationCommandOptionType.User,
+			required: false,
+		})
+			target: GuildMember,
+			interaction: ChatInputCommandInteraction,
+	) {
 		const { convertToUnixTimestamp, capitalizePresence } = new Util();
-		const { options, member } = interaction;
-		const target = options.getUser('target') || member;
+		const typedMember = target || interaction.member;
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
-		const { joinedTimestamp, presence, user, roles } = target as GuildMember;
+		const { joinedTimestamp, presence, user, roles } =
+			typedMember as GuildMember;
 		const status = capitalizePresence(presence.status);
 
 		const createdTime = convertToUnixTimestamp(user.createdTimestamp);
@@ -74,7 +78,5 @@ const command: Command = {
 					),
 			],
 		});
-	},
-};
-
-export default command;
+	}
+}

@@ -1,61 +1,59 @@
 import {
-	SlashCommandBuilder,
-	PermissionFlagsBits,
-	ChatInputCommandInteraction,
-	EmbedBuilder,
+	Role,
 	TextChannel,
+	EmbedBuilder,
+	PermissionFlagsBits,
+	ApplicationCommandOptionType,
+	ChatInputCommandInteraction,
 } from 'discord.js';
-import { Command } from '../../interfaces/interfaces.js';
-const { SendMessages, ManageGuild } = PermissionFlagsBits;
+import { Discord, Slash, SlashOption } from 'discordx';
 
-const command: Command = {
-	botPermissions: [SendMessages],
-	data: new SlashCommandBuilder()
-		.setName('announce')
-		.setDescription('Announce something.')
-		.setDefaultMemberPermissions(ManageGuild)
-		.addStringOption((option) =>
-			option
-				.setName('message')
-				.setDescription(
-					'Provide the message you would like to send in the announcement.',
-				)
-				.setRequired(true),
-		)
-		.addChannelOption((option) =>
-			option
-				.setName('channel')
-				.setDescription(
-					'Provide the channel where the announcement will be sent.',
-				)
-				.setRequired(true),
-		)
-		.addRoleOption((option) =>
-			option
-				.setName('role')
-				.setDescription('Mention a role alongside the announcement.')
-				.setRequired(false),
-		),
-	execute(interaction: ChatInputCommandInteraction) {
-		const { options } = interaction;
+@Discord()
+export class Announce {
+	private embed: EmbedBuilder;
 
-		const message = options.getString('message');
-		const channel = options.getChannel('channel') as TextChannel;
-		const role = options.getRole('role');
-
-		const embed = new EmbedBuilder()
-			.setColor('Blurple')
-			.setDescription(message)
-			.setTimestamp();
+	@Slash({
+		name: 'announce',
+		description: 'Send an announcement via the bot.',
+		defaultMemberPermissions: PermissionFlagsBits.ManageGuild,
+	})
+	async announce(
+		@SlashOption({
+			name: 'message',
+			description:
+				'Provide the message you would like to send in the announcement.',
+			type: ApplicationCommandOptionType.String,
+			required: true,
+		})
+		@SlashOption({
+			name: 'channel',
+			description: 'Provide the channel where the announcement will be sent.',
+			type: ApplicationCommandOptionType.Channel,
+			required: true,
+		})
+		@SlashOption({
+			name: 'role',
+			description: 'Mention a role alongside the announcement.',
+			type: ApplicationCommandOptionType.Role,
+			required: false,
+		})
+			message: string,
+			channel: TextChannel,
+			role: Role,
+			interaction: ChatInputCommandInteraction,
+	) {
+		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
 		interaction.reply({
-			embeds: [embed.setDescription('🔹 | Announcement sent.')],
+			embeds: [this.embed.setDescription('🔹 | Announcement sent.')],
+			ephemeral: true,
 		});
 
 		if (role)
-			return channel.send({ content: `<@${role.id}>`, embeds: [embed] });
-		return channel.send({ embeds: [embed] });
-	},
-};
-
-export default command;
+			return channel.send({
+				content: `<@${role.id}>`,
+				embeds: [this.embed.setDescription(message)],
+			});
+		return channel.send({ embeds: [this.embed.setDescription(message)] });
+	}
+}

@@ -1,39 +1,106 @@
-import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
-import { Command } from '../../Interfaces/interfaces.js';
-const { SendMessages } = PermissionFlagsBits;
+import {
+	ChatInputCommandInteraction,
+	ApplicationCommandOptionType,
+	EmbedBuilder,
+} from 'discord.js';
+import { Discord, Slash, SlashOption, SlashGroup, Guild } from 'discordx';
+import { UserBlacklist as UB } from '../../Schemas/userBlacklist.js';
+import { GuildDB as DB } from '../../Schemas/guild.js';
+import { config } from '../../config.js';
 
-const command: Command = {
-	botPermissions: [SendMessages],
-	developer: true,
-	data: new SlashCommandBuilder()
-		.setName('blacklist-remove')
-		.setDescription('Remove a user or server from the blacklist.')
-		.addSubcommand((options) =>
-			options
-				.setName('server')
-				.setDescription('Remove a server from the blacklist.')
-				.addStringOption((option) =>
-					option
-						.setName('serverid')
-						.setDescription(
-							'Provide the server ID of the server you would like to remove from the blacklist.',
-						)
-						.setRequired(true),
-				),
-		)
-		.addSubcommand((options) =>
-			options
-				.setName('user')
-				.setDescription('Remove a user from the blacklist.')
-				.addStringOption((option) =>
-					option
-						.setName('userid')
-						.setDescription(
-							'Provide the ID of the user you would like to blacklist.',
-						)
-						.setRequired(true),
-				),
-		),
-};
+@Discord()
+@Guild(config.debug.devGuild)
+@SlashGroup({
+	description: 'Remove a user or server from the blacklist.',
+	name: 'blacklist-remove',
+})
+@SlashGroup('blacklist-remove')
+export class BlacklistRemove {
+	private embed: EmbedBuilder;
 
-export default command;
+	constructor() {
+		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+	}
+
+	@Slash({
+		description: 'Remove a server from the blacklist.',
+		name: 'server',
+	})
+	@Guild(config.debug.devGuild)
+	async server(
+		@SlashOption({
+			name: 'serverid',
+			description: 'Provide the ID of the server you would like to blacklist.',
+			required: true,
+			type: ApplicationCommandOptionType.String,
+		})
+			serverid: string,
+			interaction: ChatInputCommandInteraction,
+	) {
+		const data = await DB.findOne({ id: serverid });
+
+		if (!data)
+			return interaction.reply({
+				embeds: [
+					this.embed.setDescription('🔹 | This guild isn\'t blacklisted.'),
+				],
+				ephemeral: true,
+			});
+
+		await DB.findOneAndUpdate(
+			{
+				id: serverid,
+			},
+			{
+				$set: {
+					blacklist: {
+						isBlacklisted: false,
+					},
+				},
+			},
+		);
+
+		return interaction.reply({
+			embeds: [
+				this.embed.setDescription(
+					'🔹 | This guild has been removed from the blacklist.',
+				),
+			],
+			ephemeral: true,
+		});
+	}
+
+	@Slash({
+		description: 'Remove a user from the blacklist.',
+		name: 'user',
+	})
+	@Guild(config.debug.devGuild)
+	async user(
+		@SlashOption({
+			name: 'userid',
+			description: 'Provide the ID of the user you would like to blacklist.',
+			required: true,
+			type: ApplicationCommandOptionType.String,
+		})
+			userid: string,
+			interaction: ChatInputCommandInteraction,
+	) {
+		const data = await UB.findOne({ userId: userid });
+
+		if (!data)
+			return interaction.reply({
+				embeds: [this.embed.setDescription('This user isn\'t blacklisted.')],
+				ephemeral: true,
+			});
+
+		await data.deleteOne({ userId: userid });
+
+		return interaction.reply({
+			embeds: [
+				this.embed.setDescription(
+					'🔹 | This user has been removed from the blacklist.',
+				),
+			],
+		});
+	}
+}

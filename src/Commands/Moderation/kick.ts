@@ -1,35 +1,41 @@
 import {
+	ApplicationCommandOptionType,
 	ChatInputCommandInteraction,
+	PermissionFlagsBits,
 	EmbedBuilder,
 	GuildMember,
-	PermissionFlagsBits,
-	SlashCommandBuilder,
 } from 'discord.js';
-import { Command } from '../../interfaces/interfaces';
-import { Evelyn } from '../../structures/Evelyn';
+import { Discord, Slash, SlashOption } from 'discordx';
+import { Evelyn } from '../../Evelyn.js';
 
-const { KickMembers } = PermissionFlagsBits;
-
-const command: Command = {
-	data: new SlashCommandBuilder()
-		.setName('kick')
-		.setDescription('Kicks a user.')
-		.setDefaultMemberPermissions(KickMembers)
-		.addUserOption((options) =>
-			options
-				.setName('target')
-				.setDescription('Provide a target.')
-				.setRequired(true),
-		)
-		.addStringOption((options) =>
-			options.setName('reason').setDescription('Provide a reason for the kick.'),
-		),
-	execute(interaction: ChatInputCommandInteraction, client: Evelyn) {
+@Discord()
+export class Kick {
+	@Slash({
+		name: 'kick',
+		description: 'Kicks a user.',
+		defaultMemberPermissions: PermissionFlagsBits.KickMembers,
+	})
+	async lock(
+		@SlashOption({
+			name: 'target',
+			description: 'Provide a target.',
+			type: ApplicationCommandOptionType.User,
+			required: true,
+		})
+		@SlashOption({
+			name: 'reason',
+			description: 'Provide a reason for the kick.',
+			type: ApplicationCommandOptionType.String,
+			required: false,
+		})
+			target: GuildMember,
+			reason: string,
+			interaction: ChatInputCommandInteraction,
+			client: Evelyn,
+	) {
 		const { user } = client;
-		const { options, member, guild } = interaction;
+		const { member, guild } = interaction;
 		const defMember = member as GuildMember;
-		const target = options.getMember('target') as GuildMember;
-		const reason = options.getString('reason') || 'No reason specified.';
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
 		if (target.roles.highest.position >= defMember.roles.highest.position)
@@ -60,7 +66,9 @@ const command: Command = {
 					embed
 						.setTitle(`${user.username} | Notice`)
 						.setDescription(
-							`You have been kicked from ${guild.name} for ${reason}`,
+							`You have been kicked from ${guild.name} for ${
+								reason || 'no reason specified.'
+							}`,
 						),
 				],
 			})
@@ -69,12 +77,12 @@ const command: Command = {
 		interaction.reply({
 			embeds: [
 				embed.setDescription(
-					`${target.user.tag} has been kicked for ${reason}.`,
+					`${target.user.tag} has been kicked for ${
+						reason || 'no reason specified.'
+					}.`,
 				),
 			],
 		});
-		return target.kick(reason);
-	},
-};
-
-export default command;
+		return target.kick(reason || 'no reason specified.');
+	}
+}

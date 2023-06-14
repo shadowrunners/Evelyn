@@ -1,68 +1,70 @@
 import {
-	SlashCommandBuilder,
 	ChatInputCommandInteraction,
-	PermissionFlagsBits,
+	ApplicationCommandOptionType,
+	User,
 } from 'discord.js';
-import { Command } from '../../Interfaces/interfaces.js';
-import { NekoAPI } from '../../Modules/APIs/nekoAPI.js';
+import { Discord, Slash, SlashOption, SlashChoice, Guard } from 'discordx';
+import { RateLimit, TIME_UNIT } from '@discordx/utilities';
+import { NekoAPI } from '../../Utils/APIs/nekoAPI.js';
 
-const { SendMessages, EmbedLinks } = PermissionFlagsBits;
-
-const command: Command = {
-	botPermissions: [SendMessages, EmbedLinks],
-	data: new SlashCommandBuilder()
-		.setName('image')
-		.setDescription('Generate various images.')
-		.addStringOption((options) =>
-			options
-				.setName('type')
-				.setDescription('Select the type of filter you would like to use.')
-				.setRequired(true)
-				.addChoices(
-					{ name: '🔹 | Awooify', value: 'awooify' },
-					{ name: '🔹 | Baguette', value: 'baguette' },
-					{ name: '🔹 | Blurpify', value: 'blurpify' },
-					{ name: '🔹 | Captcha', value: 'captcha' },
-					{ name: '🔹 | Change My Mind', value: 'changemymind' },
-					{ name: '🔹 | Deepfry', value: 'deepfry' },
-					{ name: '🔹 | Kanna', value: 'kannagen' },
-					{ name: '🔹 | PH Comment', value: 'phcomment' },
-					{ name: '🔹 | Threats', value: 'threats' },
-					{ name: '🔹 | Trash', value: 'trash' },
-					{ name: '🔹 | Trump Tweet', value: 'trumptweet' },
-					{ name: '🔹 | Tweet', value: 'tweet' },
-				),
-		)
-		.addUserOption((option) =>
-			option
-				.setName('user1')
-				.setDescription('Provide a target.')
-				.setRequired(false),
-		)
-		.addUserOption((option) =>
-			option
-				.setName('user2')
-				.setDescription('Provide a target.')
-				.setRequired(false),
-		)
-		.addStringOption((option) =>
-			option
-				.setName('text')
-				.setDescription('Provide the text that will be shown in the image.')
-				.setRequired(false),
-		),
-	async execute(interaction: ChatInputCommandInteraction) {
-		const { options } = interaction;
+@Discord()
+export class Image {
+	@Slash({
+		description: 'Generate various images.',
+		name: 'image',
+	})
+	@Guard(
+		RateLimit(TIME_UNIT.seconds, 30, {
+			message: '🔹 | Please wait 30 seconds before re-running this command.',
+		}),
+	)
+	async image(
+		@SlashChoice({ name: '🔹 | Awooify', value: 'awooify' })
+		@SlashChoice({ name: '🔹 | Baguette', value: 'baguette' })
+		@SlashChoice({ name: '🔹 | Blurpify', value: 'blurpify' })
+		@SlashChoice({ name: '🔹 | Captcha', value: 'captcha' })
+		@SlashChoice({ name: '🔹 | Change My Mind', value: 'changemymind' })
+		@SlashChoice({ name: '🔹 | Deepfry', value: 'deepfry' })
+		@SlashChoice({ name: '🔹 | Kanna', value: 'kannagen' })
+		@SlashChoice({ name: '🔹 | PH Comment', value: 'phcomment' })
+		@SlashChoice({ name: '🔹 | Threats', value: 'threats' })
+		@SlashChoice({ name: '🔹 | Trash', value: 'trash' })
+		@SlashChoice({ name: '🔹 | Trump Tweet', value: 'trumptweet' })
+		@SlashChoice({ name: '🔹 | Tweet', value: 'tweet' })
+		@SlashOption({
+			name: 'type',
+			description: 'Select the type of filter you would like to use.',
+			required: true,
+			type: ApplicationCommandOptionType.String,
+		})
+		@SlashOption({
+			name: 'user1',
+			description: 'Provide a target.',
+			required: false,
+			type: ApplicationCommandOptionType.User,
+		})
+		@SlashOption({
+			name: 'user2',
+			description: 'Provide a target.',
+			required: false,
+			type: ApplicationCommandOptionType.User,
+		})
+		@SlashOption({
+			name: 'text',
+			description: 'Provide the text that will be shown in the image.',
+			required: false,
+			type: ApplicationCommandOptionType.String,
+		})
+			type: string,
+			user1: User,
+			user2: User,
+			text: string,
+			interaction: ChatInputCommandInteraction,
+	) {
 		const API = new NekoAPI(interaction);
-		const choices = options.getString('type');
-
-		const user1 = options.getUser('user1');
-		const user2 = options.getUser('user2');
-		const text = options.getString('text');
-
 		await interaction.deferReply();
 
-		switch (choices) {
+		switch (type) {
 		case 'awooify':
 			return API.awooify(user1, user2);
 
@@ -102,7 +104,5 @@ const command: Command = {
 		default:
 			break;
 		}
-	},
-};
-
-export default command;
+	}
+}

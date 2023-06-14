@@ -1,34 +1,40 @@
 import {
+	ApplicationCommandOptionType,
 	ChatInputCommandInteraction,
+	PermissionFlagsBits,
 	EmbedBuilder,
 	GuildMember,
-	PermissionFlagsBits,
-	SlashCommandBuilder,
 } from 'discord.js';
-import { Command } from '../../interfaces/interfaces';
-import { Evelyn } from '../../structures/Evelyn';
+import { Discord, Slash, SlashOption } from 'discordx';
+import { Evelyn } from '../../Evelyn.js';
 
-const { BanMembers } = PermissionFlagsBits;
-
-const command: Command = {
-	data: new SlashCommandBuilder()
-		.setName('ban')
-		.setDescription('Bans a user.')
-		.setDefaultMemberPermissions(BanMembers)
-		.addUserOption((option) =>
-			option
-				.setName('target')
-				.setDescription('Provide a target.')
-				.setRequired(true),
-		)
-		.addStringOption((option) =>
-			option.setName('reason').setDescription('Provide a reason.'),
-		),
-	execute(interaction: ChatInputCommandInteraction, client: Evelyn) {
-		const { options, guild, member } = interaction;
+@Discord()
+export class Ban {
+	@Slash({
+		name: 'ban',
+		description: 'Bans a user.',
+		defaultMemberPermissions: PermissionFlagsBits.BanMembers,
+	})
+	async ban(
+		@SlashOption({
+			name: 'target',
+			description: 'Provide a target.',
+			type: ApplicationCommandOptionType.User,
+			required: true,
+		})
+		@SlashOption({
+			name: 'reason',
+			description: 'Provide a reason.',
+			type: ApplicationCommandOptionType.String,
+			required: false,
+		})
+			target: GuildMember,
+			reason: string,
+			interaction: ChatInputCommandInteraction,
+			client: Evelyn,
+	) {
+		const { guild, member } = interaction;
 		const defMember = member as GuildMember;
-		const target = options.getMember('target') as GuildMember;
-		const reason = options.getString('reason') || 'No reason specified.';
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
 		if (target.roles.highest.position >= defMember.roles.highest.position)
@@ -40,6 +46,7 @@ const command: Command = {
 				],
 				ephemeral: true,
 			});
+
 		if (
 			target.roles.highest.position >= guild.members.me.roles.highest.position
 		)
@@ -58,22 +65,23 @@ const command: Command = {
 					embed
 						.setTitle(`${client.user.username} | Notice`)
 						.setDescription(
-							`You have been banned from ${guild.name} for ${reason}`,
+							`You have been banned from ${guild.name} for ${
+								reason || 'no reason specified.'
+							}`,
 						),
 				],
 			})
 			.catch();
 
-		return interaction
-			.reply({
-				embeds: [
-					embed.setDescription(
-						`${target.user.tag} has been banned for ${reason}.`,
-					),
-				],
-			})
-			.then(() => target.ban({ reason }));
-	},
-};
-
-export default command;
+		await interaction.reply({
+			embeds: [
+				embed.setDescription(
+					`${target.user.tag} has been banned for ${
+						reason || 'no reason specified.'
+					}.`,
+				),
+			],
+		});
+		return await target.ban({ reason: reason || 'No reason specified.' });
+	}
+}

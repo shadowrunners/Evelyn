@@ -1,51 +1,129 @@
-import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
-import { Command } from '../../Interfaces/interfaces.js';
-const { SendMessages } = PermissionFlagsBits;
+import {
+	ChatInputCommandInteraction,
+	ApplicationCommandOptionType,
+	EmbedBuilder,
+} from 'discord.js';
+import { Discord, Slash, SlashOption, SlashGroup, Guild } from 'discordx';
+import { UserBlacklist as UB } from '../../Schemas/userBlacklist.js';
+import { GuildDB as DB } from '../../Schemas/guild.js';
+import { config } from '../../config.js';
 
-const command: Command = {
-	botPermissions: [SendMessages],
-	developer: true,
-	data: new SlashCommandBuilder()
-		.setName('blacklist')
-		.setDescription('Blacklist a user or server from using the bot.')
-		.addSubcommand((options) =>
-			options
-				.setName('server')
-				.setDescription('Blacklist a server.')
-				.addStringOption((option) =>
-					option
-						.setName('serverid')
-						.setDescription(
-							'Provide the server ID of the server you would like to blacklist.',
-						)
-						.setRequired(true),
-				)
-				.addStringOption((option) =>
-					option
-						.setName('reason')
-						.setDescription('Provide the reason of the blacklist.')
-						.setRequired(true),
-				),
-		)
-		.addSubcommand((options) =>
-			options
-				.setName('user')
-				.setDescription('Blacklist a user.')
-				.addStringOption((option) =>
-					option
-						.setName('userid')
-						.setDescription(
-							'Provide the ID of the user you would like to blacklist.',
-						)
-						.setRequired(true),
-				)
-				.addStringOption((option) =>
-					option
-						.setName('reason')
-						.setDescription('Provide the reason of the blacklist.')
-						.setRequired(true),
-				),
-		),
-};
+@Discord()
+@Guild(config.debug.devGuild)
+@SlashGroup({
+	description: 'Blacklist a user or server from using the bot.',
+	name: 'blacklist',
+})
+@SlashGroup('blacklist')
+export class Blacklist {
+	private embed: EmbedBuilder;
 
-export default command;
+	constructor() {
+		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+	}
+
+	@Slash({
+		description: 'Blacklist a server.',
+		name: 'server',
+	})
+	@Guild(config.debug.devGuild)
+	async server(
+		@SlashOption({
+			name: 'serverid',
+			description: 'Provide the ID of the server you would like to blacklist.',
+			required: true,
+			type: ApplicationCommandOptionType.String,
+		})
+		@SlashOption({
+			name: 'blacklist_reason',
+			description: 'Provide the reason for the blacklist.',
+			required: false,
+			type: ApplicationCommandOptionType.User,
+		})
+			serverid: string,
+			blacklist_reason: string,
+			interaction: ChatInputCommandInteraction,
+	) {
+		const data = await DB.findOne({ id: serverid });
+
+		if (data?.blacklist?.isBlacklisted === true)
+			return interaction.reply({
+				embeds: [
+					this.embed.setDescription('🔹 | This guild is already blacklisted.'),
+				],
+				ephemeral: true,
+			});
+
+		await DB.findOneAndUpdate(
+			{
+				id: serverid,
+			},
+			{
+				$set: {
+					blacklist: {
+						isBlacklisted: true,
+						reason: blacklist_reason,
+						time: Date.now(),
+					},
+				},
+			},
+		);
+
+		return interaction.reply({
+			embeds: [
+				this.embed.setDescription(
+					`🔹 | This guild has been successfully blacklisted for ${blacklist_reason}`,
+				),
+			],
+			ephemeral: true,
+		});
+	}
+
+	@Slash({
+		description: 'Blacklist a user.',
+		name: 'user',
+	})
+	async user(
+		@SlashOption({
+			name: 'userid',
+			description: 'Provide the ID of the user you would like to blacklist.',
+			required: true,
+			type: ApplicationCommandOptionType.String,
+		})
+		@SlashOption({
+			name: 'blacklist_reason',
+			description: 'Provide the reason for the blacklist.',
+			required: false,
+			type: ApplicationCommandOptionType.User,
+		})
+			userid: string,
+			blacklist_reason: string,
+			interaction: ChatInputCommandInteraction,
+	) {
+		const data = await UB.findOne({ userId: userid });
+
+		if (data)
+			return interaction.reply({
+				embeds: [
+					this.embed.setDescription('🔹 | This user is already blacklisted.'),
+				],
+				ephemeral: true,
+			});
+
+		await UB.create({
+			isBlacklisted: true,
+			userId: userid,
+			reason: blacklist_reason,
+			time: Date.now(),
+		});
+
+		return interaction.reply({
+			embeds: [
+				this.embed.setDescription(
+					`🔹 | This guild has been successfully blacklisted for ${blacklist_reason}`,
+				),
+			],
+			ephemeral: true,
+		});
+	}
+}

@@ -1,21 +1,24 @@
-import {
-	ChatInputCommandInteraction,
-	SlashCommandBuilder,
-	EmbedBuilder,
-} from 'discord.js';
-import { Command } from '../../interfaces/interfaces';
-import { Evelyn } from '../../structures/Evelyn';
+import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
+import { Discord, Slash } from 'discordx';
+import { Evelyn } from '../../Evelyn.js';
 import DXP from 'discord-xp';
 
-const command: Command = {
-	data: new SlashCommandBuilder()
-		.setName('leaderboard')
-		.setDescription('Lists the top users when it comes to XP.'),
-	async execute(interaction: ChatInputCommandInteraction, client: Evelyn) {
+@Discord()
+export class Leaderboard {
+	private readonly embed: EmbedBuilder;
+
+	constructor() {
+		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+	}
+
+	@Slash({
+		name: 'leaderboard',
+		description: 'Lists the top users when it comes to XP.',
+	})
+	async leaderboard(interaction: ChatInputCommandInteraction, client: Evelyn) {
 		const { guild } = interaction;
 		const fetchLB = await DXP.fetchLeaderboard(guild.id, 10);
 		const leaderboard = await DXP.computeLeaderboard(client, fetchLB);
-		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
 		const mappedLB = leaderboard.map(
 			(lb: { position: number; userID: string; level: number; xp: number }) =>
@@ -28,7 +31,7 @@ const command: Command = {
 
 		return interaction.reply({
 			embeds: [
-				embed
+				this.embed
 					.setTitle(`Leaderboard for ${guild.name}`)
 					.setDescription(
 						`${mappedLB.join('\n\n')}` ||
@@ -36,7 +39,5 @@ const command: Command = {
 					),
 			],
 		});
-	},
-};
-
-export default command;
+	}
+}

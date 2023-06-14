@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"lib": ["ESNext"],
-		"module": "commonjs",
+		"module": "ESNext",
 		"moduleResolution": "node",
 		"target": "ESNext",
 		"rootDir": "./src",
@@ -14,7 +14,6 @@
 		"allowSyntheticDefaultImports": true,
 		"skipLibCheck": true,
 		"skipDefaultLibCheck": true,
-		"declaration": true,
-		"resolveJsonModule": true
+		"declaration": true
 	}
 }

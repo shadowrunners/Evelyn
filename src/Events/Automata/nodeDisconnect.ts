@@ -1,13 +1,13 @@
-import { Event } from '../../interfaces/interfaces.js';
+import { Event } from '../../Interfaces/Interfaces';
 import { Node } from '@shadowrunners/automata';
-import { magenta, white } from '@colors/colors';
+import colors from '@colors/colors';
 
 const event: Event = {
 	name: 'nodeDisconnect',
 	execute(node: Node) {
 		console.log(
-			`${magenta('Lavalink')} ${white(
-				`· Lost connection to node ${node.name}.`,
+			`${colors.magenta('Lavalink')} ${colors.white(
+				`· Lost connection to node ${node.options.name}.`,
 			)}`,
 		);
 	},

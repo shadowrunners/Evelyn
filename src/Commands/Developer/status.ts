@@ -1,26 +1,27 @@
-import {
-	SlashCommandBuilder,
-	ChatInputCommandInteraction,
-	EmbedBuilder,
-	PermissionFlagsBits,
-} from 'discord.js';
-import { connection } from 'mongoose';
-import { Util } from '../../Modules/Utils/utils.js';
+import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
+import { Util } from '../../Utils/Utils/util.js';
+import { Discord, Slash, Guild } from 'discordx';
+import { config } from '../../config.js';
+import { Evelyn } from '../../Evelyn.js';
 import { cpus, platform } from 'os';
-import { Command } from '../../Interfaces/interfaces.js';
-import { Evelyn } from '../../Structures/Evelyn.js';
+import mongoose from 'mongoose';
 
-const { SendMessages } = PermissionFlagsBits;
+@Discord()
+@Guild(config.debug.devGuild)
+export class Status {
+	private embed: EmbedBuilder;
 
-const command: Command = {
-	botPermissions: [SendMessages],
-	developer: true,
-	data: new SlashCommandBuilder()
-		.setName('status')
-		.setDescription('Shows the bot\'s status.'),
-	async execute(interaction: ChatInputCommandInteraction, client: Evelyn) {
+	constructor() {
+		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+	}
+
+	@Slash({
+		description: 'Shows the bot\'s status.',
+		name: 'status',
+	})
+	async status(interaction: ChatInputCommandInteraction, client: Evelyn) {
 		const { application, ws, user, guilds, readyAt } = client;
-		const { switchTo, convertToUnixTimestamp } = new Util();
+		const util = new Util();
 
 		const uptime = Math.floor(readyAt.getTime() / 1000);
 		const model = cpus()[0].model;
@@ -28,14 +29,13 @@ const command: Command = {
 		const systemPlatform = platform()
 			.replace('win32', 'Windows')
 			.replace('linux', 'Linux');
-		const createdTime = convertToUnixTimestamp(user.createdTimestamp);
+		const createdTime = util.convertToUnixTimestamp(user.createdTimestamp);
 
-		const embed = new EmbedBuilder().setColor('Blurple');
 		await application.fetch();
 
 		return interaction.reply({
 			embeds: [
-				embed
+				this.embed
 					.setTitle(`${user.username} | Status`)
 					.addFields(
 						{
@@ -50,7 +50,7 @@ const command: Command = {
 						},
 						{
 							name: '**Database**',
-							value: `${switchTo(connection.readyState)}`,
+							value: `${util.switchTo(mongoose.connection.readyState)}`,
 							inline: true,
 						},
 						{
@@ -82,7 +82,5 @@ const command: Command = {
 					.setThumbnail(user.avatarURL()),
 			],
 		});
-	},
-};
-
-export default command;
+	}
+}

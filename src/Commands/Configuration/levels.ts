@@ -1,58 +1,159 @@
+import { Discord, Slash, SlashGroup, SlashOption, SlashChoice } from 'discordx';
 import {
-	SlashCommandBuilder,
+	ApplicationCommandOptionType,
+	ChatInputCommandInteraction,
 	PermissionFlagsBits,
+	EmbedBuilder,
 	ChannelType,
+	TextChannel,
 } from 'discord.js';
-import { Command } from '../../interfaces/interfaces.js';
-const { Administrator } = PermissionFlagsBits;
-const { GuildText } = ChannelType;
+import { GuildDB as DB } from '../../Schemas/guild.js';
 
-const command: Command = {
-	// botPermissions: ['SendMessages'],
-	data: new SlashCommandBuilder()
-		.setName('levels')
-		.setDescription('Manage and configure levels.')
-		.setDefaultMemberPermissions(Administrator)
-		.addSubcommand((options) =>
-			options
-				.setName('toggle')
-				.setDescription('Gives you the ability to toggle leveling on and off.')
-				.addStringOption((option) =>
-					option
-						.setName('choice')
-						.setDescription('Select one of the choices.')
-						.setRequired(true)
-						.addChoices(
-							{ name: 'Enable', value: 'enable' },
-							{ name: 'Disable', value: 'disable' },
-						),
-				),
-		)
-		.addSubcommand((options) =>
-			options
-				.setName('set-channel')
-				.setDescription(
-					'Sets the channel where level up messages will be sent.',
-				)
-				.addChannelOption((option) =>
-					option
-						.setName('channel')
-						.setDescription('Provide the channel.')
-						.addChannelTypes(GuildText)
-						.setRequired(true),
-				),
-		)
-		.addSubcommand((options) =>
-			options
-				.setName('set-levelupmessage')
-				.setDescription('Sets the Level Up message.')
-				.addStringOption((option) =>
-					option
-						.setName('message')
-						.setDescription('Provide the message you\'d like to be displayed.')
-						.setRequired(true),
-				),
-		),
-};
+@Discord()
+@SlashGroup({
+	name: 'logs',
+	description: 'Manage and configure moderation logging.',
+})
+@SlashGroup('levels')
+export class Levels {
+	@Slash({
+		name: 'toggle',
+		description: 'Gives you the ability to toggle logging on and off.',
+		defaultMemberPermissions: PermissionFlagsBits.Administrator,
+	})
+	async toggle(
+		@SlashChoice({ name: 'Enable', value: 'enable' })
+		@SlashChoice({ name: 'Disable', value: 'disable' })
+		@SlashOption({
+			description: 'Select one of the choices.',
+			name: 'choice',
+			required: true,
+			type: ApplicationCommandOptionType.String,
+		})
+			choice: string,
+			interaction: ChatInputCommandInteraction,
+	) {
+		const { guildId } = interaction;
+		const data = await DB.findOne({ id: guildId });
+		const embed = new EmbedBuilder().setColor('Blurple');
 
-export default command;
+		if (choice === 'enable' && data.levels.enabled === true)
+			return interaction.reply({
+				embeds: [
+					embed.setDescription('🔹 | The levelling system is already enabled.'),
+				],
+				ephemeral: true,
+			});
+
+		if (choice === 'disable' && data.levels.enabled === false)
+			return interaction.reply({
+				embeds: [
+					embed.setDescription(
+						'🔹 | The levelling system is already disabled.',
+					),
+				],
+				ephemeral: true,
+			});
+
+		await DB.findOneAndUpdate(
+			{
+				id: guildId,
+			},
+			{
+				$set: {
+					'levels.enabled': choice === 'enable' ?? choice === 'false',
+				},
+			},
+		);
+
+		return interaction.reply({
+			embeds: [
+				embed.setDescription(
+					`🔹 | The logging system has been ${
+						choice === 'enable' ? 'enabled' : 'disabled'
+					}.`,
+				),
+			],
+			ephemeral: true,
+		});
+	}
+
+	@Slash({
+		name: 'setchannel',
+		description: 'Sets the channel where logs will be sent.',
+		defaultMemberPermissions: PermissionFlagsBits.Administrator,
+	})
+	async setchannel(
+		@SlashOption({
+			description: 'Provide the channel.',
+			name: 'channel',
+			required: true,
+			type: ApplicationCommandOptionType.Channel,
+			channelTypes: [ChannelType.GuildText],
+		})
+			channel: TextChannel,
+			interaction: ChatInputCommandInteraction,
+	) {
+		const { guildId } = interaction;
+		const embed = new EmbedBuilder().setColor('Blurple');
+
+		await DB.findOneAndUpdate(
+			{
+				id: guildId,
+			},
+			{
+				$set: {
+					'levels.channel': channel.id,
+				},
+			},
+		);
+
+		return interaction.reply({
+			embeds: [
+				embed.setDescription(
+					`🔹 | Got it, the level up messages will now be sent to: <#${channel.id}>.`,
+				),
+			],
+			ephemeral: true,
+		});
+	}
+
+	@Slash({
+		name: 'set-levelupmessage',
+		description: 'Sets the channel where logs will be sent.',
+		defaultMemberPermissions: PermissionFlagsBits.Administrator,
+	})
+	async setlevelUpMessage(
+		@SlashOption({
+			name: 'message',
+			description: 'Sets the Level Up message.',
+			required: true,
+			type: ApplicationCommandOptionType.String,
+		})
+			message: string,
+			interaction: ChatInputCommandInteraction,
+	) {
+		const { guildId } = interaction;
+		const embed = new EmbedBuilder().setColor('Blurple');
+
+		await DB.findOneAndUpdate(
+			{
+				id: guildId,
+			},
+			{
+				$set: {
+					'levels.message': message,
+				},
+			},
+		);
+
+		return interaction.reply({
+			embeds: [
+				embed.setDescription(
+					'🔹 | Got it, the level up message you provided has been set.',
+				),
+			],
+			ephemeral: true,
+		});
+	}
+}

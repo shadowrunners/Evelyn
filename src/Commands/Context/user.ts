@@ -1,32 +1,45 @@
+import { Discord, ContextMenu, ButtonComponent } from 'discordx';
 import {
 	EmbedBuilder,
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
 	ApplicationCommandType,
-	ContextMenuCommandBuilder,
 	UserContextMenuCommandInteraction,
 	ActivityType,
+	MessageContextMenuCommandInteraction,
+	ButtonInteraction,
 } from 'discord.js';
-import { Util } from '../../Modules/Utils/utils.js';
-import { ContextMenu } from '../../Interfaces/interfaces.js';
-const { User } = ApplicationCommandType;
+import { Util } from '../../Utils/Utils/Util.js';
 
-const command: ContextMenu = {
-	botPermissions: ['SendMessages'],
-	data: new ContextMenuCommandBuilder()
-		.setName('User Information')
-		.setType(User),
-	async execute(interaction: UserContextMenuCommandInteraction) {
+const { User, Message } = ApplicationCommandType;
+
+@Discord()
+export class UserInformation {
+	private util: Util;
+
+	@ContextMenu({ name: 'User Information', type: User })
+	@ContextMenu({ name: 'User Information', type: Message })
+	async userInfo(
+		interaction:
+			| UserContextMenuCommandInteraction
+			| MessageContextMenuCommandInteraction,
+	) {
 		const { guild, targetId } = interaction;
-		const { convertToUnixTimestamp } = new Util();
 		const target = await guild.members.fetch(targetId);
 		const { user, presence, joinedTimestamp } = target;
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
-		await user.fetch();
+		this.util = new Util();
 
-		const createdTime = convertToUnixTimestamp(user.createdTimestamp);
-		const joinedTime = convertToUnixTimestamp(joinedTimestamp);
+		await Promise.all([
+			user.fetch(),
+			user.avatarURL(),
+			user.bannerURL({ size: 512 }),
+		]);
+
+		const createdTime = this.util.convertToUnixTimestamp(user.createdTimestamp);
+		const joinedTime = this.util.convertToUnixTimestamp(joinedTimestamp);
 		const mappedActivities = presence?.activities?.map(
 			(activity) => `${ActivityType[activity.type]} ${activity.name}`,
 		);
@@ -44,10 +57,9 @@ const command: ContextMenu = {
 
 		return interaction.reply({
 			embeds: [
-				new EmbedBuilder()
-					.setColor('Blurple')
+				embed
 					.setAuthor({
-						name: `${user.tag}`,
+						name: `${user.username}`,
 						iconURL: `${user.avatarURL()}`,
 					})
 					.setThumbnail(user.avatarURL())
@@ -80,13 +92,39 @@ const command: ContextMenu = {
 									.join(' ')
 									.replace('@everyone', '')}` || 'None',
 						},
-					)
-					.setTimestamp(),
+					),
 			],
 			components: [actionRow],
 			ephemeral: true,
 		});
-	},
-};
+	}
 
-export default command;
+	@ButtonComponent({ id: 'avatar' })
+	@ButtonComponent({ id: 'banner' })
+	async buttonHandler(interaction: ButtonInteraction) {
+		const { user, customId } = interaction;
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+
+		await user.fetch();
+
+		return interaction.reply({
+			embeds: [
+				embed
+					.setTitle(
+						`${user.username}'s ${customId === 'avatar' ? 'Avatar' : 'Banner'}`,
+					)
+					.setImage(
+						user[customId === 'avatar' ? 'avatarURL' : 'bannerURL']({
+							size: 4096,
+						}),
+					)
+					.setURL(
+						user[customId === 'avatar' ? 'avatarURL' : 'bannerURL']({
+							size: 4096,
+						}),
+					),
+			],
+			ephemeral: true,
+		});
+	}
+}

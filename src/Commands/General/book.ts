@@ -1,35 +1,43 @@
 import {
 	EmbedBuilder,
-	SlashCommandBuilder,
+	ApplicationCommandOptionType,
 	ChatInputCommandInteraction,
-	PermissionFlagsBits,
 } from 'discord.js';
-import { GBooksAPI } from '../../Modules/APIs/gBooksAPI';
-import { Command } from '../../interfaces/interfaces';
-const { SendMessages } = PermissionFlagsBits;
+import { Discord, Guard, Slash, SlashOption } from 'discordx';
+import { RateLimit, TIME_UNIT } from '@discordx/utilities';
+import { GBooksAPI } from '../../Utils/APIs/gBooksAPI.js';
 
-const command: Command = {
-	botPermissions: [SendMessages],
-	data: new SlashCommandBuilder()
-		.setName('book')
-		.setDescription('Get info about a book using Google Books.')
-		.addStringOption((option) =>
-			option
-				.setName('title')
-				.setDescription('Provide the name of the book.')
-				.setRequired(true),
-		),
-	async execute(interaction: ChatInputCommandInteraction) {
-		const { options } = interaction;
-		const title = options.getString('title');
+@Discord()
+export class Book {
+	private embed: EmbedBuilder;
+
+	@Slash({
+		description: 'Get info about a book using Google Books.',
+		name: 'book',
+	})
+	@Guard(
+		RateLimit(TIME_UNIT.seconds, 30, {
+			message: '🔹 | You are currently rate limited. Try again at {until}.',
+			ephemeral: true,
+		}),
+	)
+	async book(
+		@SlashOption({
+			name: 'title',
+			description: 'Provide the name of the book.',
+			type: ApplicationCommandOptionType.String,
+			required: true,
+		})
+			title: string,
+			interaction: ChatInputCommandInteraction,
+	) {
 		const bookAPI = new GBooksAPI(interaction);
-		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-
 		const book = await bookAPI.fetchBook(title);
+		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
 		return interaction.reply({
 			embeds: [
-				embed
+				this.embed
 					.setTitle(book.title)
 					.setDescription(book.description)
 					.addFields(
@@ -61,11 +69,8 @@ const command: Command = {
 					.setFooter({
 						text: 'This information has been brought to you by the Google Books API.',
 					})
-					.setThumbnail(book.coverImage.thumbnail)
-					.setTimestamp(),
+					.setThumbnail(book.coverImage.thumbnail),
 			],
 		});
-	},
-};
-
-export default command;
+	}
+}

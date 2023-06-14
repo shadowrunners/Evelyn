@@ -1,54 +1,57 @@
 import {
-	SlashCommandBuilder,
 	ChatInputCommandInteraction,
-	PermissionFlagsBits,
+	ApplicationCommandOptionType,
+	GuildMember,
 } from 'discord.js';
-import { WaifuEngine } from '../../Modules/APIs/waifuAPI';
-import { Command } from '../../Interfaces/interfaces.js';
+import { Discord, Slash, SlashOption, SlashChoice, Guard } from 'discordx';
+import { RateLimit, TIME_UNIT } from '@discordx/utilities';
+import { WaifuEngine } from '../../Utils/APIs/waifuAPI.js';
 
-const { SendMessages, EmbedLinks } = PermissionFlagsBits;
-
-const command: Command = {
-	botPermissions: [SendMessages, EmbedLinks],
-	data: new SlashCommandBuilder()
-		.setName('actions')
-		.setDescription('Express your emotions to someone with actions!')
-		.addStringOption((options) =>
-			options
-				.setName('action')
-				.setDescription('Select an action.')
-				.addChoices(
-					{ name: '🔹 | Bite', value: 'bite' },
-					{ name: '🔹 | Blush', value: 'blush' },
-					{ name: '🔹 | Bonk', value: 'bonk' },
-					{ name: '🔹 | Bully', value: 'bully' },
-					{ name: '🔹 | Cringe', value: 'cringe' },
-					{ name: '🔹 | Cry', value: 'cry' },
-					{ name: '🔹 | Cuddle', value: 'cuddle' },
-					{ name: '🔹 | Handhold', value: 'handhold' },
-					{ name: '🔹 | Highfive', value: 'highfive' },
-					{ name: '🔹 | Hug', value: 'hug' },
-					{ name: '🔹 | Kiss', value: 'kiss' },
-					{ name: '🔹 | Pat', value: 'pat' },
-					{ name: '🔹 | Poke', value: 'poke' },
-					{ name: '🔹 | Wave', value: 'wave' },
-				)
-				.setRequired(true),
-		)
-		.addUserOption((option) =>
-			option
-				.setName('target')
-				.setDescription('Provide a target.')
-				.setRequired(false),
-		),
-	async execute(interaction: ChatInputCommandInteraction) {
-		const { options } = interaction;
+@Discord()
+export class Actions {
+	@Slash({
+		description: 'Express your emotions to someone with actions!',
+		name: 'actions',
+	})
+	@Guard(
+		RateLimit(TIME_UNIT.seconds, 30, {
+			message: '🔹 | Please wait 30 seconds before re-running this command.',
+		}),
+	)
+	async actions(
+		@SlashChoice({ name: '🔹 | Bite', value: 'bite' })
+		@SlashChoice({ name: '🔹 | Blush', value: 'blush' })
+		@SlashChoice({ name: '🔹 | Bonk', value: 'bonk' })
+		@SlashChoice({ name: '🔹 | Bully', value: 'bully' })
+		@SlashChoice({ name: '🔹 | Cringe', value: 'cringe' })
+		@SlashChoice({ name: '🔹 | Cuddle', value: 'cuddle' })
+		@SlashChoice({ name: '🔹 | Handhold', value: 'handhold' })
+		@SlashChoice({ name: '🔹 | Highfive', value: 'highfive' })
+		@SlashChoice({ name: '🔹 | Hug', value: 'hug' })
+		@SlashChoice({ name: '🔹 | Kiss', value: 'kiss' })
+		@SlashChoice({ name: '🔹 | Pat', value: 'pat' })
+		@SlashChoice({ name: '🔹 | Poke', value: 'poke' })
+		@SlashChoice({ name: '🔹 | Wave', value: 'wave' })
+		@SlashOption({
+			name: 'action',
+			description: 'Select an action.',
+			required: true,
+			type: ApplicationCommandOptionType.String,
+		})
+		@SlashOption({
+			name: 'target',
+			description: 'Provide a target.',
+			required: false,
+			type: ApplicationCommandOptionType.User,
+		})
+			action: string,
+			target: GuildMember,
+			interaction: ChatInputCommandInteraction,
+	) {
 		const waifuAPI = new WaifuEngine(interaction);
-		const target = options.getUser('target');
-
 		await interaction.deferReply();
 
-		switch (options.getString('action')) {
+		switch (action) {
 		case 'bite':
 			return waifuAPI.bite(target);
 
@@ -97,7 +100,5 @@ const command: Command = {
 		default:
 			break;
 		}
-	},
-};
-
-export default command;
+	}
+}

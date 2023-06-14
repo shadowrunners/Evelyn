@@ -1,26 +1,25 @@
 import {
 	ChatInputCommandInteraction,
-	EmbedBuilder,
 	PermissionFlagsBits,
-	SlashCommandBuilder,
+	EmbedBuilder,
 	TextChannel,
 } from 'discord.js';
-import { Command } from '../../interfaces/interfaces';
-import { LockdownDB as DB } from '../../Structures/Schemas/lockdown';
+import { Discord, Slash } from 'discordx';
+import { LockdownDB as DB } from '../../Schemas/lockdown.js';
 
-const { ManageChannels, SendMessages } = PermissionFlagsBits;
-
-const command: Command = {
-	data: new SlashCommandBuilder()
-		.setName('unlock')
-		.setDescription('Unlocks a channel.')
-		.setDefaultMemberPermissions(ManageChannels),
-	async execute(interaction: ChatInputCommandInteraction) {
+@Discord()
+export class Unlock {
+	@Slash({
+		name: 'unlock',
+		description: 'Unlocks a channel.',
+		defaultMemberPermissions: PermissionFlagsBits.ManageChannels,
+	})
+	async unlock(interaction: ChatInputCommandInteraction) {
 		const { guild, channel } = interaction;
 		const lockedChannel = channel as TextChannel;
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
-		if (channel.permissionsFor(guild.id).has(SendMessages))
+		if (channel.permissionsFor(guild.id).has(PermissionFlagsBits.SendMessages))
 			return interaction.reply({
 				embeds: [embed.setDescription('🔹 | This channel isn\'t locked.')],
 				ephemeral: true,
@@ -39,7 +38,5 @@ const command: Command = {
 				),
 			],
 		});
-	},
-};
-
-export default command;
+	}
+}

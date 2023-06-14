@@ -1,27 +1,29 @@
 import {
+	ApplicationCommandOptionType,
 	ChatInputCommandInteraction,
-	EmbedBuilder,
 	PermissionFlagsBits,
-	SlashCommandBuilder,
+	EmbedBuilder,
 } from 'discord.js';
-import { Command } from '../../interfaces/interfaces';
+import { Discord, Slash, SlashOption } from 'discordx';
 
-const { ManageMessages } = PermissionFlagsBits;
-
-const command: Command = {
-	data: new SlashCommandBuilder()
-		.setName('clear')
-		.setDescription('Clear a number of messages.')
-		.setDefaultMemberPermissions(ManageMessages)
-		.addNumberOption((options) =>
-			options
-				.setName('number')
-				.setDescription('Provide the number of messages you\'d like to delete.')
-				.setRequired(true),
-		),
-	async execute(interaction: ChatInputCommandInteraction) {
-		const { options, channel } = interaction;
-		const messages = options.getNumber('number');
+@Discord()
+export class Clear {
+	@Slash({
+		name: 'clear',
+		description: 'Clear a number of messages.',
+		defaultMemberPermissions: PermissionFlagsBits.ManageMessages,
+	})
+	async clear(
+		@SlashOption({
+			name: 'messages',
+			description: 'Provide the number of messages you\'d like to delete.',
+			type: ApplicationCommandOptionType.String,
+			required: true,
+		})
+			messages: number,
+			interaction: ChatInputCommandInteraction,
+	) {
+		const { channel } = interaction;
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
 		if (messages > 100 || messages < 1)
@@ -39,7 +41,5 @@ const command: Command = {
 				embeds: [embed.setDescription(`🔹 | Cleared ${messages} messages.`)],
 			});
 		});
-	},
-};
-
-export default command;
+	}
+}

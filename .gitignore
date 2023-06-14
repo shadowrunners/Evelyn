@@ -1,6 +1,6 @@
 node_modules
 .env
 dist
-src/structures/config.json
+src/config.ts
 package-lock.json
 json.sqlite

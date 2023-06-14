@@ -1,31 +1,46 @@
 import {
-	ChatInputCommandInteraction,
 	EmbedBuilder,
-	SlashCommandBuilder,
+	ApplicationCommandOptionType,
+	ChatInputCommandInteraction,
 } from 'discord.js';
-import { Command } from '../../interfaces/interfaces';
-import { KitsuAPI } from '../../Modules/APIs/kitsuAPI';
+import { Discord, Guard, Slash, SlashOption } from 'discordx';
+import { RateLimit, TIME_UNIT } from '@discordx/utilities';
+import { KitsuAPI } from '../../Utils/APIs/kitsuAPI.js';
 
-const command: Command = {
-	data: new SlashCommandBuilder()
-		.setName('manga')
-		.setDescription('Get info about a manga using Kitsu.io.')
-		.addStringOption((option) =>
-			option
-				.setName('title')
-				.setDescription('Provide the name of the manga.')
-				.setRequired(true),
-		),
-	async execute(interaction: ChatInputCommandInteraction) {
-		const { options } = interaction;
-		const title = options.getString('title');
-		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+@Discord()
+export class Manga {
+	private readonly embed: EmbedBuilder;
+
+	constructor() {
+		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+	}
+
+	@Slash({
+		description: 'Get info about a manga using Kitsu.io.',
+		name: 'manga',
+	})
+	@Guard(
+		RateLimit(TIME_UNIT.seconds, 30, {
+			message: '🔹 | You are currently rate limited. Try again at {until}.',
+			ephemeral: true,
+		}),
+	)
+	async manga(
+		@SlashOption({
+			name: 'title',
+			description: 'Provide the name of the manga.',
+			type: ApplicationCommandOptionType.String,
+			required: true,
+		})
+			title: string,
+			interaction: ChatInputCommandInteraction,
+	) {
 		const kitsu = new KitsuAPI(interaction);
-
 		const manga = await kitsu.fetchManga(title);
+
 		return interaction.reply({
 			embeds: [
-				embed
+				this.embed
 					.setTitle(manga.titles.en_us)
 					.setThumbnail(manga.posterImage.original)
 					.setDescription(manga.synopsis)
@@ -53,7 +68,5 @@ const command: Command = {
 					),
 			],
 		});
-	},
-};
-
-export default command;
+	}
+}
