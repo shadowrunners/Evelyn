@@ -253,7 +253,7 @@ export class Roles {
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 		const data = await DB.findOne({ id: guildId, panelName: panel });
 
-		if (panel !== data.panelName || data.roleArray.length < 0)
+		if (panel !== data.panelName || data.roleArray.length === 0)
 			return interaction.reply({
 				embeds: [
 					embed.setDescription('🔹 | The panel you specified does not exist.'),
