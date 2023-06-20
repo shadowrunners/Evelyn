@@ -2,22 +2,21 @@ import { Discord, Slash, SlashGroup, SlashOption, SlashChoice } from 'discordx';
 import {
 	ApplicationCommandOptionType,
 	ChatInputCommandInteraction,
-	PermissionFlagsBits,
 	EmbedBuilder,
 } from 'discord.js';
 import { GuildDB as DB } from '../../Schemas/guild.js';
 
 @Discord()
 @SlashGroup({
-	description: 'A complete anti-phishing system.',
 	name: 'antiphish',
+	description: 'A complete anti-phishing system.',
+	defaultMemberPermissions: 'Administrator',
 })
 @SlashGroup('antiphish')
 export class AntiPhish {
 	@Slash({
 		name: 'toggle',
 		description: 'Gives you the ability to toggle anti-phishing on and off.',
-		defaultMemberPermissions: [PermissionFlagsBits.Administrator],
 	})
 	async toggle(
 		@SlashChoice({ name: 'Enable', value: 'enable' })

@@ -2,9 +2,7 @@ import { Discord, Slash, SlashGroup, SlashOption, SlashChoice } from 'discordx';
 import {
 	ChatInputCommandInteraction,
 	ApplicationCommandOptionType,
-	PermissionFlagsBits,
 	ActionRowBuilder,
-	HexColorString,
 	ButtonBuilder,
 	EmbedBuilder,
 	TextChannel,
@@ -13,12 +11,13 @@ import {
 	Role,
 } from 'discord.js';
 import { GuildDB as DB } from '../../Schemas/guild.js';
-const { Administrator } = PermissionFlagsBits;
+import { Builder } from '../../Utils/Utils/EmbedBuilder.js';
 
 @Discord()
 @SlashGroup({
 	name: 'tickets',
 	description: 'Manage and configure tickets system.',
+	defaultMemberPermissions: 'Administrator',
 })
 @SlashGroup('tickets')
 export class TicketConfig {
@@ -31,7 +30,6 @@ export class TicketConfig {
 	@Slash({
 		name: 'toggle',
 		description: 'Gives you the ability to toggle tickets on and off.',
-		defaultMemberPermissions: [Administrator],
 	})
 	async toggle(
 		@SlashChoice({ name: 'Enable', value: 'enable' })
@@ -94,7 +92,6 @@ export class TicketConfig {
 	@Slash({
 		name: 'configure',
 		description: 'Configures the tickets system.',
-		defaultMemberPermissions: [Administrator],
 	})
 	async configure(
 		@SlashOption({
@@ -151,133 +148,15 @@ export class TicketConfig {
 		name: 'managepanel',
 		description:
 			'Customize the panel that will be sent for users to create tickets.',
-		defaultMemberPermissions: [Administrator],
 	})
-	async managepanel(
-		@SlashOption({
-			name: 'color',
-			description: 'Provide the hex value of the color.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'title',
-			description: 'Provide a title for the embed.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'description',
-			description: 'Provide a description for the embed.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'authorname',
-			description: 'Provide a name for the author tag of the embed.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'authoricon',
-			description:
-				'Provide a link to an image for the icon URL displayed next to the author name.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'footertext',
-			description: 'Provide the text you\'d like to use for the embed\'s footer.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'footericon',
-			description: 'Provide a link to an image for the footer\'s icon.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'image',
-			description: 'Provide a link to an image for the embed.',
-			type: ApplicationCommandOptionType.String,
-		})
-			color: HexColorString,
-			title: string,
-			description: string,
-			authorname: string,
-			authoricon: string,
-			footertext: string,
-			footericon: string,
-			image: string,
-			interaction: ChatInputCommandInteraction,
-	) {
-		const { guildId } = interaction;
-		const embed = new EmbedBuilder().setColor('Blurple');
-		const data = await DB.findOne({ id: guildId });
-		const { tickets } = data;
-
-		await DB.findOneAndUpdate(
-			{
-				id: guildId,
-			},
-			{
-				$set: {
-					'tickets.embed.color': color,
-					'tickets.embed.title': title,
-					'tickets.embed.description': description,
-					'tickets.embed.author.name': authorname,
-					'tickets.embed.author.icon_url': authoricon,
-					'tickets.embed.footer.text': footertext,
-					'tickets.embed.footer.icon_url': footericon,
-					'tickets.embed.image.url': image,
-				},
-			},
-		);
-
-		return interaction.reply({
-			embeds: [
-				embed
-					.setTitle('Ticket Embed Updated')
-					.setDescription(
-						'The following embed data has been successfully saved. Some values may return a null value. This is not a bug, it just means you didn\'t provide a value for it.',
-					)
-					.addFields(
-						{
-							name: '🔹 | Color',
-							value: `> ${tickets.embed.color}`,
-						},
-						{
-							name: '🔹 | Title',
-							value: `> ${tickets.embed.title}`,
-						},
-						{
-							name: '🔹 | Description',
-							value: `> ${tickets.embed.description}`,
-						},
-						{
-							name: '🔹 | Author Name',
-							value: `> ${tickets.embed.author.name}`,
-						},
-						{
-							name: '🔹 | Author Icon',
-							value: `> ${tickets.embed.author.icon_url}`,
-						},
-						{
-							name: '🔹 | Footer Text',
-							value: `> ${tickets.embed.footer.text}`,
-						},
-						{
-							name: '🔹 | Footer Icon',
-							value: `> ${tickets.embed.footer.icon_url}`,
-						},
-						{
-							name: '🔹 | Image',
-							value: `> ${tickets.embed.image.url}`,
-						},
-					),
-			],
-			ephemeral: true,
-		});
+	async managepanel(interaction: ChatInputCommandInteraction) {
+		const builder = new Builder(interaction, 'tickets');
+		return builder.initalize();
 	}
 
 	@Slash({
 		name: 'sendpanel',
 		description: 'Sends the ticket panel in a channel.',
-		defaultMemberPermissions: [Administrator],
 	})
 	async sendpanel(
 		@SlashOption({

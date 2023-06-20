@@ -1,11 +1,10 @@
 import { Discord, Slash, SlashGroup, SlashOption, SlashChoice } from 'discordx';
 import {
-	ChannelType,
-	TextChannel,
-	EmbedBuilder,
-	PermissionFlagsBits,
-	ChatInputCommandInteraction,
 	ApplicationCommandOptionType,
+	ChatInputCommandInteraction,
+	EmbedBuilder,
+	TextChannel,
+	ChannelType,
 } from 'discord.js';
 import { GuildDB as DB } from '../../Schemas/guild.js';
 import { Evelyn } from '../../Evelyn.js';
@@ -13,12 +12,12 @@ import {
 	encryptMyData,
 	pleaseDecryptMyData,
 } from '../../Utils/Utils/secureStorage.js';
-const { Administrator } = PermissionFlagsBits;
 
 @Discord()
 @SlashGroup({
-	description: 'Manage and configure confessions.',
 	name: 'confessions',
+	description: 'Manage and configure confessions.',
+	defaultMemberPermissions: 'Administrator',
 })
 @SlashGroup('confessions')
 export class Confessions {
@@ -29,9 +28,8 @@ export class Confessions {
 	}
 
 	@Slash({
-		description: 'Gives you the ability to toggle anti-phishing on and off.',
-		defaultMemberPermissions: [Administrator],
 		name: 'toggle',
+		description: 'Gives you the ability to toggle anti-phishing on and off.',
 	})
 	async toggle(
 		@SlashChoice({ name: 'Enable', value: 'enable' })
@@ -92,9 +90,8 @@ export class Confessions {
 	}
 
 	@Slash({
-		description: 'Sets the channel where confessions will be sent.',
-		defaultMemberPermissions: [Administrator],
 		name: 'setchannel',
+		description: 'Sets the channel where confessions will be sent.',
 	})
 	async setchannel(
 		@SlashOption({

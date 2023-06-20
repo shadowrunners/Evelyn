@@ -1,8 +1,6 @@
 import {
 	ApplicationCommandOptionType,
 	ChatInputCommandInteraction,
-	PermissionFlagsBits,
-	HexColorString,
 	EmbedBuilder,
 	ChannelType,
 	TextChannel,
@@ -10,12 +8,14 @@ import {
 } from 'discord.js';
 import { Discord, SlashGroup, Slash, SlashChoice, SlashOption } from 'discordx';
 import { replacePlaceholders } from '../../Utils/Utils/replacePlaceholders.js';
+import { Builder } from '../../Utils/Utils/EmbedBuilder.js';
 import { GuildDB as DB } from '../../Schemas/guild.js';
 
 @Discord()
 @SlashGroup({
 	name: 'welcome',
 	description: 'Manage and configure welcome messages.',
+	defaultMemberPermissions: 'Administrator',
 })
 @SlashGroup('welcome')
 export class Welcome {
@@ -28,7 +28,6 @@ export class Welcome {
 	@Slash({
 		name: 'toggle',
 		description: 'Gives you the ability to toggle welcome messages on and off.',
-		defaultMemberPermissions: [PermissionFlagsBits.Administrator],
 	})
 	async toggle(
 		@SlashChoice({ name: 'Enable', value: 'enable' })
@@ -91,140 +90,15 @@ export class Welcome {
 	@Slash({
 		name: 'manageembed',
 		description: 'Manage the embed sent when a user joins the server.',
-		defaultMemberPermissions: [PermissionFlagsBits.Administrator],
 	})
-	async manageembed(
-		@SlashOption({
-			name: 'color',
-			description: 'Provide the hex value of the color.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'title',
-			description: 'Provide a title for the embed.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'description',
-			description: 'Provide a description for the embed.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'authorname',
-			description: 'Provide a name for the author tag of the embed.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'authoricon',
-			description:
-				'Provide a link to an image for the icon URL displayed next to the author name.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'footertext',
-			description: 'Provide the text you\'d like to use for the embed\'s footer.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'footericon',
-			description: 'Provide a link to an image for the footer\'s icon.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'image',
-			description: 'Provide a link to an image for the embed.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'messagecontent',
-			description: 'Provide a message that will be sent alongside the embed.',
-			type: ApplicationCommandOptionType.String,
-		})
-			color: HexColorString,
-			title: string,
-			description: string,
-			authorname: string,
-			authoricon: string,
-			footertext: string,
-			footericon: string,
-			image: string,
-			messagecontent: string,
-			interaction: ChatInputCommandInteraction,
-	) {
-		const { guildId } = interaction;
-		const embed = new EmbedBuilder().setColor('Blurple');
-		const data = await DB.findOne({ id: guildId });
-		const { welcome } = data;
-
-		await DB.findOneAndUpdate(
-			{
-				id: guildId,
-			},
-			{
-				$set: {
-					'welcome.embed.color': color,
-					'welcome.embed.title': title,
-					'welcome.embed.description': description,
-					'welcome.embed.author.name': authorname,
-					'welcome.embed.author.icon_url': authoricon,
-					'welcome.embed.footer.text': footertext,
-					'welcome.embed.footer.icon_url': footericon,
-					'welcome.embed.image.url': image,
-					'welcome.embed.messagecontent': messagecontent,
-				},
-			},
-		);
-
-		return interaction.reply({
-			embeds: [
-				embed
-					.setTitle('Welcome Embed Updated')
-					.setDescription(
-						'The following embed data has been successfully saved. Some values may return a null value. This is not a bug, it just means you didn\'t provide a value for it.\n\nRun /welcome previewembed to see a preview or wait for someone to join.',
-					)
-					.addFields(
-						{
-							name: '🔹 | Color',
-							value: `> ${welcome.embed.color}`,
-						},
-						{
-							name: '🔹 | Title',
-							value: `> ${welcome.embed.title}`,
-						},
-						{
-							name: '🔹 | Description',
-							value: `> ${welcome.embed.description}`,
-						},
-						{
-							name: '🔹 | Author Name',
-							value: `> ${welcome.embed.author.name}`,
-						},
-						{
-							name: '🔹 | Author Icon',
-							value: `> ${welcome.embed.author.icon_url}`,
-						},
-						{
-							name: '🔹 | Footer Text',
-							value: `> ${welcome.embed.footer.text}`,
-						},
-						{
-							name: '🔹 | Footer Icon',
-							value: `> ${welcome.embed.footer.icon_url}`,
-						},
-						{
-							name: '🔹 | Image',
-							value: `> ${welcome.embed.image.url}`,
-						},
-					),
-			],
-			ephemeral: true,
-		});
+	async manageembed(interaction: ChatInputCommandInteraction) {
+		const builder = new Builder(interaction, 'welcome');
+		return await builder.initalize();
 	}
 
 	@Slash({
 		name: 'previewembed',
 		description: 'Sends a preview of the embed.',
-		defaultMemberPermissions: [PermissionFlagsBits.Administrator],
 	})
 	async previewembed(
 		@SlashOption({
@@ -300,7 +174,6 @@ export class Welcome {
 	@Slash({
 		name: 'setchannel',
 		description: 'Sets the channel where welcome messages will be sent.',
-		defaultMemberPermissions: [PermissionFlagsBits.Administrator],
 	})
 	async setchannel(
 		@SlashOption({

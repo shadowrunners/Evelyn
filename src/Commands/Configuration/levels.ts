@@ -2,7 +2,6 @@ import { Discord, Slash, SlashGroup, SlashOption, SlashChoice } from 'discordx';
 import {
 	ApplicationCommandOptionType,
 	ChatInputCommandInteraction,
-	PermissionFlagsBits,
 	EmbedBuilder,
 	ChannelType,
 	TextChannel,
@@ -13,13 +12,13 @@ import { GuildDB as DB } from '../../Schemas/guild.js';
 @SlashGroup({
 	name: 'logs',
 	description: 'Manage and configure moderation logging.',
+	defaultMemberPermissions: 'Administrator',
 })
 @SlashGroup('levels')
 export class Levels {
 	@Slash({
 		name: 'toggle',
 		description: 'Gives you the ability to toggle logging on and off.',
-		defaultMemberPermissions: PermissionFlagsBits.Administrator,
 	})
 	async toggle(
 		@SlashChoice({ name: 'Enable', value: 'enable' })
@@ -81,7 +80,6 @@ export class Levels {
 	@Slash({
 		name: 'setchannel',
 		description: 'Sets the channel where logs will be sent.',
-		defaultMemberPermissions: PermissionFlagsBits.Administrator,
 	})
 	async setchannel(
 		@SlashOption({
@@ -121,7 +119,6 @@ export class Levels {
 	@Slash({
 		name: 'set-levelupmessage',
 		description: 'Sets the channel where logs will be sent.',
-		defaultMemberPermissions: PermissionFlagsBits.Administrator,
 	})
 	async setlevelUpMessage(
 		@SlashOption({

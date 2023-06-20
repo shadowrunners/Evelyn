@@ -1,21 +1,21 @@
 import {
 	ApplicationCommandOptionType,
 	ChatInputCommandInteraction,
-	PermissionFlagsBits,
-	HexColorString,
 	EmbedBuilder,
 	ChannelType,
 	TextChannel,
 	GuildMember,
 } from 'discord.js';
 import { Discord, SlashGroup, Slash, SlashChoice, SlashOption } from 'discordx';
-import { GuildDB as DB } from '../../Schemas/guild.js';
 import { replacePlaceholders } from '../../Utils/Utils/replacePlaceholders.js';
+import { Builder } from '../../Utils/Utils/EmbedBuilder.js';
+import { GuildDB as DB } from '../../Schemas/guild.js';
 
 @Discord()
 @SlashGroup({
 	name: 'goodbye',
 	description: 'Manage and configure goodbye messages.',
+	defaultMemberPermissions: 'Administrator',
 })
 @SlashGroup('goodbye')
 export class Goodbye {
@@ -28,7 +28,6 @@ export class Goodbye {
 	@Slash({
 		name: 'toggle',
 		description: 'Gives you the ability to toggle goodbye messages on and off.',
-		defaultMemberPermissions: [PermissionFlagsBits.Administrator],
 	})
 	async toggle(
 		@SlashChoice({ name: 'Enable', value: 'enable' })
@@ -91,140 +90,15 @@ export class Goodbye {
 	@Slash({
 		name: 'manageembed',
 		description: 'Manage the embed sent when a user leaves the server.',
-		defaultMemberPermissions: [PermissionFlagsBits.Administrator],
 	})
-	async manageembed(
-		@SlashOption({
-			name: 'color',
-			description: 'Provide the hex value of the color.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'title',
-			description: 'Provide a title for the embed.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'description',
-			description: 'Provide a description for the embed.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'authorname',
-			description: 'Provide a name for the author tag of the embed.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'authoricon',
-			description:
-				'Provide a link to an image for the icon URL displayed next to the author name.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'footertext',
-			description: 'Provide the text you\'d like to use for the embed\'s footer.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'footericon',
-			description: 'Provide a link to an image for the footer\'s icon.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'image',
-			description: 'Provide a link to an image for the embed.',
-			type: ApplicationCommandOptionType.String,
-		})
-		@SlashOption({
-			name: 'messagecontent',
-			description: 'Provide a message that will be sent alongside the embed.',
-			type: ApplicationCommandOptionType.String,
-		})
-			color: HexColorString,
-			title: string,
-			description: string,
-			authorname: string,
-			authoricon: string,
-			footertext: string,
-			footericon: string,
-			image: string,
-			messagecontent: string,
-			interaction: ChatInputCommandInteraction,
-	) {
-		const { guildId } = interaction;
-		const embed = new EmbedBuilder().setColor('Blurple');
-		const data = await DB.findOne({ id: guildId });
-		const { goodbye } = data;
-
-		await DB.findOneAndUpdate(
-			{
-				id: guildId,
-			},
-			{
-				$set: {
-					'goodbye.embed.color': color,
-					'goodbye.embed.title': title,
-					'goodbye.embed.description': description,
-					'goodbye.embed.author.name': authorname,
-					'goodbye.embed.author.icon_url': authoricon,
-					'goodbye.embed.footer.text': footertext,
-					'goodbye.embed.footer.icon_url': footericon,
-					'goodbye.embed.image.url': image,
-					'goodbye.embed.messagecontent': messagecontent,
-				},
-			},
-		);
-
-		return interaction.reply({
-			embeds: [
-				embed
-					.setTitle('Goodbye Embed Updated')
-					.setDescription(
-						'The following embed data has been successfully saved. Some values may return a null value. This is not a bug, it just means you didn\'t provide a value for it.\n\nRun /goodbye preview-embed to see a preview or wait for someone to leave.',
-					)
-					.addFields(
-						{
-							name: '🔹 | Color',
-							value: `> ${goodbye.embed.color}`,
-						},
-						{
-							name: '🔹 | Title',
-							value: `> ${goodbye.embed.title}`,
-						},
-						{
-							name: '🔹 | Description',
-							value: `> ${goodbye.embed.description}`,
-						},
-						{
-							name: '🔹 | Author Name',
-							value: `> ${goodbye.embed.author.name}`,
-						},
-						{
-							name: '🔹 | Author Icon',
-							value: `> ${goodbye.embed.author.icon_url}`,
-						},
-						{
-							name: '🔹 | Footer Text',
-							value: `> ${goodbye.embed.footer.text}`,
-						},
-						{
-							name: '🔹 | Footer Icon',
-							value: `> ${goodbye.embed.footer.icon_url}`,
-						},
-						{
-							name: '🔹 | Image',
-							value: `> ${goodbye.embed.image.url}`,
-						},
-					),
-			],
-			ephemeral: true,
-		});
+	async manageembed(interaction: ChatInputCommandInteraction) {
+		const builder = new Builder(interaction, 'goodbye');
+		return await builder.initalize();
 	}
 
 	@Slash({
 		name: 'previewembed',
 		description: 'Sends a preview of the embed.',
-		defaultMemberPermissions: [PermissionFlagsBits.Administrator],
 	})
 	async previewembed(
 		@SlashOption({
@@ -301,7 +175,6 @@ export class Goodbye {
 	@Slash({
 		name: 'setchannel',
 		description: 'Sets the channel where goodbye messages will be sent.',
-		defaultMemberPermissions: [PermissionFlagsBits.Administrator],
 	})
 	async setchannel(
 		@SlashOption({

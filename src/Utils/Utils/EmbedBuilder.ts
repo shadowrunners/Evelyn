@@ -25,7 +25,7 @@ import { GuildDB as DB } from '../../Schemas/guild.js';
 
 @Discord()
 /** Used for creating embeds for the welcome, goodbye and ticket systems. */
-export class EBuilder {
+export class Builder {
 	/** The interaction object. */
 	private interaction: ChatInputCommandInteraction;
 	/** The welcome embed. Contains information about what the system does. */

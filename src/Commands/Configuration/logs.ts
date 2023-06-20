@@ -1,11 +1,10 @@
 import { Discord, Slash, SlashGroup, SlashOption, SlashChoice } from 'discordx';
 import {
+	ApplicationCommandOptionType,
+	ChatInputCommandInteraction,
+	EmbedBuilder,
 	ChannelType,
 	TextChannel,
-	EmbedBuilder,
-	PermissionFlagsBits,
-	ChatInputCommandInteraction,
-	ApplicationCommandOptionType,
 } from 'discord.js';
 import { GuildDB as DB } from '../../Schemas/guild.js';
 import { Evelyn } from '../../Evelyn.js';
@@ -13,12 +12,12 @@ import {
 	encryptMyData,
 	pleaseDecryptMyData,
 } from '../../Utils/Utils/secureStorage.js';
-const { Administrator } = PermissionFlagsBits;
 
 @Discord()
 @SlashGroup({
-	description: 'Manage and configure moderation logging.',
 	name: 'logs',
+	description: 'Manage and configure moderation logging.',
+	defaultMemberPermissions: 'Administrator',
 })
 @SlashGroup('logs')
 export class Logs {
@@ -29,9 +28,8 @@ export class Logs {
 	}
 
 	@Slash({
-		description: 'Gives you the ability to toggle logging on and off.',
-		defaultMemberPermissions: [Administrator],
 		name: 'toggle',
+		description: 'Gives you the ability to toggle logging on and off.',
 	})
 	async toggle(
 		@SlashChoice({ name: 'Enable', value: 'enable' })
@@ -92,9 +90,8 @@ export class Logs {
 	}
 
 	@Slash({
-		description: 'Sets the channel where logs will be sent.',
-		defaultMemberPermissions: [Administrator],
 		name: 'setchannel',
+		description: 'Sets the channel where logs will be sent.',
 	})
 	async setchannel(
 		@SlashOption({

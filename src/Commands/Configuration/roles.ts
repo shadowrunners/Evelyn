@@ -1,17 +1,16 @@
 import {
 	ApplicationCommandOptionType,
+	StringSelectMenuInteraction,
 	ChatInputCommandInteraction,
+	StringSelectMenuComponent,
 	StringSelectMenuBuilder,
-	PermissionFlagsBits,
+	GuildMemberRoleManager,
 	ActionRowBuilder,
 	EmbedBuilder,
 	TextChannel,
 	ChannelType,
 	Emoji,
 	Role,
-	StringSelectMenuInteraction,
-	GuildMemberRoleManager,
-	StringSelectMenuComponent,
 } from 'discord.js';
 import {
 	Discord,
@@ -22,20 +21,17 @@ import {
 } from 'discordx';
 import { RRoles as DB } from '../../Schemas/roles.js';
 
-const { Administrator } = PermissionFlagsBits;
-const { GuildText } = ChannelType;
-
 @Discord()
 @SlashGroup({
 	name: 'roles',
 	description: 'Manage and configure roles.',
+	defaultMemberPermissions: 'Administrator',
 })
 @SlashGroup('roles')
 export class Roles {
 	@Slash({
 		name: 'addrole',
 		description: 'Adds a role to the dropdown menu of the roles panel.',
-		defaultMemberPermissions: Administrator,
 	})
 	async addrole(
 		@SlashOption({
@@ -246,7 +242,7 @@ export class Roles {
 			name: 'channel',
 			description: 'Provide a channel.',
 			type: ApplicationCommandOptionType.Channel,
-			channelTypes: [GuildText],
+			channelTypes: [ChannelType.GuildText],
 			required: true,
 		})
 			panel: string,

@@ -2,7 +2,6 @@ import { Discord, Slash, SlashGroup, SlashOption, SlashChoice } from 'discordx';
 import {
 	ApplicationCommandOptionType,
 	ChatInputCommandInteraction,
-	PermissionFlagsBits,
 	EmbedBuilder,
 	Role,
 } from 'discord.js';
@@ -12,13 +11,13 @@ import { GuildDB as DB } from '../../Schemas/guild.js';
 @SlashGroup({
 	name: 'verify',
 	description: 'Manage and configure verificatin system.',
+	defaultMemberPermissions: 'Administrator',
 })
 @SlashGroup('verify')
 export class Verify {
 	@Slash({
 		name: 'toggle',
 		description: 'Gives you the ability to toggle verification on and off.',
-		defaultMemberPermissions: PermissionFlagsBits.Administrator,
 	})
 	async toggle(
 		@SlashChoice({ name: 'Enable', value: 'enable' })
@@ -83,7 +82,6 @@ export class Verify {
 		name: 'setrole',
 		description:
 			'Sets the role that will be assigned to users after they pass verification.',
-		defaultMemberPermissions: PermissionFlagsBits.Administrator,
 	})
 	async setrole(
 		@SlashOption({
