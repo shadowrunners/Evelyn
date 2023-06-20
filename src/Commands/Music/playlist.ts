@@ -212,8 +212,7 @@ export class Playlist {
 			const url = track.uri;
 			const length = util.formatTime(track.duration);
 
-			const trackInfo = `${index} • **[${title}](${url})** • [${length}]`;
-			tracks.push(trackInfo);
+			tracks.push(`${index} • **[${title}](${url})** • [${length}]`);
 		}
 
 		for (let i = 0; i < tracks.length; i += 10) {
@@ -245,10 +244,11 @@ export class Playlist {
 		const playlists = [];
 		const embeds = [];
 
-		for (let i = 0; i < pData.length; i++) {
-			playlists.push(
-				`**${pData[i].playlistName}** • ${pData[i].playlistData?.length} song(s)`,
-			);
+		for (const playlist of pData) {
+			const name = playlist.playlistName;
+			const length = playlist.playlistData?.length ?? 0;
+
+			playlists.push(`**${name}** • ${length} song(s)`);
 		}
 
 		for (let i = 0; i < playlists.length; i += 10) {
