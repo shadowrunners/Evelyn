@@ -66,6 +66,16 @@ export class Anime {
 							value: `> ${anime.status}`,
 							inline: true,
 						},
+						{
+							name: 'Average Rating',
+							value: `> ${anime.averageRating}/100`,
+							inline: true,
+						},
+						{
+							name: 'Episodes',
+							value: `> ${anime.episodeCount}`,
+							inline: true,
+						},
 					),
 			],
 		});
