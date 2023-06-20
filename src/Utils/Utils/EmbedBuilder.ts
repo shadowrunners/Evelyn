@@ -432,6 +432,66 @@ export class Builder {
 				],
 			});
 
+		case 'goodbye':
+			await DB.findOneAndUpdate(
+				{
+					id: guildId,
+				},
+				{
+					$set: {
+						'goodbye.embed.color': embed?.color,
+						'goodbye.embed.title': embed?.title,
+						'goodbye.embed.description': embed?.description,
+						'goodbye.embed.author.name': embed.author?.name,
+						'goodbye.embed.author.icon_url': embed.author?.iconURL,
+						'goodbye.embed.footer.text': embed.footer?.text,
+						'goodbye.embed.footer.icon_url': embed.footer?.iconURL,
+						'goodbye.embed.image.url': embed?.image,
+						'goodbye.embed.messagecontent': message?.content,
+					},
+				},
+			);
+
+			return message.edit({
+				embeds: [
+					new EmbedBuilder()
+						.setColor('Blurple')
+						.setDescription(
+							'🔹 | Embed has been successfully saved for the specified system.',
+						),
+				],
+			});
+
+		case 'tickets':
+			await DB.findOneAndUpdate(
+				{
+					id: guildId,
+				},
+				{
+					$set: {
+						'tickets.embed.color': embed?.color,
+						'tickets.embed.title': embed?.title,
+						'tickets.embed.description': embed?.description,
+						'tickets.embed.author.name': embed.author?.name,
+						'tickets.embed.author.icon_url': embed.author?.iconURL,
+						'tickets.embed.footer.text': embed.footer?.text,
+						'tickets.embed.footer.icon_url': embed.footer?.iconURL,
+						'tickets.embed.image.url': embed?.image,
+						'tickets.embed.messagecontent': message?.content,
+					},
+				},
+			);
+
+			return message.edit({
+				embeds: [
+					new EmbedBuilder()
+						.setColor('Blurple')
+						.setDescription(
+							'🔹 | Embed has been successfully saved for the specified system.',
+						),
+				],
+			});
+
 		default:
 			return interaction.reply({
 				embeds: [
