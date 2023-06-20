@@ -14,6 +14,7 @@ import {
 	ButtonBuilder,
 	ButtonStyle,
 	ButtonInteraction,
+	Embed,
 } from 'discord.js';
 import {
 	Discord,
@@ -59,10 +60,10 @@ export class Builder {
 	 * @param newMessage The message that will be included alongside the embed.
 	 * @returns {Promise<Message<boolean>>} The edited message.
 	 */
-	async updateMessage(
+	protected async updateMessage(
 		message: Message,
 		interaction: ModalSubmitInteraction,
-		newEmbed: EmbedBuilder,
+		newEmbed: EmbedBuilder | Embed,
 		newMessage?: string,
 	): Promise<Message<boolean>> {
 		await interaction.reply({
@@ -82,7 +83,7 @@ export class Builder {
 	}
 
 	/** Checks to see if there already is an embed. */
-	async checkForData(
+	protected async checkForData(
 		selectMenu: ActionRowBuilder<StringSelectMenuBuilder>,
 		buttonMenu: ActionRowBuilder<ButtonBuilder>,
 	) {
@@ -173,7 +174,7 @@ export class Builder {
 	}
 
 	/** Initializes the menus and message. */
-	async initalize() {
+	public async initalize() {
 		const selectMenu =
 			new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
 				new StringSelectMenuBuilder()
@@ -203,21 +204,11 @@ export class Builder {
 							.setDescription('The name for the author tag of the embed.')
 							.setValue('authorName'),
 						new StringSelectMenuOptionBuilder()
-							.setLabel('Author Icon')
-							.setDescription(
-								'The link to an image for the icon URL displayed next to the author name.',
-							)
-							.setValue('authorIcon'),
-						new StringSelectMenuOptionBuilder()
 							.setLabel('Footer Text')
 							.setDescription(
 								'The text you\'d like to use for the embed\'s footer.',
 							)
 							.setValue('footerText'),
-						new StringSelectMenuOptionBuilder()
-							.setLabel('Footer Icon')
-							.setDescription('The link to an image for the footer\'s icon.')
-							.setValue('footerIcon'),
 						new StringSelectMenuOptionBuilder()
 							.setLabel('Image')
 							.setDescription('The link to an image for the embed.')
@@ -243,7 +234,7 @@ export class Builder {
 	@SelectMenuComponent({
 		id: 'welcomebuilder',
 	})
-	async welcomebuilder(interaction: StringSelectMenuInteraction) {
+	protected async welcomebuilder(interaction: StringSelectMenuInteraction) {
 		const { values } = interaction;
 
 		const modal = new ModalBuilder()
@@ -260,14 +251,16 @@ export class Builder {
 				),
 			);
 
-		if (values[0].includes('authorName' || 'footerText'))
+		console.log(values[0]);
+
+		if (values[0].includes('authorName') || values[0].includes('footerText'))
 			modal.addComponents(
 				new ActionRowBuilder<TextInputBuilder>().setComponents(
 					new TextInputBuilder()
 						.setCustomId('iconURL')
 						.setLabel('Icon URL')
 						.setStyle(TextInputStyle.Paragraph)
-						.setRequired(true)
+						.setRequired(false)
 						.setMinLength(1),
 				),
 			);
@@ -278,7 +271,7 @@ export class Builder {
 	@ButtonComponent({
 		id: 'saveembed',
 	})
-	async saveembed(interaction: ButtonInteraction) {
+	protected async saveembed(interaction: ButtonInteraction) {
 		const modal = new ModalBuilder()
 			.setCustomId('whereshouldisave')
 			.setTitle('Evelyn | Embed Saving')
@@ -300,9 +293,20 @@ export class Builder {
 	}
 
 	@ModalComponent({
+		id: 'message',
+	})
+	protected async setMessage(interaction: ModalSubmitInteraction) {
+		const { fields, message } = interaction;
+		const content = fields.getTextInputValue('message');
+		const embed = message.embeds[1];
+
+		return await this.updateMessage(message, interaction, embed, content);
+	}
+
+	@ModalComponent({
 		id: 'color',
 	})
-	async setColor(interaction: ModalSubmitInteraction) {
+	protected async setColor(interaction: ModalSubmitInteraction) {
 		const { fields, message } = interaction;
 		const color = fields.getTextInputValue('color') as HexColorString;
 
@@ -324,7 +328,7 @@ export class Builder {
 	@ModalComponent({
 		id: 'title',
 	})
-	async setTitle(interaction: ModalSubmitInteraction) {
+	protected async setTitle(interaction: ModalSubmitInteraction) {
 		const { fields, message } = interaction;
 		const title = fields.getTextInputValue('title');
 
@@ -337,7 +341,7 @@ export class Builder {
 	@ModalComponent({
 		id: 'description',
 	})
-	async setDescription(interaction: ModalSubmitInteraction) {
+	protected async setDescription(interaction: ModalSubmitInteraction) {
 		const { fields, message } = interaction;
 		const description = fields.getTextInputValue('description');
 
@@ -350,15 +354,23 @@ export class Builder {
 	@ModalComponent({
 		id: 'authorName',
 	})
-	async authorName(interaction: ModalSubmitInteraction) {
+	protected async authorName(interaction: ModalSubmitInteraction) {
 		const { fields, message } = interaction;
 		const authorName = fields.getTextInputValue('authorName');
 		const iconURL = fields.getTextInputValue('iconURL');
 
 		const embed = message.embeds[1];
-		const updatedEmbed = EmbedBuilder.from(embed).setAuthor({
+
+		let updatedEmbed: EmbedBuilder | Embed;
+
+		if (iconURL)
+			updatedEmbed = EmbedBuilder.from(embed).setAuthor({
+				name: authorName,
+				iconURL,
+			});
+
+		updatedEmbed = EmbedBuilder.from(embed).setAuthor({
 			name: authorName,
-			iconURL,
 		});
 
 		return await this.updateMessage(message, interaction, updatedEmbed);
@@ -366,15 +378,23 @@ export class Builder {
 	@ModalComponent({
 		id: 'footerText',
 	})
-	async footerText(interaction: ModalSubmitInteraction) {
+	protected async footerText(interaction: ModalSubmitInteraction) {
 		const { fields, message } = interaction;
 		const footerText = fields.getTextInputValue('footerText');
 		const iconURL = fields.getTextInputValue('iconURL');
 
 		const embed = message.embeds[1];
-		const updatedEmbed = EmbedBuilder.from(embed).setFooter({
+
+		let updatedEmbed: EmbedBuilder | Embed;
+
+		if (iconURL)
+			updatedEmbed = EmbedBuilder.from(embed).setFooter({
+				text: footerText,
+				iconURL,
+			});
+
+		updatedEmbed = EmbedBuilder.from(embed).setFooter({
 			text: footerText,
-			iconURL,
 		});
 
 		return await this.updateMessage(message, interaction, updatedEmbed);
@@ -382,7 +402,7 @@ export class Builder {
 	@ModalComponent({
 		id: 'image',
 	})
-	async setImage(interaction: ModalSubmitInteraction) {
+	protected async setImage(interaction: ModalSubmitInteraction) {
 		const { fields, message } = interaction;
 		const image = fields.getTextInputValue('image');
 
@@ -395,113 +415,42 @@ export class Builder {
 	@ModalComponent({
 		id: 'whereshouldisave',
 	})
-	async whereshouldisave(interaction: ModalSubmitInteraction) {
+	protected async whereshouldisave(interaction: ModalSubmitInteraction) {
 		const { fields, guildId, message } = interaction;
 		const type = fields.getTextInputValue('inputwhatyouwantmate');
 
 		const embed = message.embeds[1];
 
-		switch (type) {
-		case 'welcome':
-			await DB.findOneAndUpdate(
-				{
-					id: guildId,
+		await DB.findOneAndUpdate(
+			{
+				id: guildId,
+			},
+			{
+				$set: {
+					[`${type}.embed.color`]: embed?.color,
+					[`${type}.embed.title`]: embed?.title,
+					[`${type}.embed.description`]: embed?.description,
+					[`${type}.embed.author.name`]: embed.author?.name,
+					[`${type}.embed.author.icon_url`]: embed.author?.iconURL,
+					[`${type}.embed.footer.text`]: embed.footer?.text,
+					[`${type}.embed.footer.icon_url`]: embed.footer?.iconURL,
+					[`${type}.embed.image.url`]: embed?.image,
+					[`${type}.embed.messagecontent`]: message?.content,
 				},
-				{
-					$set: {
-						'welcome.embed.color': embed?.color,
-						'welcome.embed.title': embed?.title,
-						'welcome.embed.description': embed?.description,
-						'welcome.embed.author.name': embed.author?.name,
-						'welcome.embed.author.icon_url': embed.author?.iconURL,
-						'welcome.embed.footer.text': embed.footer?.text,
-						'welcome.embed.footer.icon_url': embed.footer?.iconURL,
-						'welcome.embed.image.url': embed?.image,
-						'welcome.embed.messagecontent': message?.content,
-					},
-				},
-			);
+			},
+		);
 
-			return message.edit({
-				embeds: [
-					new EmbedBuilder()
-						.setColor('Blurple')
-						.setDescription(
-							'🔹 | Embed has been successfully saved for the specified system.',
-						),
-				],
-			});
+		await interaction.reply({ content: '🔹 | Data saved.', ephemeral: true });
 
-		case 'goodbye':
-			await DB.findOneAndUpdate(
-				{
-					id: guildId,
-				},
-				{
-					$set: {
-						'goodbye.embed.color': embed?.color,
-						'goodbye.embed.title': embed?.title,
-						'goodbye.embed.description': embed?.description,
-						'goodbye.embed.author.name': embed.author?.name,
-						'goodbye.embed.author.icon_url': embed.author?.iconURL,
-						'goodbye.embed.footer.text': embed.footer?.text,
-						'goodbye.embed.footer.icon_url': embed.footer?.iconURL,
-						'goodbye.embed.image.url': embed?.image,
-						'goodbye.embed.messagecontent': message?.content,
-					},
-				},
-			);
-
-			return message.edit({
-				embeds: [
-					new EmbedBuilder()
-						.setColor('Blurple')
-						.setDescription(
-							'🔹 | Embed has been successfully saved for the specified system.',
-						),
-				],
-			});
-
-		case 'tickets':
-			await DB.findOneAndUpdate(
-				{
-					id: guildId,
-				},
-				{
-					$set: {
-						'tickets.embed.color': embed?.color,
-						'tickets.embed.title': embed?.title,
-						'tickets.embed.description': embed?.description,
-						'tickets.embed.author.name': embed.author?.name,
-						'tickets.embed.author.icon_url': embed.author?.iconURL,
-						'tickets.embed.footer.text': embed.footer?.text,
-						'tickets.embed.footer.icon_url': embed.footer?.iconURL,
-						'tickets.embed.image.url': embed?.image,
-						'tickets.embed.messagecontent': message?.content,
-					},
-				},
-			);
-
-			return message.edit({
-				embeds: [
-					new EmbedBuilder()
-						.setColor('Blurple')
-						.setDescription(
-							'🔹 | Embed has been successfully saved for the specified system.',
-						),
-				],
-			});
-
-		default:
-			return interaction.reply({
-				embeds: [
-					new EmbedBuilder()
-						.setColor('Blurple')
-						.setDescription(
-							'🔹 | The type you\'ve specified couldn\'t be found. The only valid types are welcome, goodbye and tickets.',
-						),
-				],
-			});
-		}
+		return message.edit({
+			embeds: [
+				new EmbedBuilder()
+					.setColor('Blurple')
+					.setDescription(
+						'🔹 | Embed has been successfully saved for the specified system.',
+					),
+			],
+			components: [],
+		});
 	}
 }
