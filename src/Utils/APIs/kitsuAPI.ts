@@ -21,6 +21,17 @@ export class KitsuAPI {
 		this.interaction = interaction;
 	}
 
+	/** Fetches the genres of the provided anime. */
+	private async fetchGenres(animeId: string) {
+		const genres = await superagent.get(
+			`${this.apiURL}/anime/${animeId}/genres`,
+		);
+
+		return genres?.body?.data
+			?.map((genre: { attributes: { name: string } }) => genre.attributes.name)
+			.join(', ');
+	}
+
 	/** Retrieves the information for the provided anime. */
 	public fetchAnime(anime: string): Promise<KitsuInterface> {
 		return new Promise((resolve, reject) => {
@@ -34,13 +45,7 @@ export class KitsuAPI {
 						.replace('ongoing', 'Ongoing')
 						.replace('current', 'Currently Airing');
 
-					const genres = await superagent.get(
-						`${this.apiURL}/anime/${animeData.id}/genres`,
-					);
-					const genreMap = genres?.body?.data?.map(
-						(genre: { attributes: { name: string } }) => genre.attributes.name,
-					);
-
+					const niceGenres = await this.fetchGenres(animeData.id);
 					const startDate = new Date(animeData?.attributes?.startDate);
 					const endDate = new Date(animeData?.attributes?.endDate);
 
@@ -52,11 +57,11 @@ export class KitsuAPI {
 						synopsis: animeAttributes?.synopsis,
 						titles: {
 							en_us:
-								animeAttributes?.titles?.en_jp ??
-								animeAttributes?.titles?.en_us,
+								animeAttributes?.titles?.en_us ??
+								animeAttributes?.titles?.en_jp,
 							ja_JP: animeAttributes?.titles?.ja_jp,
 						},
-						genres: genreMap,
+						genres: niceGenres ?? 'No genres have been provided by the API.',
 						status: newStatus,
 						averageRating: animeAttributes?.averageRating,
 						startDate: animeAttributes?.startDate,
@@ -121,8 +126,8 @@ export class KitsuAPI {
 						synopsis: mangaAttributes?.synopsis,
 						titles: {
 							en_us:
-								mangaAttributes?.titles?.en_jp ??
-								mangaAttributes?.titles?.en_us,
+								mangaAttributes?.titles?.en_us ??
+								mangaAttributes?.titles?.en_jp,
 							ja_JP: mangaAttributes?.titles?.ja_jp,
 						},
 						status: newStatus,
