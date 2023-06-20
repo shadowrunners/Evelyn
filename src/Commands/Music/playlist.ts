@@ -15,15 +15,9 @@ import { Evelyn } from '../../Evelyn.js';
 })
 @SlashGroup('playlist')
 export class Playlist {
-	private embed: EmbedBuilder;
-
-	constructor() {
-		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-	}
-
 	@Slash({
-		description: 'Create a new playlist.',
 		name: 'create',
+		description: 'Create a new playlist.',
 	})
 	async create(
 		@SlashOption({
@@ -35,38 +29,43 @@ export class Playlist {
 			name: string,
 			interaction: ChatInputCommandInteraction,
 	) {
+		const { user } = interaction;
 		const userData = await DB.find({
-			userID: interaction.user.id,
+			userID: user.id,
 		});
+
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
 		if (name.length > 12)
 			return interaction.reply({
 				embeds: [
-					this.embed.setDescription(
+					embed.setDescription(
 						'🔹 | The name of the playlist cannot be more than 12 characters.',
 					),
 				],
+				ephemeral: true,
 			});
 
 		if (userData?.length >= 10)
 			return interaction.reply({
 				embeds: [
-					this.embed.setDescription(
+					embed.setDescription(
 						'🔹 | You can only create 10 playlists at a time.',
 					),
 				],
+				ephemeral: true,
 			});
 
 		await DB.create({
-			name: interaction.user.username,
-			userID: interaction.user.id,
+			name: user.username,
+			userID: user.id,
 			playlistName: name,
 			created: Math.round(Date.now() / 1000),
 		});
 
 		return interaction.reply({
 			embeds: [
-				this.embed.setDescription(
+				embed.setDescription(
 					`🔹 | Your playlist **${name}** has been created.`,
 				),
 			],
@@ -74,8 +73,8 @@ export class Playlist {
 	}
 
 	@Slash({
-		description: 'Deletes the provided playlist.',
 		name: 'delete',
+		description: 'Deletes the provided playlist.',
 	})
 	async delete(
 		@SlashOption({
@@ -87,15 +86,19 @@ export class Playlist {
 			name: string,
 			interaction: ChatInputCommandInteraction,
 	) {
+		const { user } = interaction;
+
 		const playlistData = await DB.findOne({
-			userID: interaction.user.id,
+			userID: user.id,
 			playlistName: name,
 		});
+
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
 		if (!playlistData)
 			return interaction.reply({
 				embeds: [
-					this.embed.setDescription(
+					embed.setDescription(
 						'🔹 | There is no playlist with that name or no data regarding that user.',
 					),
 				],
@@ -106,7 +109,7 @@ export class Playlist {
 
 		return interaction.reply({
 			embeds: [
-				this.embed.setDescription(
+				embed.setDescription(
 					`🔹 | Your playlist **${name}** has been deleted.`,
 				),
 			],
@@ -114,8 +117,8 @@ export class Playlist {
 	}
 
 	@Slash({
-		description: 'Adds the currently playing song to the playlist.',
 		name: 'addcurrent',
+		description: 'Adds the currently playing song to the playlist.',
 	})
 	async addcurrent(
 		@SlashOption({
@@ -128,18 +131,21 @@ export class Playlist {
 			interaction: ChatInputCommandInteraction,
 			client: Evelyn,
 	) {
-		const player = client.manager.players.get(interaction.guildId);
+		const { guildId, user } = interaction;
+		const player = client.manager.players.get(guildId);
 		const track = player.queue.current;
+
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
 		if (!track)
 			return interaction.reply({
-				embeds: [this.embed.setDescription('🔹 | Nothing is playing.')],
+				embeds: [embed.setDescription('🔹 | Nothing is playing.')],
 				ephemeral: true,
 			});
 
 		await DB.updateOne(
 			{
-				userID: interaction.user.id,
+				userID: user.id,
 				playlistName: name,
 			},
 			{
@@ -156,7 +162,7 @@ export class Playlist {
 
 		return interaction.reply({
 			embeds: [
-				this.embed.setDescription(
+				embed.setDescription(
 					`🔹 | **[${track.title}](${track.uri})** has been added to your playlist.`,
 				),
 			],
@@ -177,17 +183,19 @@ export class Playlist {
 			name: string,
 			interaction: ChatInputCommandInteraction,
 	) {
+		const { user } = interaction;
 		const util = new Util();
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
 		const pData = await DB.findOne({
 			playlistName: name,
-			userID: interaction.user.id,
+			userID: user.id,
 		});
 
 		if (!pData)
 			return interaction.reply({
 				embeds: [
-					this.embed.setDescription(
+					embed.setDescription(
 						'🔹 | There is no playlist with that name or no data regarding that user.',
 					),
 				],
@@ -195,23 +203,24 @@ export class Playlist {
 			});
 
 		const trackData = pData.playlistData;
-		const list = pData.playlistData.length;
 		const tracks = [];
 		const embeds = [];
 
-		for (let i = 0; i < list; i++) {
-			tracks.push(
-				`${i + 1} • **[${trackData[i].title}](${
-					trackData[i].uri
-				})** • [${util.formatTime(trackData[i].duration)}]`,
-			);
+		for (const [i, track] of trackData.entries()) {
+			const index = i + 1;
+			const title = track.title;
+			const url = track.uri;
+			const length = util.formatTime(track.duration);
+
+			const trackInfo = `${index} • **[${title}](${url})** • [${length}]`;
+			tracks.push(trackInfo);
 		}
 
 		for (let i = 0; i < tracks.length; i += 10) {
-			this.embed
+			embed
 				.setTitle(`${pData.playlistName} by ${pData.createdBy}`)
 				.setDescription(tracks.slice(i, i + 10).join('\n'));
-			embeds.push(this.embed);
+			embeds.push(embed);
 		}
 
 		return util.embedPages(embeds);
@@ -222,12 +231,14 @@ export class Playlist {
 		name: 'list',
 	})
 	async list(interaction: ChatInputCommandInteraction) {
+		const { user } = interaction;
 		const util = new Util();
-		const pData = await DB.find({ userID: interaction.user.id });
+		const pData = await DB.find({ userID: user.id });
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
 		if (!pData)
 			return interaction.reply({
-				embeds: [this.embed.setDescription('🔹 | You have no playlists.')],
+				embeds: [embed.setDescription('🔹 | You have no playlists.')],
 				ephemeral: true,
 			});
 
@@ -241,10 +252,10 @@ export class Playlist {
 		}
 
 		for (let i = 0; i < playlists.length; i += 10) {
-			this.embed
+			embed
 				.setTitle(`Playlists curated by ${pData[i].playlistName}`)
 				.setDescription(playlists.slice(i, i + 10).join('\n'));
-			embeds.push(this.embed);
+			embeds.push(embed);
 		}
 
 		return util.embedPages(embeds);
@@ -271,15 +282,17 @@ export class Playlist {
 			songid: number,
 			interaction: ChatInputCommandInteraction,
 	) {
+		const { user } = interaction;
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 		const pData = await DB.findOne({
 			playlistName: name,
-			userID: interaction.user.id,
+			userID: user.id,
 		});
 
 		if (!pData?.playlistData)
 			return interaction.reply({
 				embeds: [
-					this.embed.setDescription(
+					embed.setDescription(
 						'🔹 | There is no playlist with that name or no data regarding that user.',
 					),
 				],
@@ -289,7 +302,7 @@ export class Playlist {
 		if (songid >= pData?.playlistData.length || songid < 0)
 			return interaction.reply({
 				embeds: [
-					this.embed.setDescription(
+					embed.setDescription(
 						'🔹 | Track ID is out of range, see your playlist via /playlist list (playlistName)',
 					),
 				],
@@ -298,7 +311,7 @@ export class Playlist {
 
 		await DB.updateOne(
 			{
-				userID: interaction.user.id,
+				userID: user.id,
 				playlistName: name,
 			},
 			{
@@ -310,7 +323,7 @@ export class Playlist {
 
 		return interaction.reply({
 			embeds: [
-				this.embed.setDescription(
+				embed.setDescription(
 					`🔹 | **${pData.playlistData[songid].title}** has been removed from your playlist.`,
 				),
 			],
