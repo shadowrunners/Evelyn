@@ -7,7 +7,7 @@ import { Discord, On } from 'discordx';
 export class CreateGuildData {
 	@On({ event: 'guildCreate' })
 	async createData(guild: Guild, client: Evelyn) {
-		const { iconURL, name, memberCount, id } = guild;
+		const { name, memberCount, id } = guild;
 		const webhook = new WebhookClient({ url: client.config.debug.watcherHook });
 
 		await DB.create({ id });
@@ -16,7 +16,7 @@ export class CreateGuildData {
 			.setColor('Blurple')
 			.setTitle('Guild Joined')
 			.setDescription('Evelyn has been added to a new guild.')
-			.setThumbnail(iconURL())
+			.setThumbnail(guild?.iconURL())
 			.addFields(
 				{ name: 'Name', value: `${name}` },
 				{ name: 'Members', value: `${memberCount} members` },
