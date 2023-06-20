@@ -8,7 +8,7 @@ import { set } from 'mongoose';
 import DXP from 'discord-xp';
 
 @Discord()
-export class onReady {
+export class ready {
 	@Once({
 		event: 'ready',
 	})
