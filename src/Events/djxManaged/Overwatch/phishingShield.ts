@@ -11,10 +11,10 @@ export class PhishingShield {
 	async execute([message]: [Message], client: Evelyn) {
 		const { content, guild, author } = message;
 		const bodyReg = new RegExp(
-			'(?:[A-z0-9](?:[A-z0-9-]{0,61}[A-z0-9])?.)+[A-z0-9][A-z0-9-]{0,61}[A-z0-9]',
+			'^(?=.{1,254}$)((?!-)[A-Za-z0-9-]{1,63}(?<!-)\\.)+[A-Za-z]{2,}$',
 		);
 
-		if (content.match(bodyReg)) {
+		if (bodyReg.test(content)) {
 			try {
 				const response = await axios.post(
 					'https://anti-fish.bitflow.dev/check',
