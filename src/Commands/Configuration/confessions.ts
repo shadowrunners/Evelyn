@@ -72,7 +72,7 @@ export class Confessions {
 			},
 			{
 				$set: {
-					'confessions.enabled': choice === 'enable' ?? choice === 'false',
+					'confessions.enabled': choice === 'enable',
 				},
 			},
 		);

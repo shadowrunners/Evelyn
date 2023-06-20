@@ -70,7 +70,7 @@ export class Welcome {
 			},
 			{
 				$set: {
-					'welcome.enabled': choice === 'enable' ?? choice === 'false',
+					'welcome.enabled': choice === 'enable',
 				},
 			},
 		);

@@ -61,7 +61,7 @@ export class Verify {
 			},
 			{
 				$set: {
-					'verification.enabled': choice === 'enable' ?? choice === 'false',
+					'verification.enabled': choice === 'enable',
 				},
 			},
 		);

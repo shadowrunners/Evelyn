@@ -60,7 +60,7 @@ export class Levels {
 			},
 			{
 				$set: {
-					'levels.enabled': choice === 'enable' ?? choice === 'false',
+					'levels.enabled': choice === 'enable',
 				},
 			},
 		);

@@ -60,7 +60,7 @@ export class AntiPhish {
 			},
 			{
 				$set: {
-					'antiphishing.enabled': choice === 'enable' ?? choice === 'false',
+					'antiphishing.enabled': choice === 'enable',
 				},
 			},
 		);

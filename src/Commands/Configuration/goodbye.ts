@@ -70,7 +70,7 @@ export class Goodbye {
 			},
 			{
 				$set: {
-					'goodbye.enabled': choice === 'enable' ?? choice === 'false',
+					'goodbye.enabled': choice === 'enable',
 				},
 			},
 		);

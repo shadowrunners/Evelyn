@@ -72,7 +72,7 @@ export class Logs {
 			},
 			{
 				$set: {
-					'logs.enabled': choice === 'enable' ?? choice === 'false',
+					'logs.enabled': choice === 'enable',
 				},
 			},
 		);

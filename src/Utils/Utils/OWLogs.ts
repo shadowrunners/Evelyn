@@ -105,6 +105,8 @@ export class OWLogs {
 
 		if (!data?.logs?.webhook.token) return;
 
+		console.log('Did it pass?');
+
 		const decryptedToken = pleaseDecryptMyData(
 			data?.logs?.webhook.token,
 			this.client,

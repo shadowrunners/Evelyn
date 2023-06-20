@@ -72,7 +72,7 @@ export class TicketConfig {
 			},
 			{
 				$set: {
-					'tickets.enabled': choice === 'enable' ?? choice === 'false',
+					'tickets.enabled': choice === 'enable',
 				},
 			},
 		);
