@@ -1,11 +1,10 @@
 /** This class contains our own custom version of a wrapper for the waifu.pics API to reduce the amount of packages we're using. */
-import superagent from 'superagent';
 import {
-	EmbedBuilder,
 	ChatInputCommandInteraction,
-	User,
+	EmbedBuilder,
 	GuildMember,
 } from 'discord.js';
+import superagent from 'superagent';
 
 export class WaifuEngine {
 	private apiURL: string;
@@ -13,7 +12,6 @@ export class WaifuEngine {
 	private interaction: ChatInputCommandInteraction;
 	private name: string;
 	private iconURL: string;
-	private target: User;
 
 	/** Creates a new instance of the NekoAPI class. */
 	constructor(interaction: ChatInputCommandInteraction) {

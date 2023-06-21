@@ -4,7 +4,7 @@
  */
 
 import superagent from 'superagent';
-import { KitsuInterface } from '../../Interfaces/KitsuInterface.js';
+import { KitsuInterface } from '../../Interfaces/interfaces.js';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 
 export class KitsuAPI {

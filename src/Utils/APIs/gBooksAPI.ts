@@ -3,7 +3,7 @@
  */
 import superagent from 'superagent';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import { GBooksInterface } from '../../Interfaces/GBooksInterface.js';
+import { GBooksInterface } from '../../Interfaces/interfaces.js';
 
 export class GBooksAPI {
 	private apiURL: string;

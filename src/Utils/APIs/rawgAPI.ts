@@ -1,9 +1,8 @@
 /**
  * This class contains our own custom version of a wrapper for the RAWG.io API.
  */
+import { RAWGInterface, botConfig } from '../../Interfaces/Interfaces.js';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import { RAWGInterface } from '../../Interfaces/RAWGInterface';
-import { botConfig } from '../../Interfaces/Interfaces';
 import { Evelyn } from '../../Evelyn';
 import superagent from 'superagent';
 
