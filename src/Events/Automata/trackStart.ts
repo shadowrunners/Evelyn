@@ -8,12 +8,12 @@ import {
 import { Player, AutomataTrack } from '@shadowrunners/automata';
 import { Util } from '../../Utils/Utils/Util.js';
 import { Evelyn } from '../../Evelyn.js';
-import { Event } from '../../Interfaces/Interfaces.js';
 
 const { Primary } = ButtonStyle;
 
-const event: Event = {
-	name: 'trackStart',
+export default class TrackStart {
+	name = 'trackStart';
+
 	async execute(player: Player, track: AutomataTrack, client: Evelyn) {
 		const utils = new Util();
 		const buttonRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -56,7 +56,5 @@ const event: Event = {
 		await channel
 			.send({ embeds: [nowPlaying], components: [buttonRow] })
 			.then((message) => player.setNowPlayingMessage(message));
-	},
-};
-
-export default event;
+	}
+}

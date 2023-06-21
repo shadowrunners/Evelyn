@@ -110,16 +110,17 @@ export class Evelyn extends Client {
 	async loadMusic(client: Evelyn): Promise<void> {
 		const files = await fileLoad('Events/Automata');
 		for (const file of files) {
-			const event = await import(`file://${file}`);
-			const execute = (...args: string[]) =>
-				event.default.execute(...args, client);
+			const eventModule = await import(`file://${file}`);
+			const event = new eventModule.default();
 
-			client.manager.on(event.default.name, execute);
+			const execute = (...args: string[]) => event.execute(...args, client);
+
+			client.manager.on(event.name, execute);
 
 			console.log(
 				`${colors.magenta('Automata')} ${colors.white(
 					'· Loaded',
-				)} ${colors.green(event.default.name + '.ts')}`,
+				)} ${colors.green(event.name + '.ts')}`,
 			);
 		}
 	}
