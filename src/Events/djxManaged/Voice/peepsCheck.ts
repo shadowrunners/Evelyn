@@ -3,7 +3,7 @@ import { Evelyn } from '../../../Evelyn.js';
 import { EmbedBuilder, TextChannel, VoiceState } from 'discord.js';
 
 @Discord()
-export class voiceUpdate {
+export class VoiceUpdate {
 	@On({
 		event: 'voiceStateUpdate',
 	})

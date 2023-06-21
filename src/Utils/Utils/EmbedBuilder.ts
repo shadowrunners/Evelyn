@@ -223,7 +223,7 @@ export class Builder {
 				.setStyle(ButtonStyle.Success),
 		);
 
-		if (this.checkForData(selectMenu, buttonMenu)) return;
+		if (await this.checkForData(selectMenu, buttonMenu)) return;
 
 		return this.interaction.reply({
 			embeds: [this.welcomeEmbed, this.userEmbed],

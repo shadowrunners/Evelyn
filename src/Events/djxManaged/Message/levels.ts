@@ -23,17 +23,15 @@ export class LevelUp {
 
 		const levelledUp = await DXP.appendXp(author.id, guild.id, rndXP);
 
-		if (levelledUp) {
-			const user = await DXP.fetch(author.id, guild.id);
+		if (!levelledUp) return;
 
-			const lvlMessage = data.levels?.message
-				?.replace(/{userName}/g, `${author.username}`)
-				.replace(/{userMention}/g, `<@${author.id}>`)
-				.replace(/{userLevel}/g, `${user.level}`);
+		const user = await DXP.fetch(author.id, guild.id);
 
-			return levellingChannel.send({ content: `${lvlMessage}` });
-		}
+		const lvlMessage = data.levels?.message
+			?.replace(/{userName}/g, `${author.username}`)
+			.replace(/{userMention}/g, `<@${author.id}>`)
+			.replace(/{userLevel}/g, `${user.level}`);
 
-		return;
+		return levellingChannel.send({ content: `${lvlMessage}` });
 	}
 }

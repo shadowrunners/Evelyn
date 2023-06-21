@@ -3,7 +3,7 @@ import { Discord, On, ArgsOf } from 'discordx';
 import { Evelyn } from '../../../Evelyn.js';
 
 @Discord()
-export class interactionCreate {
+export class OnInteraction {
 	@On({ event: 'interactionCreate' })
 	async onInteraction(
 		[interaction]: ArgsOf<'interactionCreate'>,

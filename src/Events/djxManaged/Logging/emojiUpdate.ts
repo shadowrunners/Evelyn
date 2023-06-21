@@ -7,8 +7,8 @@ import { Discord, On } from 'discordx';
 export class EmojiUpdate {
 	@On({ event: 'emojiUpdate' })
 	async emojiUpdate(emojis: GuildEmoji, client: Evelyn) {
-		const oldEmoji = emojis[0] as GuildEmoji;
-		const newEmoji = emojis[1] as GuildEmoji;
+		const oldEmoji = emojis[0];
+		const newEmoji = emojis[1];
 
 		if (!(await validate(oldEmoji.guild))) return;
 		const logs = new OWLogs(oldEmoji.guild, client);

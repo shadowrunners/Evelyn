@@ -7,8 +7,8 @@ import { Discord, On } from 'discordx';
 export class GuildMemberUpdate {
 	@On({ event: 'guildMemberUpdate' })
 	async guildMemberUpdate(members: GuildMember, client: Evelyn) {
-		const oldMember = members[0] as GuildMember;
-		const newMember = members[1] as GuildMember;
+		const oldMember = members[0];
+		const newMember = members[1];
 
 		if (!(await validate(newMember.guild))) return;
 		const logs = new OWLogs(newMember.guild, client);
