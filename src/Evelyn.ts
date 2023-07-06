@@ -5,7 +5,7 @@ import { Manager } from '@shadowrunners/automata';
 import { fileLoad } from './Utils/Utils/fileLoader.js';
 import { dirname, importx } from '@discordx/importer';
 import { IntentsBitField, Options } from 'discord.js';
-import { botConfig } from './Interfaces/Interfaces.js';
+import { BotConfig } from './Interfaces/Interfaces.js';
 // import { crashReporter } from './functions/crashReport.js';
 // import Economy from 'discord-economy-super/mongodb/src/index.js';
 import { config } from './config.js';
@@ -16,15 +16,13 @@ const {
 	GuildMembers,
 	GuildModeration,
 	GuildEmojisAndStickers,
-	GuildMessageReactions,
 	GuildVoiceStates,
-	GuildPresences,
 	MessageContent,
 	DirectMessages,
 } = IntentsBitField.Flags;
 
 export class Evelyn extends Client {
-	public config: botConfig;
+	public config: BotConfig;
 	// To implement later. This shit takes too much time.
 	// public economy: Economy<boolean>;
 	public statcord: Statcord.Client;
@@ -37,10 +35,8 @@ export class Evelyn extends Client {
 				Guilds,
 				GuildMembers,
 				GuildMessages,
-				GuildPresences,
 				GuildModeration,
 				GuildVoiceStates,
-				GuildMessageReactions,
 				GuildEmojisAndStickers,
 				MessageContent,
 				DirectMessages,
@@ -50,8 +46,19 @@ export class Evelyn extends Client {
 				...Options.DefaultMakeCacheSettings,
 				ReactionManager: 0,
 				GuildInviteManager: 0,
+				GuildScheduledEventManager: 0,
+				PresenceManager: 0,
+				ReactionUserManager: 0,
+				StageInstanceManager: 0,
 			}),
-			sweepers: Options.DefaultSweeperSettings,
+			sweepers: {
+				...Options.DefaultSweeperSettings,
+				messages: {
+					interval: 43200, // Clear the message cache every 12 hours.
+					filter: () => (message) =>
+						message.author.bot && message.author.id !== this.client.user.id, // Removes all bots.
+				},
+			},
 		});
 
 		this.config = config;

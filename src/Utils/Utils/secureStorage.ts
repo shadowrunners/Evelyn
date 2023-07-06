@@ -1,22 +1,39 @@
 import cryptr from 'cryptr';
 import { Evelyn } from '../../Evelyn.js';
 
-export function encryptMyData(value: string, client: Evelyn) {
-	const keepMyDataSecure = new cryptr(client.config.decryptionKey, {
-		pbkdf2Iterations: 15000,
-		saltLength: 15,
-	});
+/** The Secure Storage module of Evelyn that keeps your shit safe. */
+export class SecureStorage {
+	/**
+	 * Encrypts the provided value.
+	 * @public
+	 * @param value The value that will be encrypted.
+	 * @param client The Evelyn object.
+	 * @returns {string}
+	 */
+	public encrypt(value: string, client: Evelyn): string {
+		const keepMyDataSecure = new cryptr(client.config.decryptionKey, {
+			pbkdf2Iterations: 15000,
+			saltLength: 15,
+		});
 
-	return keepMyDataSecure.encrypt(value);
-}
+		return keepMyDataSecure.encrypt(value);
+	}
 
-export function pleaseDecryptMyData(encryptedValue: string, client: Evelyn) {
-	if (!encryptedValue) return;
+	/**
+	 * Decrypts the provided value.
+	 * @public
+	 * @param encryptedValue The value that will be decrypted.
+	 * @param client The Evelyn object.
+	 * @returns {string}
+	 */
+	public decrypt(encryptedValue: string, client: Evelyn): string {
+		if (!encryptedValue) return;
 
-	const keepMyDataSecure = new cryptr(client.config.decryptionKey, {
-		pbkdf2Iterations: 15000,
-		saltLength: 15,
-	});
+		const keepMyDataSecure = new cryptr(client.config.decryptionKey, {
+			pbkdf2Iterations: 15000,
+			saltLength: 15,
+		});
 
-	return keepMyDataSecure.decrypt(encryptedValue);
+		return keepMyDataSecure.decrypt(encryptedValue);
+	}
 }

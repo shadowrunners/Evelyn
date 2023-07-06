@@ -1,12 +1,9 @@
 import { Player } from '@shadowrunners/automata';
-import {
-	ButtonInteraction,
-	ChatInputCommandInteraction,
-	EmbedBuilder,
-	GuildMember,
-	InteractionResponse,
-	VoiceChannel,
-} from 'discord.js';
+import { InteractionResponse, EmbedBuilder } from 'discord.js';
+import type {
+	ExtendedButtonInteraction,
+	ExtendedChatInteraction,
+} from '../../Interfaces/Interfaces.js';
 
 /**
  * Handles all checks regarding voice, queues and currently playing songs.
@@ -17,12 +14,11 @@ import {
  */
 export function check(
 	checkType: string[],
-	interaction: ChatInputCommandInteraction | ButtonInteraction,
+	interaction: ExtendedChatInteraction | ExtendedButtonInteraction,
 	player?: Player,
 ): Promise<InteractionResponse<boolean>> {
 	const { member, guild } = interaction;
-	const serverMember = member as GuildMember;
-	const yourVC = serverMember.voice.channel as VoiceChannel;
+	const yourVC = member.voice.channel;
 	const herVC = guild.members.me.voice.channelId;
 	const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
@@ -80,12 +76,12 @@ export function check(
 /**
  * Checks the provided query to block YouTube and YTM links.
  * @param {String} query The provided query.
- * @param {ChatInputCommandInteraction} interaction The interaction object.
+ * @param {ExtendedChatInteraction} interaction The interaction object.
  * @returns {Promise<InteractionResponse<boolean>>}
  */
 export function checkQuery(
 	query: string,
-	interaction: ChatInputCommandInteraction,
+	interaction: ExtendedChatInteraction,
 ): Promise<InteractionResponse<boolean>> {
 	const YTRegex =
 		/(http(s)?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.be)\/[a-zA-Z0-9-_]+/;

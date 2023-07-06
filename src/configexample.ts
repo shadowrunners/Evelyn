@@ -1,6 +1,6 @@
-import { botConfig } from './Interfaces/Interfaces';
+import { BotConfig } from './Interfaces/Interfaces.js';
 
-export const config: botConfig = {
+export const config: BotConfig = {
 	token: '',
 	database: '',
 	ownerIDs: [],

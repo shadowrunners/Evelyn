@@ -1,4 +1,10 @@
-export interface botConfig {
+import type {
+	ChatInputCommandInteraction,
+	GuildMember,
+	ButtonInteraction,
+} from 'discord.js';
+
+export interface BotConfig {
 	/** The bot's token. */
 	token: string;
 	/** The MongoDB database URI. */
@@ -140,4 +146,14 @@ export interface RAWGInterface {
 	genres: string[];
 	/** The link to the game's art. */
 	background_image: string;
+}
+
+/** An extended version of the base CICI so I stop defining shit with types in code. */
+export interface ExtendedChatInteraction extends ChatInputCommandInteraction {
+	member: GuildMember;
+}
+
+/** An extended version of the base BI so I stop defining shit with types in code. */
+export interface ExtendedButtonInteraction extends ButtonInteraction {
+	member: GuildMember;
 }

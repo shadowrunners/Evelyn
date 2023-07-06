@@ -3,7 +3,7 @@
  * This class is here to reduce code repetition.
  */
 
-import { pleaseDecryptMyData } from './secureStorage.js';
+import { SecureStorage } from './secureStorage.js';
 import { GuildDB as DB } from '../../Schemas/guild.js';
 import {
 	ActionRowBuilder,
@@ -57,6 +57,8 @@ export class OWLogs {
 	private client: Evelyn;
 	/** The embed object. */
 	private embed: EmbedBuilder;
+	/** The Secure Storage system. */
+	private secureStorage: SecureStorage;
 
 	/** Creates a new instance of the Overwatch Logs class. */
 	constructor(guild: Guild, client: Evelyn) {
@@ -73,6 +75,7 @@ export class OWLogs {
 				iconURL: this.guild.iconURL(),
 			})
 			.setTimestamp();
+		this.secureStorage = new SecureStorage();
 	}
 
 	/**
@@ -105,9 +108,7 @@ export class OWLogs {
 
 		if (!data?.logs?.webhook.token) return;
 
-		console.log('Did it pass?');
-
-		const decryptedToken = pleaseDecryptMyData(
+		const decryptedToken = this.secureStorage.decrypt(
 			data?.logs?.webhook.token,
 			this.client,
 		);
