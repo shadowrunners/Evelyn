@@ -1,32 +1,21 @@
 /* eslint-disable no-case-declarations */
 import { Discord, Slash, SlashGroup, SlashOption, SlashChoice } from 'discordx';
+import type { ExtendedChatInteraction } from '../../Interfaces/Interfaces.js';
 import {
-	ActionRowBuilder,
 	ApplicationCommandOptionType,
+	ActionRowBuilder,
 	ButtonBuilder,
-	ButtonInteraction,
-	ButtonStyle,
-	ChannelType,
-	ChatInputCommandInteraction,
-	CommandInteraction,
-	Embed,
 	EmbedBuilder,
-	GuildMember,
-	InteractionType,
-	PresenceUpdateStatus,
-	StringSelectMenuBuilder,
-	StringSelectMenuInteraction,
-	StringSelectMenuOptionBuilder,
+	ChannelType,
 	TextChannel,
+	ButtonStyle,
+	Role,
 } from 'discord.js';
+import { replacePlaceholders } from '../../Utils/Utils/replacePlaceholders.js';
+import { SecureStorage } from '../../Utils/Utils/secureStorage.js';
+import { Builder } from '../../Utils/Utils/EmbedBuilder.js';
 import { GuildDB as DB } from '../../Schemas/guild.js';
 import { Evelyn } from '../../Evelyn.js';
-import {
-	encryptMyData,
-	pleaseDecryptMyData,
-} from '../../Utils/Utils/secureStorage.js';
-import { Builder } from '../../Utils/Utils/EmbedBuilder.js';
-import { replacePlaceholders } from '../../Utils/Utils/replacePlaceholders.js';
 
 @Discord()
 @SlashGroup({
@@ -35,28 +24,13 @@ import { replacePlaceholders } from '../../Utils/Utils/replacePlaceholders.js';
 	defaultMemberPermissions: 'Administrator',
 })
 @SlashGroup({
-	name: 'antiphishing',
-	description: 'A complete anti-phishing system.',
-	root: 'config',
-})
-@SlashGroup({
-	name: 'confessions',
-	description: 'A complete confessions system.',
-	root: 'config',
-})
-@SlashGroup({
-	name: 'goodbye',
-	description: 'A complete goodbye message system.',
-	root: 'config',
-})
-@SlashGroup({
 	name: 'levels',
 	description: 'A complete levelling system.',
 	root: 'config',
 })
 @SlashGroup({
-	name: 'logs',
-	description: 'A complete moderation logging system.',
+	name: 'tickets',
+	description: 'A complete tickets system.',
 	root: 'config',
 })
 @SlashGroup({
@@ -64,43 +38,29 @@ import { replacePlaceholders } from '../../Utils/Utils/replacePlaceholders.js';
 	description: 'A complete verification system.',
 	root: 'config',
 })
-@SlashGroup({
-	name: 'welcome',
-	description: 'A complete welcome system.',
-	root: 'config',
-})
 export class Config {
 	private embed: EmbedBuilder;
+	private secureStorage: SecureStorage;
 
-	@Slash({
-		name: 'toggle',
-		description: 'Gives you the ability to toggle anti-phishing on and off.',
-	})
-	@SlashGroup('antiphishing', 'config')
-	async toggle_AP(
-		@SlashChoice({ name: 'Enable', value: 'enable' })
-		@SlashChoice({ name: 'Disable', value: 'disable' })
-		@SlashOption({
-			description: 'Select one of the choices.',
-			name: 'choice',
-			required: true,
-			type: ApplicationCommandOptionType.String,
-		})
-			choice: string,
-			interaction: ChatInputCommandInteraction,
-	) {
-		const isEnabled = choice === 'enable';
-		return this.toggleFeature('antiphishing', isEnabled, interaction);
+	constructor() {
+		this.secureStorage = new SecureStorage();
 	}
 
 	@Slash({
 		name: 'toggle',
-		description: 'Gives you the ability to toggle confessions on and off.',
+		description:
+			'Gives you the ability to toggle the chosen feature on and off.',
 	})
-	@SlashGroup('confessions', 'config')
-	async toggle_CF(
-		@SlashChoice({ name: 'Enable', value: 'enable' })
-		@SlashChoice({ name: 'Disable', value: 'disable' })
+	@SlashGroup('config')
+	async toggle_config(
+		@SlashChoice({ name: 'Anti-Phish', value: 'antiphishing' })
+		@SlashChoice({ name: 'Confessions', value: 'confessions' })
+		@SlashChoice({ name: 'Goodbye', value: 'goodbye' })
+		@SlashChoice({ name: 'Levels', value: 'levels' })
+		@SlashChoice({ name: 'Logs', value: 'logs' })
+		@SlashChoice({ name: 'Tickets', value: 'tickets' })
+		@SlashChoice({ name: 'Verification', value: 'verify' })
+		@SlashChoice({ name: 'Welcome', value: 'welcome' })
 		@SlashOption({
 			description: 'Select one of the choices.',
 			name: 'choice',
@@ -108,140 +68,243 @@ export class Config {
 			type: ApplicationCommandOptionType.String,
 		})
 			choice: string,
-			interaction: ChatInputCommandInteraction,
+			interaction: ExtendedChatInteraction,
 	) {
-		const isEnabled = choice === 'enable';
-		return this.toggleFeature('confessions', isEnabled, interaction);
+		return this.toggleFeature(choice, interaction);
 	}
 
 	@Slash({
 		name: 'setchannel',
-		description: 'Sets the channel where confessions will be sent in.',
+		description:
+			'Gives you the ability to set the channel of the chosen feature.',
 	})
-	@SlashGroup('confessions', 'config')
-	async setchannel_CF(
+	@SlashGroup('config')
+	async setchannel(
+		@SlashChoice({ name: 'Confessions', value: 'confessions' })
+		@SlashChoice({ name: 'Goodbye', value: 'goodbye' })
+		@SlashChoice({ name: 'Levels', value: 'levels' })
+		@SlashChoice({ name: 'Logs', value: 'logs' })
+		@SlashChoice({ name: 'Welcome', value: 'welcome' })
 		@SlashOption({
-			description: 'Provide a channel.',
-			name: 'channel',
+			name: 'choice',
+			description: 'Select one of the choices.',
 			required: true,
+			type: ApplicationCommandOptionType.String,
+		})
+		@SlashOption({
+			name: 'channel',
+			description: 'Provide a channel.',
+			required: true,
+			channelTypes: [ChannelType.GuildText],
 			type: ApplicationCommandOptionType.Channel,
 		})
+			choice: string,
 			channel: TextChannel,
-			interaction: ChatInputCommandInteraction,
+			interaction: ExtendedChatInteraction,
 			client: Evelyn,
 	) {
-		return this.updateWebhook('confessions', interaction, channel, client);
-	}
-
-	@Slash({
-		name: 'toggle',
-		description: 'Gives you the ability to toggle goodbye messages on and off.',
-	})
-	@SlashGroup('goodbye', 'config')
-	async toggle_GB(
-		@SlashChoice({ name: 'Enable', value: 'enable' })
-		@SlashChoice({ name: 'Disable', value: 'disable' })
-		@SlashOption({
-			description: 'Select one of the choices.',
-			name: 'choice',
-			required: true,
-			type: ApplicationCommandOptionType.String,
-		})
-			choice: string,
-			interaction: ChatInputCommandInteraction,
-	) {
-		const isEnabled = choice === 'enable';
-		return this.toggleFeature('goodbye', isEnabled, interaction);
-	}
-
-	@Slash({
-		name: 'setchannel',
-		description: 'Sets the channel where goodbye messages will be sent in.',
-	})
-	@SlashGroup('goodbye', 'config')
-	async setchannel_GB(
-		@SlashOption({
-			description: 'Provide a channel.',
-			name: 'channel',
-			required: true,
-			type: ApplicationCommandOptionType.Channel,
-		})
-			channel: TextChannel,
-			interaction: ChatInputCommandInteraction,
-	) {
-		return this.updateChannel('confessions', interaction, channel);
+		switch (choice) {
+		case 'confessions':
+			return this.updateWebhook('confessions', interaction, channel, client);
+		case 'goodbye':
+			return this.updateChannel('goodbye', interaction, channel);
+		case 'levels':
+			return this.updateChannel('levels', interaction, channel);
+		case 'logs':
+			return this.updateWebhook('confessions', interaction, channel, client);
+		case 'welcome':
+			return this.updateChannel('welcome', interaction, channel);
+		}
 	}
 
 	@Slash({
 		name: 'manageembed',
 		description: 'Manage the embed sent when a user leaves the server.',
 	})
-	@SlashGroup('goodbye', 'config')
-	async manageembed_GB(interaction: ChatInputCommandInteraction) {
-		const builder = new Builder(interaction, 'goodbye');
-		return await builder.initalize();
+	@SlashGroup('config')
+	async manageembed(
+		@SlashChoice({ name: 'Goodbye', value: 'goodbye' })
+		@SlashChoice({ name: 'Tickets', value: 'tickets' })
+		@SlashChoice({ name: 'Welcome', value: 'welcome' })
+		@SlashOption({
+			name: 'choice',
+			description: 'Select one of the choices.',
+			required: true,
+			type: ApplicationCommandOptionType.String,
+		})
+			choice: string,
+			interaction: ExtendedChatInteraction,
+	) {
+		return this.embedManage(interaction, choice);
 	}
 
 	@Slash({
 		name: 'previewembed',
-		description: 'Sends a preview of the embed.',
+		description: 'Sends a preview of the chosen system\'s embed.',
 	})
-	@SlashGroup('goodbye', 'config')
-	async previeweembed_GB(
+	@SlashGroup('config')
+	async previewembed(
+		@SlashChoice({ name: 'Goodbye', value: 'goodbye' })
+		@SlashChoice({ name: 'Tickets', value: 'tickets' })
+		@SlashChoice({ name: 'Welcome', value: 'welcome' })
 		@SlashOption({
-			description: 'Provide a channel.',
+			name: 'choice',
+			description: 'Select one of the choices.',
+			required: true,
+			type: ApplicationCommandOptionType.String,
+		})
+		@SlashOption({
 			name: 'channel',
+			description: 'Provide a channel.',
 			required: true,
 			channelTypes: [ChannelType.GuildText],
 			type: ApplicationCommandOptionType.Channel,
 		})
 			channel: TextChannel,
-			interaction: ChatInputCommandInteraction,
+			choice: string,
+			interaction: ExtendedChatInteraction,
 	) {
-		return this.embedPreview('goodbye', channel, interaction);
+		return this.embedPreview(choice, channel, interaction);
 	}
 
 	@Slash({
-		name: 'toggle',
-		description: 'Gives you the ability to toggle goodbye messages on and off.',
+		name: 'set-levelupmessage',
+		description: 'Sets the message that will be sent when a user levels up.',
 	})
-	@SlashGroup('goodbye', 'config')
-	async toggle_GB(
-		@SlashChoice({ name: 'Enable', value: 'enable' })
-		@SlashChoice({ name: 'Disable', value: 'disable' })
+	@SlashGroup('levels', 'config')
+	async setlvlmsg_lvls(
 		@SlashOption({
-			description: 'Select one of the choices.',
-			name: 'choice',
+			name: 'message',
+			description: 'Sets the Level Up message.',
 			required: true,
 			type: ApplicationCommandOptionType.String,
 		})
-			choice: string,
-			interaction: ChatInputCommandInteraction,
+			message: string,
+			interaction: ExtendedChatInteraction,
 	) {
-		const isEnabled = choice === 'enable';
-		return this.toggleFeature('goodbye', isEnabled, interaction);
+		const { guildId } = interaction;
+		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+
+		await DB.updateOne(
+			{
+				id: guildId,
+			},
+			{
+				$set: {
+					'levels.message': message,
+				},
+			},
+		);
+
+		return interaction.reply({
+			embeds: [
+				this.embed.setDescription(
+					'🔹 | Got it, the level up message you provided has been set.',
+				),
+			],
+			ephemeral: true,
+		});
 	}
 
 	@Slash({
-		name: 'setchannel',
-		description: 'Sets the channel where goodbye messages will be sent in.',
+		name: 'configure',
+		description: 'Configures the tickets system.',
 	})
-	@SlashGroup('goodbye', 'config')
-	async setchannel_GB(
+	@SlashGroup('tickets', 'config')
+	async configure_tickets(
 		@SlashOption({
-			description: 'Provide a channel.',
-			name: 'channel',
+			name: 'transcripts',
+			description: 'Select the channel where transcripts will be sent.',
 			required: true,
 			type: ApplicationCommandOptionType.Channel,
+			channelTypes: [ChannelType.GuildText],
 		})
-			channel: TextChannel,
-			interaction: ChatInputCommandInteraction,
+		@SlashOption({
+			name: 'assistantrole',
+			description:
+				'Select the role that will be pinged when a new ticket is created.',
+			required: true,
+			type: ApplicationCommandOptionType.Role,
+		})
+			transcripts: TextChannel,
+			assistantrole: Role,
+			interaction: ExtendedChatInteraction,
 	) {
-		return this.updateChannel('confessions', interaction, channel);
+		const { guildId } = interaction;
+		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+
+		await DB.updateOne(
+			{
+				id: guildId,
+			},
+			{
+				$set: {
+					'tickets.transcripts': transcripts.id,
+					'tickets.assistantRole': assistantrole.id,
+				},
+			},
+		);
+
+		return interaction.reply({
+			embeds: [
+				embed.setTitle('Configuration Updated').addFields(
+					{
+						name: '🔹 | Transcripts Channel',
+						value: `> <#${transcripts.id}>`,
+					},
+					{
+						name: '🔹 | Assistant Role',
+						value: `> <@&${assistantrole.id}>`,
+					},
+				),
+			],
+			ephemeral: true,
+		});
+	}
+
+	@Slash({
+		name: 'setrole',
+		description:
+			'Sets the role that will be assigned to users after they pass verification.',
+	})
+	@SlashGroup('verify', 'config')
+	async setrole_verify(
+		@SlashOption({
+			name: 'verifyrole',
+			description: 'Provide the role.',
+			required: true,
+			type: ApplicationCommandOptionType.Role,
+		})
+			verifyrole: Role,
+			interaction: ExtendedChatInteraction,
+	) {
+		const { guildId } = interaction;
+		const embed = new EmbedBuilder().setColor('Blurple');
+
+		await DB.updateOne(
+			{
+				id: guildId,
+			},
+			{
+				$set: {
+					'verification.role': verifyrole.id,
+				},
+			},
+		);
+
+		return interaction.reply({
+			embeds: [
+				embed.setDescription(
+					`🔹 | Got it, the <@&${verifyrole.id}> will now be assigned to users who pass verification.`,
+				),
+			],
+			ephemeral: true,
+		});
 	}
 
 	/**
 	 * Searches and returns the data about the provided server from the DB.
+	 * @async
 	 * @param guildId The server's ID.
 	 * @returns The data retrieved from the DB.
 	 */
@@ -251,45 +314,47 @@ export class Config {
 		});
 	}
 
-	private async isItEnabled(
-		interaction: ChatInputCommandInteraction,
-		type: string,
-		choice: boolean,
+	/**
+	 * Toggles the specified feature on and off.
+	 * @async
+	 * @param feature The feature that will be enabled / disabled.
+	 * @param interaction The interaction object.
+	 * @returns A response saying that the feature has been enabled or disabled.
+	 */
+	private async toggleFeature(
+		feature: string,
+		interaction: ExtendedChatInteraction,
 	) {
 		const { guildId } = interaction;
-		const data = await this.getData(guildId);
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+		const data = await this.getData(guildId);
+		const status = !data[feature].enabled;
 
-		if (choice === true && data[type]?.enabled === true)
+		if (status === true && data[feature]?.enabled === true)
 			return interaction.reply({
 				embeds: [embed.setDescription('🔹 | This feature is already enabled.')],
 				ephemeral: true,
 			});
 
-		if (choice === false && data[type]?.enabled === false)
+		if (status === false && data[feature]?.enabled === false)
 			return interaction.reply({
 				embeds: [
 					embed.setDescription('🔹 | This feature is already disabled.'),
 				],
 				ephemeral: true,
 			});
-	}
 
-	private async toggleFeature(
-		type: string,
-		choice: boolean,
-		interaction: ChatInputCommandInteraction,
-	) {
-		const { guildId } = interaction;
-		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-
-		if (await this.isItEnabled(interaction, type, choice)) return;
-		await this.updateDBStatus(guildId, type, choice);
+		await DB.updateOne(
+			{ id: guildId },
+			{
+				[`${feature}.enabled`]: status,
+			},
+		);
 
 		return interaction.reply({
 			embeds: [
 				embed.setDescription(
-					`🔹 | This feature has been ${choice ? 'enabled' : 'disabled'}.`,
+					`🔹 | This feature has been ${status ? 'enabled' : 'disabled'}.`,
 				),
 			],
 			ephemeral: true,
@@ -297,39 +362,26 @@ export class Config {
 	}
 
 	/**
-	 * Updates the feature's status.
-	 * @param guildId The server's ID.
-	 * @param feature The feature that will be updated.
-	 * @param status The new status for the provided feature.
-	 * @returns
+	 * Updates the webhook of the specified system.
+	 * @async
+	 * @param type The type of system.
+	 * @param interaction The interaction object.
+	 * @param channel The provided channel.
+	 * @param client The Evelyn object.
+	 * @returns A response saying that the channel has been updated.
 	 */
-	private async updateDBStatus(
-		guildId: string,
-		feature: string,
-		status: boolean,
-	) {
-		return await DB.findOneAndUpdate(
-			{
-				id: guildId,
-			},
-			{
-				[`${feature}.enabled`]: status,
-			},
-		);
-	}
-
 	private async updateWebhook(
 		type: string,
-		interaction: ChatInputCommandInteraction,
+		interaction: ExtendedChatInteraction,
 		channel: TextChannel,
 		client: Evelyn,
 	) {
 		const { guildId } = interaction;
-		const data = await this.getData(guildId);
+		const data = this.getData(guildId);
 		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
 		if (data[type]?.channel) {
-			const decryptedToken = pleaseDecryptMyData(
+			const decryptedToken = this.secureStorage.decrypt(
 				data[type]?.webhook?.token,
 				client,
 			);
@@ -347,9 +399,12 @@ export class Config {
 				avatar: client.user.avatarURL(),
 			})
 			.then(async (webhook) => {
-				const encryptedToken = encryptMyData(webhook.token, client);
+				const encryptedToken = this.secureStorage.encrypt(
+					webhook.token,
+					client,
+				);
 
-				await DB.findOneAndUpdate(
+				DB.findOneAndUpdate(
 					{
 						id: guildId,
 					},
@@ -366,25 +421,30 @@ export class Config {
 		return interaction.reply({
 			embeds: [
 				this.embed.setDescription(
-					`🔹 | Got it, confessions will now be sent to: <#${channel.id}>.`,
+					`🔹 | Got it, the messages of this system will now be sent to: <#${channel.id}>.`,
 				),
 			],
 			ephemeral: true,
 		});
 	}
 
+	/**
+	 * Updates the channel of the specified system.
+	 * @async
+	 * @param type The type of system.
+	 * @param interaction The interaction object.
+	 * @param channel The new channel.
+	 */
 	private async updateChannel(
 		type: string,
-		interaction: ChatInputCommandInteraction,
+		interaction: ExtendedChatInteraction,
 		channel: TextChannel,
 	) {
 		const { guildId } = interaction;
 		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
-		await DB.findOneAndUpdate(
-			{
-				id: guildId,
-			},
+		DB.updateOne(
+			{ id: guildId },
 			{
 				$set: {
 					[`${type}.channel`]: channel.id,
@@ -405,60 +465,76 @@ export class Config {
 	private async embedPreview(
 		type: string,
 		channel: TextChannel,
-		interaction: ChatInputCommandInteraction,
+		interaction: ExtendedChatInteraction,
 	) {
 		const { guildId, member } = interaction;
 		const data = await this.getData(guildId);
-		const typedMember = member as GuildMember;
 
 		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
+		console.log(data, data[type]);
+
 		const embedData = data[type].embed;
-		const embed = new EmbedBuilder();
-		const content = data[type].embed.messagecontent;
-		const message = replacePlaceholders(content, typedMember);
+		const message = embedData.messagecontent;
 
-		if (embedData.color) {
-			const hexCodeRegex = /^#[0-9A-Fa-f]{6}$/;
-			if (hexCodeRegex.test(embedData.color)) embed.setColor(embedData.color);
-		}
+		if (embedData?.color?.match(/^#[0-9A-Fa-f]{6}$/))
+			this.embed.setColor(embedData.color);
 
-		if (embedData.title) embed.setTitle(embedData.title);
+		if (embedData?.title) this.embed.setTitle(embedData?.title);
 
-		if (embedData.description)
-			embed.setDescription(
-				replacePlaceholders(embedData.description, member as GuildMember) ||
-					'Undefined',
+		if (embedData?.description)
+			this.embed.setDescription(
+				replacePlaceholders(embedData.description, member) ||
+					'This is just a placeholder so that the bot doesn\'t crash. If you see this, you probably forgot to define a description or haven\'t set up the embed yet.',
 			);
 
-		if (embedData.author)
-			embed.setAuthor({
-				name:
-					replacePlaceholders(embedData.author.name, typedMember) ||
-					'Undefined',
+		if (embedData?.author)
+			this.embed.setAuthor({
+				name: replacePlaceholders(embedData.author.name, member),
 				iconURL: embedData.author.icon_url,
 			});
 
-		if (embedData.footer)
-			embed.setFooter({
-				text:
-					replacePlaceholders(embedData.footer.text, typedMember) ||
-					'Undefined',
+		if (embedData?.footer)
+			this.embed.setFooter({
+				text: replacePlaceholders(embedData.footer.text, member),
 				iconURL: embedData.footer.icon_url,
 			});
 
-		if (embedData.image?.url) embed.setImage(embedData.image?.url);
-		if (embedData.thumbnail?.url) embed.setThumbnail(embedData.thumbnail.url);
+		if (embedData.image?.url) this.embed.setImage(embedData.image?.url);
+		if (embedData.thumbnail?.url)
+			this.embed.setThumbnail(embedData.thumbnail.url);
 
-		if (content)
+		if (type === 'tickets') {
+			const buttons = new ActionRowBuilder<ButtonBuilder>().addComponents(
+				new ButtonBuilder()
+					.setCustomId('createTicket')
+					.setLabel('Open a Ticket')
+					.setEmoji('📩')
+					.setStyle(ButtonStyle.Primary),
+			);
+
 			channel.send({
-				content: message,
-				embeds: [embed],
+				embeds: [this.embed],
+				components: [buttons],
 			});
-		else
-			channel.send({
-				embeds: [embed],
+
+			return interaction.reply({
+				embeds: [
+					this.embed.setDescription(
+						`🔹 | The ticket panel has been sent in: <#${channel.id}>.`,
+					),
+				],
+				ephemeral: true,
 			});
+		}
+
+		const messageRevised = replacePlaceholders(message, member);
+		const content = messageRevised ? { content: messageRevised } : {};
+
+		channel.send({
+			...content,
+			embeds: [this.embed],
+		});
 
 		return interaction.reply({
 			embeds: [
@@ -468,5 +544,13 @@ export class Config {
 			],
 			ephemeral: true,
 		});
+	}
+
+	private async embedManage(
+		interaction: ExtendedChatInteraction,
+		type: string,
+	) {
+		const builder = new Builder(interaction, type);
+		return await builder.initialize();
 	}
 }
