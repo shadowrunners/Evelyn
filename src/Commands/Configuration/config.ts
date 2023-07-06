@@ -52,7 +52,7 @@ export class Config {
 			'Gives you the ability to toggle the chosen feature on and off.',
 	})
 	@SlashGroup('config')
-	async toggle_config(
+	toggle_config(
 		@SlashChoice({ name: 'Anti-Phish', value: 'antiphishing' })
 		@SlashChoice({ name: 'Confessions', value: 'confessions' })
 		@SlashChoice({ name: 'Goodbye', value: 'goodbye' })
@@ -79,7 +79,7 @@ export class Config {
 			'Gives you the ability to set the channel of the chosen feature.',
 	})
 	@SlashGroup('config')
-	async setchannel(
+	setchannel(
 		@SlashChoice({ name: 'Confessions', value: 'confessions' })
 		@SlashChoice({ name: 'Goodbye', value: 'goodbye' })
 		@SlashChoice({ name: 'Levels', value: 'levels' })
@@ -122,7 +122,7 @@ export class Config {
 		description: 'Manage the embed sent when a user leaves the server.',
 	})
 	@SlashGroup('config')
-	async manageembed(
+	manageembed(
 		@SlashChoice({ name: 'Goodbye', value: 'goodbye' })
 		@SlashChoice({ name: 'Tickets', value: 'tickets' })
 		@SlashChoice({ name: 'Welcome', value: 'welcome' })
@@ -143,7 +143,7 @@ export class Config {
 		description: 'Sends a preview of the chosen system\'s embed.',
 	})
 	@SlashGroup('config')
-	async previewembed(
+	previewembed(
 		@SlashChoice({ name: 'Goodbye', value: 'goodbye' })
 		@SlashChoice({ name: 'Tickets', value: 'tickets' })
 		@SlashChoice({ name: 'Welcome', value: 'welcome' })
@@ -377,7 +377,7 @@ export class Config {
 		client: Evelyn,
 	) {
 		const { guildId } = interaction;
-		const data = this.getData(guildId);
+		const data = await this.getData(guildId);
 		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
 		if (data[type]?.channel) {
@@ -404,10 +404,8 @@ export class Config {
 					client,
 				);
 
-				DB.findOneAndUpdate(
-					{
-						id: guildId,
-					},
+				await DB.updateOne(
+					{ id: guildId },
 					{
 						$set: {
 							[`${type}.channel`]: channel.id,
@@ -443,7 +441,7 @@ export class Config {
 		const { guildId } = interaction;
 		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
-		DB.updateOne(
+		await DB.updateOne(
 			{ id: guildId },
 			{
 				$set: {
@@ -471,8 +469,6 @@ export class Config {
 		const data = await this.getData(guildId);
 
 		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-
-		console.log(data, data[type]);
 
 		const embedData = data[type].embed;
 		const message = embedData.messagecontent;
