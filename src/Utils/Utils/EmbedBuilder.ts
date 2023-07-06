@@ -66,10 +66,7 @@ export class Builder {
 		newEmbed: EmbedBuilder | Embed,
 		newMessage?: string,
 	): Promise<Message<boolean>> {
-		await interaction.reply({
-			content: '🔹 | Embed updated.',
-			ephemeral: true,
-		});
+		await interaction.deferUpdate();
 
 		if (newMessage)
 			return message.edit({
@@ -174,7 +171,7 @@ export class Builder {
 	}
 
 	/** Initializes the menus and message. */
-	public async initalize() {
+	public async initialize() {
 		const selectMenu =
 			new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
 				new StringSelectMenuBuilder()
@@ -250,8 +247,6 @@ export class Builder {
 						.setMinLength(1),
 				),
 			);
-
-		console.log(values[0]);
 
 		if (values[0].includes('authorName') || values[0].includes('footerText'))
 			modal.addComponents(
