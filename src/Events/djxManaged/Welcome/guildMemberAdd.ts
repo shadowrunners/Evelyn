@@ -18,7 +18,7 @@ export class Welcomer {
 			data?.welcome?.channel,
 		) as TextChannel;
 
-		if (!data?.welcome?.enabled ?? !welcomeChannel ?? !data?.welcome?.embed)
+		if (!data?.welcome?.enabled || !welcomeChannel || !data?.welcome?.embed)
 			return;
 
 		const embed = data.welcome.embed;
