@@ -1,10 +1,8 @@
-import {
-	EmbedBuilder,
-	ChatInputCommandInteraction,
-	ApplicationCommandOptionType,
-	GuildMember,
-	ButtonInteraction,
-} from 'discord.js';
+import type {
+	ExtendedButtonInteraction,
+	ExtendedChatInteraction,
+} from '../../Interfaces/Interfaces.js';
+import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
 import {
 	Discord,
 	Slash,
@@ -41,11 +39,10 @@ export class Music {
 			type: ApplicationCommandOptionType.String,
 		})
 			query: string,
-			interaction: ChatInputCommandInteraction,
+			interaction: ExtendedChatInteraction,
 			client: Evelyn,
 	) {
-		const { guild, channelId, user } = interaction;
-		const member = interaction.member as GuildMember;
+		const { guild, channelId, user, member } = interaction;
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
 		if (await check(['voiceCheck'], interaction)) return;
@@ -157,7 +154,7 @@ export class Music {
 			type: ApplicationCommandOptionType.Number,
 		})
 			percent: number,
-			interaction: ChatInputCommandInteraction,
+			interaction: ExtendedChatInteraction,
 	) {
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 		if (await check(['voiceCheck', 'checkPlaying'], interaction, this.player))
@@ -196,7 +193,7 @@ export class Music {
 			type: ApplicationCommandOptionType.Number,
 		})
 			time: number,
-			interaction: ChatInputCommandInteraction,
+			interaction: ExtendedChatInteraction,
 	) {
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 		if (await check(['voiceCheck', 'checkPlaying'], interaction, this.player))
@@ -237,7 +234,7 @@ export class Music {
 			type: ApplicationCommandOptionType.String,
 		})
 			type: string,
-			interaction: ChatInputCommandInteraction,
+			interaction: ExtendedChatInteraction,
 	) {
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 		if (await check(['voiceCheck', 'checkPlaying'], interaction, this.player))
@@ -271,7 +268,7 @@ export class Music {
 		name: 'skip',
 		description: 'Skips the currently playing song.',
 	})
-	async skip(interaction: ChatInputCommandInteraction) {
+	async skip(interaction: ExtendedChatInteraction) {
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 		if (await check(['voiceCheck', 'checkPlaying'], interaction, this.player))
 			return;
@@ -287,7 +284,7 @@ export class Music {
 		name: 'pause',
 		description: 'Pauses the currently playing song.',
 	})
-	async pause(interaction: ChatInputCommandInteraction) {
+	async pause(interaction: ExtendedChatInteraction) {
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 		if (await check(['voiceCheck', 'checkPlaying'], interaction, this.player))
 			return;
@@ -303,7 +300,7 @@ export class Music {
 		name: 'resume',
 		description: 'Resumes the currently playing song.',
 	})
-	async resume(interaction: ChatInputCommandInteraction) {
+	async resume(interaction: ExtendedChatInteraction) {
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 		if (await check(['voiceCheck'], interaction)) return;
 
@@ -318,7 +315,7 @@ export class Music {
 		name: 'stop',
 		description: 'Stops the currently playing songs and disconnects the bot.',
 	})
-	async stop(interaction: ChatInputCommandInteraction) {
+	async stop(interaction: ExtendedChatInteraction) {
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 		if (await check(['voiceCheck'], interaction)) return;
 
@@ -333,7 +330,7 @@ export class Music {
 		name: 'lyrics',
 		description: 'Shows you the lyrics of the currently playing song.',
 	})
-	async lyrics(interaction: ChatInputCommandInteraction, client: Evelyn) {
+	async lyrics(interaction: ExtendedChatInteraction, client: Evelyn) {
 		const gClient = new Client(client.config.APIs.geniusKey);
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
@@ -364,7 +361,7 @@ export class Music {
 		name: 'shuffle',
 		description: 'Shuffles the queue.',
 	})
-	async shuffle(interaction: ChatInputCommandInteraction) {
+	async shuffle(interaction: ExtendedChatInteraction) {
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 		if (await check(['voiceCheck', 'checkQueue'], interaction, this.player))
 			return;
@@ -380,7 +377,7 @@ export class Music {
 		name: 'nowplaying',
 		description: 'Shows you the currently playing song.',
 	})
-	async nowplaying(interaction: ChatInputCommandInteraction) {
+	async nowplaying(interaction: ExtendedChatInteraction) {
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 		if (await check(['voiceCheck', 'checkPlaying'], interaction, this.player))
 			return;
@@ -405,7 +402,7 @@ export class Music {
 		name: 'queue',
 		description: 'Shows you the queue.',
 	})
-	async queue(interaction: ChatInputCommandInteraction) {
+	async queue(interaction: ExtendedChatInteraction) {
 		this.util = new Util(interaction);
 		const { guild } = interaction;
 
@@ -468,7 +465,7 @@ export class Music {
 			type: ApplicationCommandOptionType.String,
 		})
 			option: string,
-			interaction: ChatInputCommandInteraction,
+			interaction: ExtendedChatInteraction,
 	) {
 		if (await check(['voiceCheck', 'checkPlaying'], interaction, this.player))
 			return;
@@ -543,17 +540,16 @@ export class Music {
 		name: 'join',
 		description: 'Pairs the bot to your channel.',
 	})
-	async join(interaction: ChatInputCommandInteraction, client: Evelyn) {
+	async join(interaction: ExtendedChatInteraction, client: Evelyn) {
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 		const { guild, channelId, member } = interaction;
-		const defMember = member as GuildMember;
 
 		if (await check(['voiceCheck'], interaction)) return;
 
 		if (!this.player) {
 			this.player = client.manager.create({
 				guildId: guild.id,
-				voiceChannel: defMember.voice.channelId,
+				voiceChannel: member.voice.channelId,
 				textChannel: channelId,
 				deaf: true,
 			});
@@ -562,9 +558,7 @@ export class Music {
 		this.player.connect();
 
 		return interaction.reply({
-			embeds: [
-				embed.setDescription(`🔹 | Paired to ${defMember.voice.channel}.`),
-			],
+			embeds: [embed.setDescription(`🔹 | Paired to ${member.voice.channel}.`)],
 		});
 	}
 
@@ -572,7 +566,7 @@ export class Music {
 		name: 'previous',
 		description: 'Plays the previous track.',
 	})
-	async previous(interaction: ChatInputCommandInteraction) {
+	async previous(interaction: ExtendedChatInteraction) {
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
 		if (await check(['voiceCheck'], interaction)) return;
@@ -603,7 +597,7 @@ export class Music {
 	@ButtonComponent({
 		id: 'pause',
 	})
-	async pauseButton(interaction: ButtonInteraction) {
+	async pauseButton(interaction: ExtendedButtonInteraction) {
 		const { user } = interaction;
 
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
@@ -638,7 +632,7 @@ export class Music {
 	@ButtonComponent({
 		id: 'shuffle',
 	})
-	async shuffleButton(interaction: ButtonInteraction) {
+	async shuffleButton(interaction: ExtendedButtonInteraction) {
 		const { user } = interaction;
 
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
@@ -660,7 +654,7 @@ export class Music {
 	@ButtonComponent({
 		id: 'skip',
 	})
-	async skipButton(interaction: ButtonInteraction) {
+	async skipButton(interaction: ExtendedButtonInteraction) {
 		const { user } = interaction;
 
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
@@ -682,7 +676,7 @@ export class Music {
 	@ButtonComponent({
 		id: 'voldown',
 	})
-	async volDownButton(interaction: ButtonInteraction) {
+	async volDownButton(interaction: ExtendedButtonInteraction) {
 		const { user } = interaction;
 		const volume = this.player.volume - 10;
 
@@ -719,7 +713,7 @@ export class Music {
 	@ButtonComponent({
 		id: 'volup',
 	})
-	async volUpButton(interaction: ButtonInteraction) {
+	async volUpButton(interaction: ExtendedButtonInteraction) {
 		const { user } = interaction;
 		const volume = this.player.volume + 10;
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();

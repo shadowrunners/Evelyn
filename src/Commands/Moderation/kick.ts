@@ -1,10 +1,10 @@
 import {
 	ApplicationCommandOptionType,
-	ChatInputCommandInteraction,
 	PermissionFlagsBits,
 	EmbedBuilder,
 	GuildMember,
 } from 'discord.js';
+import type { ExtendedChatInteraction } from '../../Interfaces/Interfaces.js';
 import { Discord, Slash, SlashOption } from 'discordx';
 import { Evelyn } from '../../Evelyn.js';
 
@@ -30,15 +30,14 @@ export class Kick {
 		})
 			target: GuildMember,
 			reason: string,
-			interaction: ChatInputCommandInteraction,
+			interaction: ExtendedChatInteraction,
 			client: Evelyn,
 	) {
 		const { user } = client;
 		const { member, guild } = interaction;
-		const defMember = member as GuildMember;
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
-		if (target.roles.highest.position >= defMember.roles.highest.position)
+		if (target.roles.highest.position >= member.roles.highest.position)
 			return interaction.reply({
 				embeds: [
 					embed.setDescription(
