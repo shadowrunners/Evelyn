@@ -1,30 +1,28 @@
-import { Player } from '@shadowrunners/automata';
-import { InteractionResponse, EmbedBuilder } from 'discord.js';
 import type {
 	ExtendedButtonInteraction,
 	ExtendedChatInteraction,
 } from '../../Interfaces/Interfaces.js';
+import { Player } from '@shadowrunners/automata';
+import { EmbedBuilder } from 'discord.js';
 
 /**
  * Handles all checks regarding voice, queues and currently playing songs.
  * @param {string} checkType The type of check.
  * @param {ChatInputCommandInteraction} interaction The interaction object.
  * @param {Player} player The player.
- * @returns {Promise<InteractionResponse<boolean>>}
  */
-export function check(
+export async function check(
 	checkType: string[],
 	interaction: ExtendedChatInteraction | ExtendedButtonInteraction,
 	player?: Player,
-): Promise<InteractionResponse<boolean>> {
+) {
 	const { member, guild } = interaction;
 	const yourVC = member.voice.channel;
 	const herVC = guild.members.me.voice.channelId;
 	const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
-	for (const providedCheck of checkType) {
-		switch (providedCheck) {
-		case 'voiceCheck':
+	const checkingHandlers = {
+		voiceCheck() {
 			if (!yourVC)
 				return interaction.reply({
 					embeds: [
@@ -44,32 +42,31 @@ export function check(
 					],
 					ephemeral: true,
 				});
-
-			break;
-
-		case 'checkQueue':
+		},
+		checkQueue() {
 			if (player?.queue.size === 0)
 				return interaction.reply({
-					embeds: [
-						embed.setDescription('🔹 | There is nothing in the queue.'),
-					],
+					embeds: [embed.setDescription('🔹 | There is nothing in the queue.')],
 					ephemeral: true,
 				});
-
-			break;
-
-		case 'checkPlaying':
+		},
+		checkPlaying() {
 			if (!player?.isPlaying)
 				return interaction.reply({
 					embeds: [embed.setDescription('🔹 | I\'m not playing anything.')],
 					ephemeral: true,
 				});
+		},
+	};
 
-			break;
+	for (const providedCheck of checkType) {
+		const handler = checkingHandlers[providedCheck];
+		if (!handler) return;
 
-		default:
-			break;
-		}
+		const response = await handler();
+		if (!response) return;
+
+		return response;
 	}
 }
 
@@ -77,12 +74,11 @@ export function check(
  * Checks the provided query to block YouTube and YTM links.
  * @param {String} query The provided query.
  * @param {ExtendedChatInteraction} interaction The interaction object.
- * @returns {Promise<InteractionResponse<boolean>>}
  */
 export function checkQuery(
 	query: string,
 	interaction: ExtendedChatInteraction,
-): Promise<InteractionResponse<boolean>> {
+) {
 	const YTRegex =
 		/(http(s)?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.be)\/[a-zA-Z0-9-_]+/;
 	const YTMRegex =
