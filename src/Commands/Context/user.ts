@@ -6,7 +6,6 @@ import {
 	ButtonStyle,
 	ApplicationCommandType,
 	UserContextMenuCommandInteraction,
-	ActivityType,
 	MessageContextMenuCommandInteraction,
 	ButtonInteraction,
 } from 'discord.js';
@@ -27,7 +26,7 @@ export class UserInformation {
 	) {
 		const { guild, targetId } = interaction;
 		const target = await guild.members.fetch(targetId);
-		const { user, presence, joinedTimestamp } = target;
+		const { user, joinedTimestamp } = target;
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
 		this.util = new Util();
@@ -40,9 +39,6 @@ export class UserInformation {
 
 		const createdTime = this.util.convertToUnixTimestamp(user.createdTimestamp);
 		const joinedTime = this.util.convertToUnixTimestamp(joinedTimestamp);
-		const mappedActivities = presence?.activities?.map(
-			(activity) => `${ActivityType[activity.type]} ${activity.name}`,
-		);
 
 		const actionRow = new ActionRowBuilder<ButtonBuilder>().setComponents(
 			new ButtonBuilder()
@@ -76,21 +72,11 @@ export class UserInformation {
 							].join('\n'),
 						},
 						{
-							name: 'Activity',
-							value: [
-								`> **Status** ${presence.status}`,
-								`> **Current Activity** ${
-									mappedActivities?.join(', ') ?? 'Nothing.'
-								}`,
-							].join('\n'),
-						},
-						{
 							name: 'Roles',
-							value:
-								`> ${target.roles.cache
-									.map((r) => r)
-									.join(' ')
-									.replace('@everyone', '')}` || 'None',
+							value: `> ${target.roles.cache
+								.map((r) => r)
+								.join(' ')
+								.replace('@everyone', '')}`,
 						},
 					),
 			],
