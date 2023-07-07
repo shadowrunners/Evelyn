@@ -69,11 +69,10 @@ export class UserInfo {
 						},
 						{
 							name: 'Roles',
-							value:
-								`> ${roles.cache
-									.map((r) => r)
-									.join(' ')
-									.replace('@everyone', '')}` || 'None',
+							value: `> ${roles.cache
+								.map((r) => r)
+								.join(' ')
+								.replace('@everyone', '')}`,
 						},
 					),
 			],
