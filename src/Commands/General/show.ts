@@ -4,7 +4,6 @@ import {
 	ApplicationCommandOptionType,
 } from 'discord.js';
 import { Discord, Slash, SlashOption, Guard } from 'discordx';
-import { Evelyn } from '../../Evelyn.js';
 import { TMDBAPI } from '../../Utils/APIs/tmdbAPI.js';
 import { RateLimit, TIME_UNIT } from '@discordx/utilities';
 
