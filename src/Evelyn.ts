@@ -1,14 +1,13 @@
 import { Client } from 'discordx';
-import Statcord from 'statcord.js';
 import colors from '@colors/colors';
+import { config } from './config.js';
 import { Manager } from '@shadowrunners/automata';
-import { fileLoad } from './Utils/Utils/fileLoader.js';
 import { dirname, importx } from '@discordx/importer';
 import { IntentsBitField, Options } from 'discord.js';
 import { BotConfig } from './Interfaces/Interfaces.js';
+import { fileLoad } from './Utils/Utils/fileLoader.js';
 // import { crashReporter } from './functions/crashReport.js';
 // import Economy from 'discord-economy-super/mongodb/src/index.js';
-import { config } from './config.js';
 
 const {
 	Guilds,
@@ -25,7 +24,6 @@ export class Evelyn extends Client {
 	public config: BotConfig;
 	// To implement later. This shit takes too much time.
 	// public economy: Economy<boolean>;
-	public statcord: Statcord.Client;
 	public manager: Manager;
 	private client: Client;
 
@@ -63,14 +61,6 @@ export class Evelyn extends Client {
 
 		this.config = config;
 
-		this.statcord = new Statcord.Client({
-			client: this,
-			key: this.config.debug.statKey,
-			postCpuStatistics: true,
-			postMemStatistics: true,
-			postNetworkStatistics: true,
-		});
-
 		this.manager = new Manager({
 			nodes: this.config.music.nodes,
 			reconnectTries: 3,
@@ -86,29 +76,7 @@ export class Evelyn extends Client {
 		process.on('unhandledRejection', (err) => console.log(err));
 		process.on('unhandledException', (err) => console.log(err));
 	}
-
-	/**
-	 * Loads Statcord events.
-	 * @param {Evelyn} client - The client object.
-	 * @returns {Promise<void>}
-	 */
-	async loadStats(client: Evelyn): Promise<void> {
-		const files = await fileLoad('Events/statcord');
-		for (const file of files) {
-			const event = await import(`file://${file}`);
-			const execute = (...args: string[]) =>
-				event.default.execute(...args, client);
-
-			client.statcord.once(event.default.name, execute);
-
-			return console.log(
-				`${colors.magenta('Statcord')} ${colors.white(
-					'· Loaded',
-				)} ${colors.green(event.default.name + '.ts')}`,
-			);
-		}
-	}
-
+	
 	/**
 	 * Loads music events.
 	 * @param {Evelyn} client - The client object.
@@ -138,7 +106,6 @@ export class Evelyn extends Client {
 			`${dirname(import.meta.url)}/{events/djxManaged,commands}/**/*.{ts,js}`,
 		);
 
-		await this.loadStats(this);
 		await this.loadMusic(this);
 
 		await this.client.login(this.config.token);
