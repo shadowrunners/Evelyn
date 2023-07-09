@@ -17,7 +17,7 @@ export const config: BotConfig = {
 		rawgKey: '',
 		geniusKey: '',
 		cattoKey: '',
-		omdbAPIKey: '',
+		tmdbAPIKey: '',
 	},
 	music: {
 		nodes: [
