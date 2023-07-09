@@ -3,39 +3,33 @@ import { EmbedBuilder, Message } from 'discord.js';
 import { Evelyn } from '../../../Evelyn.js';
 import { config } from '../../../config.js';
 import { Discord, On } from 'discordx';
-import axios from 'axios';
+import superagent from 'superagent';
 
 @Discord()
 export class PhishingShield {
 	@On({ event: 'messageCreate' })
 	async execute([message]: [Message], client: Evelyn) {
 		const { content, guild, author } = message;
-		const bodyReg = new RegExp(
-			'^(?=.{1,254}$)((?!-)[A-Za-z0-9-]{1,63}(?<!-)\\.)+[A-Za-z]{2,}$',
-		);
+		const bodyReg =
+			/^(?=.{1,254}$)((?!-)[A-Za-z0-9-]{1,63}(?<!\.)\.)+[A-Za-z]{2,}$/;
 
 		if (bodyReg.test(content)) {
 			try {
-				const response = await axios.post(
-					'https://anti-fish.bitflow.dev/check',
-					{
-						message: content,
-					},
-					{
-						headers: {
-							'User-Agent': config.userAgent,
-						},
-					},
-				);
+				const res = await superagent
+					.post('https://anti-fish.bitflow.dev/check')
+					.send({ message: content })
+					.set('User-Agent', config.userAgent);
 
-				if (response.status === 200 && (await validate(guild))) {
+				if (res.status === 200 && (await validate(guild))) {
+					console.log('Function ran.');
 					const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 					const logs = new OWLogs(guild, client);
-					const { match } = response.data;
+					const { match } = res.body;
+					console.log(res.body);
 
 					message.delete();
 
-					return logs.airDrop(
+					return await logs.airDrop(
 						embed
 							.setTitle('⚠️ | Phishing Link Detected')
 							.setDescription(
@@ -51,8 +45,7 @@ export class PhishingShield {
 							),
 					);
 				}
-				else if (response.status === 404 && !response.data.match)
-					return false;
+				else if (res.status === 404 && !res.body.match) return false;
 			}
 			catch (error) {
 				if (error.response && error.response.status === 404) return false;
