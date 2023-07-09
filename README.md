@@ -26,7 +26,7 @@ Evelyn is an open-source Discord Bot made as a safe alternative to bots that are
 - 🎉 **Giveaway**: `giveaway start`, `giveaway end`, `giveaway pause`, `giveaway unpause`, `giveaway reroll`.
 - 🎧 **Music**: `music play`, `music volume`, `music queue`, `music skip`, `music pause`, `music resume`, `music stop`, `music shuffle`, `music lyrics`.
 - 📦 **Miscellaneous**: `avatar`, `anime`, `announce`, `leaderboard`, `movie`, `rank`, `remind`, `show`, `userinfo`, `serverinfo`.
-- 😀 **Actions**: `actions bite`, `actions blush`, `actions bonk`, `actions bully`, `actions cringe`, `actions cry`, `actions cuddle`, `actions handhold`, `actions highfive`, `actions hug`, `actions kill`, `actions kiss`, `actions pat`, `actions poke`, `actions poke`, `actions slap`, `actions smile`, `actions wave`, `actions yeet`.
+- 😀 **Actions**: `actions (bite, blush, bonk, bully, cringe, cry, cuddle, handhold, highfive, hug, kill, kiss, pat poke, slap, smile, wave, yeet)`
 - 📷 **Fun**: `cat`, `game (2048, 8ball, connect4, findemoji, guessthatpokemon, hangman, minesweeper, rps, snake, tictactoe, trivia, wordle, wouldyourather)`, `image (awooify, baguette, blurpify, captcha, changemymind, deepfry, kannagen, phcomment, threats, trash, trumptweet, tweet)`.
 
 ## Credits
@@ -34,6 +34,7 @@ Evelyn is an open-source Discord Bot made as a safe alternative to bots that are
   
 Evelyn is powered by the following APIs:
 - [TheMovieDatabase](https://www.themoviedb.org) - used for the movie / show info system
+- [JustWatch](https://www.justwatch.com/) - used for the movie / show info system in conjunction with TMDb
 - [RAWG](https://rawg.io) - used for the game info system
 - [Google Books](https://books.google.com/) - used for the book info system
 - [Kitsu](https://kitsu.io) - used for the anime / manga info system
