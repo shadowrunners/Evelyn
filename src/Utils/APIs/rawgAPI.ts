@@ -1,7 +1,7 @@
 /**
  * This class contains our own custom version of a wrapper for the RAWG.io API.
  */
-import { RAWGInterface, botConfig } from '../../Interfaces/Interfaces.js';
+import { RAWGInterface, BotConfig } from '../../Interfaces/Interfaces.js';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { Evelyn } from '../../Evelyn';
 import superagent from 'superagent';
@@ -10,7 +10,7 @@ export class RAWGAPI {
 	private apiURL: string;
 	private embed: EmbedBuilder;
 	private interaction: ChatInputCommandInteraction;
-	private config: botConfig;
+	private config: BotConfig;
 
 	/** Creates a new instance of the IGDB API class. */
 	constructor(interaction: ChatInputCommandInteraction, client: Evelyn) {

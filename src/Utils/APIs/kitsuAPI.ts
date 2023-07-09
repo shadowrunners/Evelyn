@@ -4,7 +4,7 @@
  */
 
 import superagent from 'superagent';
-import { KitsuInterface } from '../../Interfaces/interfaces.js';
+import { KitsuInterface } from '../../Interfaces/Interfaces.js';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 
 export class KitsuAPI {
@@ -27,146 +27,142 @@ export class KitsuAPI {
 			`${this.apiURL}/anime/${animeId}/genres`,
 		);
 
-		return genres?.body?.data
-			?.map((genre: { attributes: { name: string } }) => genre.attributes.name)
-			.join(', ');
+		return (
+			genres?.body?.data.join(', ') ??
+			'No genres have been provided by the API.'
+		);
 	}
 
 	/** Retrieves the information for the provided anime. */
-	public fetchAnime(anime: string): Promise<KitsuInterface> {
-		return new Promise((resolve, reject) => {
-			superagent
-				.get(`${this.apiURL}/anime?filter[text]=${anime}`)
-				.then(async (res) => {
-					const animeData = res.body.data[0];
-					const animeAttributes = animeData.attributes;
-					const newStatus = animeAttributes?.status
-						.replace('finished', 'Finished')
-						.replace('ongoing', 'Ongoing')
-						.replace('current', 'Currently Airing');
+	public async fetchAnime(anime: string): Promise<KitsuInterface> {
+		try {
+			const res = await superagent.get(
+				`${this.apiURL}/anime?filter[text]=${anime}`,
+			);
 
-					const niceGenres = await this.fetchGenres(animeData.id);
-					const startDate = new Date(animeData?.attributes?.startDate);
-					const endDate = new Date(animeData?.attributes?.endDate);
+			const animeData = res.body?.data?.[0]?.attributes;
+			const animeId = res.body?.data?.[0]?.id;
+			const newStatus = animeData?.status
+				.replace('finished', 'Finished')
+				.replace('ongoing', 'Ongoing')
+				.replace('current', 'Currently Airing');
 
-					const startDateUnixed = Math.floor(startDate?.getTime() / 1000);
-					const endDateUnixed = Math.floor(endDate?.getTime() / 1000);
+			const niceGenres = await this.fetchGenres(animeId);
+			const startDate = new Date(animeData?.startDate);
+			const endDate = new Date(animeData?.endDate);
 
-					const animeInfo: KitsuInterface = {
-						description: animeAttributes?.description,
-						synopsis: animeAttributes?.synopsis,
-						titles: {
-							en_us:
-								animeAttributes?.titles?.en_us ??
-								animeAttributes?.titles?.en_jp,
-							ja_JP: animeAttributes?.titles?.ja_jp,
-						},
-						genres: niceGenres ?? 'No genres have been provided by the API.',
-						status: newStatus,
-						averageRating: animeAttributes?.averageRating,
-						startDate: animeAttributes?.startDate,
-						startDateUnix: startDateUnixed,
-						endDate: animeAttributes?.endDate,
-						endDateUnix: endDateUnixed,
-						ageRating: animeAttributes?.ageRating ?? 'No ratings yet.',
-						ageRatingGuide: animeAttributes?.ageRatingGuide,
-						posterImage: {
-							tiny: animeAttributes?.posterImage?.tiny,
-							large: animeAttributes?.posterImage?.large,
-							small: animeAttributes?.posterImage?.small,
-							medium: animeAttributes?.posterImage?.medium,
-							original: animeAttributes?.posterImage?.original,
-						},
-						coverImage: {
-							tiny: animeAttributes?.coverImage?.tiny,
-							large: animeAttributes?.coverImage?.large,
-							small: animeAttributes?.coverImage?.small,
-							original: animeAttributes?.coverImage?.original,
-						},
-						episodeCount: animeAttributes?.episodeCount,
-					};
+			const startDateUnixed = Math.floor(startDate?.getTime() / 1000);
+			const endDateUnixed = Math.floor(endDate?.getTime() / 1000);
 
-					resolve(animeInfo);
-				})
-				.catch((err: Error) => {
-					reject(err);
+			const animeInfo: KitsuInterface = {
+				description: animeData?.description,
+				synopsis: animeData?.synopsis,
+				titles: {
+					en_us: animeData?.titles?.en_us ?? animeData?.titles?.en_jp,
+					ja_JP: animeData?.titles?.ja_jp,
+				},
+				genres: niceGenres,
+				status: newStatus,
+				averageRating: animeData?.averageRating,
+				startDate: animeData?.startDate,
+				startDateUnix: startDateUnixed,
+				endDate: animeData?.endDate,
+				endDateUnix: endDateUnixed,
+				ageRating: animeData?.ageRating ?? 'No ratings yet.',
+				ageRatingGuide: animeData?.ageRatingGuide,
+				posterImage: {
+					tiny: animeData?.posterImage?.tiny,
+					large: animeData?.posterImage?.large,
+					small: animeData?.posterImage?.small,
+					medium: animeData?.posterImage?.medium,
+					original: animeData?.posterImage?.original,
+				},
+				coverImage: {
+					tiny: animeData?.coverImage?.tiny,
+					large: animeData?.coverImage?.large,
+					small: animeData?.coverImage?.small,
+					original: animeData?.coverImage?.original,
+				},
+				episodeCount: animeData?.episodeCount,
+			};
 
-					return this.interaction.reply({
-						embeds: [
-							this.embed.setDescription(
-								'🔹 | There was an error while fetching the information from the API.',
-							),
-						],
-					});
-				});
-		});
+			return animeInfo;
+		}
+		catch (err) {
+			this.interaction.reply({
+				embeds: [
+					this.embed.setDescription(
+						'🔹 | There was an error while fetching the information from the API.',
+					),
+				],
+			});
+
+			throw err;
+		}
 	}
 
 	/** Retrieves the information for the provided manga. */
-	public fetchManga(manga: string): Promise<KitsuInterface> {
-		return new Promise((resolve, reject) => {
-			superagent
-				.get(`${this.apiURL}/manga?filter[text]=${manga}`)
-				.then((res) => {
-					const mangaData = res.body.data[0];
-					const mangaAttributes = mangaData.attributes;
-					const newStatus = mangaAttributes?.status
-						.replace('finished', 'Finished')
-						.replace('ongoing', 'Ongoing')
-						.replace('current', 'Currently Airing');
+	public async fetchManga(manga: string): Promise<KitsuInterface> {
+		try {
+			const res = await superagent.get(
+				`${this.apiURL}/manga?filter[text]=${manga}`,
+			);
 
-					const startDate = new Date(mangaData?.attributes?.startDate);
-					const endDate = new Date(mangaData?.attributes?.endDate);
+			const mangaData = res.body?.data?.[0].attributes;
+			const newStatus = mangaData?.status
+				.replace('finished', 'Finished')
+				.replace('ongoing', 'Ongoing')
+				.replace('current', 'Currently Airing');
 
-					const startDateUnixed = Math.floor(startDate?.getTime() / 1000);
-					const endDateUnixed = Math.floor(endDate?.getTime() / 1000);
+			const startDate = new Date(mangaData?.startDate);
+			const endDate = new Date(mangaData?.endDate);
 
-					const mangaInfo: KitsuInterface = {
-						description: mangaAttributes?.description,
-						synopsis: mangaAttributes?.synopsis,
-						titles: {
-							en_us:
-								mangaAttributes?.titles?.en_us ??
-								mangaAttributes?.titles?.en_jp,
-							ja_JP: mangaAttributes?.titles?.ja_jp,
-						},
-						status: newStatus,
-						averageRating: mangaAttributes?.averageRating,
-						startDate: mangaAttributes?.startDate,
-						startDateUnix: startDateUnixed,
-						endDate: mangaAttributes?.endDate,
-						endDateUnix: endDateUnixed,
-						ageRating: mangaAttributes?.ageRating ?? 'No ratings yet.',
-						ageRatingGuide: mangaAttributes?.ageRatingGuide,
-						posterImage: {
-							tiny: mangaAttributes?.posterImage?.tiny,
-							large: mangaAttributes?.posterImage?.large,
-							small: mangaAttributes?.posterImage?.small,
-							medium: mangaAttributes?.posterImage?.medium,
-							original: mangaAttributes?.posterImage?.original,
-						},
-						coverImage: {
-							tiny: mangaAttributes?.coverImage?.tiny,
-							large: mangaAttributes?.coverImage?.large,
-							small: mangaAttributes?.coverImage?.small,
-							original: mangaAttributes?.coverImage?.original,
-						},
-						episodeCount: mangaAttributes?.episodeCount,
-					};
+			const startDateUnixed = Math.floor(startDate?.getTime() / 1000);
+			const endDateUnixed = Math.floor(endDate?.getTime() / 1000);
 
-					resolve(mangaInfo);
-				})
-				.catch((err: Error) => {
-					reject(err);
+			const mangaInfo: KitsuInterface = {
+				description: mangaData?.description,
+				synopsis: mangaData?.synopsis,
+				titles: {
+					en_us: mangaData?.titles?.en_us ?? mangaData?.titles?.en_jp,
+					ja_JP: mangaData?.titles?.ja_jp,
+				},
+				status: newStatus,
+				averageRating: mangaData?.averageRating,
+				startDate: mangaData?.startDate,
+				startDateUnix: startDateUnixed,
+				endDate: mangaData?.endDate,
+				endDateUnix: endDateUnixed,
+				ageRating: mangaData?.ageRating ?? 'No ratings yet.',
+				ageRatingGuide: mangaData?.ageRatingGuide,
+				posterImage: {
+					tiny: mangaData?.posterImage?.tiny,
+					large: mangaData?.posterImage?.large,
+					small: mangaData?.posterImage?.small,
+					medium: mangaData?.posterImage?.medium,
+					original: mangaData?.posterImage?.original,
+				},
+				coverImage: {
+					tiny: mangaData?.coverImage?.tiny,
+					large: mangaData?.coverImage?.large,
+					small: mangaData?.coverImage?.small,
+					original: mangaData?.coverImage?.original,
+				},
+				episodeCount: mangaData?.episodeCount,
+			};
 
-					return this.interaction.reply({
-						embeds: [
-							this.embed.setDescription(
-								'🔹 | There was an error while fetching the information from the API.',
-							),
-						],
-					});
-				});
-		});
+			return mangaInfo;
+		}
+		catch (err) {
+			this.interaction.reply({
+				embeds: [
+					this.embed.setDescription(
+						'🔹 | There was an error while fetching the information from the API.',
+					),
+				],
+			});
+
+			throw err;
+		}
 	}
 }

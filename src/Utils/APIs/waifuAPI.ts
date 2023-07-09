@@ -13,7 +13,7 @@ export class WaifuEngine {
 	private name: string;
 	private iconURL: string;
 
-	/** Creates a new instance of the NekoAPI class. */
+	/** Creates a new instance of the Waifu Engine class. */
 	constructor(interaction: ChatInputCommandInteraction) {
 		this.apiURL = 'https://api.waifu.pics/sfw/';
 		/** Base embed used to reduce repeated code. */
@@ -31,17 +31,14 @@ export class WaifuEngine {
 	}
 
 	/** Retrieves the image from the endpoint provided. */
-	private fetchImage(endpoint: string) {
-		return new Promise((resolve, reject) => {
-			superagent
-				.get(`${this.apiURL}${endpoint}`)
-				.then((res: { body: { url: unknown } }) => {
-					resolve(res.body.url);
-				})
-				.catch((err: Error) => {
-					reject(err);
-				});
-		});
+	private async fetchImage(endpoint: string): Promise<string> {
+		try {
+			const res = await superagent.get(`${this.apiURL}${endpoint}`);
+			return res.body.url;
+		}
+		catch (err) {
+			console.log(err);
+		}
 	}
 
 	/** Checks for a target user to display in the embed whenever a person needs to be mentioned. */
@@ -54,24 +51,23 @@ export class WaifuEngine {
 						.setDescription('🔹 | You forgot to provide a user.'),
 				],
 			});
+
+		return true;
 	}
 
 	/** Fetches the image and replies with it in an embed. */
 	private async reply(action: string, text: string, target?: GuildMember) {
-		if (target) {
-			if (this.checkTarget(target)) return;
-		}
+		const { user } = this.interaction;
+		if (target && this.checkTarget(target)) return;
 
-		const image = (await this.fetchImage(action)) as string;
+		const image = await this.fetchImage(action);
+		const username = user.username;
+		const avatar = user.avatarURL();
 
-		if (target) {
-			this.name = `${this.interaction.user.username} ${text} ${target.user.username}`;
-			this.iconURL = `${this.interaction.user.avatarURL()}`;
-		}
-		else {
-			this.name = `${this.interaction.user.username} ${text}`;
-			this.iconURL = `${this.interaction.user.avatarURL()}`;
-		}
+		this.name = target
+			? `${username} ${text} ${target.user.username}`
+			: `${username} ${text}`;
+		this.iconURL = avatar;
 
 		return this.interaction.editReply({
 			embeds: [

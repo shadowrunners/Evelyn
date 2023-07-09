@@ -39,25 +39,20 @@ export class NekoAPI {
 	}
 
 	/** Retrieves the image from the endpoint provided. */
-	fetchImage(endpoint: string) {
-		return new Promise((resolve, reject) => {
-			superagent
-				.get(`${this.apiURL}${endpoint}`)
-				.then((res) => {
-					resolve(res.body.message);
-				})
-				.catch((err: Error) => {
-					reject(err);
-
-					return this.interaction.editReply({
-						embeds: [
-							this.otherEmbed.setDescription(
-								'🔹 | There was an error while fetching the image from the API.',
-							),
-						],
-					});
-				});
-		});
+	private async fetchImage(endpoint: string) {
+		try {
+			const res = await superagent.get(`${this.apiURL}${endpoint}`);
+			return res.body.message;
+		}
+		catch {
+			return this.interaction.editReply({
+				embeds: [
+					this.otherEmbed.setDescription(
+						'🔹 | There was an error while fetching the image from the API.',
+					),
+				],
+			});
+		}
 	}
 
 	/** Checks for a target user to display in the embed whenever a person needs to be mentioned. */
