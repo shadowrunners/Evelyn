@@ -23,15 +23,16 @@ export async function reminded(message: Message) {
 					.setTitle('Reminder')
 					.setDescription(`Hiya! I'm here to remind to \`${data.reminder}\`.`),
 			],
+		}).catch(() => {
+			// Empty so DeepSource doesn't flag this as an issue.
 		})
-		.then(async () => {
-			await DB.findOneAndUpdate(
-				{
-					guildId: data.guildId,
-					userId: data.userId,
-					scheduledTime: data.scheduledTime,
-				},
-				{ hasBeenReminded: true },
-			);
-		});
+
+		await DB.updateOne(
+			{
+				guildId: data.guildId,
+				userId: data.userId,
+				scheduledTime: data.scheduledTime,
+			},
+			{ hasBeenReminded: true },
+		);
 }

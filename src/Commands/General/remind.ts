@@ -27,13 +27,13 @@ export class Remind {
 			type: ApplicationCommandOptionType.String,
 			required: true,
 		})
-			time: string,
 			task: string,
+			time: string,
 			interaction: ChatInputCommandInteraction,
 	) {
 		const { msToTime } = new Util();
-		const { options, guild, channel, user } = interaction;
-		const convertedTime = msToTime(options.getString('time'));
+		const { guild, channel, user } = interaction;
+		const convertedTime = msToTime(time);
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 		const unixTime = Math.floor(Date.now() / 1000) + convertedTime / 1000;
 
