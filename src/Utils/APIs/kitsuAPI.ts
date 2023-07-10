@@ -59,7 +59,7 @@ export class KitsuAPI {
 				synopsis: animeData?.synopsis,
 				titles: {
 					en_us: animeData?.titles?.en_us ?? animeData?.titles?.en_jp,
-					ja_JP: animeData?.titles?.ja_jp,
+					ja_JP: animeData?.titles?.ja_jp ?? 'No japanese title was provided by the API.',
 				},
 				genres: niceGenres,
 				status: newStatus,

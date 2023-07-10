@@ -17,7 +17,7 @@ export class Anime {
 	})
 	@Guard(
 		RateLimit(TIME_UNIT.seconds, 30, {
-			message: '🔹 | You are currently rate limited. Try again at {until}.',
+			message: '🔹 | Please wait 30 seconds before re-running this command.',
 			ephemeral: true,
 		}),
 	)
@@ -47,18 +47,12 @@ export class Anime {
 							value: `> ${anime.genres}`,
 						},
 						{
-							name: 'Premiered on',
-							value: `> <t:${anime.startDateUnix}>`,
-							inline: true,
-						},
-						{
-							name: 'Ended on',
-							value: `> <t:${anime.endDateUnix}>`,
-							inline: true,
+							name: 'Aired between',
+							value: `> <t:${anime.startDateUnix}> - <t:${anime.endDateUnix}>`,
 						},
 						{
 							name: 'Japanese Title',
-							value: `> ${anime.titles.ja_JP}` || 'Unknown.',
+							value: `> ${anime.titles.ja_JP}`,
 							inline: true,
 						},
 						{
@@ -68,7 +62,7 @@ export class Anime {
 						},
 						{
 							name: 'Average Rating',
-							value: `> ${anime.averageRating}/100`,
+							value: `> ${anime.averageRating} / 100`,
 							inline: true,
 						},
 						{
