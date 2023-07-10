@@ -145,7 +145,7 @@ export class Util {
 			{ name: 'd', pluralName: 'd', ms: 1000 * 60 * 60 * 24 },
 		];
 
-		const regex = /^\s*(\d+)\s*([a-z]+)?\s*$/i;
+		const regex = /^\s*(\d+)\s*(ms|s|m|h|d)?\s*$/i;
 		const match = regex.exec(time.trim());
 		  
 		const value = parseInt(match[1], 10);
