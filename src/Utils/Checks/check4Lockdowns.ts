@@ -5,14 +5,11 @@ import { TextChannel } from 'discord.js';
 export async function check4Lockdowns(client: Evelyn) {
 	const data = await DB.find();
 
-	for (let i = 0; i < data.length; i++) {
-		const newData = data[i];
-		if (!newData) return;
+	for (const newData of data) {
+		const guild = client.guilds.cache.get(newData.guildId);
+		const channel = guild?.channels.cache.get(newData.channelId);
 
-		const channel = client.guilds.cache
-			.get(newData.guildId)
-			.channels.cache.get(newData.channelId) as TextChannel;
-		if (!channel) return;
+		if (!channel) continue;
 
 		if (newData.timeLocked < Date.now()) {
 			await DB.deleteOne({ channelId: channel.id });
@@ -23,7 +20,7 @@ export async function check4Lockdowns(client: Evelyn) {
 		}
 
 		setTimeout(async () => {
-			await DB.deleteOne({ ChannelID: channel.id });
+			await DB.deleteOne({ channelId: channel.id });
 
 			return channel.permissionOverwrites.edit(newData.guildId, {
 				SendMessages: null,
