@@ -6,6 +6,7 @@ import { Discord, Once } from 'discordx';
 import colors from '@colors/colors';
 import { set } from 'mongoose';
 import DXP from 'discord-xp';
+import DisStat from 'disstat';
 
 @Discord()
 export class Ready {
@@ -14,7 +15,8 @@ export class Ready {
 	})
 	async ready([client]: [Evelyn]) {
 		const { magenta, white, green, red } = colors;
-		const { user, config, statcord, manager } = client;
+		const { user, config, manager } = client;
+		const disstat = new DisStat(config.debug.statKey, client);
 
 		console.info(
 			`${magenta('Discord API')} ${white('· Logged in as')} ${green(
@@ -40,7 +42,6 @@ export class Ready {
 		}
 
 		client.initApplicationCommands();
-		statcord.autopost();
 		manager.init(client);
 
 		await set('strictQuery', false)
@@ -59,5 +60,10 @@ export class Ready {
 		await check4Reminders(client);
 		await check4Lockdowns(client);
 		await DXP.setURL(client.config.database);
+
+		await disstat.postData({
+			servers: client.guilds.cache.size,
+			users: client.users.cache.size,
+		}, true);
 	}
 }
