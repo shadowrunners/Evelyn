@@ -7,7 +7,7 @@ export async function check4Lockdowns(client: Evelyn) {
 
 	for (const newData of data) {
 		const guild = client.guilds.cache.get(newData.guildId);
-		const channel = guild?.channels.cache.get(newData.channelId);
+		const channel = guild?.channels.cache.get(newData.channelId) as TextChannel;
 
 		if (!channel) continue;
 
