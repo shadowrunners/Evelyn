@@ -137,19 +137,30 @@ export class Util {
 
 	/** Converts time to milliseconds. */
 	public msToTime(time: string): number {
-		const units: Record<string, number> = {
-			ms: 1,
-			s: 1000,
-			m: 60 * 1000,
-			h: 60 * 60 * 1000,
-			d: 24 * 60 * 60 * 1000,
-		};
+		const timeUnits: TimeUnit[] = [
+			{ name: 'ms', pluralName: 'ms', ms: 1 },
+			{ name: 's', pluralName: 's', ms: 1000 },
+			{ name: 'm', pluralName: 'm', ms: 1000 * 60 },
+			{ name: 'h', pluralName: 'h', ms: 1000 * 60 * 60 },
+			{ name: 'd', pluralName: 'd', ms: 1000 * 60 * 60 * 24 },
+		];
 
-		const [, valueStr, unitStr] =
-			/^(\d+)(\w+)$/.exec(time && time.slice(0, 50)) || [];
-		const value = parseInt(valueStr, 10);
-		const unitValue = units[unitStr];
-
-		return value * unitValue;
+		const regex = /^\s*(\d+)\s*([a-z]+)?\s*$/i;
+		const match = regex.exec(time.trim());
+		  
+		const value = parseInt(match[1], 10);
+		const unitName = match[2] || 'ms';
+		const unit = timeUnits.find((timeUnit) =>
+			timeUnit.name === unitName || timeUnit.pluralName === unitName
+		);
+		  
+		return value * unit.ms;
 	}
 }
+
+interface TimeUnit {
+	name: string;
+	pluralName: string;
+	ms: number;
+  }
+  
