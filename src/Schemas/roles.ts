@@ -6,7 +6,16 @@ interface RRInterface {
 	/** The ID of the server. */
 	id: string;
 	/** The array of roles. */
-	roleArray: Array<any>;
+	roleArray: {
+		/** The ID of the role. */
+		roleId: string;
+		/** The name of the role. */
+		name: string;
+		/** The description of the role. */
+		description: string;
+		/** The chosen emoji for the role. */
+		emoji: string;
+	}[];
 }
 
 export const RRoles = model<RRInterface>(
