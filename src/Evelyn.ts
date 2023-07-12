@@ -95,7 +95,7 @@ export class Evelyn extends Client {
 			console.log(
 				`${colors.magenta('Automata')} ${colors.white(
 					'· Loaded',
-				)} ${colors.green(event.name + '.ts')}`,
+				)} ${colors.green(`${event.name}.ts`)}`,
 			);
 		}
 	}
