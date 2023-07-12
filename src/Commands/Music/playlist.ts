@@ -184,8 +184,10 @@ export class Playlist {
 			interaction: ChatInputCommandInteraction,
 	) {
 		const { user } = interaction;
-		const util = new Util();
+		const util = new Util(interaction);
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+
+		await interaction.deferReply();
 
 		const pData = await DB.findOne({
 			playlistName: name,
@@ -231,9 +233,11 @@ export class Playlist {
 	})
 	async list(interaction: ChatInputCommandInteraction) {
 		const { user } = interaction;
-		const util = new Util();
+		const util = new Util(interaction);
 		const pData = await DB.find({ userID: user.id });
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
+
+		await interaction.deferReply();
 
 		if (!pData)
 			return interaction.reply({
