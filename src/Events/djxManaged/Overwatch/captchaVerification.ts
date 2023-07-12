@@ -75,7 +75,7 @@ export class CaptchaVerify {
 	@ButtonComponent({
 		id: 'captcha_prompt',
 	})
-	async captcha_prompt(interaction: ExtendedButtonInteraction, client: Evelyn) {
+	async captcha_prompt(interaction: ExtendedButtonInteraction) {
 		const modal = new ModalBuilder()
 			.setCustomId('captcha_verifyModal')
 			.setTitle('Prove your humanity')
