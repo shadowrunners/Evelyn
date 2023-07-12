@@ -106,11 +106,11 @@ export class Util {
 		const mins = duration % 60;
 		const hrs = (duration - mins) / 60;
 
-		let formatted = '';
-		if (hrs > 0) formatted += hrs + 'h ';
-		if (mins > 0) formatted += mins + 'm ';
-		if (secs > 0) formatted += secs + 's ';
-		return formatted.trim();
+		const formattedParts: string[] = [];
+		if (hrs > 0) formattedParts.push(`${hrs}h`);
+		if (mins > 0) formattedParts.push(`${mins}m`);
+		if (secs > 0) formattedParts.push(`${secs}s`);
+		return formattedParts.join('');
 	}
 
 	/** Converts a string of numbers into a unix timestamp. */
