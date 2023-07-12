@@ -46,7 +46,7 @@ export class UserInfo {
 						iconURL: `${user.avatarURL()}`,
 					})
 					.setThumbnail(user.avatarURL())
-					.setImage(user.bannerURL({ size: 512 }) || null)
+					.setImage(user.bannerURL({ size: 512 }) ?? null)
 					.addFields(
 						{
 							name: 'General',
