@@ -1,7 +1,6 @@
 import {
 	ApplicationCommandOptionType,
 	ChatInputCommandInteraction,
-	PermissionFlagsBits,
 	EmbedBuilder,
 	TextChannel,
 } from 'discord.js';
@@ -14,7 +13,7 @@ export class Lock {
 	@Slash({
 		name: 'lock',
 		description: 'Locks a channel.',
-		defaultMemberPermissions: PermissionFlagsBits.ManageChannels,
+		defaultMemberPermissions: 'ManageChannels',
 	})
 	async lock(
 		@SlashOption({
@@ -38,7 +37,7 @@ export class Lock {
 		const lockedChannel = channel as TextChannel;
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
-		if (!channel.permissionsFor(guild.id).has(PermissionFlagsBits.SendMessages))
+		if (!channel.permissionsFor(guild.id).has('SendMessages'))
 			return interaction.reply({
 				embeds: [embed.setDescription('🔹 | This channel is already locked.')],
 				ephemeral: true,
@@ -58,7 +57,7 @@ export class Lock {
 
 		if (!time) return;
 
-		DB.create({
+		await DB.create({
 			guildId: guild.id,
 			channelId: channel.id,
 			timeLocked: Date.now() + msToTime(time),

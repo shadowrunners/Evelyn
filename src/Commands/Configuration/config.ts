@@ -114,6 +114,8 @@ export class Config {
 			return this.updateWebhook('confessions', interaction, channel, client);
 		case 'welcome':
 			return this.updateChannel('welcome', interaction, channel);
+		default:
+			break;
 		}
 	}
 

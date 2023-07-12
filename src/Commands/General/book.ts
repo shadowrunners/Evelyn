@@ -17,7 +17,7 @@ export class Book {
 	})
 	@Guard(
 		RateLimit(TIME_UNIT.seconds, 30, {
-			message: '🔹 | You are currently rate limited. Try again at {until}.',
+			message: '🔹 | Please wait 30 seconds before re-running this command.',
 			ephemeral: true,
 		}),
 	)

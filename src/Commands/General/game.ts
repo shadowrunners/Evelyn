@@ -18,11 +18,11 @@ export class Game {
 	})
 	@Guard(
 		RateLimit(TIME_UNIT.seconds, 30, {
-			message: '🔹 | You are currently rate limited. Try again at {until}.',
+			message: '🔹 | Please wait 30 seconds before re-running this command.',
 			ephemeral: true,
 		}),
 	)
-	async game(
+	game(
 		@SlashOption({
 			name: 'title',
 			description: 'Provide the name of the game.',

@@ -2,7 +2,6 @@ import {
 	Role,
 	TextChannel,
 	EmbedBuilder,
-	PermissionFlagsBits,
 	ApplicationCommandOptionType,
 	ChatInputCommandInteraction,
 } from 'discord.js';
@@ -15,9 +14,9 @@ export class Announce {
 	@Slash({
 		name: 'announce',
 		description: 'Send an announcement via the bot.',
-		defaultMemberPermissions: PermissionFlagsBits.ManageGuild,
+		defaultMemberPermissions: 'ManageGuild',
 	})
-	async announce(
+	announce(
 		@SlashOption({
 			name: 'message',
 			description:

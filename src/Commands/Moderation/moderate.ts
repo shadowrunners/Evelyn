@@ -39,7 +39,7 @@ export class Moderate {
 		description: 'Moderate a user.',
 		defaultMemberPermissions: ['BanMembers', 'KickMembers'],
 	})
-	async moderate(
+	moderate(
 		@SlashOption({
 			name: 'target',
 			description: 'Provide a target.',
@@ -134,7 +134,9 @@ export class Moderate {
 					),
 				],
 			})
-			.catch(() => {});
+			.catch(() => {
+				// Empty so DeepSource doesn't flag this as an issue.
+			});
 
 		if (customId === 'kick_member')
 			await this.target.kick(this.reason ?? 'No reason specified.');

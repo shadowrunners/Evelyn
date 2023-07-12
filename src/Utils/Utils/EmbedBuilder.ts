@@ -167,6 +167,9 @@ export class Builder {
 				],
 				components: [selectMenu, buttonMenu],
 			});
+	
+		default:
+			break;
 		}
 	}
 

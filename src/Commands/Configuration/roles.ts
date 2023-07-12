@@ -331,7 +331,7 @@ export class Roles {
 	@SelectMenuComponent({
 		id: 'reaction',
 	})
-	async reaction(interaction: StringSelectMenuInteraction) {
+	reaction(interaction: StringSelectMenuInteraction) {
 		const { values, member, component } = interaction;
 		const roles = member.roles as GuildMemberRoleManager;
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();

@@ -26,66 +26,62 @@ export class RAWGAPI {
 
 	/** Retrieves a game using the provided query. */
 	public async fetchGame(gameName: string): Promise<RAWGInterface> {
-		return new Promise((resolve, reject) => {
+		try {
 			// Replace % and whatever encodeURIComponent() introduces instead of small spaces to '-' for proper slugs.
 			const game = encodeURIComponent(gameName.toLowerCase()).replace(
 				/%[0-9A-Fa-f]{2}/g,
 				'-',
 			);
 
-			superagent
-				.get(`${this.apiURL}/${game}?key=${this.config.APIs.rawgKey}`)
-				.then(async (res) => {
-					const gameData = res.body;
+			const res = await superagent.get(`${this.apiURL}/${game}?key=${this.config.APIs.rawgKey}`)
+			const gameData = res.body;
 
-					const mappedPlatforms = gameData?.platforms
-						?.map(({ platform }: Platform) => platform.name)
-						.join(', ');
+			const mappedPlatforms = gameData?.platforms
+				?.map(({ platform }: Platform) => platform.name)
+				.join(', ');
 
-					const mappedGenres = gameData?.genres
-						?.map((genre: Genres) => genre.name)
-						.join(', ');
+			const mappedGenres = gameData?.genres
+				?.map((genre: Genres) => genre.name)
+				.join(', ');
 
-					const mappedDevelopers = gameData?.developers
-						?.map((developer: Developers) => developer.name)
-						.join(', ');
+			const mappedDevelopers = gameData?.developers
+				?.map((developer: Developers) => developer.name)
+				.join(', ');
 
-					const mappedPublishers = gameData?.publishers
-						?.map((publisher: Developers) => publisher.name)
-						.join(', ');
+			const mappedPublishers = gameData?.publishers
+				?.map((publisher: Developers) => publisher.name)
+				.join(', ');
 
-					const unixDate = new Date(gameData?.released).getTime() / 1000;
+			const unixDate = new Date(gameData?.released).getTime() / 1000;
 
-					const rawgURI = `https://rawg.io/games/${game}`;
+			const rawgURI = `https://rawg.io/games/${game}`;
 
-					const gameInfo: RAWGInterface = {
-						name: gameData?.name,
-						description: gameData?.description_raw,
-						uri: rawgURI,
-						developers: mappedDevelopers,
-						publishers: mappedPublishers,
-						platforms: mappedPlatforms,
-						metacriticRating: gameData?.metacritic,
-						releaseDate: unixDate,
-						genres: mappedGenres,
-						background_image: gameData?.background_image,
-					};
+			const gameInfo: RAWGInterface = {
+				name: gameData?.name,
+				description: gameData?.description_raw,
+				uri: rawgURI,
+				developers: mappedDevelopers,
+				publishers: mappedPublishers,
+				platforms: mappedPlatforms,
+				metacriticRating: gameData?.metacritic,
+				releaseDate: unixDate,
+				genres: mappedGenres,
+				background_image: gameData?.background_image,
+			};
 
-					resolve(gameInfo);
-				})
-				.catch((err: Error) => {
-					reject(err);
+			return gameInfo;
+		} catch (_err) {
+			this.interaction.reply({
+				embeds: [
+					this.embed.setDescription(
+						'🔹 | There was an error while fetching the information from the API.',
+					),
+				],
+				ephemeral: true,
+			});
 
-					return this.interaction.reply({
-						embeds: [
-							this.embed.setDescription(
-								'🔹 | There was an error while fetching the information from the API.',
-							),
-						],
-						ephemeral: true,
-					});
-				});
-		});
+			return;
+		}
 	}
 }
 
