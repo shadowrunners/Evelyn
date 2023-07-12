@@ -21,7 +21,7 @@ export class Manga {
 	})
 	@Guard(
 		RateLimit(TIME_UNIT.seconds, 30, {
-			message: '🔹 | You are currently rate limited. Try again at {until}.',
+			message: '🔹 | Please wait 30 seconds before re-running this command.',
 			ephemeral: true,
 		}),
 	)
@@ -57,7 +57,7 @@ export class Manga {
 						},
 						{
 							name: 'Japanese Title',
-							value: `${manga.titles.ja_JP}` || 'Unknown.',
+							value: `${manga.titles.ja_JP}`,
 							inline: true,
 						},
 						{

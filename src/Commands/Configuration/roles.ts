@@ -272,7 +272,7 @@ export class Roles {
 				label: role.name,
 				value: role.id,
 				description: x.description,
-				emoji: x.emoji || undefined,
+				emoji: x.emoji ?? undefined,
 			};
 		});
 
@@ -320,7 +320,7 @@ export class Roles {
 				embeds: [
 					embed.setTitle(`Role Panels for ${guild.name}`).addFields({
 						name: docs.panelName,
-						value: roleArray || 'This panel doesn\'t have any roles yet.',
+						value: roleArray ?? 'This panel doesn\'t have any roles yet.',
 					}),
 				],
 			});

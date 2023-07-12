@@ -103,7 +103,7 @@ export class Builder {
 						})
 						.setTitle(welcome?.embed?.title)
 						.setDescription(
-							welcome?.embed?.description ||
+							welcome?.embed?.description ??
 									'This is a placeholder since Discord doesn\'t like empty embeds. :)',
 						)
 						.setImage(welcome.embed?.image?.url)
@@ -128,7 +128,7 @@ export class Builder {
 						})
 						.setTitle(goodbye?.embed?.title)
 						.setDescription(
-							goodbye?.embed?.description ||
+							goodbye?.embed?.description ??
 									'This is a placeholder since Discord doesn\'t like empty embeds. :)',
 						)
 						.setImage(goodbye.embed?.image?.url)
@@ -154,7 +154,7 @@ export class Builder {
 						})
 						.setTitle(tickets?.embed?.title)
 						.setDescription(
-							tickets?.embed?.description ||
+							tickets?.embed?.description ??
 									'This is a placeholder since Discord doesn\'t like empty embeds. :)',
 						)
 						.setImage(tickets.embed?.image?.url)

@@ -107,7 +107,6 @@ export class Evelyn extends Client {
 		);
 
 		await this.loadMusic(this);
-
 		await this.client.login(this.config.token);
 	}
 }

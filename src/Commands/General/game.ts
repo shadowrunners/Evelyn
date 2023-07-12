@@ -63,7 +63,7 @@ export class Game {
 								},
 								{
 									name: 'Metacritic Rating',
-									value: `> ${result.metacriticRating || 'Unknown'} / 100`,
+									value: `> ${result.metacriticRating ?? 'Unknown'} / 100`,
 									inline: true,
 								},
 								{

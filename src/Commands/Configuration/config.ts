@@ -482,7 +482,7 @@ export class Config {
 
 		if (embedData?.description)
 			this.embed.setDescription(
-				replacePlaceholders(embedData.description, member) ||
+				replacePlaceholders(embedData.description, member) ??
 					'This is just a placeholder so that the bot doesn\'t crash. If you see this, you probably forgot to define a description or haven\'t set up the embed yet.',
 			);
 

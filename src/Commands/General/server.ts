@@ -53,7 +53,7 @@ export class ServerInfo {
 					.addFields(
 						{
 							name: 'Description',
-							value: `> ${description || 'None.'}`,
+							value: `> ${description ?? 'None.'}`,
 						},
 						{
 							name: 'General',
@@ -62,7 +62,7 @@ export class ServerInfo {
 								`> **ID** ${id}`,
 								`> **Created** <t:${createdTime}:R>`,
 								`> **Owner** <@${ownerId}>`,
-								`> **Vanity URL** ${vanityURLCode || 'None'}`,
+								`> **Vanity URL** ${vanityURLCode ?? 'None'}`,
 							].join('\n'),
 						},
 						{
@@ -100,7 +100,7 @@ export class ServerInfo {
 						{
 							name: 'Nitro Stats',
 							value: [
-								`> **Tier** ${premiumTier || 'None'}`,
+								`> **Tier** ${premiumTier ?? 'None'}`,
 								`> **Boosts** ${premiumSubscriptionCount}`,
 								`> **Boosters** ${
 									members.cache.filter(
@@ -160,7 +160,7 @@ export class ServerInfo {
 						{
 							name: 'User Roles',
 							value: `> ${
-								userRoles.slice(0, maxDisplayRoles(userRoles)).join(' ') ||
+								userRoles.slice(0, maxDisplayRoles(userRoles)).join(' ') ??
 								'None'
 							}`,
 						},
@@ -169,7 +169,7 @@ export class ServerInfo {
 							value: `> ${
 								managedRoles
 									.slice(0, maxDisplayRoles(managedRoles))
-									.join(' ') || 'None'
+									.join(' ') ?? 'None'
 							}`,
 						},
 					)

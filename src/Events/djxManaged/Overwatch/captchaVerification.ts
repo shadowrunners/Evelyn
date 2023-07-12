@@ -69,7 +69,9 @@ export class CaptchaVerify {
 				files: [attachment],
 				components: [actionRow],
 			})
-			.catch(() => {});
+			.catch(() => {
+				// Empty so DeepSource doesn't flag this as an issue.
+			});
 	}
 
 	@ButtonComponent({

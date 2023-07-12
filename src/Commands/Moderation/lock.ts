@@ -50,7 +50,7 @@ export class Lock {
 		interaction.reply({
 			embeds: [
 				embed.setDescription(
-					`🔹 | This channel is now locked for: ${reason || 'Unknown'}`,
+					`🔹 | This channel is now locked for: ${reason ?? 'Unknown'}`,
 				),
 			],
 		});

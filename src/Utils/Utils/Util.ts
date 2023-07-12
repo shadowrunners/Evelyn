@@ -35,7 +35,7 @@ export class Util {
 		};
 
 		const id = this.interaction.user.id;
-		pages[id] = pages[id] || 0;
+		pages[id] = pages[id] ?? 0;
 		const Pagemax = embeds.length;
 
 		const embed = embeds[pages[id]];
@@ -149,7 +149,7 @@ export class Util {
 		const match = regex.exec(time.trim());
 		  
 		const value = parseInt(match[1], 10);
-		const unitName = match[2] || 'ms';
+		const unitName = match[2] ?? 'ms';
 		const unit = timeUnits.find((timeUnit) =>
 			timeUnit.name === unitName || timeUnit.pluralName === unitName
 		);

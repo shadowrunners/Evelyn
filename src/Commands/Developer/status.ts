@@ -65,7 +65,7 @@ export class Status {
 						},
 						{
 							name: '**Owner**',
-							value: `${application.owner || 'None'}`,
+							value: `${application.owner ?? 'None'}`,
 							inline: true,
 						},
 						{
