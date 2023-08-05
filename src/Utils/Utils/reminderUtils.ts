@@ -11,8 +11,7 @@ export async function reminded(message: Message) {
 		hasBeenReminded: false,
 	});
 
-	if (!data) return;
-	if (data.hasBeenReminded === true) return;
+	if (!data && data.hasBeenReminded === true) return;
 
 	const user = await guild.members.fetch(data.userId);
 
