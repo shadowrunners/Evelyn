@@ -33,7 +33,8 @@ export default class TrackStart {
 		const nowPlaying = new EmbedBuilder()
 			.setColor('Blurple')
 			.setTitle('🎧 Started Playing')
-			.setDescription(`**[${track.title}](${track.uri})**`)
+			.setDescription(`**[${track.title}](${track.uri}) by ${track.author}**`)
+			.setThumbnail(track.artworkUrl)
 			.addFields(
 				{
 					name: 'Queued by',
@@ -46,7 +47,6 @@ export default class TrackStart {
 					inline: true,
 				},
 			)
-			// .setThumbnail(track.image)
 			.setTimestamp();
 
 		const channel = client.channels.cache.get(
