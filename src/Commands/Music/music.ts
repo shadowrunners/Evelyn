@@ -27,6 +27,10 @@ export class Music {
 	private player: Player | undefined;
 	private util: Util;
 
+	constructor() {
+		this.util = new Util();
+	}
+
 	@Slash({
 		name: 'play',
 		description: 'Plays a song.',
@@ -61,7 +65,7 @@ export class Music {
 		await interaction.deferReply();
 
 		switch (res.loadType) {
-		case 'PLAYLIST_LOADED':
+		case 'playlist':
 			this.player.connect();
 			for (const track of res.tracks) this.player.queue.add(track);
 
@@ -79,11 +83,11 @@ export class Music {
 							name: 'Playlist added to the queue',
 							iconURL: user.avatarURL(),
 						})
-						.setDescription(`**[${res.playlistInfo.name}](${query})**`)
+						.setDescription(`**[${res.playlist.name}](${query})**`)
 						.addFields(
 							{
 								name: 'Added',
-								value: `\`${res.tracks.length}\` tracks`,
+								value: `\`${res.playlist.tracks.length}\` tracks`,
 								inline: true,
 							},
 							{
@@ -95,8 +99,8 @@ export class Music {
 				],
 			});
 
-		case 'SEARCH_RESULT':
-		case 'TRACK_LOADED':
+		case 'search':
+		case 'track':
 			this.player.connect();
 			this.player.queue.add(res.tracks[0]);
 
@@ -111,8 +115,9 @@ export class Music {
 							iconURL: user.avatarURL(),
 						})
 						.setDescription(
-							`**[${res.tracks[0].title}](${res.tracks[0].uri})** `,
+							`**[${res.tracks[0].title}](${res.tracks[0].uri}) by ${res.tracks[0].author}** `,
 						)
+						.setThumbnail(res.tracks[0].artworkUrl)
 						.addFields({
 							name: 'Queued by',
 							value: `${member}`,
@@ -129,8 +134,8 @@ export class Music {
 				});
 			return interaction.editReply({ embeds: [embed] });
 
-		case 'NO_MATCHES':
-		case 'LOAD_FAILED':
+		case 'empty':
+		case 'error':
 			if (this.player) this.player?.destroy();
 
 			return interaction.editReply({
@@ -208,7 +213,7 @@ export class Music {
 				ephemeral: true,
 			});
 
-		this.player.seekTo(duration);
+		this.player.seek(duration);
 
 		return interaction.reply({
 			embeds: [

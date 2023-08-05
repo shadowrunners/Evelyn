@@ -3,7 +3,7 @@ import colors from '@colors/colors';
 import { config } from './config.js';
 import { Manager } from '@shadowrunners/automata';
 import { dirname, importx } from '@discordx/importer';
-import { IntentsBitField, Options } from 'discord.js';
+import { GatewayIntentBits, Options } from 'discord.js';
 import { BotConfig } from './Interfaces/Interfaces.js';
 import { fileLoad } from './Utils/Utils/fileLoader.js';
 // import { crashReporter } from './functions/crashReport.js';
@@ -18,7 +18,7 @@ const {
 	GuildVoiceStates,
 	MessageContent,
 	DirectMessages,
-} = IntentsBitField.Flags;
+} = GatewayIntentBits;
 
 export class Evelyn extends Client {
 	public config: BotConfig;
@@ -65,7 +65,7 @@ export class Evelyn extends Client {
 			nodes: this.config.music.nodes,
 			reconnectTries: 3,
 			reconnectTimeout: 10000,
-			resumeKey: 'youshallresume',
+			resumeStatus: true,
 			resumeTimeout: 5000,
 			defaultPlatform: 'dzsearch',
 		});

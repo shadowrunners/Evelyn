@@ -9,7 +9,7 @@ import { EmbedBuilder } from 'discord.js';
  * Handles all checks regarding voice, queues and currently playing songs.
  * @param {string} checkType The type of check.
  * @param {ChatInputCommandInteraction} interaction The interaction object.
- * @param {Player} player The player.
+ * @param Player The player.
  */
 export async function check(
 	checkType: string[],
