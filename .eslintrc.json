@@ -1,9 +1,15 @@
 {
-	"extends": "eslint:recommended",
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:@typescript-eslint/eslint-recommended"
+	],
 	"env": {
 		"node": true,
 		"es6": true
 	},
+	"parser": "@typescript-eslint/parser",
+	"plugins": ["@typescript-eslint/eslint-plugin"],
 	"parserOptions": {
 		"ecmaVersion": 2021
 	},
@@ -13,7 +19,6 @@
 		"comma-dangle": ["error", "always-multiline"],
 		"comma-spacing": "error",
 		"comma-style": "error",
-		"curly": ["error", "multi-line"],
 		"dot-location": ["error", "property"],
 		"handle-callback-err": "off",
 		"indent": ["error", "tab"],

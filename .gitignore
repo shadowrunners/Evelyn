@@ -1,6 +1,6 @@
 node_modules
 .env
-src/structures/config.json
-src/dashboard/oldDash.js
+dist
+src/config.ts
 package-lock.json
 json.sqlite
