@@ -6,6 +6,7 @@ import { dirname, importx } from '@discordx/importer';
 import { GatewayIntentBits, Options } from 'discord.js';
 import { BotConfig } from './Interfaces/Interfaces.js';
 import { fileLoad } from './Utils/Utils/fileLoader.js';
+import { DatabaseType, Giveaways } from 'discord-giveaways-super';
 // import { crashReporter } from './functions/crashReport.js';
 // import Economy from 'discord-economy-super/mongodb/src/index.js';
 
@@ -15,6 +16,7 @@ const {
 	GuildMembers,
 	GuildModeration,
 	GuildEmojisAndStickers,
+	GuildMessageReactions,
 	GuildVoiceStates,
 	MessageContent,
 	DirectMessages,
@@ -25,6 +27,7 @@ export class Evelyn extends Client {
 	// To implement later. This shit takes too much time.
 	// public economy: Economy<boolean>;
 	public manager: Manager;
+	public giveaways: Giveaways<DatabaseType.MONGODB>;
 	private client: Client;
 
 	constructor() {
@@ -36,6 +39,7 @@ export class Evelyn extends Client {
 				GuildModeration,
 				GuildVoiceStates,
 				GuildEmojisAndStickers,
+				GuildMessageReactions,
 				MessageContent,
 				DirectMessages,
 			],
@@ -60,6 +64,7 @@ export class Evelyn extends Client {
 		});
 
 		this.config = config;
+		this.client = this;
 
 		this.manager = new Manager({
 			nodes: this.config.music.nodes,
@@ -70,7 +75,15 @@ export class Evelyn extends Client {
 			defaultPlatform: 'dzsearch',
 		});
 
-		this.client = this;
+		this.giveaways = new Giveaways(this.client, {
+			database: DatabaseType.MONGODB,
+			connection: {
+				connectionURI: this.config.database,
+				dbName: 'test',
+				collectionName: 'Giveaways',
+			},
+			debug: true,
+		})
 
 		// process.on('unhandledRejection', (err) => crashReporter(client, err));
 		process.on('unhandledRejection', (err) => console.log(err));
