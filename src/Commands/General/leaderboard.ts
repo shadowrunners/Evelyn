@@ -34,7 +34,7 @@ export class Leaderboard {
 				this.embed
 					.setTitle(`Leaderboard for ${guild.name}`)
 					.setDescription(
-						`${mappedLB.join('\n\n')}` ??
+						mappedLB.join('\n\n') ??
 							'This leaderboard is empty as there is currently no data to compute the leaderboard.',
 					),
 			],
