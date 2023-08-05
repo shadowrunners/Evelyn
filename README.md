@@ -5,15 +5,15 @@
   <h3 align=center>Unleash the full potential of your server.</h3>
   
   <div align=center>
-      <img src="https://forthebadge.com/images/badges/built-with-love.svg">
+      <img src="https://img.shields.io/github/stars/shadowrunners/Evelyn?style=for-the-badge" />
   </a>
 
   <a href="#">
-  <img src="https://forthebadge.com/images/badges/contains-tasty-spaghetti-code.svg"
+    <img src="https://img.shields.io/discord/838499177243738172?style=for-the-badge" />
   </a>
 
   <a href="https://buymeacoffee.com/scr3ppie">
-  <img src="https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?style=for-the-badge"
+    <img src="https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?style=for-the-badge"
   </a>
 </div>
 
@@ -27,7 +27,7 @@ Evelyn is an open-source Discord Bot made as a safe alternative to bots that are
 - 🎧 **Music**: `music play`, `music volume`, `music queue`, `music skip`, `music pause`, `music resume`, `music stop`, `music shuffle`, `music lyrics`.
 - 📦 **Miscellaneous**: `avatar`, `anime`, `announce`, `leaderboard`, `movie`, `rank`, `remind`, `show`, `userinfo`, `serverinfo`.
 - 😀 **Actions**: `actions (bite, blush, bonk, bully, cringe, cry, cuddle, handhold, highfive, hug, kill, kiss, pat poke, slap, smile, wave, yeet)`
-- 📷 **Fun**: `cat`, `game (2048, 8ball, connect4, findemoji, guessthatpokemon, hangman, minesweeper, rps, snake, tictactoe, trivia, wordle, wouldyourather)`, `image (awooify, baguette, blurpify, captcha, changemymind, deepfry, kannagen, phcomment, threats, trash, trumptweet, tweet)`.
+- 📷 **Fun**: `cat`, `image (awooify, baguette, blurpify, captcha, changemymind, deepfry, kannagen, phcomment, threats, trash, trumptweet, tweet)`.
 
 ## Credits
 > DISCLAIMER: Evelyn uses various APIs but is not endorsed nor certified by the respective teams that actively maintain these APIs.
@@ -42,8 +42,6 @@ Evelyn is powered by the following APIs:
 - [waifu.pics](https://waifu.pics) - used for the actions system
 - [NekoBot](https://nekobot.xyz) - used for the image system
   
-
-
 If we used your code and forgot to add you to the credits, shoot me a message over on Discord at scrappie#5451.
 
 To avoid confusion with our hosted version of Evelyn, you are not allowed to publicly host another instance of Evelyn under the same name and use the same avatar.
