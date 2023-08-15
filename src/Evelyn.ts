@@ -76,7 +76,7 @@ export class Evelyn extends Client {
 		process.on('unhandledRejection', (err) => console.log(err));
 		process.on('unhandledException', (err) => console.log(err));
 	}
-	
+
 	/**
 	 * Loads music events.
 	 * @param {Evelyn} client - The client object.
@@ -103,7 +103,7 @@ export class Evelyn extends Client {
 	/** Imports all commands and events then launches a new instance of the bot. */
 	public async launch() {
 		await importx(
-			`${dirname(import.meta.url)}/{events/djxManaged,commands}/**/*.{ts,js}`,
+			`${dirname(import.meta.url)}/{Events/djxManaged,Commands}/**/*.{ts,js}`,
 		);
 
 		await this.loadMusic(this);
