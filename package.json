@@ -26,7 +26,8 @@
 		"glob": "^10.3.3",
 		"mongoose": "^7.4.2",
 		"node-replicate": "^2.0.0",
-		"superagent": "^8.0.9"
+		"superagent": "^8.0.9",
+		"musicard": "^1.4.3"
 	},
 	"devDependencies": {
 		"@types/superagent": "^4.1.18",
