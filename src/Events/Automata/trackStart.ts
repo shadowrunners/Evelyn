@@ -4,11 +4,12 @@ import {
 	ButtonBuilder,
 	ButtonStyle,
 	TextChannel,
+	AttachmentBuilder,
 } from 'discord.js';
 import { Player, AutomataTrack } from '@shadowrunners/automata';
 import { Util } from '../../Utils/Utils/Util.js';
 import { Evelyn } from '../../Evelyn.js';
-
+import { musicCard } from 'musicard';
 const { Primary } = ButtonStyle;
 
 export default class TrackStart {
@@ -16,6 +17,20 @@ export default class TrackStart {
 
 	async execute(player: Player, track: AutomataTrack, client: Evelyn) {
 		const utils = new Util();
+
+		const card = new musicCard();
+		.setName(track.title)
+                .setAuthor(track.author)
+                 .setColor("auto")
+                 .setBrightness(100)
+                 .setThumbnail(track.thumbnail)
+                 .setProgress(0)
+                 .setStartTime("0:00")
+                 .setEndTime(utils.formatTime(track.length))
+
+		const buffer = await card.build();
+		const attachment = new AttachmentBuilder(buffer, { name: `musicard.png` });
+		
 		const buttonRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
 			new ButtonBuilder().setCustomId('pause').setLabel('⏯️').setStyle(Primary),
 			new ButtonBuilder().setCustomId('skip').setLabel('⏭️').setStyle(Primary),
@@ -54,7 +69,7 @@ export default class TrackStart {
 		) as TextChannel;
 
 		await channel
-			.send({ embeds: [nowPlaying], components: [buttonRow] })
+			.send({ embeds: [nowPlaying], components: [buttonRow], files: [attachment] })
 			.then((message) => player.setNowPlayingMessage(message));
 	}
 }
