@@ -29,7 +29,7 @@
 	"dependencies": {
 		"@colors/colors": "^1.6.0",
 		"@discordx/importer": "^1.2.2",
-		"@discordx/utilities": "^5.2.1",
+		"@discordx/utilities": "^6.0.0",
 		"@sentry/browser": "^7.69.0",
 		"@sentry/cli": "^2.20.7",
 		"@sentry/node": "^7.69.0",
