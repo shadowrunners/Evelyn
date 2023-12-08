@@ -140,7 +140,7 @@ export class CaptchaVerify {
 			});
 		});
 
-		message.edit({
+		await message.edit({
 			embeds: [message.embeds[0]],
 			components: [],
 			files: [],
