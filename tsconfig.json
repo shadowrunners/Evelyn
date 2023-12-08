@@ -18,8 +18,11 @@
 
 		"paths": {
 			"@/*": ["./src/*"],
-			"@Utils/*": ["./src/Utils/*"],
-			"@Schemas/*": ["./src/Schemas/*"],
+			
+			"@Checkers/*": ["./src/Utils/Checkers/*"],
+			"@Helpers/*": ["./src/Utils/Helpers/*"],
+
+			"@Schemas": ["./src/Schemas"],
 			"@Config": ["./src/config"],
 			"@Services": ["./src/Services"],
 			"@Evelyn": ["./src/Evelyn"]

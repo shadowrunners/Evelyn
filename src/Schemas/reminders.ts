@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
 
-export const Reminders = model(
+export const ReminderDB = model(
 	'Reminders',
 	new Schema({
 		guildId: String,

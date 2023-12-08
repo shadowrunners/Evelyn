@@ -3,7 +3,7 @@ import { HexColorString } from 'discord.js';
 
 interface EmbedInterface {
 	/** The message that will be sent alongside the embed. If defined, that is otherwise it doesn't do shit. */
-	messagecontent: string;
+	content: string;
 	/** The title of the embed. */
 	title: string;
 	/** The description of the embed. */
@@ -38,7 +38,7 @@ interface EmbedInterface {
 
 export interface GuildInterface {
 	/** The ID of the server. */
-	id: string;
+	guildId: string;
 
 	logs: {
 		/** Indicates if the logging system is enabled or not. */
@@ -121,9 +121,9 @@ export interface GuildInterface {
 }
 
 export const GuildDB = model<GuildInterface>(
-	'GuildDB',
+	'Guild',
 	new Schema<GuildInterface>({
-		id: String,
+		guildId: String,
 		logs: {
 			enabled: Boolean,
 			channel: String,
