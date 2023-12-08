@@ -5,9 +5,9 @@ import { join, extname } from 'path';
 export async function fileLoad(dir: string) {
 	try {
 		const files = await glob(
-			join(`${process.cwd()}/src/`, dir, '**/*.ts').replace(/\\/g, '/'),
+			join(`${process.cwd()}/src/`, dir, '**/*.{ts.js}').replace(/\\/g, '/'),
 		);
-		const jsFiles = files.filter((file) => extname(file) === '.ts');
+		const jsFiles = files.filter((file) => extname(file) === '.ts' || extname(file) === '.js');
 		return jsFiles;
 	}
 	catch (err) {
