@@ -1,16 +1,17 @@
-import {
-	EmbedBuilder,
-	ApplicationCommandOptionType,
-	ChatInputCommandInteraction,
-} from 'discord.js';
+import { EmbedBuilder, ApplicationCommandOptionType, ChatInputCommandInteraction } from 'discord.js';
 import { Discord, Guard, Slash, SlashOption } from 'discordx';
 import { RateLimit, TIME_UNIT } from '@discordx/utilities';
-import { RAWGAPI } from '../../Utils/APIs/rawgAPI.js';
-import { Evelyn } from '../../Evelyn.js';
+import { injectable } from 'tsyringe';
+import { RAWG } from '@Services';
+import { Evelyn } from '@Evelyn';
 
 @Discord()
+@injectable()
 export class Game {
 	private embed: EmbedBuilder;
+
+	// eslint-disable-next-line no-empty-function
+	constructor(private rawg: RAWG) {}
 
 	@Slash({
 		description: 'Search for a game using RAWG.',
@@ -45,9 +46,7 @@ export class Game {
 				ephemeral: true,
 			});
 
-		const rawgAPI = new RAWGAPI(interaction, client);
-
-		rawgAPI
+		this.rawg
 			.fetchGame(title)
 			.then((result) => {
 				return interaction.reply({
