@@ -14,6 +14,14 @@
 		"allowSyntheticDefaultImports": true,
 		"skipLibCheck": true,
 		"skipDefaultLibCheck": true,
-		"declaration": true
+		"declaration": true,
+
+		"paths": {
+			"@/*": ["./src/*"],
+			"@Utils/*": ["./src/Utils/*"],
+			"@Schemas/*": ["./src/Schemas/*"],
+			"@Config": ["./src/config"],
+			"@Services": ["./src/Services"],
+		}
 	}
 }
