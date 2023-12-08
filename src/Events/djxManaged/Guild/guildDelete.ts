@@ -6,12 +6,12 @@ import { Discord, On } from 'discordx';
 @Discord()
 export class ClearGuildData {
 	@On({ event: 'guildDelete' })
-	async deleteData(guild: Guild, client: Evelyn) {
+	async deleteData([guild]: [Guild], client: Evelyn) {
 		const { iconURL, name, memberCount, id } = guild;
 		const webhook = new WebhookClient({ url: client.config.debug.watcherHook });
 
 		await DB.findOneAndDelete({
-			id,
+			guildId: id,
 		});
 
 		const embed = new EmbedBuilder()

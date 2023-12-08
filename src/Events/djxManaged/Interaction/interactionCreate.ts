@@ -1,4 +1,5 @@
-import { isBlacklisted } from '../../../Utils/Utils/isBlacklisted.js';
+import { isBlacklisted } from '../../../Utils/Helpers/isBlacklisted.js';
+// import { captureException } from '@sentry/browser';
 import { Discord, On, ArgsOf } from 'discordx';
 import { Evelyn } from '../../../Evelyn.js';
 
@@ -15,6 +16,7 @@ export class OnInteraction {
 		}
 		catch (err) {
 			console.log(err);
+			// return captureException(err);
 		}
 	}
 }

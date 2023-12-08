@@ -1,17 +1,45 @@
-import { OWLogs, validate } from '../../../Utils/Utils/OWLogs.js';
+import { getAuditLog, send, validate } from '../../../Utils/Helpers/loggerUtils.js';
+import { AuditLogEvent, EmbedBuilder, GuildEmoji } from 'discord.js';
 import { Evelyn } from '../../../Evelyn.js';
-import { GuildEmoji } from 'discord.js';
 import { Discord, On } from 'discordx';
 
 @Discord()
 export class EmojiDelete {
 	@On({ event: 'emojiDelete' })
 	async emojiDelete([emoji]: [GuildEmoji], client: Evelyn) {
-		const { guild } = emoji;
+		if (!(await validate(emoji.guild.id))) return;
 
-		if (!(await validate(guild))) return;
-		const logs = new OWLogs(guild, client);
+		const audit = await getAuditLog({
+			type: AuditLogEvent.EmojiDelete,
+			guild: emoji.guild,
+		});
 
-		return await logs.emojiDelete(emoji);
+		const embed = new EmbedBuilder()
+			.setColor('Blurple')
+			.setAuthor({
+				name: emoji.guild.name,
+				iconURL: emoji.guild.iconURL(),
+			})
+			.setTitle('Emoji Deleted')
+			.addFields(
+				{
+					name: '🔹 | Emoji Name',
+					value: `> ${emoji.name}`,
+				},
+				{
+					name: '🔹 | Emoji ID',
+					value: `> ${emoji.id}`,
+				},
+				{
+					name: '🔹 | Removed by',
+					value: `> ${audit.executor}`,
+				},
+			);
+
+		return await send({
+			guild: emoji.guild.id,
+			client,
+			embed,
+		});
 	}
 }
