@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Message } from 'discord.js';
-import { getAuditLog, send, validate } from '../../../Utils/Helpers/loggerUtils.js';
+import { send, validate } from '../../../Utils/Helpers/loggerUtils.js';
 import { Evelyn } from '../../../Evelyn.js';
 import { Discord, On } from 'discordx';
 
