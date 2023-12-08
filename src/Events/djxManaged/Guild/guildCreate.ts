@@ -6,11 +6,11 @@ import { Discord, On } from 'discordx';
 @Discord()
 export class CreateGuildData {
 	@On({ event: 'guildCreate' })
-	async createData(guild: Guild, client: Evelyn) {
+	async createData([guild]: [Guild], client: Evelyn) {
 		const { name, memberCount, id } = guild;
 		const webhook = new WebhookClient({ url: client.config.debug.watcherHook });
 
-		await DB.create({ id });
+		await DB.create({ guildId: id });
 
 		const embed = new EmbedBuilder()
 			.setColor('Blurple')

@@ -147,13 +147,13 @@ export class Util {
 
 		const regex = /^\s*(\d+)\s*(ms|s|m|h|d)?\s*$/i;
 		const match = regex.exec(time.trim());
-		  
+
 		const value = parseInt(match[1], 10);
 		const unitName = match[2] ?? 'ms';
 		const unit = timeUnits.find((timeUnit) =>
-			timeUnit.name === unitName || timeUnit.pluralName === unitName
+			timeUnit.name === unitName || timeUnit.pluralName === unitName,
 		);
-		  
+
 		return value * unit.ms;
 	}
 }
@@ -162,5 +162,5 @@ interface TimeUnit {
 	name: string;
 	pluralName: string;
 	ms: number;
-  }
-  
+}
+

@@ -1,5 +1,5 @@
-import { OWLogs, validate } from '../../../Utils/Utils/OWLogs.js';
-import { Message } from 'discord.js';
+import { getAuditLog, send, validate } from '../../../Utils/Helpers/loggerUtils.js';
+import { AuditLogEvent, EmbedBuilder, Message } from 'discord.js';
 import { Evelyn } from '../../../Evelyn.js';
 import { Discord, On } from 'discordx';
 
@@ -7,11 +7,49 @@ import { Discord, On } from 'discordx';
 export class MessageDelete {
 	@On({ event: 'messageDelete' })
 	async messageDelete([message]: [Message], client: Evelyn) {
-		const { guild } = message;
+		if (!(await validate(message.guildId))) return;
 
-		if (!(await validate(guild))) return;
-		const logs = new OWLogs(guild, client);
+		const { author, content, embeds, id } = message;
+		const systemStatus = message.system === true || message.system === null;
 
-		return await logs.messageDelete(message);
+		if (author?.bot || embeds?.length > 0 || systemStatus || content === null)
+			return;
+
+		const audit = await getAuditLog({
+			type: AuditLogEvent.MessageDelete,
+			guild: message.guild,
+		});
+
+		const embed = new EmbedBuilder()
+			.setColor('Blurple')
+			.setAuthor({
+				name: message.guild.name,
+				iconURL: message.guild.iconURL(),
+			})
+			.setTitle('Message Deleted')
+			.addFields({
+				name: '🔹 | Content',
+				value: `> ${content}`,
+			},
+			{
+				name: '🔹 | ID',
+				value: `> ${id}`,
+			},
+			{
+				name: '🔹 | Sent by',
+				value: `> ${author}`,
+			},
+			{
+				name: '🔹 | Deleted by',
+				value: `> ${audit.executor}>`,
+			},
+			)
+			.setTimestamp();
+
+		return await send({
+			guild: message.guildId,
+			client,
+			embed,
+		});
 	}
 }

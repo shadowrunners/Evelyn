@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import { Util } from '../../Utils/Utils/util.js';
+import { Util } from '../../Utils/Utils/Util.js';
 import { Discord, Slash, Guild } from 'discordx';
 import { config } from '../../config.js';
 import { Evelyn } from '../../Evelyn.js';

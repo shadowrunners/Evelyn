@@ -24,14 +24,14 @@ export async function reminded(message: Message) {
 			],
 		}).catch(() => {
 			// Empty so DeepSource doesn't flag this as an issue.
-		})
+		});
 
-		await DB.updateOne(
-			{
-				guildId: data.guildId,
-				userId: data.userId,
-				scheduledTime: data.scheduledTime,
-			},
-			{ hasBeenReminded: true },
-		);
+	await DB.updateOne(
+		{
+			guildId: data.guildId,
+			userId: data.userId,
+			scheduledTime: data.scheduledTime,
+		},
+		{ hasBeenReminded: true },
+	);
 }

@@ -1,17 +1,44 @@
-import { OWLogs, validate } from '../../../Utils/Utils/OWLogs.js';
+import { send, validate } from '../../../Utils/Helpers/loggerUtils.js';
+import { EmbedBuilder, GuildMember } from 'discord.js';
 import { Evelyn } from '../../../Evelyn.js';
-import { GuildMember } from 'discord.js';
 import { Discord, On } from 'discordx';
 
 @Discord()
 export class GuildMemberRemove {
 	@On({ event: 'guildMemberRemove' })
 	async guildMemberRemove([member]: [GuildMember], client: Evelyn) {
-		const { guild } = member;
+		if (!(await validate(member.guild.id))) return;
 
-		if (!(await validate(guild))) return;
-		const logs = new OWLogs(guild, client);
+		const embed = new EmbedBuilder()
+			.setColor('Blurple')
+			.setAuthor({
+				name: member.guild.name,
+				iconURL: member.guild.iconURL(),
+			})
+			.setTitle('Member Left')
+			.addFields(
+				{
+					name: '🔹 | Member Name',
+					value: `> ${member.displayName}`,
+				},
+				{
+					name: '🔹 | Member ID',
+					value: `> ${member.id}`,
+				},
+				{
+					name: '🔹 | Account Age',
+					value: `> <t:${parseInt(
+						(member.user.createdTimestamp / 1000).toString(),
+					)}:R>`,
+				},
+			)
+			.setTimestamp();
 
-		return await logs.guildMemberRemove(member);
+
+		return await send({
+			guild: member.guild.id,
+			client,
+			embed,
+		});
 	}
 }

@@ -1,4 +1,5 @@
 import { WebhookClient, EmbedBuilder, codeBlock } from 'discord.js';
+import { captureException } from '@sentry/browser';
 import { Evelyn } from '../../Evelyn.js';
 import { inspect } from 'util';
 
@@ -21,6 +22,8 @@ export function crashReporter(client: Evelyn, err: Error) {
 			)} `,
 		)
 		.setTimestamp();
+
+	captureException(err);
 
 	return crashReportClient.send({
 		embeds: [embed],

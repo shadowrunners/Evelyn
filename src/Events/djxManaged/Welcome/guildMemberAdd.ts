@@ -1,4 +1,4 @@
-import { replacePlaceholders } from '../../../Utils/Utils/replacePlaceholders.js';
+import { replacePlaceholders } from '../../../Utils/Helpers/replacePlaceholders.js';
 import { GuildMember, EmbedBuilder, TextChannel } from 'discord.js';
 import { GuildDB as DB } from '../../../Schemas/guild.js';
 import { Evelyn } from '../../../Evelyn.js';
@@ -22,7 +22,7 @@ export class Welcomer {
 			return;
 
 		const embed = data.welcome.embed;
-		const content = data.welcome.embed.messagecontent;
+		const content = data.welcome.embed.content;
 
 		const welcomeMessage = replacePlaceholders(content, member);
 		const welcomeEmbed = new EmbedBuilder();
