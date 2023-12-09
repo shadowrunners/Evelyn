@@ -4,7 +4,7 @@ import {
 	ApplicationCommandOptionType,
 } from 'discord.js';
 import { Discord, Slash, SlashOption, Guard } from 'discordx';
-import { TMDBAPI } from '../../Utils/APIs/tmdbAPI.js';
+import { TMDBAPI } from '../../Services/tmdbAPI.js';
 import { RateLimit, TIME_UNIT } from '@discordx/utilities';
 
 @Discord()
