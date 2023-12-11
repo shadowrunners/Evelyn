@@ -1,12 +1,18 @@
-import { Client } from 'discordx';
+import '@abraham/reflection';
+
+import { Client, DIService } from 'discordx';
 import colors from '@colors/colors';
-import { config } from './config.js';
+import { config } from '@Config';
+import { container } from 'tsyringe';
 import { Manager } from '@shadowrunners/automata';
 import { dirname, importx } from '@discordx/importer';
 import { GatewayIntentBits, Options } from 'discord.js';
-import { BotConfig } from './Interfaces/Interfaces.js';
-import { fileLoad } from './Utils/Utils/fileLoader.js';
+import { BotConfig } from '@/Interfaces/Interfaces.js';
+import { fileLoad } from '@Helpers/fileLoader.js';
 import { DatabaseType, Giveaways } from 'discord-giveaways-super';
+import { addTracingExtensions, init } from '@sentry/browser';
+import { ProfilingIntegration } from '@sentry/profiling-node';
+import { tsyringeDependencyRegistryEngine } from '@discordx/di';
 // import { crashReporter } from './functions/crashReport.js';
 // import Economy from 'discord-economy-super/mongodb/src/index.js';
 
@@ -46,7 +52,6 @@ export class Evelyn extends Client {
 			silent: false,
 			makeCache: Options.cacheWithLimits({
 				...Options.DefaultMakeCacheSettings,
-				ReactionManager: 0,
 				GuildInviteManager: 0,
 				GuildScheduledEventManager: 0,
 				PresenceManager: 0,
@@ -56,9 +61,11 @@ export class Evelyn extends Client {
 			sweepers: {
 				...Options.DefaultSweeperSettings,
 				messages: {
-					interval: 43200, // Clear the message cache every 12 hours.
+					// Clear the message cache every 12 hours.
+					interval: 43200,
 					filter: () => (message) =>
-						message.author.bot && message.author.id !== this.client.user.id, // Removes all bots.
+						// Removes all bots.
+						message.author.bot && message.author.id !== this.client.user.id,
 				},
 			},
 		});
@@ -69,7 +76,7 @@ export class Evelyn extends Client {
 		this.manager = new Manager({
 			nodes: this.config.music.nodes,
 			reconnectTries: 3,
-			reconnectTimeout: 10000,
+			reconnectTimeout: 5000,
 			resumeStatus: true,
 			resumeTimeout: 5000,
 			defaultPlatform: 'dzsearch',
@@ -79,13 +86,13 @@ export class Evelyn extends Client {
 			database: DatabaseType.MONGODB,
 			connection: {
 				connectionURI: this.config.database,
-				dbName: 'test',
+				dbName: '',
 				collectionName: 'Giveaways',
 			},
 			debug: true,
-		})
+		});
 
-		// process.on('unhandledRejection', (err) => crashReporter(client, err));
+		// Replace this with Sentry stuff.
 		process.on('unhandledRejection', (err) => console.log(err));
 		process.on('unhandledException', (err) => console.log(err));
 	}
@@ -115,9 +122,24 @@ export class Evelyn extends Client {
 
 	/** Imports all commands and events then launches a new instance of the bot. */
 	public async launch() {
+		DIService.engine = tsyringeDependencyRegistryEngine.setInjector(container);
+
 		await importx(
 			`${dirname(import.meta.url)}/{Events/djxManaged,Commands}/**/*.{ts,js}`,
 		);
+
+		// Initialize Sentry
+		addTracingExtensions();
+		init({
+			dsn: this.config.debug.telemetry,
+			tracesSampleRate: 1.0,
+			profilesSampleRate: 1.0,
+			integrations: [
+				new ProfilingIntegration(),
+			],
+		});
+
+		console.log('Initialised Sentry.');
 
 		await this.loadMusic(this);
 		await this.client.login(this.config.token);
