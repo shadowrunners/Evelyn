@@ -1,7 +1,7 @@
 import { EmbedBuilder, ApplicationCommandOptionType, ChatInputCommandInteraction } from 'discord.js';
 import { Discord, Guard, Slash, SlashOption } from 'discordx';
 import { RateLimit, TIME_UNIT } from '@discordx/utilities';
-import { injectable } from 'tsyringe';
+import { inject, injectable } from 'tsyringe';
 import { RAWG } from '@Services';
 import { Evelyn } from '@Evelyn';
 
@@ -11,7 +11,7 @@ export class Game {
 	private embed: EmbedBuilder;
 
 	// eslint-disable-next-line no-empty-function
-	constructor(private rawg: RAWG) {}
+	constructor(@inject(RAWG) private readonly rawg: RAWG) {}
 
 	@Slash({
 		description: 'Search for a game using RAWG.',
