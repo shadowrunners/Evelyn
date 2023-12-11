@@ -6,11 +6,11 @@ import { Discord, On } from 'discordx';
 @Discord()
 export class MessageUpdate {
 	@On({ event: 'messageUpdate' })
-	async messageUpdate(message: Message, client: Evelyn) {
+	async messageUpdate(message: Message[], client: Evelyn) {
 		const oldMessage = message[0];
 		const newMessage = message[1];
 
-		if (oldMessage.author?.bot && !(await validate(oldMessage.guild))) return;
+		if (oldMessage.author?.bot && !(await validate(oldMessage.guildId))) return;
 
 		const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
 			new ButtonBuilder()
@@ -22,8 +22,8 @@ export class MessageUpdate {
 		const embed = new EmbedBuilder()
 			.setColor('Blurple')
 			.setAuthor({
-				name: message.guild.name,
-				iconURL: message.guild.iconURL(),
+				name: oldMessage.guild.name,
+				iconURL: oldMessage.guild.iconURL(),
 			})
 			.setTitle('Message Updated')
 			.addFields({
@@ -47,7 +47,7 @@ export class MessageUpdate {
 
 		if (oldMessage.content !== newMessage.content)
 			return await send({
-				guild: message.guildId,
+				guild: oldMessage.guildId,
 				client,
 				embed,
 				components: actionRow,
