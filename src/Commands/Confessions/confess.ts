@@ -1,17 +1,8 @@
-import {
-	EmbedBuilder,
-	ModalBuilder,
-	TextInputStyle,
-	ActionRowBuilder,
-	TextInputBuilder,
-	ChatInputCommandInteraction,
-	ModalSubmitInteraction,
-} from 'discord.js';
-const { Paragraph } = TextInputStyle;
-import { GuildDB as DB } from '../../Schemas/guild.js';
+import { EmbedBuilder, ModalBuilder, TextInputStyle, ActionRowBuilder, TextInputBuilder, ChatInputCommandInteraction, ModalSubmitInteraction } from 'discord.js';
+import { webhookDelivery } from '@Helpers/sendWebhook.js';
 import { Discord, Slash, ModalComponent } from 'discordx';
-import { webhookDelivery } from '../../Utils/Utils/webhookDelivery.js';
-import { Evelyn } from '../../Evelyn.js';
+import { Guilds } from '@Schemas';
+import { Evelyn } from '@Evelyn';
 
 @Discord()
 export class Confess {
@@ -25,7 +16,7 @@ export class Confess {
 					new TextInputBuilder()
 						.setCustomId('confession')
 						.setLabel('Confession')
-						.setStyle(Paragraph)
+						.setStyle(TextInputStyle.Paragraph)
 						.setRequired(true)
 						.setMinLength(1),
 				),
@@ -36,7 +27,7 @@ export class Confess {
 	@ModalComponent()
 	async confessionModal(interaction: ModalSubmitInteraction, client: Evelyn) {
 		const { fields, guildId } = interaction;
-		const data = await DB.findOne({ id: guildId });
+		const data = await Guilds.findOne({ id: guildId });
 		const embed = new EmbedBuilder().setColor('Blurple');
 		const confession = fields.getTextInputValue('confession');
 
@@ -50,7 +41,7 @@ export class Confess {
 				ephemeral: true,
 			});
 
-		interaction.reply({
+		await interaction.reply({
 			embeds: [
 				embed.setDescription('🔹 | Your confession will be delivered shortly.'),
 			],
@@ -62,7 +53,7 @@ export class Confess {
 			data,
 			client,
 			embed
-				.setTitle('A wild confession has appeared!')
+				.setTitle('Evelyn · Confessions')
 				.setDescription(confession)
 				.setTimestamp(),
 		);

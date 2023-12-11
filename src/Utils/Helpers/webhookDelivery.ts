@@ -1,6 +1,6 @@
 import { WebhookClient, EmbedBuilder, APIMessage } from 'discord.js';
-import { GuildInterface } from '../../Schemas/guild.js';
-import { SecureStorage } from './secureStorage.js';
+import { GuildInterface } from '@/Schemas/guild.js';
+import { SecureStorage } from '@utils/secureStorage.js';
 import { Evelyn } from '../../Evelyn.js';
 
 /** This function delivers the logs using Discord Webhooks. It exists as a separate dedicated function to avoid repeating code. */

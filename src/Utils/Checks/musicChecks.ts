@@ -1,15 +1,15 @@
 import type {
 	ExtendedButtonInteraction,
 	ExtendedChatInteraction,
-} from '../../Interfaces/Interfaces.js';
+} from '@/Interfaces/Interfaces.js';
 import { Player } from '@shadowrunners/automata';
 import { EmbedBuilder } from 'discord.js';
 
 /**
  * Handles all checks regarding voice, queues and currently playing songs.
  * @param {string} checkType The type of check.
- * @param {ChatInputCommandInteraction} interaction The interaction object.
- * @param Player The player.
+ * @param {ExtendedChatInteraction | ExtendedButtonInteraction} interaction The interaction object.
+ * @param player The player.
  */
 export async function check(
 	checkType: string[],

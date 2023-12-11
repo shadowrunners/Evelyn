@@ -1,8 +1,8 @@
+import { bakeUnixTimestamp } from '@Helpers/messageHelpers.js';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import { Util } from '../../Utils/Utils/Util.js';
 import { Discord, Slash, Guild } from 'discordx';
-import { config } from '../../config.js';
-import { Evelyn } from '../../Evelyn.js';
+import { config } from '@Config';
+import { Evelyn } from '@Evelyn';
 import { cpus, platform } from 'os';
 import mongoose from 'mongoose';
 
@@ -11,17 +11,12 @@ import mongoose from 'mongoose';
 export class Status {
 	private embed: EmbedBuilder;
 
-	constructor() {
-		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-	}
-
 	@Slash({
 		description: 'Shows the bot\'s status.',
 		name: 'status',
 	})
 	async status(interaction: ChatInputCommandInteraction, client: Evelyn) {
 		const { application, ws, user, guilds, readyAt } = client;
-		const util = new Util();
 
 		const uptime = Math.floor(readyAt.getTime() / 1000);
 		const model = cpus()[0].model;
@@ -29,7 +24,8 @@ export class Status {
 		const systemPlatform = platform()
 			.replace('win32', 'Windows')
 			.replace('linux', 'Linux');
-		const createdTime = util.convertToUnixTimestamp(user.createdTimestamp);
+		const createdTime = bakeUnixTimestamp(user.createdTimestamp);
+		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
 		await application.fetch();
 
@@ -50,7 +46,7 @@ export class Status {
 						},
 						{
 							name: '**Database**',
-							value: `${util.switchTo(mongoose.connection.readyState)}`,
+							value: `${this.switchTo(mongoose.connection.readyState)}`,
 							inline: true,
 						},
 						{
@@ -82,5 +78,21 @@ export class Status {
 					.setThumbnail(user.avatarURL()),
 			],
 		});
+	}
+
+	/** Determines the value of the current database connection status. */
+	switchTo(val: number) {
+		switch (val) {
+		case 0:
+			return '🟥 Disconnected';
+		case 1:
+			return '🔷 Connected';
+		case 2:
+			return '🟨 Connecting';
+		case 3:
+			return '🟨 Disconnecting';
+		default:
+			break;
+		}
 	}
 }

@@ -1,12 +1,8 @@
-import {
-	ApplicationCommandOptionType,
-	ChatInputCommandInteraction,
-	EmbedBuilder,
-} from 'discord.js';
-import { Reminders } from '../../Schemas/reminders.js';
-import { reminded } from '../../Utils/Utils/reminderUtils.js';
-import { Util } from '../../Utils/Utils/Util.js';
+import { ApplicationCommandOptionType, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { Discord, Slash, SlashOption } from 'discordx';
+import { reminded } from '@Helpers/reminderUtils.js';
+import { Reminders } from '@Schemas';
+import ms from 'ms';
 
 @Discord()
 export class Remind {
@@ -31,9 +27,8 @@ export class Remind {
 			time: string,
 			interaction: ChatInputCommandInteraction,
 	) {
-		const { msToTime } = new Util();
 		const { guild, channel, user } = interaction;
-		const convertedTime = msToTime(time);
+		const convertedTime = ms(time);
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 		const unixTime = Math.floor(Date.now() / 1000) + convertedTime / 1000;
 
