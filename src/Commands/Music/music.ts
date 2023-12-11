@@ -2,7 +2,7 @@ import type {
 	ExtendedButtonInteraction,
 	ExtendedChatInteraction,
 } from '../../Interfaces/Interfaces.js';
-import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
+import { ApplicationCommandOptionType, AttachmentBuilder, EmbedBuilder } from 'discord.js';
 import {
 	Discord,
 	Slash,
@@ -12,10 +12,11 @@ import {
 	ButtonComponent,
 } from 'discordx';
 import { check, checkQuery } from '../../Utils/Checks/musicChecks.js';
-import { Util } from '../../Utils/Utils/Util.js';
+import { embedPages, formatTime } from '../../Utils/Helpers/messageHelpers.js';
 import { Player } from '@shadowrunners/automata';
 import { Evelyn } from '../../Evelyn.js';
 import { Client } from 'genius-lyrics';
+import { musicCard } from 'musicard';
 
 @Discord()
 @SlashGroup({
@@ -25,11 +26,6 @@ import { Client } from 'genius-lyrics';
 @SlashGroup('music')
 export class Music {
 	private player: Player | undefined;
-	private util: Util;
-
-	constructor() {
-		this.util = new Util();
-	}
 
 	@Slash({
 		name: 'play',
@@ -129,7 +125,7 @@ export class Music {
 			if (this.player.queue.size > 1)
 				embed.addFields({
 					name: 'Position in queue',
-					value: `${this.player.queue.size - 0}`,
+					value: `${this.player.queue.size}`,
 					inline: true,
 				});
 			return interaction.editReply({ embeds: [embed] });
@@ -218,7 +214,7 @@ export class Music {
 		return interaction.reply({
 			embeds: [
 				embed.setDescription(
-					`🔹 | Seeked to ${this.util.formatTime(duration)}.`,
+					`🔹 | Seeked to ${formatTime(duration)}.`,
 				),
 			],
 		});
@@ -389,6 +385,20 @@ export class Music {
 
 		const track = this.player.queue.current;
 
+		const card = new musicCard()
+			.setName(track.title)
+			.setAuthor(track.author)
+			.setColor('auto')
+			.setTheme('classic')
+			.setBrightness(50)
+			.setThumbnail(track.artworkUrl)
+			.setProgress(10)
+			.setStartTime('0m0s')
+			.setEndTime(formatTime(track.length));
+
+		const imgBuffer = await card.build();
+		const attachment = new AttachmentBuilder(imgBuffer, { name: 'card.png' });
+
 		return interaction.reply({
 			embeds: [
 				embed
@@ -396,10 +406,9 @@ export class Music {
 						name: 'Now Playing',
 						iconURL: interaction.user.avatarURL(),
 					})
-					.setDescription(
-						`**[${track.title}](${track.uri})** [${track.requester}]`,
-					),
+					.setImage('attachment://card.png'),
 			],
+			files: [attachment],
 		});
 	}
 
@@ -408,7 +417,6 @@ export class Music {
 		description: 'Shows you the queue.',
 	})
 	async queue(interaction: ExtendedChatInteraction) {
-		this.util = new Util(interaction);
 		const { guild } = interaction;
 
 		if (
@@ -444,7 +452,7 @@ export class Music {
 			embeds.push(embed);
 		}
 
-		return this.util.embedPages(embeds);
+		return embedPages(embeds, interaction);
 	}
 
 	@Slash({
@@ -558,6 +566,8 @@ export class Music {
 				textChannel: channelId,
 				deaf: true,
 			});
+
+			this.player.connect();
 		}
 
 		this.player.connect();

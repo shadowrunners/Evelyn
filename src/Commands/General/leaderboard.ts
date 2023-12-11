@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { Discord, Slash } from 'discordx';
-import { Evelyn } from '../../Evelyn.js';
+import { Evelyn } from '@Evelyn';
 import DXP from 'discord-xp';
 
 @Discord()
