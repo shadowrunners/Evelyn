@@ -33,7 +33,7 @@
 		"@sentry/browser": "^7.86.0",
 		"@sentry/cli": "^2.23.0",
 		"@sentry/node": "^7.86.0",
-		"@sentry/profiling-node": "^1.2.6",
+		"@sentry/profiling-node": "^7.0.0",
 		"@shadowrunners/automata": "^2.4.3",
 		"captcha-canvas": "^3.2.1",
 		"cryptr": "^6.3.0",
