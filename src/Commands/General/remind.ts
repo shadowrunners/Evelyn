@@ -1,7 +1,8 @@
 import { ApplicationCommandOptionType, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
+import { reminderCheck } from '@Helpers/reminderUtils.js';
 import { Discord, Slash, SlashOption } from 'discordx';
-import { reminded } from '@Helpers/reminderUtils.js';
 import { Reminders } from '@Schemas';
+import { Evelyn } from '@Evelyn';
 import ms from 'ms';
 
 @Discord()
@@ -10,7 +11,7 @@ export class Remind {
 		name: 'remind',
 		description: 'Sets a reminder for you.',
 	})
-	remind(
+	async remind(
 		@SlashOption({
 			name: 'task',
 			description: 'What should I remind you of?',
@@ -26,45 +27,28 @@ export class Remind {
 			task: string,
 			time: string,
 			interaction: ChatInputCommandInteraction,
+			client: Evelyn,
 	) {
-		const { guild, channel, user } = interaction;
 		const convertedTime = ms(time);
 		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 		const unixTime = Math.floor(Date.now() / 1000) + convertedTime / 1000;
 
 		if (isNaN(convertedTime))
 			return interaction.reply({
-				embeds: [
-					embed.setDescription('🔹 | An invalid time has been provided.'),
-				],
+				embeds: [embed.setDescription('🔹 | An invalid time has been provided.')],
 				ephemeral: true,
 			});
 
-		interaction
-			.reply({
-				embeds: [
-					embed
-						.setTitle('Reminder set!')
-						.setDescription(
-							`Okay, I'll remind you to \`${task}\` <t:${unixTime}:R>.`,
-						),
-				],
-				fetchReply: true,
-			})
-			.then(async (message) => {
-				await Reminders.create({
-					guildId: guild.id,
-					channelId: channel.id,
-					messageId: message.id,
-					userId: user.id,
-					scheduledTime: parseInt(String(Date.now() + convertedTime / 1000)),
-					reminder: task,
-					hasBeenReminded: false,
-				}).then((data) => {
-					setTimeout(async () => {
-						if (!data.hasBeenReminded) await reminded(message);
-					}, convertedTime);
-				});
-			});
+		await interaction
+			.reply({ embeds: [embed.setDescription(`🔹 | Your reminder has been set. You will be reminded <t:${unixTime}:R>.`)] });
+		await Reminders.create({
+			userId: interaction.user.id,
+			scheduledTime: parseInt(String(Date.now() + convertedTime / 1000)),
+			task: task,
+		}).then(() => {
+			setTimeout(async () => {
+				await reminderCheck(client);
+			}, convertedTime);
+		});
 	}
 }
