@@ -1,7 +1,24 @@
 // temporary import, will be added to @Schemas soon.
 import { LevelsDB, LevelsData } from '@/Schemas/levels';
+// import { RoleRewardsDB } from '@/Schemas/roleRewards';
+import { GuildDB } from '@/Schemas/guild';
 import { Client } from 'discordx';
+import { singleton } from 'tsyringe';
 
+type Leaderboard = {
+	/** The user's guild ID. */
+	guildId: string;
+	/** The user's ID. */
+	userId: string;
+	/** The user's XP. */
+	xp: number;
+	/** The user's level. */
+	level: number;
+	/** The user's current position on the leaderboard. */
+	position: number;
+}[];
+
+@singleton()
 export class Levels {
 	/**
 	 * Creates a new user in the Levels database.
@@ -26,10 +43,14 @@ export class Levels {
 	 * @returns A boolean indicating if everything went smoothly.
 	 */
 	public async deleteUser(userId: string, guildId: string) {
-		await LevelsDB.deleteOne({ userId, guildId }).lean().catch(() => {
-			return new ReferenceError('This user does not exist in the database.');
-		});
-		return true;
+		try {
+			await LevelsDB.deleteOne({ userId, guildId }).lean();
+			return true;
+		}
+		catch (_err) {
+			new ReferenceError('This user does not exist in the database.');
+			return false;
+		}
 	}
 
 	/**
@@ -56,7 +77,7 @@ export class Levels {
 	 */
 	private async getDescendingUsers(guildId: string, offset: number): Promise<LevelsData[]> {
 		try {
-			return await LevelsDB.findOne({ guildId }).sort([['totalXP', 'descending']]).limit(offset).lean();
+			return await LevelsDB.find({ guildId }).sort([['totalXP', 'descending']]).limit(offset).lean();
 		}
 		catch (_err) {
 			new ReferenceError('This guild does not exist in the database or there is no data regarding it.');
@@ -87,6 +108,15 @@ export class Levels {
 	}
 
 	/**
+	 * Calculates the XP required to reach the next level.
+	 * @param targetLevel The amount of XP required to reach the next level.
+	 * @returns The amount of XP required to reach the next level.
+	 */
+	public calculateNextLevel(targetLevel: number) {
+		return targetLevel * targetLevel * 100;
+	}
+
+	/**
 	 * Adds XP to the user based on the provided amount of XP.
 	 * @param userId The user's ID.
 	 * @param guildId The guild's ID.
@@ -94,27 +124,21 @@ export class Levels {
 	 * @returns A boolean indicating if the user levelled up or not.
 	 */
 	public async addXP(userId: string, guildId: string, xpAmount: number) {
-		let hasLevelledUp: boolean;
-
-		const member = await this.getUser(userId, guildId) as LevelsData;
-		if (!member || member === null) {
+		const member = await this.getUser(userId, guildId);
+		if (!member) {
 			const newMember = this.createUser(userId, guildId);
+			const level = this.calculateLevel(xpAmount);
 			newMember.updateOne({
-				$set: {
-					xp: xpAmount,
-					level: this.calculateLevel(xpAmount),
-				},
+				$set: { totalXP: xpAmount, level },
 			});
 
-			newMember.save();
+			await newMember.save();
 			return (this.calculateLevel(xpAmount) > 0);
 		}
 
 		const xp = member.totalXP += parseInt(xpAmount.toString(), 10);
 		const level = this.calculateLevel(member.totalXP);
-
-		if (level !== member.level) hasLevelledUp = true;
-		else hasLevelledUp = false;
+		const hasLevelledUp = Boolean(level !== member.level);
 
 		await this.updateUser(userId, guildId, {
 			$set: {
@@ -141,7 +165,7 @@ export class Levels {
 		if (member?.totalXP < xpAmount) XP = 0;
 		else XP = member?.totalXP - xpAmount;
 
-		if (!member || member === null) {
+		if (!member) {
 			const newMember = this.createUser(userId, guildId);
 			newMember.updateOne({
 				$set: {
@@ -150,7 +174,7 @@ export class Levels {
 				},
 			});
 
-			newMember.save();
+			await newMember.save();
 			return (this.calculateLevel(XP) > 0);
 		}
 
@@ -165,24 +189,88 @@ export class Levels {
 		});
 	}
 
-	public async buildLeaderboard(client: Client, guildId: string, offset: number) {
+	/**
+	 * Builds the level leaderboard.
+	 * @param client The Evelyn client.
+	 * @param guildId The ID of the guild that the leaderboard will be built for.
+	 * @param offset The number of users that will be returned.
+	 * @returns {Leaderboard} An array with the leaderboard type that contains all the necessary data.
+	 */
+	public async buildLeaderboard(client: Client, guildId: string, offset: number): Promise<Leaderboard> {
 		const users = await this.getDescendingUsers(guildId, offset);
 		if (users.length < 1) return [];
 
-		const computedArray = [];
+		const computedArray: Leaderboard = [];
 
 		for (const key of users) {
-			const user = await client.users.fetch(key.userId);
 			computedArray.push({
 				guildId: key.guildId,
 				userId: key.userId,
 				xp: key.totalXP,
 				level: key.level,
 				position: (users.findIndex(i => i.guildId === key.guildId && i.userId === key.userId) + 1),
-				username: user.displayName,
 			});
 		}
 
 		return computedArray;
 	}
+
+	/**
+	 * Checks to see if the channel is restricted from getting any XP.
+	 * @param guildId The ID of the guild.
+	 * @param channelId The ID of the channel the check will be performed for.
+	 * @returns {Boolean} A boolean indicating if the channel is restricted or not.
+	 */
+	public async isChannelRestricted(guildId: string, channelId: string): Promise<boolean> {
+		const { levels: { restrictedChannels } } = await GuildDB.findOne({ guildId }).select('levels').lean();
+		const filteredChannels = restrictedChannels.filter((channel) => channel === channelId);
+
+		if (filteredChannels.length <= 0) return false;
+		else return true;
+	}
+
+	/**
+	 * Checks to see if the role is restricted from getting any XP.
+	 * @param guildId The ID of the guild.
+	 * @param roleId The ID of the role the check will be performed for.
+	 * @returns {Boolean} A boolean indicating if the role is restricted or not.
+	 */
+	public async isRoleRestricted(guildId: string, roleId: string): Promise<boolean> {
+		const { levels: { restrictedRoles } } = await GuildDB.findOne({ guildId }).select('levels').lean();
+		console.log(restrictedRoles);
+		const filteredRoles = restrictedRoles.filter((role) => role === roleId);
+		console.log(filteredRoles);
+
+		if (filteredRoles.length <= 0) return false;
+		else return true;
+	}
+
+	// Code for an eventual role rewards system.
+	// It technically kinda works but it'll stay like this till the dashboard implementation is worked on.
+	/**
+	 * public async addRoleReward(guildId: string, role: Role, level: number) {
+		const data = await RoleRewardsDB.findOne({ guildId });
+
+		if (!data) {
+			const createdData = await RoleRewardsDB.create({ guildId, rewards: [] });
+			createdData.rewards.push({ roleId: role.id, level });
+			return await createdData.save();
+		}
+
+		data.rewards.push({ roleId: role.id, level });
+		return await data.save();
+	}
+
+	public async removeRoleReward(guildId: string, role: Role, level: number) {
+		const data = await RoleRewardsDB.findOne({ guildId, roleId: role.id });
+
+		if (!data) return console.log('No guild found.');
+
+		const index = data.rewards.indexOf({ roleId: role.id, level });
+		if (index < -1) return;
+
+		data.rewards.splice(index, 1);
+		return await data.save();
+	}
+	 */
 }
