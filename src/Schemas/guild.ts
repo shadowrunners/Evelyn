@@ -1,7 +1,7 @@
 import { model, Schema } from 'mongoose';
 import { HexColorString } from 'discord.js';
 
-interface EmbedInterface {
+export interface EmbedInterface {
 	/** The message that will be sent alongside the embed. If defined, that is otherwise it doesn't do shit. */
 	content: string;
 	/** The title of the embed. */
@@ -94,6 +94,10 @@ export interface GuildInterface {
 		channel: string;
 		/** The message that will be sent when someone levels up. */
 		message: string;
+		/** The array of restricted roles. */
+		restrictedRoles: string[];
+		/** The array of restricted channels. */
+		restrictedChannels: string[];
 	};
 	confessions: {
 		/** Indicates if the confessions system is enabled or not. */
@@ -118,6 +122,14 @@ export interface GuildInterface {
 		/** The role that will be assigned to users upon verification. */
 		role: string;
 	};
+	starboard: {
+		/** Indicates if the starboard system is enabled or not. */
+		enabled: boolean;
+		/** The channel where the starred messages will be sent in. */
+		starboardChannel: string;
+		/** The number of star reactions is needed to send the message to the channel. */
+		starsRequirement: number;
+	}
 }
 
 export const GuildDB = model<GuildInterface>(
@@ -157,6 +169,8 @@ export const GuildDB = model<GuildInterface>(
 			enabled: Boolean,
 			channel: String,
 			message: String,
+			restrictedRoles: [String],
+			restrictedChannels: [String],
 		},
 		confessions: {
 			enabled: Boolean,
@@ -172,6 +186,11 @@ export const GuildDB = model<GuildInterface>(
 		verification: {
 			enabled: Boolean,
 			role: String,
+		},
+		starboard: {
+			enabled: Boolean,
+			starboardChannel: String,
+			starsRequirement: Number,
 		},
 	}),
 );
