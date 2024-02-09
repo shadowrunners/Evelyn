@@ -6,11 +6,11 @@ import { Discord, On } from 'discordx';
 @Discord()
 export class ChannelUpdate {
 	@On({ event: 'channelUpdate' })
-	async channelUpdate(channels: GuildChannel, client: Evelyn) {
+	async channelUpdate(channels: GuildChannel[], client: Evelyn) {
 		const oldChannel = channels[0];
 		const newChannel = channels[1];
 
-		if (!(await validate(oldChannel.guild))) return;
+		if (!(await validate(oldChannel.guildId))) return;
 
 		const embed = new EmbedBuilder()
 			.setColor('Blurple')
@@ -27,7 +27,7 @@ export class ChannelUpdate {
 
 		if (oldChannel.name !== newChannel.name)
 			return await send({
-				guild: oldChannel.guild,
+				guild: oldChannel.guildId,
 				client,
 				embed: embed.setTitle('Channel Name Updated').addFields(
 					{
@@ -47,7 +47,7 @@ export class ChannelUpdate {
 
 		if (oldChannel.type !== newChannel.type)
 			return await send({
-				guild: oldChannel.guild,
+				guild: oldChannel.guildId,
 				client,
 				embed: embed.setTitle('Channel Type Changed').addFields(
 					{
