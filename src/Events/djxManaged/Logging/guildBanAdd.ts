@@ -7,6 +7,7 @@ import { Discord, On } from 'discordx';
 export class GuildBanAdd {
 	@On({ event: 'guildBanAdd' })
 	async guildBanAdd([ban]: [GuildBan], client: Evelyn) {
+		if (ban.partial) await ban.fetch();
 		if (!(await validate(ban.guild.id))) return;
 
 		const audit = await getAuditLog({

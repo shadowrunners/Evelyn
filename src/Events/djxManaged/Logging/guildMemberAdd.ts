@@ -7,6 +7,7 @@ import { Discord, On } from 'discordx';
 export class GuildMemberAdd {
 	@On({ event: 'guildMemberAdd' })
 	async guildMemberAdd([member]: [GuildMember], client: Evelyn) {
+		if (member.partial) await member.fetch();
 		if (!(await validate(member.guild.id))) return;
 
 		const embed = new EmbedBuilder()

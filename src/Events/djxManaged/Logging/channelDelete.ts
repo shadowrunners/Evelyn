@@ -7,6 +7,7 @@ import { Discord, On } from 'discordx';
 export class channelDelete {
 	@On({ event: 'channelDelete' })
 	async channelDelete([channel]: [GuildChannel], client: Evelyn) {
+		if (channel.partial) await channel.fetch();
 		if (!await validate(channel.guildId)) return;
 
 		const audit = await getAuditLog({

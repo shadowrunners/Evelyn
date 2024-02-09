@@ -32,7 +32,7 @@ export class RoleDelete {
 				},
 				{
 					name: '🔹 | Deleted by',
-					value: `> ${audit.executor}`,
+					value: `> ${audit?.executor}`,
 				},
 			)
 			.setTimestamp();

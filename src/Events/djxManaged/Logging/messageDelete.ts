@@ -7,6 +7,7 @@ import { Discord, On } from 'discordx';
 export class MessageDelete {
 	@On({ event: 'messageDelete' })
 	async messageDelete([message]: [Message], client: Evelyn) {
+		if (message.partial) await message.fetch();
 		if (!(await validate(message.guildId))) return;
 
 		const { author, content, embeds, id } = message;
