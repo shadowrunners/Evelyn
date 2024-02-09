@@ -1,12 +1,36 @@
-import { EmbedBuilder, ModalBuilder, TextInputStyle, ActionRowBuilder, TextInputBuilder, ChatInputCommandInteraction, ModalSubmitInteraction } from 'discord.js';
-import { webhookDelivery } from '@Helpers/sendWebhook.js';
+import { EmbedBuilder, ModalBuilder, TextInputStyle, ActionRowBuilder, TextInputBuilder, ChatInputCommandInteraction, ModalSubmitInteraction, WebhookClient } from 'discord.js';
 import { Discord, Slash, ModalComponent } from 'discordx';
-import { Guilds } from '@Schemas';
+import { SecureStorage } from '@Helpers/secureStorage';
+import { inject, injectable } from 'tsyringe';
+import { Guilds } from '@Services';
 import { Evelyn } from '@Evelyn';
 
 @Discord()
+@injectable()
 export class Confess {
-	@Slash({ name: 'confess', description: 'Send a confession' })
+	// eslint-disable-next-line no-empty-function
+	constructor(
+		@inject(Guilds) private readonly guildService: Guilds,
+		@inject(SecureStorage) private readonly secureStorage: SecureStorage,
+		// eslint-disable-next-line no-empty-function
+	) {}
+
+	private async sendConfession(guildId: string, client: Evelyn, embed: EmbedBuilder) {
+		const data = await this.guildService.getFeatureData(guildId, 'confessions');
+
+		const decryptedToken = this.secureStorage.decrypt(data?.confessions?.webhook.token, client);
+
+		const confessDropOff = new WebhookClient({
+			id: data?.confessions?.webhook?.id,
+			token: decryptedToken,
+		});
+
+		return confessDropOff.send({
+			embeds: [embed],
+		});
+	}
+
+	@Slash({ name: 'confess', description: 'Send a confession.' })
 	async confess(interaction: ChatInputCommandInteraction): Promise<void> {
 		const modal = new ModalBuilder()
 			.setCustomId('confessionModal')
@@ -27,7 +51,7 @@ export class Confess {
 	@ModalComponent()
 	async confessionModal(interaction: ModalSubmitInteraction, client: Evelyn) {
 		const { fields, guildId } = interaction;
-		const data = await Guilds.findOne({ id: guildId });
+		const data = await this.guildService.getFeatureData(guildId, 'confessions');
 		const embed = new EmbedBuilder().setColor('Blurple');
 		const confession = fields.getTextInputValue('confession');
 
@@ -48,10 +72,7 @@ export class Confess {
 			ephemeral: true,
 		});
 
-		return webhookDelivery(
-			'confessions',
-			data,
-			client,
+		return await this.sendConfession(guildId, client,
 			embed
 				.setTitle('Evelyn · Confessions')
 				.setDescription(confession)
