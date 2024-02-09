@@ -1,11 +1,10 @@
-import { check4Reminders } from '../../../Utils/Checks/check4Reminders.js';
+import { reminderCheck } from '@/Utils/Helpers/reminderUtils.js';
 import { check4Lockdowns } from '../../../Utils/Checks/check4Lockdowns.js';
 import { Evelyn } from '../../../Evelyn.js';
 import { ActivityType } from 'discord.js';
 import { Discord, Once } from 'discordx';
 import colors from '@colors/colors';
 import { set } from 'mongoose';
-import DXP from 'discord-xp';
 
 @Discord()
 export class Ready {
@@ -39,7 +38,7 @@ export class Ready {
 			);
 		}
 
-		client.initApplicationCommands();
+		await client.initApplicationCommands();
 		manager.init(client);
 
 		await set('strictQuery', false)
@@ -55,8 +54,7 @@ export class Ready {
 				console.log(err);
 			});
 
-		await check4Reminders(client);
+		await reminderCheck(client);
 		await check4Lockdowns(client);
-		await DXP.setURL(client.config.database);
 	}
 }
