@@ -31,8 +31,7 @@ export class Levels {
 			return new LevelsDB({ userId, guildId, totalXP: 0, level: 0 });
 		}
 		catch (_err) {
-			new ReferenceError('There was an error while saving the creating the level profile in the database.');
-			return;
+			throw new ReferenceError('There was an error while saving the creating the level profile in the database.');
 		}
 	}
 
@@ -48,8 +47,7 @@ export class Levels {
 			return true;
 		}
 		catch (_err) {
-			new ReferenceError('This user does not exist in the database.');
-			return false;
+			throw new ReferenceError('This user does not exist in the database.');
 		}
 	}
 
@@ -80,7 +78,7 @@ export class Levels {
 			return await LevelsDB.find({ guildId }).sort([['totalXP', 'descending']]).limit(offset).lean();
 		}
 		catch (_err) {
-			new ReferenceError('This guild does not exist in the database or there is no data regarding it.');
+			throw new ReferenceError('This guild does not exist in the database or there is no data regarding it.');
 		}
 	}
 
@@ -92,10 +90,12 @@ export class Levels {
 	 * @returns A boolean indicating if the process went smoothly.
 	 */
 	private async updateUser(userId: string, guildId: string, changes: unknown) {
-		await LevelsDB.findOne({ userId, guildId }).updateOne(changes).lean().catch(() => {
-			return new ReferenceError('This user does not exist in the database.');
-		});
-		return true;
+		try {
+			await LevelsDB.findOne({ userId, guildId }).updateOne(changes).lean()
+		}
+		catch (_err) {
+			throw new ReferenceError('This user does not exist in the database.');
+		}
 	}
 
 	/**
@@ -222,11 +222,11 @@ export class Levels {
 	 * @returns {Boolean} A boolean indicating if the channel is restricted or not.
 	 */
 	public async isChannelRestricted(guildId: string, channelId: string): Promise<boolean> {
-		const { levels: { restrictedChannels } } = await GuildDB.findOne({ guildId }).select('levels').lean();
-		const filteredChannels = restrictedChannels.filter((channel) => channel === channelId);
+		const data = await GuildDB.findOne({ guildId }).select('levels').lean();
+		if (!data.levels?.restrictedChannels) return;
 
-		if (filteredChannels.length <= 0) return false;
-		else return true;
+		const filteredChannels = data.levels?.restrictedChannels.filter((channel) => channel === channelId);
+		return filteredChannels.length <= 0 ? true : false;
 	}
 
 	/**
@@ -236,41 +236,10 @@ export class Levels {
 	 * @returns {Boolean} A boolean indicating if the role is restricted or not.
 	 */
 	public async isRoleRestricted(guildId: string, roleId: string): Promise<boolean> {
-		const { levels: { restrictedRoles } } = await GuildDB.findOne({ guildId }).select('levels').lean();
-		console.log(restrictedRoles);
-		const filteredRoles = restrictedRoles.filter((role) => role === roleId);
-		console.log(filteredRoles);
+		const data = await GuildDB.findOne({ guildId }).select('levels').lean();
+		if (!data.levels?.restrictedRoles) return;
 
-		if (filteredRoles.length <= 0) return false;
-		else return true;
+		const filteredRoles = data.levels?.restrictedRoles.filter((role) => role === roleId);
+		return filteredRoles.length <= 0 ? true : false;
 	}
-
-	// Code for an eventual role rewards system.
-	// It technically kinda works but it'll stay like this till the dashboard implementation is worked on.
-	/**
-	 * public async addRoleReward(guildId: string, role: Role, level: number) {
-		const data = await RoleRewardsDB.findOne({ guildId });
-
-		if (!data) {
-			const createdData = await RoleRewardsDB.create({ guildId, rewards: [] });
-			createdData.rewards.push({ roleId: role.id, level });
-			return await createdData.save();
-		}
-
-		data.rewards.push({ roleId: role.id, level });
-		return await data.save();
-	}
-
-	public async removeRoleReward(guildId: string, role: Role, level: number) {
-		const data = await RoleRewardsDB.findOne({ guildId, roleId: role.id });
-
-		if (!data) return console.log('No guild found.');
-
-		const index = data.rewards.indexOf({ roleId: role.id, level });
-		if (index < -1) return;
-
-		data.rewards.splice(index, 1);
-		return await data.save();
-	}
-	 */
 }
