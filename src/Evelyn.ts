@@ -1,19 +1,14 @@
 import '@abraham/reflection';
-
 import { Client, DIService } from 'discordx';
-import colors from '@colors/colors';
-import { config } from '@Config';
+import { BotConfig, config } from '@Config';
 import { container } from 'tsyringe';
 import { Manager } from '@shadowrunners/automata';
 import { dirname, importx } from '@discordx/importer';
-import { GatewayIntentBits, Options } from 'discord.js';
-import { BotConfig } from '@/Interfaces/Interfaces.js';
+import { GatewayIntentBits, Options, Partials } from 'discord.js';
 import { fileLoad } from '@Helpers/fileLoader.js';
 import { DatabaseType, Giveaways } from 'discord-giveaways-super';
-import { addTracingExtensions, init } from '@sentry/browser';
-import { ProfilingIntegration } from '@sentry/profiling-node';
 import { tsyringeDependencyRegistryEngine } from '@discordx/di';
-// import { crashReporter } from './functions/crashReport.js';
+import Logger from '@ptkdev/logger';
 // import Economy from 'discord-economy-super/mongodb/src/index.js';
 
 const {
@@ -35,6 +30,7 @@ export class Evelyn extends Client {
 	public manager: Manager;
 	public giveaways: Giveaways<DatabaseType.MONGODB>;
 	private client: Client;
+	public evieLogger: Logger;
 
 	constructor() {
 		super({
@@ -49,13 +45,17 @@ export class Evelyn extends Client {
 				MessageContent,
 				DirectMessages,
 			],
-			silent: false,
+			partials: [
+				Partials.Reaction,
+				Partials.Message,
+			],
+			silent: config.debug.logs.disableDX,
 			makeCache: Options.cacheWithLimits({
 				...Options.DefaultMakeCacheSettings,
 				GuildInviteManager: 0,
 				GuildScheduledEventManager: 0,
 				PresenceManager: 0,
-				ReactionUserManager: 0,
+				// ReactionUserManager: 0,
 				StageInstanceManager: 0,
 			}),
 			sweepers: {
@@ -86,13 +86,28 @@ export class Evelyn extends Client {
 			database: DatabaseType.MONGODB,
 			connection: {
 				connectionURI: this.config.database,
-				dbName: '',
 				collectionName: 'Giveaways',
+				dbName: 'test',
 			},
-			debug: true,
+			debug: this.config.debug.logs.disableGiveawaysLogs,
 		});
 
-		// Replace this with Sentry stuff.
+		this.evieLogger = new Logger({
+			language: 'en',
+			colors: true,
+			debug: true,
+			info: true,
+			warning: true,
+			error: true,
+			sponsor: true,
+			type: 'log',
+			rotate: {
+				size: '10M',
+				encoding: 'utf8',
+			},
+		});
+
+		// TODO: Replace this with Sentry stuff.
 		process.on('unhandledRejection', (err) => console.log(err));
 		process.on('unhandledException', (err) => console.log(err));
 	}
@@ -112,11 +127,7 @@ export class Evelyn extends Client {
 
 			client.manager.on(event.name, execute);
 
-			console.log(
-				`${colors.magenta('Automata')} ${colors.white(
-					'· Loaded',
-				)} ${colors.green(`${event.name}.ts`)}`,
-			);
+			this.evieLogger.info(`[Automata] Loaded ${event.name}.ts`);
 		}
 	}
 
@@ -128,18 +139,24 @@ export class Evelyn extends Client {
 			`${dirname(import.meta.url)}/{Events/djxManaged,Commands}/**/*.{ts,js}`,
 		);
 
-		// Initialize Sentry
-		addTracingExtensions();
-		init({
-			dsn: this.config.debug.telemetry,
-			tracesSampleRate: 1.0,
-			profilesSampleRate: 1.0,
-			integrations: [
-				new ProfilingIntegration(),
-			],
-		});
+		if (config.debug.telemetry.enabled) {
+			const { addTracingExtensions, init } = await import('@sentry/browser');
+			const { ProfilingIntegration } = await import('@sentry/profiling-node');
 
-		console.log('Initialised Sentry.');
+			addTracingExtensions();
+			init({
+				dsn: this.config.debug.telemetry.dsn,
+				tracesSampleRate: 1.0,
+				profilesSampleRate: 1.0,
+				integrations: [
+					new ProfilingIntegration(),
+				],
+			});
+
+			this.evieLogger.info('[Telemetry] Sentry has been successfully initialized.');
+		}
+
+		container.registerInstance(Evelyn, this.client);
 
 		await this.loadMusic(this);
 		await this.client.login(this.config.token);
