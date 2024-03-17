@@ -26,7 +26,8 @@
 			"@Schemas": ["./src/Schemas"],
 			"@Config": ["./src/config"],
 			"@Services": ["./src/Services"],
-			"@Evelyn": ["./src/Evelyn"]
+			"@Evelyn": ["./src/Evelyn"],
+			"@Guards": ["./src/Guards"]
 		}
 	}
 }
