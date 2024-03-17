@@ -5,5 +5,6 @@ import { IsOver100Vol } from './IsOver100Vol';
 import { IsSub0Vol } from './IsSub0Vol';
 import { IsYTLink } from './IsYTLink';
 import { IsBlacklisted } from './IsBlacklisted';
+import { HasLogsEnabled } from './HasLogsEnabled';
 
-export { IsInsideVC, IsPlaying, HasQueue, IsOver100Vol, IsSub0Vol, IsYTLink, IsBlacklisted };
+export { IsInsideVC, IsPlaying, HasQueue, IsOver100Vol, IsSub0Vol, IsYTLink, IsBlacklisted, HasLogsEnabled };
