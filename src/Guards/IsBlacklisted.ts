@@ -1,35 +1,26 @@
-import { ButtonInteraction, ChatInputCommandInteraction, CommandInteraction, ContextMenuCommandInteraction, StringSelectMenuInteraction } from 'discord.js';
 import { UserBlacklists as UB, Guilds as DB } from '@Schemas';
 import { GuardFunction, ArgsOf } from 'discordx';
 
-/** Checks to see if the bot is playing anything. */
+/** Checks to see if the user is blacklisted or not. */
 export const IsBlacklisted: GuardFunction<ArgsOf<'interactionCreate'>> = async (interaction, _client, next) => {
+	const { user, guildId } = interaction[0];
+
+	const userBlacklist = await UB.findOne({
+		userId: user.id,
+	});
+
+	const guildData = await DB.findOne({
+		id: guildId,
+		blacklist: {
+			isBlacklisted: true,
+		},
+	});
+
 	if (
-		interaction instanceof CommandInteraction ||
-        interaction instanceof ChatInputCommandInteraction ||
-		interaction instanceof ButtonInteraction ||
-        interaction instanceof StringSelectMenuInteraction ||
-        interaction instanceof ContextMenuCommandInteraction
-	) {
-		const { user, guildId } = interaction;
-
-		const userBlacklist = await UB.findOne({
-			userId: user.id,
-		});
-
-		const guildData = await DB.findOne({
-			id: guildId,
-			blacklist: {
-				isBlacklisted: true,
-			},
-		});
-
-		if (
-			userBlacklist?.isBlacklisted === true ||
+		userBlacklist?.isBlacklisted === true ||
 			guildData?.blacklist?.isBlacklisted === true
-		) return;
+	) return;
 
-		next();
-	}
+	next();
 };
 
