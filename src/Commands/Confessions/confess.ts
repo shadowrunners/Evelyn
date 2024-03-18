@@ -2,24 +2,25 @@ import { EmbedBuilder, ModalBuilder, TextInputStyle, ActionRowBuilder, TextInput
 import { Discord, Slash, ModalComponent } from 'discordx';
 import { SecureStorage } from '@Helpers/secureStorage';
 import { inject, injectable } from 'tsyringe';
+import { EvieEmbed } from '@/Utils/EvieEmbed';
 import { Guilds } from '@Services';
 import { Evelyn } from '@Evelyn';
 
 @Discord()
 @injectable()
-export class Confess {
+export class ConfessionsCommand {
 	// eslint-disable-next-line no-empty-function
 	constructor(
 		@inject(Guilds) private readonly guildService: Guilds,
 		@inject(SecureStorage) private readonly secureStorage: SecureStorage,
+		@inject(Evelyn) private readonly client: Evelyn,
 		// eslint-disable-next-line no-empty-function
 	) {}
 
-	private async sendConfession(guildId: string, client: Evelyn, embed: EmbedBuilder) {
+	private async sendConfession(guildId: string, embed: EmbedBuilder) {
 		const data = await this.guildService.getFeatureData(guildId, 'confessions');
 
-		const decryptedToken = this.secureStorage.decrypt(data?.confessions?.webhook.token, client);
-
+		const decryptedToken = this.secureStorage.decrypt(data?.confessions?.webhook.token, this.client);
 		const confessDropOff = new WebhookClient({
 			id: data?.confessions?.webhook?.id,
 			token: decryptedToken,
@@ -31,7 +32,7 @@ export class Confess {
 	}
 
 	@Slash({ name: 'confess', description: 'Send a confession.' })
-	async confess(interaction: ChatInputCommandInteraction): Promise<void> {
+	async confess(interaction: ChatInputCommandInteraction) {
 		const modal = new ModalBuilder()
 			.setCustomId('confessionModal')
 			.setTitle('Send a confession')
@@ -49,34 +50,28 @@ export class Confess {
 	}
 
 	@ModalComponent()
-	async confessionModal(interaction: ModalSubmitInteraction, client: Evelyn) {
+	async confessionModal(interaction: ModalSubmitInteraction) {
 		const { fields, guildId } = interaction;
 		const data = await this.guildService.getFeatureData(guildId, 'confessions');
-		const embed = new EmbedBuilder().setColor('Blurple');
 		const confession = fields.getTextInputValue('confession');
+		const embed = EvieEmbed();
 
 		if (!(data?.confessions?.enabled && data?.confessions.webhook.id))
 			return interaction.reply({
-				embeds: [
-					embed.setDescription(
-						'🔹 | Confessions are not enabled on this server or a channel for them hasn\'t been set yet.',
-					),
-				],
+				embeds: [embed.setDescription('🔹 | Confessions are not enabled on this server or a channel for them hasn\'t been set yet.')],
 				ephemeral: true,
 			});
 
 		await interaction.reply({
-			embeds: [
-				embed.setDescription('🔹 | Your confession will be delivered shortly.'),
-			],
+			embeds: [embed.setDescription('🔹 | Your confession will be delivered shortly.')],
 			ephemeral: true,
 		});
 
-		return await this.sendConfession(guildId, client,
+		return await this.sendConfession(
+			guildId,
 			embed
 				.setTitle('Evelyn · Confessions')
-				.setDescription(confession)
-				.setTimestamp(),
+				.setDescription(confession),
 		);
 	}
 }
