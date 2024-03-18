@@ -1,20 +1,19 @@
-import { EmbedBuilder, ApplicationCommandOptionType, ChatInputCommandInteraction } from 'discord.js';
+import { ApplicationCommandOptionType, ChatInputCommandInteraction } from 'discord.js';
 import { Discord, Guard, Slash, SlashOption } from 'discordx';
 import { RateLimit, TIME_UNIT } from '@discordx/utilities';
 import { inject, injectable } from 'tsyringe';
+import { EvieEmbed } from '@/Utils/EvieEmbed';
 import { GoogleBooks } from '@Services';
 
 @Discord()
 @injectable()
 export class Book {
-	private embed: EmbedBuilder;
-
 	// eslint-disable-next-line no-empty-function
 	constructor(@inject(GoogleBooks) private readonly gBooks: GoogleBooks) {}
 
 	@Slash({
-		description: 'Get info about a book using Google Books.',
 		name: 'book',
+		description: 'Get info about a book using Google Books.',
 	})
 	@Guard(
 		RateLimit(TIME_UNIT.seconds, 30, {
@@ -32,13 +31,11 @@ export class Book {
 			title: string,
 			interaction: ChatInputCommandInteraction,
 	) {
-		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-
 		await this.gBooks.fetchBook(title)
 			.then((book) => {
 				return interaction.reply({
 					embeds: [
-						this.embed
+						EvieEmbed()
 							.setTitle(book.title)
 							.setDescription(book.description)
 							.addFields(
@@ -76,7 +73,7 @@ export class Book {
 				});
 			}).catch(() => {
 				return interaction.reply({
-					embeds: [this.embed.setDescription('🔹 | No results found.')],
+					embeds: [EvieEmbed().setDescription('🔹 | No results found.')],
 					ephemeral: true,
 				});
 			});
