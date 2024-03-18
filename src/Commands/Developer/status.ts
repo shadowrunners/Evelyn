@@ -1,22 +1,25 @@
 import { bakeUnixTimestamp } from '@Helpers/messageHelpers.js';
-import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { Discord, Slash, Guild } from 'discordx';
+import { inject, injectable } from 'tsyringe';
+import { EvieEmbed } from '@/Utils/EvieEmbed';
+import { cpus, platform } from 'os';
 import { config } from '@Config';
 import { Evelyn } from '@Evelyn';
-import { cpus, platform } from 'os';
 import mongoose from 'mongoose';
 
 @Discord()
+@injectable()
 @Guild(config.debug.devGuild)
 export class Status {
-	private embed: EmbedBuilder;
+	constructor(@inject(Evelyn) private readonly client: Evelyn) {}
 
 	@Slash({
 		description: 'Shows the bot\'s status.',
 		name: 'status',
 	})
-	async status(interaction: ChatInputCommandInteraction, client: Evelyn) {
-		const { application, ws, user, guilds, readyAt } = client;
+	async status(interaction: ChatInputCommandInteraction) {
+		const { application, ws, user, guilds, readyAt } = this.client;
 
 		const uptime = Math.floor(readyAt.getTime() / 1000);
 		const model = cpus()[0].model;
@@ -25,13 +28,12 @@ export class Status {
 			.replace('win32', 'Windows')
 			.replace('linux', 'Linux');
 		const createdTime = bakeUnixTimestamp(user.createdTimestamp);
-		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 
-		await application.fetch();
+		if (application.partial) await application.fetch();
 
 		return interaction.reply({
 			embeds: [
-				this.embed
+				EvieEmbed()
 					.setTitle(`${user.username} | Status`)
 					.addFields(
 						{
@@ -81,7 +83,7 @@ export class Status {
 	}
 
 	/** Determines the value of the current database connection status. */
-	switchTo(val: number) {
+	private switchTo(val: number) {
 		switch (val) {
 		case 0:
 			return '🟥 Disconnected';
