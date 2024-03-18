@@ -1,6 +1,7 @@
-import { ApplicationCommandOptionType, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
+import { ApplicationCommandOptionType, ChatInputCommandInteraction } from 'discord.js';
 import { reminderCheck } from '@Helpers/reminderUtils.js';
 import { Discord, Slash, SlashOption } from 'discordx';
+import { EvieEmbed } from '@/Utils/EvieEmbed';
 import { Reminders } from '@Schemas';
 import { Evelyn } from '@Evelyn';
 import ms from 'ms';
@@ -30,17 +31,16 @@ export class Remind {
 			client: Evelyn,
 	) {
 		const convertedTime = ms(time);
-		const embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
 		const unixTime = Math.floor(Date.now() / 1000) + convertedTime / 1000;
 
 		if (isNaN(convertedTime))
 			return interaction.reply({
-				embeds: [embed.setDescription('🔹 | An invalid time has been provided.')],
+				embeds: [EvieEmbed().setDescription('🔹 | An invalid time has been provided.')],
 				ephemeral: true,
 			});
 
 		await interaction
-			.reply({ embeds: [embed.setDescription(`🔹 | Your reminder has been set. You will be reminded <t:${unixTime}:R>.`)] });
+			.reply({ embeds: [EvieEmbed().setDescription(`🔹 | Your reminder has been set. You will be reminded <t:${unixTime}:R>.`)] });
 		await Reminders.create({
 			userId: interaction.user.id,
 			scheduledTime: parseInt(String(Date.now() + convertedTime / 1000)),
