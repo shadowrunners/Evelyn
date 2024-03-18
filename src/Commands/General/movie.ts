@@ -1,14 +1,13 @@
-import { EmbedBuilder, ChatInputCommandInteraction, ApplicationCommandOptionType } from 'discord.js';
+import { ChatInputCommandInteraction, ApplicationCommandOptionType } from 'discord.js';
 import { Discord, Slash, SlashOption, Guard } from 'discordx';
 import { RateLimit, TIME_UNIT } from '@discordx/utilities';
 import { inject, injectable } from 'tsyringe';
+import { EvieEmbed } from '@/Utils/EvieEmbed';
 import { TMDb } from '@Services';
 
 @Discord()
 @injectable()
 export class Movie {
-	private embed: EmbedBuilder;
-
 	// eslint-disable-next-line no-empty-function
 	constructor(@inject(TMDb) private readonly tmdb: TMDb) {}
 
@@ -32,12 +31,10 @@ export class Movie {
 			title: string,
 			interaction: ChatInputCommandInteraction,
 	) {
-		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-
 		await this.tmdb.fetchMovie(title).then((movie) => {
 			return interaction.reply({
 				embeds: [
-					this.embed
+					EvieEmbed()
 						.setTitle(movie.title)
 						.setThumbnail(movie.poster)
 						.setDescription(movie.overview)
@@ -78,7 +75,7 @@ export class Movie {
 		}).catch(() => {
 			return interaction.reply({
 				embeds: [
-					this.embed.setDescription(
+					EvieEmbed().setDescription(
 						'🔹 | There was an error while fetching the information from the API.',
 					),
 				],
