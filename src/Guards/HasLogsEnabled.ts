@@ -7,6 +7,6 @@ export const HasLogsEnabled: GuardFunction = async (arg, _client, next) => {
 		guildId: arg[0].guild.id,
 	});
 
-	if (!data.logs.enabled && !data.logs.webhook) return false;
+	if (!data?.logs?.enabled && !data?.logs?.webhook) return false;
 	next();
 };
