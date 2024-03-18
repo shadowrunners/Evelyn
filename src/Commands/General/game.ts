@@ -1,15 +1,14 @@
-import { EmbedBuilder, ApplicationCommandOptionType, ChatInputCommandInteraction } from 'discord.js';
+import { ApplicationCommandOptionType, ChatInputCommandInteraction } from 'discord.js';
 import { Discord, Guard, Slash, SlashOption } from 'discordx';
 import { RateLimit, TIME_UNIT } from '@discordx/utilities';
 import { inject, injectable } from 'tsyringe';
+import { EvieEmbed } from '@/Utils/EvieEmbed';
 import { RAWG } from '@Services';
-import { Evelyn } from '@Evelyn';
+import { config } from '@Config';
 
 @Discord()
 @injectable()
 export class Game {
-	private embed: EmbedBuilder;
-
 	// eslint-disable-next-line no-empty-function
 	constructor(@inject(RAWG) private readonly rawg: RAWG) {}
 
@@ -32,16 +31,14 @@ export class Game {
 		})
 			title: string,
 			interaction: ChatInputCommandInteraction,
-			client: Evelyn,
 	) {
-		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-
-		if (!client.config.APIs.rawgKey)
+		if (!config.APIs.rawgKey)
 			return interaction.reply({
 				embeds: [
-					this.embed.setDescription(
-						'🔹 | This feature cannot be used without a RAWG.io API Key. Ask your maintainer to populate the `rawgKey` field in their config.ts file to enable this feature.',
-					),
+					EvieEmbed()
+						.setDescription(
+							'🔹 | This feature cannot be used without a RAWG.io API Key. Ask your maintainer to populate the `rawgKey` field in their config.ts file to enable this feature.',
+						),
 				],
 				ephemeral: true,
 			});
@@ -51,7 +48,7 @@ export class Game {
 			.then((result) => {
 				return interaction.reply({
 					embeds: [
-						this.embed
+						EvieEmbed()
 							.setAuthor({ name: result.name, url: result.uri })
 							.setDescription(result.description)
 							.addFields(
@@ -87,7 +84,7 @@ export class Game {
 			})
 			.catch(() => {
 				return interaction.reply({
-					embeds: [this.embed.setDescription('🔹 | No results found.')],
+					embeds: [EvieEmbed().setDescription('🔹 | No results found.')],
 					ephemeral: true,
 				});
 			});
