@@ -1,14 +1,13 @@
-import { EmbedBuilder, ApplicationCommandOptionType, ChatInputCommandInteraction } from 'discord.js';
+import { ApplicationCommandOptionType, ChatInputCommandInteraction } from 'discord.js';
 import { Discord, Guard, Slash, SlashOption } from 'discordx';
 import { RateLimit, TIME_UNIT } from '@discordx/utilities';
+import { EvieEmbed } from '@/Utils/EvieEmbed';
 import { injectable, inject } from 'tsyringe';
 import { Kitsu } from '@Services';
 
 @Discord()
 @injectable()
 export class Manga {
-	private embed: EmbedBuilder;
-
 	// eslint-disable-next-line no-empty-function
 	constructor(@inject(Kitsu) private readonly kitsu: Kitsu) {}
 
@@ -32,12 +31,10 @@ export class Manga {
 			title: string,
 			interaction: ChatInputCommandInteraction,
 	) {
-		this.embed = new EmbedBuilder().setColor('Blurple').setTimestamp();
-
 		await this.kitsu.fetchManga(title).then((manga) => {
 			return interaction.reply({
 				embeds: [
-					this.embed
+					EvieEmbed()
 						.setTitle(manga.titles.en_us)
 						.setThumbnail(manga.posterImage.original)
 						.setDescription(manga.synopsis)
@@ -68,7 +65,7 @@ export class Manga {
 		}).catch(() => {
 			return interaction.reply({
 				embeds: [
-					this.embed.setDescription(
+					EvieEmbed().setDescription(
 						'🔹 | There was an error while fetching the information from the API.',
 					),
 				],
